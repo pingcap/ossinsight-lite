@@ -9,5 +9,8 @@
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true
   },
-  "include": ["widgets"]
+  "include": [
+    "src/chartjs",
+    "widgets"
+  ]
 }

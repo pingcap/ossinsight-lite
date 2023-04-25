@@ -16,6 +16,7 @@ export default defineConfig((env) => ({
     }),
     ssr({
       prerender: true,
+      baseAssets: 'https://widgets-4qua8djg9-djagger.vercel.app',
     }),
     widgets({ page: true }),
     mysqlPlugin(),

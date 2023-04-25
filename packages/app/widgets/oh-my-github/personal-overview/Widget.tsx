@@ -19,6 +19,8 @@ import { ReactComponent as NorthStarIcon } from '../../../icons/north-star.svg'
 import { ReactComponent as RepoIcon } from '../../../icons/repo.svg'
 import { ReactComponent as StarIcon } from '../../../icons/star.svg'
 
+import '../../../src/chartjs/rough';
+
 const lineColors = [
   red['500'],
   green['500'],
@@ -50,7 +52,7 @@ export default function Widget (props: HTMLProps<HTMLDivElement>) {
   const root = useRef<HTMLDivElement>(null);
 
   return (
-    <div ref={root} {...props} className={clsx(props.className, 'bg-white flex flex-col p-4 gap-4 relative')}>
+    <div ref={root} {...props} className={clsx(props.className, 'bg-white flex flex-col p-4 gap-4 relative font-[CabinSketch]')}>
       <div className="flex gap-2">
         <img
           className="block rounded-xl w-12 h-12"
@@ -99,7 +101,7 @@ export default function Widget (props: HTMLProps<HTMLDivElement>) {
               borderColor: lineColors[index],
               borderWidth: 1,
               pointRadius: 0,
-              backgroundColor: areaColors[index] + '40',
+              backgroundColor: areaColors[index] + 'c0',
               fill: true,
             })),
           }}
@@ -157,7 +159,7 @@ const Cell = forwardRef(function Cell ({ field, value, ...props }: CellProps & H
   return (
     <li ref={ref} {...props} className={clsx(props.className, 'flex items-center gap-1')}>
       <span className="text-gray-500 flex items-center">{field}</span>
-      <span className="text-gray-700 font-mono font-bold">{format(value)}</span>
+      <span className="text-gray-700 font-bold">{format(value)}</span>
     </li>
   );
 });
