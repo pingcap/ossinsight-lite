@@ -5,7 +5,6 @@ import cr from './contributed_repos.sql?unique';
 import ca from './code_additions.sql?unique';
 import cd from './code_deletions.sql?unique';
 import cpm from './contributions_per_month.sql';
-import { DiffAddedIcon, DiffRemovedIcon, EyeIcon, NorthStarIcon, RepoIcon, StarIcon } from '@primer/octicons-react';
 import * as Tooltip from '@radix-ui/react-tooltip';
 import { Line } from 'react-chartjs-2';
 import { CategoryScale, Chart as ChartJs, Filler, Legend, LinearScale, LineElement, PointElement, TimeScale, TimeSeriesScale, Title, Tooltip as _Tooltip } from 'chart.js';
@@ -13,6 +12,12 @@ import React, { ForwardedRef, forwardRef, HTMLProps, ReactNode, useRef } from 'r
 import clsx from 'clsx';
 import 'chartjs-adapter-luxon';
 import { cyan, green, red, yellow } from 'tailwindcss/colors';
+import { ReactComponent as DiffAddedIcon } from '../../../icons/diff-added.svg'
+import { ReactComponent as DiffRemovedIcon } from '../../../icons/diff-removed.svg'
+import { ReactComponent as EyeIcon } from '../../../icons/eye.svg'
+import { ReactComponent as NorthStarIcon } from '../../../icons/north-star.svg'
+import { ReactComponent as RepoIcon } from '../../../icons/repo.svg'
+import { ReactComponent as StarIcon } from '../../../icons/star.svg'
 
 const lineColors = [
   red['500'],
@@ -133,15 +138,13 @@ export default function Widget (props: HTMLProps<HTMLDivElement>) {
   );
 }
 
-console.log(cpm);
-
 const cells: CellProps[] = [
-  { key: 'Contribution Count', field: <NorthStarIcon />, value: cc.contribution_count },
-  { key: 'Earned Stars', field: <StarIcon />, value: es.earned_stars },
-  { key: 'Followers Count', field: <EyeIcon />, value: cu.followers_count },
-  { key: 'Contributed Repos', field: <RepoIcon />, value: cr.contributed_repos },
-  { key: 'Code Addition', field: <DiffAddedIcon className="text-green-400" />, value: ca.code_additions },
-  { key: 'Code Deletions', field: <DiffRemovedIcon className="text-red-400" />, value: cd.code_deletions },
+  { key: 'Contribution Count', field: <NorthStarIcon width={16} height={16} />, value: cc.contribution_count },
+  { key: 'Earned Stars', field: <StarIcon width={16} height={16} />, value: es.earned_stars },
+  { key: 'Followers Count', field: <EyeIcon width={16} height={16} />, value: cu.followers_count },
+  { key: 'Contributed Repos', field: <RepoIcon width={16} height={16} />, value: cr.contributed_repos },
+  { key: 'Code Addition', field: <DiffAddedIcon width={16} height={16} className="text-green-400" />, value: ca.code_additions },
+  { key: 'Code Deletions', field: <DiffRemovedIcon width={16} height={16} className="text-red-400" />, value: cd.code_deletions },
 ];
 
 type CellProps = {

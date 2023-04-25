@@ -16,7 +16,11 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": ["src"],
+  "include": [
+    "src",
+    "pages",
+    "renderer"
+  ],
   "references": [
     {
       "path": "./tsconfig.widgets.json"
@@ -24,5 +28,12 @@
     {
       "path": "./tsconfig.node.json"
     }
-  ]
+  ],
+  "ts-node": {
+    "transpileOnly": true,
+    "esm": true,
+    "compilerOptions": {
+      "moduleResolution": "Node"
+    }
+  }
 }

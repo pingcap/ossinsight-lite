@@ -5,7 +5,7 @@ import { useState } from 'react';
 import widgets from 'app:widgets-manifest';
 
 export default function Widget ({ name, widget }: { name: string, widget: Widget }) {
-  const [module, setModule] = useState<WidgetModule | null>(widgets.module);
+  const [module, setModule] = useState<WidgetModule | null>(() => widget.module);
   return (
     <div className="widget">
       <WidgetWrapper name={name} module={module}>

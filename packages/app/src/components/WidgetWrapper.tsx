@@ -3,6 +3,7 @@ import { WidgetModule } from './WidgetPreview';
 import ReactHighlight from 'react-highlight';
 import 'highlight.js/styles/github.css';
 import CopyButton from './CopyButton';
+import ClientOnly from './ClientOnly';
 
 export interface WidgetWrapperProps {
   name: string;
@@ -11,7 +12,7 @@ export interface WidgetWrapperProps {
 }
 
 const url = new URL(import.meta.url);
-const host = url.origin;
+const origin = url.origin;
 
 export default function WidgetWrapper ({ name, module, children }: WidgetWrapperProps) {
 
@@ -26,7 +27,7 @@ export default function WidgetWrapper ({ name, module, children }: WidgetWrapper
 <div class="widget" id="widget" style="display: flex; align-items: center; justify-content: center; min-height: 100vh; background: #d8d8d8"></div>
 
 <script type="module">
-  import Widget from '${host}/widgets/${name}/index.js'
+  import Widget from '${origin}/widgets/${name}/index.js'
   ReactDOM
     .createRoot(document.getElementById('widget'))
     .render(React.createElement(Widget, {
@@ -45,7 +46,7 @@ export default function WidgetWrapper ({ name, module, children }: WidgetWrapper
       </main>
       <div className="w-[680px]">
         <div className="mt-2 p-2 text-gray-400 border rounded bg-white">
-          [TODO] Share to twitter
+          {'[TODO] Share to twitter'}
         </div>
         <div className="mt-2 border rounded overflow-x-auto bg-white">
           <div className="p-2 text-gray-400 flex justify-between items-center">
@@ -54,9 +55,11 @@ export default function WidgetWrapper ({ name, module, children }: WidgetWrapper
             </span>
             <CopyButton content={htmlFragment} />
           </div>
-          <ReactHighlight className="language-html text-sm">
-            {htmlFragment}
-          </ReactHighlight>
+          <ClientOnly>
+            <ReactHighlight className="language-html text-sm">
+              {htmlFragment}
+            </ReactHighlight>
+          </ClientOnly>
         </div>
       </div>
     </div>

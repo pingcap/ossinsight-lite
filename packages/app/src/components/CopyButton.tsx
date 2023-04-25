@@ -1,4 +1,4 @@
-import { CopyIcon } from '@primer/octicons-react';
+import { ReactComponent as CopyIcon } from '../../icons/copy.svg';
 import { useCallback, useEffect, useState } from 'react';
 
 export default function CopyButton ({ content }: { content: string }) {
