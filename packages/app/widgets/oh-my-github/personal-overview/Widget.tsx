@@ -11,7 +11,7 @@ import { CategoryScale, Chart as ChartJs, Filler, Legend, LinearScale, LineEleme
 import React, { ForwardedRef, forwardRef, HTMLProps, ReactNode, useRef } from 'react';
 import clsx from 'clsx';
 import 'chartjs-adapter-luxon';
-import { cyan, green, red, yellow } from 'tailwindcss/colors';
+import colors from 'tailwindcss/colors';
 import { ReactComponent as DiffAddedIcon } from '../../../icons/diff-added.svg'
 import { ReactComponent as DiffRemovedIcon } from '../../../icons/diff-removed.svg'
 import { ReactComponent as EyeIcon } from '../../../icons/eye.svg'
@@ -20,6 +20,8 @@ import { ReactComponent as RepoIcon } from '../../../icons/repo.svg'
 import { ReactComponent as StarIcon } from '../../../icons/star.svg'
 
 import '../../../src/chartjs/rough';
+
+const { cyan, green, red, yellow } = colors;
 
 const lineColors = [
   red['500'],

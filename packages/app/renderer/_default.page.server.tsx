@@ -1,28 +1,31 @@
-export { render }
-// See https://vite-plugin-ssr.com/data-fetching
-export const passToClient = ['pageProps', 'urlPathname', 'errorWhileRendering']
-
-import ReactDOMServer from 'react-dom/server'
-import React from 'react'
-import { PageShell } from './PageShell'
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr/server'
+import { PassThrough } from 'node:stream';
+import ReactDOMServer, { PipeableStream } from 'react-dom/server';
+import React from 'react';
+import { PageShell } from './PageShell';
+import { dangerouslySkipEscape, escapeInject } from 'vite-plugin-ssr/server';
 // import logoUrl from './logo.svg'
-import type { PageContextServer } from './types'
+import type { PageContextServer } from './types';
 
-async function render(pageContext: PageContextServer) {
-  const { Page, pageProps } = pageContext
+export { render };
+// See https://vite-plugin-ssr.com/data-fetching
+export const passToClient = ['pageProps', 'urlPathname', 'errorWhileRendering'];
+
+async function render (pageContext: PageContextServer) {
+  const { Page, pageProps } = pageContext;
   // This render() hook only supports SSR, see https://vite-plugin-ssr.com/render-modes for how to modify render() to support SPA
-  if (!Page) throw new Error('My render() hook expects pageContext.Page to be defined')
-  const pageHtml = ReactDOMServer.renderToString(
+  if (!Page) throw new Error('My render() hook expects pageContext.Page to be defined');
+  const pageHtmlStream = await ReactDOMServer.renderToPipeableStream(
     <PageShell pageContext={pageContext}>
       <Page {...pageProps} />
-    </PageShell>
-  )
+    </PageShell>,
+  );
+
+  const pageHtml = await streamToString(pageHtmlStream);
 
   // See https://vite-plugin-ssr.com/head
-  const { documentProps } = pageContext.exports
-  const title = (documentProps && documentProps.title) || 'Vite SSR app'
-  const desc = (documentProps && documentProps.description) || 'App using Vite + vite-plugin-ssr'
+  const { documentProps } = pageContext.exports;
+  const title = (documentProps && documentProps.title) || 'Vite SSR app';
+  const desc = (documentProps && documentProps.description) || 'App using Vite + vite-plugin-ssr';
 
   const documentHtml = escapeInject`<!DOCTYPE html>
     <html lang="en">
@@ -35,12 +38,24 @@ async function render(pageContext: PageContextServer) {
       <body>
         <div id="page-view">${dangerouslySkipEscape(pageHtml)}</div>
       </body>
-    </html>`
+    </html>`;
 
   return {
     documentHtml,
     pageContext: {
       // We can add some `pageContext` here, which is useful if we want to do page redirection https://vite-plugin-ssr.com/page-redirection
-    }
-  }
+    },
+  };
 }
+
+function streamToString (source: PipeableStream) {
+  const stream = new PassThrough();
+  source.pipe(stream);
+  const chunks: Buffer[] = [];
+  return new Promise<string>((resolve, reject) => {
+    stream.on('data', (chunk) => chunks.push(Buffer.from(chunk)));
+    stream.on('error', (err) => reject(err));
+    stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
+  });
+}
+

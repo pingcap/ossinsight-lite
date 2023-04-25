@@ -1,9 +1,28 @@
-import { cloneElement, ReactElement, useMemo } from 'react';
+import { cloneElement, lazy, ReactElement, useMemo } from 'react';
 import { WidgetModule } from './WidgetPreview';
-import ReactHighlight from 'react-highlight';
-import 'highlight.js/styles/github.css';
+
 import CopyButton from './CopyButton';
+import { Light as SyntaxHighlight, SyntaxHighlighterProps } from 'react-syntax-highlighter';
 import ClientOnly from './ClientOnly';
+
+async function SyntaxHighlightLazy () {
+  const [xml, js, style] = await Promise.all([
+    import('react-syntax-highlighter/dist/esm/languages/hljs/xml'),
+    import('react-syntax-highlighter/dist/esm/languages/hljs/javascript'),
+    import('react-syntax-highlighter/dist/esm/styles/hljs/github'),
+  ]);
+
+  SyntaxHighlight.registerLanguage('html', xml.default);
+  SyntaxHighlight.registerLanguage('js', js.default);
+
+  return {
+    default: function ({ ...props }: SyntaxHighlighterProps) {
+      return <SyntaxHighlight {...props} style={style.default} language="html" />;
+    },
+  };
+}
+
+const HTMLSyntaxHighlight = lazy(SyntaxHighlightLazy);
 
 export interface WidgetWrapperProps {
   name: string;
@@ -56,9 +75,11 @@ export default function WidgetWrapper ({ name, module, children }: WidgetWrapper
             <CopyButton content={htmlFragment} />
           </div>
           <ClientOnly>
-            <ReactHighlight className="language-html text-sm">
-              {htmlFragment}
-            </ReactHighlight>
+            {() => (
+              <HTMLSyntaxHighlight className="text-sm">
+                {htmlFragment}
+              </HTMLSyntaxHighlight>
+            )}
           </ClientOnly>
         </div>
       </div>
