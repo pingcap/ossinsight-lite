@@ -1,0 +1,17 @@
+<link rel="stylesheet" href="https://oss-widgets.vercel.app/widgets/style.css">
+
+<!-- This project rely was built on React, so we need these two libraries. -->
+<script src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+
+<!-- To prevent css pollution, the widget element should have a css class 'widget' -->
+<div class="widget" id="widget" style="display: flex; align-items: center; justify-content: center; min-height: 100vh; background: #d8d8d8"></div>
+
+<script type="module">
+  import Widget from 'https://oss-widgets.vercel.app/widgets/oh-my-github/personal-overview/index.js'
+  ReactDOM
+    .createRoot(document.getElementById('widget'))
+    .render(React.createElement(Widget, {
+      style: {"width":800,"height":418}
+    }))
+</script>

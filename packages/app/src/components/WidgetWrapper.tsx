@@ -13,7 +13,7 @@ async function SyntaxHighlightLazy () {
   ]);
 
   SyntaxHighlight.registerLanguage('html', xml.default);
-  SyntaxHighlight.registerLanguage('js', js.default);
+  SyntaxHighlight.registerLanguage('javascript', js.default);
 
   return {
     default: function ({ ...props }: SyntaxHighlighterProps) {

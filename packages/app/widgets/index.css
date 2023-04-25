@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+  font-family: CabinSketch;
+  src: url(../renderer/CabinSketch-Regular.ttf);
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: CabinSketch;
+  src: url(../renderer/CabinSketch-Bold.ttf);
+  font-weight: bold;
+}
