@@ -11,6 +11,7 @@
   },
   "include": [
     "src/chartjs",
+    "src/components/RoughSvg.tsx",
     "widgets"
   ]
 }

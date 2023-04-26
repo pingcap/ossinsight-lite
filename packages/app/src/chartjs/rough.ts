@@ -1,8 +1,9 @@
 import rc from 'roughjs';
-import { defaults, LineElement, plugins, Scale } from 'chart.js';
+import { defaults, LineElement, Legend, VisualElement, LegendItem , plugins, Scale } from 'chart.js';
 
 defaults.font.family = 'CabinSketch';
 defaults.scale.grid.display = false;
+
 
 Scale.prototype.drawGrid = function (chartArea) {
   // MARK: must call this to prevent chartjs draw default lines
@@ -33,28 +34,42 @@ LineElement.prototype.draw = function (this: LineElement, ctx, area) {
   }
 };
 
+
+
+plugins.Legend._element.prototype.draw = function () {
+  console.log(this);
+}
+
 const originalBeforeDatasetDraw = plugins.Filler.beforeDatasetDraw;
 
 plugins.Filler.beforeDatasetDraw = function (chart, args, options) {
-  if (args.meta.$filler && args.meta.type === 'line') {
-    const c = rc.canvas(chart.canvas, {
-      options: {
-        fill: args.meta.dataset.options.backgroundColor,
-      },
-    });
-    const points = args.meta.data.filter(point => !point.skip).map(point => [point.x, point.y]);
-    // console.log(chart.chartArea.bottom);
-    points.push([points[points.length - 1][0], chart.chartArea.bottom]);
-    points.push([points[0][0], chart.chartArea.bottom]);
-    points.unshift(points[0].slice());
-
-    c.polygon(points, {
-      stroke: 'transparent',
-      seed: 0,
-    });
-    return;
+  if (!args.meta?.$filler) {
+    return originalBeforeDatasetDraw.call(this, chart, args, options);
   }
-  return originalBeforeDatasetDraw.call(this, chart, args, options);
+
+  switch (args.meta.type) {
+    case 'line': {
+      const c = rc.canvas(chart.canvas, {
+        options: {
+          fill: args.meta.dataset.options.backgroundColor,
+        },
+      });
+      const points = args.meta.data.filter(point => !point.skip).map(point => [point.x, point.y]);
+      // console.log(chart.chartArea.bottom);
+      points.push([points[points.length - 1][0], chart.chartArea.bottom]);
+      points.push([points[0][0], chart.chartArea.bottom]);
+      points.unshift(points[0].slice());
+
+      c.polygon(points, {
+        stroke: 'transparent',
+        seed: 0,
+      });
+      return;
+    }
+    default:
+      console.log(args.meta)
+      return originalBeforeDatasetDraw.call(this, chart, args, options);
+  }
 };
 
 export {};

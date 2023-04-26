@@ -8,18 +8,19 @@ import cpm from './contributions_per_month.sql';
 import * as Tooltip from '@radix-ui/react-tooltip';
 import { Line } from 'react-chartjs-2';
 import { CategoryScale, Chart as ChartJs, Filler, Legend, LinearScale, LineElement, PointElement, TimeScale, TimeSeriesScale, Title, Tooltip as _Tooltip } from 'chart.js';
-import React, { ForwardedRef, forwardRef, HTMLProps, ReactNode, useRef } from 'react';
+import React, { ForwardedRef, forwardRef, HTMLProps, ReactElement, useRef } from 'react';
 import clsx from 'clsx';
 import 'chartjs-adapter-luxon';
 import colors from 'tailwindcss/colors';
-import { ReactComponent as DiffAddedIcon } from '../../../icons/diff-added.svg'
-import { ReactComponent as DiffRemovedIcon } from '../../../icons/diff-removed.svg'
-import { ReactComponent as EyeIcon } from '../../../icons/eye.svg'
-import { ReactComponent as NorthStarIcon } from '../../../icons/north-star.svg'
-import { ReactComponent as RepoIcon } from '../../../icons/repo.svg'
-import { ReactComponent as StarIcon } from '../../../icons/star.svg'
+import { ReactComponent as DiffAddedIcon } from '../../../icons/diff-added.svg';
+import { ReactComponent as DiffRemovedIcon } from '../../../icons/diff-removed.svg';
+import { ReactComponent as EyeIcon } from '../../../icons/eye.svg';
+import { ReactComponent as NorthStarIcon } from '../../../icons/north-star.svg';
+import { ReactComponent as RepoIcon } from '../../../icons/repo.svg';
+import { ReactComponent as StarIcon } from '../../../icons/star.svg';
 
 import '../../../src/chartjs/rough';
+import RoughSvg from '../../../src/components/RoughSvg';
 
 const { cyan, green, red, yellow } = colors;
 
@@ -88,8 +89,8 @@ export default function Widget (props: HTMLProps<HTMLDivElement>) {
       </ul>
       <div className="flex-1">
         <Line
-          width='100%'
-          height='100%'
+          width="100%"
+          height="100%"
           data={{
             labels: ['issue', 'pull_request', 'issue_comment', 'commit_comment'],
             datasets: ['issue', 'pull_request', 'issue_comment', 'commit_comment'].map((dim, index) => ({
@@ -153,14 +154,18 @@ const cells: CellProps[] = [
 
 type CellProps = {
   key: string
-  field: ReactNode
+  field: ReactElement
   value: any
 }
 
 const Cell = forwardRef(function Cell ({ field, value, ...props }: CellProps & HTMLProps<HTMLLIElement>, ref: ForwardedRef<HTMLLIElement>) {
   return (
     <li ref={ref} {...props} className={clsx(props.className, 'flex items-center gap-1')}>
-      <span className="text-gray-500 flex items-center">{field}</span>
+      <span className="text-gray-500 flex items-center">
+        <RoughSvg>
+          {field}
+        </RoughSvg>
+      </span>
       <span className="text-gray-700 font-bold">{format(value)}</span>
     </li>
   );

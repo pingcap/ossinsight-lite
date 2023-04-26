@@ -11,7 +11,8 @@ export default defineConfig((env) => ({
       svgrOptions: {
         svgProps: {
           fill: 'currentColor'
-        }
+        },
+        ref: true,
       }
     }),
     ssr({
