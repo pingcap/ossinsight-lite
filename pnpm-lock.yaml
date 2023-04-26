@@ -13,6 +13,9 @@ importers:
         specifier: ^3.2.3
         version: 3.2.3
     devDependencies:
+      '@monaco-editor/react':
+        specifier: ^4.5.0
+        version: 4.5.0(monaco-editor@0.37.1)(react-dom@18.2.0)(react@18.2.0)
       '@octokit/rest':
         specifier: ^19.0.7
         version: 19.0.7
@@ -64,6 +67,9 @@ importers:
       luxon:
         specifier: ^3.3.0
         version: 3.3.0
+      monaco-editor:
+        specifier: ^0.37.1
+        version: 0.37.1
       postcss:
         specifier: ^8.4.23
         version: 8.4.23
@@ -2168,6 +2174,28 @@ packages:
     transitivePeerDependencies:
       - encoding
       - supports-color
+    dev: true
+
+  /@monaco-editor/loader@1.3.3(monaco-editor@0.37.1):
+    resolution: {integrity: sha512-6KKF4CTzcJiS8BJwtxtfyYt9shBiEv32ateQ9T4UVogwn4HM/uPo9iJd2Dmbkpz8CM6Y0PDUpjnZzCwC+eYo2Q==}
+    peerDependencies:
+      monaco-editor: '>= 0.21.0 < 1'
+    dependencies:
+      monaco-editor: 0.37.1
+      state-local: 1.0.7
+    dev: true
+
+  /@monaco-editor/react@4.5.0(monaco-editor@0.37.1)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-VJMkp5Fe1+w8pLEq8tZPHZKu8zDXQIA1FtiDTSNccg1D3wg1YIZaH2es2Qpvop1k62g3c/YySRb3bnGXu2XwYQ==}
+    peerDependencies:
+      monaco-editor: '>= 0.25.0 < 1'
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      '@monaco-editor/loader': 1.3.3(monaco-editor@0.37.1)
+      monaco-editor: 0.37.1
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
     dev: true
 
   /@nodelib/fs.scandir@2.1.5:
@@ -6253,6 +6281,10 @@ packages:
       ufo: 1.1.1
     dev: true
 
+  /monaco-editor@0.37.1:
+    resolution: {integrity: sha512-jLXEEYSbqMkT/FuJLBZAVWGuhIb4JNwHE9kPTorAVmsdZ4UzHAfgWxLsVtD7pLRFaOwYPhNG9nUCpmFL1t/dIg==}
+    dev: true
+
   /mri@1.2.0:
     resolution: {integrity: sha512-tzzskb3bG8LvYGFF/mDTpq3jpI6Q9wc3LEmBaghu+DdCssd1FakN7Bc0hVNmEyGq1bq3RgfkCb3cmQLpNPOroA==}
     engines: {node: '>=4'}
@@ -7599,6 +7631,10 @@ packages:
     engines: {node: '>= 8'}
     dependencies:
       minipass: 3.3.6
+    dev: true
+
+  /state-local@1.0.7:
+    resolution: {integrity: sha512-HTEHMNieakEnoe33shBYcZ7NX83ACUjCu8c40iOGEZsngj9zRnkqS9j1pqQPXwobB0ZcVTk27REb7COQ0UR59w==}
     dev: true
 
   /statuses@2.0.1:

@@ -16,6 +16,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@monaco-editor/react": "^4.5.0",
     "@octokit/rest": "^19.0.7",
     "@primer/octicons-react": "^18.3.0",
     "@radix-ui/colors": "^0.1.8",
@@ -33,6 +34,7 @@
     "clsx": "^1.2.1",
     "highlight.js": "^11.7.0",
     "luxon": "^3.3.0",
+    "monaco-editor": "^0.37.1",
     "postcss": "^8.4.23",
     "postcss-load-config": "^4.0.1",
     "postcss-nesting": "^11.2.2",

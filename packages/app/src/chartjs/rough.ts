@@ -62,7 +62,6 @@ plugins.Filler.beforeDatasetDraw = function (chart, args, options) {
       return;
     }
     default:
-      console.log(args.meta)
       return originalBeforeDatasetDraw.call(this, chart, args, options);
   }
 };

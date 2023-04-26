@@ -9,7 +9,7 @@ export default defineConfig((env) => ({
     widgets(),
     mysqlPlugin(),
     viteReact({
-      jsxRuntime: env.command === 'build' ? 'classic' : 'automatic',
+      jsxRuntime: 'classic',
     }),
     svgr({
       svgrOptions: {
