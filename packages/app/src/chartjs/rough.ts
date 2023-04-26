@@ -35,11 +35,6 @@ LineElement.prototype.draw = function (this: LineElement, ctx, area) {
 };
 
 
-
-plugins.Legend._element.prototype.draw = function () {
-  console.log(this);
-}
-
 const originalBeforeDatasetDraw = plugins.Filler.beforeDatasetDraw;
 
 plugins.Filler.beforeDatasetDraw = function (chart, args, options) {
