@@ -8,10 +8,8 @@
     "dev": "ossw",
     "dev:vercel": "vercel dev",
     "build:vercel": "vercel build",
-    "build:page": "osswidgets-build-page",
-    "build:browser": "osswidgets-build-browser",
-    "build:site": "npm run build:page && npm run build:browser && mv browser-dist ",
-    "serve": "osswidgets-serve"
+    "build:site": "ossw build site",
+    "serve": "ossw serve"
   },
   "keywords": [],
   "author": "",
