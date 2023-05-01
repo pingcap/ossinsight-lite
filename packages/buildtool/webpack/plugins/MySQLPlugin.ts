@@ -12,7 +12,7 @@ const PLUGIN_NAME = 'MySQLPlugin';
 
 class MySQLPlugin implements WebpackPluginInstance {
   apply (compiler: Compiler) {
-    compiler.hooks.beforeCompile.tap(PLUGIN_NAME, async () => {
+    compiler.hooks.beforeRun.tapPromise(PLUGIN_NAME, async () => {
       const DATABASE_URL = getEnv('DATABASE_URL');
       if (!db.pool) {
         db.pool = createPool(DATABASE_URL as string);
@@ -21,9 +21,11 @@ class MySQLPlugin implements WebpackPluginInstance {
         await db.cache.open();
       }
     });
-    compiler.hooks.afterCompile.tap(PLUGIN_NAME, async () => {
+    compiler.hooks.shutdown.tapPromise(PLUGIN_NAME, async () => {
       await db.cache.close();
-      await db.pool.end();
+      try {
+        await db.pool.end();
+      } catch {}
     });
   }
 }
