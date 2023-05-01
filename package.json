@@ -1,10 +1,12 @@
 {
-  "name": "widgets",
+  "name": "oss-widgets",
+  "private": true,
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "postinstall": "pnpm --filter widgets-vite-plugin run build"
+    "postinstall": "pnpm --filter @oss-widgets/buildtool run build",
+    "build:site": "pnpm --filter @oss-widgets/defaults run build:site"
   },
   "keywords": [],
   "author": "",
