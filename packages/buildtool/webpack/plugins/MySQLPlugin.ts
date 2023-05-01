@@ -12,9 +12,9 @@ const PLUGIN_NAME = 'MySQLPlugin';
 
 class MySQLPlugin implements WebpackPluginInstance {
   apply (compiler: Compiler) {
-    compiler.hooks.beforeRun.tapPromise(PLUGIN_NAME, async () => {
-      const DATABASE_URL = getEnv('DATABASE_URL');
+    compiler.hooks.beforeCompile.tapPromise(PLUGIN_NAME, async () => {
       if (!db.pool) {
+        const DATABASE_URL = getEnv('DATABASE_URL');
         db.pool = createPool(DATABASE_URL as string);
         db.cache = new Cache('queries', '.db');
         await db.cache.prepare();

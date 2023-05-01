@@ -9,7 +9,7 @@ export default function List () {
           <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {Object.entries(widgetsManifest).map(([name]) => (
               <li className="border border-gray bg-white rounded text-gray-700 flex transition-shadow hover:shadow-xl" key={name}>
-                <Link className="block py-4 w-full h-full text-center" to={'/widgets/' + name}>{name}</Link>
+                <Link className="block py-4 w-full h-full text-center" to={'/browse/' + name}>{name}</Link>
               </li>
             ))}
           </ul>

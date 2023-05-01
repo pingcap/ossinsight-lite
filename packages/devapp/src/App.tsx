@@ -15,8 +15,8 @@ export default function App () {
     <BrowserRouter>
       <Routes location={window.location}>
         <Route path="/" element={<Home />} />
-        <Route path="/widgets" element={<List />} />
-        <Route path="/widgets" element={<Widget />}>
+        <Route path="/browse" element={<List />} />
+        <Route path="/browse" element={<Widget />}>
           {Object.keys(widgetsManifest).sort().map((name) => (
             <Route
               key={name}

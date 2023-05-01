@@ -2,13 +2,13 @@ import { Configuration } from 'webpack';
 import base from './base.config';
 import merge from 'webpack-merge';
 import { cwd, devappSrc } from './utils/path';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import path from 'path';
 import HtmlWebpackPlugin = require('html-webpack-plugin');
 
 export default merge<Configuration>(base, {
   mode: 'development',
-  experiments: {
-
-  },
+  experiments: {},
   entry: {
     main: {
       import: devappSrc('main.tsx'),
@@ -24,11 +24,14 @@ export default merge<Configuration>(base, {
     // open: true,
   },
   plugins: [
+    new MiniCssExtractPlugin({
+      filename: '[name].css',
+    }),
     new HtmlWebpackPlugin({
       template: devappSrc('index.ejs'),
     }),
   ],
   output: {
-    publicPath: '/'
-  }
+    publicPath: '/',
+  },
 });
