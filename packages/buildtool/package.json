@@ -8,7 +8,7 @@
     "dev": "tsc -w"
   },
   "bin": {
-    "ossw": "./dist/bin/cli.js"
+    "ossw": "bin.js"
   },
   "keywords": [],
   "author": "",
