@@ -1,4 +1,4 @@
 {
   "devCommand": "osswidgets-dev",
-  "buildCommand": "npm run build:page"
+  "buildCommand": "npm run build:site"
 }
