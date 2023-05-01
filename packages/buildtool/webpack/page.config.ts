@@ -44,12 +44,12 @@ export default merge<Configuration>(base, {
       template: devappSrc('index.ejs'),
     }),
     new HtmlWebpackPlugin({
-      filename: `widgets.html`,
+      filename: `browse.html`,
       template: devappSrc('index.ejs'),
     }),
     ...Object.keys(getSources()).map((entry) => {
       return new HtmlWebpackPlugin({
-        filename: `widgets/${entry.replace(/\/index$/, '.html')}`,
+        filename: `browse/${entry.replace(/\/index$/, '.html')}`,
         template: devappSrc('index.ejs'),
       });
     }),
