@@ -1,8 +1,6 @@
 import { program } from 'commander';
 
 import * as yup from 'yup';
-import * as fs from 'fs';
-import { cwd } from '../webpack/utils/path.js';
 
 program
   .command('dev', {
@@ -17,6 +15,7 @@ program
   .command('build')
   .argument('<target>', 'Select a target (site, lib)')
   .option('-D --domain [domain]', 'Domain to deploy')
+  .option('-T --generate-thumbnails', 'Generate thumbnails for widgets, requires puppeteer installed')
   .action(async (targetArg: string, options: any) => {
     const buildPage = (await import('./build-page.js')).default;
     const buildBrowser = (await import('./build-browser.js')).default;
@@ -27,6 +26,11 @@ program
           siteDomain: options.domain === true ? undefined : options.domain,
         });
         await buildBrowser();
+
+        if (options['generateThumbnails'] === true || (process.env.CI && options['generateThumbnails'] !== false)) {
+          await import('./prepare-browser.js').then(module => module.default());
+          await import('./thumbnail.js').then(module => module.default());
+        }
       }
         break;
       default: {
@@ -51,13 +55,13 @@ program
   .command('prepare')
   .argument('<mod>', 'Supported: browser')
   .action(async (mod: string) => {
-    const resolvedMod = await yup.string().required().oneOf(['browser']).validate(mod)
+    const resolvedMod = await yup.string().required().oneOf(['browser']).validate(mod);
 
     switch (resolvedMod) {
       case 'browser': {
         await (await import('./prepare-browser.js')).default();
       }
     }
-  })
+  });
 
 void program.parseAsync();

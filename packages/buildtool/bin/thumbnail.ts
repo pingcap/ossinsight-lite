@@ -11,7 +11,8 @@ export default async function main () {
 
   try {
     const browserPromise = launch({
-      headless: false,
+      product: 'chrome',
+      headless: 'new',
       args: [
         '--disable-web-security',
       ],

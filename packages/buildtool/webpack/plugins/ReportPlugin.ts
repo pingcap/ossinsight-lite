@@ -38,12 +38,26 @@ class CompilationReporter {
   forceUpdateInterval = 100;
   cwd = process.cwd();
 
-  updateInternal?: () => void;
+  updateInternal () {
+    const oldText = this.spinner.text;
+    let newText: string;
+    if (this.failedModules.size) {
+      newText = `${chalk.gray(`[${this.resolvedModules.size}/${this.modules.size}, ${chalk.redBright(`${this.failedModules.size} failed`)}]`)} ${this.curr}`;
+    } else {
+      newText = `${chalk.gray(`[${this.resolvedModules.size}/${this.modules.size}]`)} ${this.curr}`;
+    }
+    if (newText !== oldText) {
+      this.spinner.text = newText;
+      this.spinner.render();
+    }
+  };
 
   constructor (public c: Compilation, private rebuild: boolean) {
     this.id = c.name ?? 'Default';
     const spinner = this.spinner = ora({
       prefixText: chalk.gray.bold(`${this.id}`),
+      suffixText: process.env.CI ? '\n' : undefined,
+      isEnabled: !process.env.CI,
     });
 
     const modules = this.modules = new Set<string>();
@@ -74,16 +88,8 @@ class CompilationReporter {
       });
     } else {
       this.spinner.start();
-      this.updateInternal = () => {
-        if (failedModules.size) {
-          spinner.text = `${chalk.gray(`[${resolvedModules.size}/${modules.size}, ${chalk.redBright(`${failedModules.size} failed`)}]`)} ${this.curr}`;
-        } else {
-          spinner.text = `${chalk.gray(`[${resolvedModules.size}/${modules.size}]`)} ${this.curr}`;
-        }
-        spinner.render();
-      };
 
-      this.updateRequest = setInterval(this.updateInternal, this.forceUpdateInterval);
+      this.updateRequest = setInterval(() => this.updateInternal(), this.forceUpdateInterval);
       c.buildQueue.hooks.added.tap(PLUGIN_NAME, module => {
         this.handleNewModule(module);
       });
