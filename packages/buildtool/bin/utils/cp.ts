@@ -10,7 +10,7 @@ interface ProcessPromise<T> extends Promise<T> {
 
 export function spawn (name: string, args: string[], detached = false, env?: Record<string, string>) {
   const controller = new AbortController();
-  const promise = new Promise<void>((resolve, reject) => {
+  let promise = new Promise<void>((resolve, reject) => {
       cp.spawn(name, args, {
         stdio: 'inherit',
         env,
@@ -30,15 +30,18 @@ export function spawn (name: string, args: string[], detached = false, env?: Rec
     },
   ) as ProcessPromise<void>;
 
+  if (detached) {
+    promise = promise.catch((err) => {
+      if (err?.code === 'ABORT_ERR') {
+        return;
+      }
+      throw err;
+    }) as ProcessPromise<void>;
+  }
+
   promise.abort = function (reason: any) {
     controller.abort(reason);
   };
-
-  if (detached) {
-    promise.catch((err) => {
-      if (err !== 'shutdown') console.error(err);
-    });
-  }
 
   return promise;
 }
