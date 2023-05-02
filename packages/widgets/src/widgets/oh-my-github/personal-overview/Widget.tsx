@@ -8,7 +8,7 @@ import cpm from './contributions_per_month.sql';
 import * as Tooltip from '@radix-ui/react-tooltip';
 import { Line } from 'react-chartjs-2';
 import { CategoryScale, Chart as ChartJs, Filler, Legend, LinearScale, LineElement, PointElement, TimeScale, TimeSeriesScale, Title, Tooltip as _Tooltip } from 'chart.js';
-import React, { ForwardedRef, forwardRef, HTMLProps, ReactElement, useRef, useState } from 'react';
+import React, { ForwardedRef, forwardRef, HTMLProps, ReactElement, useState } from 'react';
 import clsx from 'clsx';
 import 'chartjs-adapter-luxon';
 import * as colors from 'tailwindcss/colors';
@@ -18,6 +18,7 @@ import EyeIcon from '../../../icons/eye.svg';
 import NorthStarIcon from '../../../icons/north-star.svg';
 import RepoIcon from '../../../icons/repo.svg';
 import StarIcon from '../../../icons/star.svg';
+import { prerenderMode } from '@oss-widgets/runtime';
 
 import '../../../chartjs/rough';
 import RoughSvg from '../../../components/RoughSvg';
@@ -109,6 +110,7 @@ export default function Widget (props: HTMLProps<HTMLDivElement>) {
             })),
           }}
           options={{
+            animation: prerenderMode ? false : undefined,
             maintainAspectRatio: false,
             scales: {
               x: {

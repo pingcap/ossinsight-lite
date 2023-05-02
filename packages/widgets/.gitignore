@@ -4,3 +4,4 @@ tsconfig.build.tsbuildinfo
 .env.local
 .vercel
 page-dist
+.cache

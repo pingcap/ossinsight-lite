@@ -1,10 +1,8 @@
 import { program } from 'commander';
 
 import * as yup from 'yup';
-import dev from './dev.js';
-import buildPage from './build-page.js';
-import buildBrowser from './build-browser.js';
-import serve from './serve.js';
+import * as fs from 'fs';
+import { cwd } from '../webpack/utils/path.js';
 
 program
   .command('dev', {
@@ -12,7 +10,7 @@ program
   })
   .description('Start a dev server')
   .action(async () => {
-    await dev();
+    await (await import('./dev.js')).default();
   });
 
 program
@@ -20,6 +18,8 @@ program
   .argument('<target>', 'Select a target (site, lib)')
   .option('-D --domain [domain]', 'Domain to deploy')
   .action(async (targetArg: string, options: any) => {
+    const buildPage = (await import('./build-page.js')).default;
+    const buildBrowser = (await import('./build-browser.js')).default;
     const target = await yup.string().oneOf(['site', 'lib']).required().validate(targetArg);
     switch (target) {
       case 'site': {
@@ -38,7 +38,26 @@ program
 program
   .command('serve')
   .action(async () => {
-    await serve();
+    await (await import('./serve.js')).default();
   });
+
+program
+  .command('thumbnail')
+  .action(async () => {
+    await (await import('./thumbnail.js')).default();
+  });
+
+program
+  .command('prepare')
+  .argument('<mod>', 'Supported: browser')
+  .action(async (mod: string) => {
+    const resolvedMod = await yup.string().required().oneOf(['browser']).validate(mod)
+
+    switch (resolvedMod) {
+      case 'browser': {
+        await (await import('./prepare-browser.js')).default();
+      }
+    }
+  })
 
 void program.parseAsync();

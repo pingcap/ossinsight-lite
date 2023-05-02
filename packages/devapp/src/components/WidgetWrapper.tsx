@@ -40,6 +40,7 @@ export default function WidgetWrapper ({ name, children }: WidgetWrapperProps) {
 
   const htmlFragment = useMemo(() => {
     return `<link rel="stylesheet" href="${origin}/widgets/style.css">
+<link rel="stylesheet" href="${origin}/widgets/${name}/style.css">
 
 <!-- This project rely was built on React, so we need these two libraries. -->
 <script src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>

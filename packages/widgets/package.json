@@ -9,6 +9,8 @@
     "dev:vercel": "vercel dev",
     "build:vercel": "vercel build",
     "build:site": "ossw build site",
+    "prepare:browser": "ossw prepare browser",
+    "thumbnail": "ossw thumbnail",
     "serve": "ossw serve"
   },
   "keywords": [],

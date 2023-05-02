@@ -4,11 +4,18 @@ import Webpack, { Configuration } from 'webpack';
 import { merge } from 'webpack-merge';
 import chalk from 'chalk';
 
-export async function spawn (name: string, args: string[], env?: Record<string, string>) {
-  return new Promise<void>((resolve, reject) => {
+interface ProcessPromise<T> extends Promise<T> {
+  abort (reason?: any): void;
+}
+
+export function spawn (name: string, args: string[], detached = false, env?: Record<string, string>) {
+  const controller = new AbortController();
+  const promise = new Promise<void>((resolve, reject) => {
       cp.spawn(name, args, {
         stdio: 'inherit',
         env,
+        signal: controller.signal,
+        detached,
       })
         .on('error', err => {
           reject(err);
@@ -21,7 +28,19 @@ export async function spawn (name: string, args: string[], env?: Record<string, 
           }
         });
     },
-  );
+  ) as ProcessPromise<void>;
+
+  promise.abort = function (reason: any) {
+    controller.abort(reason);
+  };
+
+  if (detached) {
+    promise.catch((err) => {
+      if (err !== 'shutdown') console.error(err);
+    });
+  }
+
+  return promise;
 }
 
 export async function webpack (config: string, env?: Record<string, string>) {

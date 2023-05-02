@@ -112,7 +112,6 @@ export const useEventsTotal = create<EventsTotalState>((set, get) => ({
     clearInterval(state.reloadIncrementHandle);
     clearInterval(state.reloadTotalHandle);
   },
-
 }));
 
 useEventsTotal.subscribe((state, prevState) => {

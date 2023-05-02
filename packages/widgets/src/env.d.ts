@@ -26,4 +26,18 @@ declare module '@oss-widgets/runtime' {
   export const usePrerenderCallback: () => () => void;
 }
 
-export {};
+declare module '*.sql' {
+  type RawPacket = any
+  const result: RawPacket[];
+
+  export default result;
+}
+
+declare module '*.sql?unique' {
+  type RawPacket = any
+  const result: RawPacket;
+
+  export default result;
+}
+
+export {}

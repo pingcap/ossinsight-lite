@@ -1,10 +1,9 @@
 import { Configuration } from 'webpack';
 import { getSources, getStyles } from './utils/widgets.js';
 import MySQLPlugin from './plugins/MySQLPlugin.js';
-import { buildtoolSrc, cwd, webpackBuildSrc } from './utils/path.js';
+import { buildtoolSrc, webpackBuildSrc } from './utils/path.js';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import reportPlugin from './plugins/ReportPlugin.js';
-import * as path from 'path';
 
 export default {
   entry: {
@@ -46,8 +45,8 @@ export default {
               }],
             ],
             plugins: [
-              '@babel/syntax-import-assertions'
-            ]
+              '@babel/syntax-import-assertions',
+            ],
           },
         },
       },
@@ -104,22 +103,23 @@ export default {
                 '@babel/typescript',
               ],
               plugins: [
-                '@babel/syntax-import-assertions'
-              ]
+                '@babel/syntax-import-assertions',
+              ],
             },
           },
         ],
       },
       {
         test: /\.(woff|woff2|eot|ttf|otf)$/i,
-        type: "asset/resource"
-      }
+        type: 'asset/resource',
+      },
     ],
   },
   resolve: {
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css'],
     alias: {
       'roughjs': 'roughjs/bundled/rough.esm.js',
+      '@oss-widgets/runtime': buildtoolSrc('runtime/runtime.js'),
     },
   },
 } satisfies Configuration;
