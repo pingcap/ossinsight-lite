@@ -29,7 +29,7 @@ export default async function main () {
     return;
   } else {
     console.log('Installing chrome...');
-    // const installedBrowser = await install(options);
-    // console.log('Installed browser', installedBrowser);
+    const installedBrowser = await install(options);
+    console.log('Installed browser', installedBrowser);
   }
 }
