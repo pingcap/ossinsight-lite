@@ -1,10 +1,10 @@
 import { program } from 'commander';
 
 import * as yup from 'yup';
-import dev from './dev';
-import buildPage from './build-page';
-import buildBrowser from './build-browser';
-import serve from './serve';
+import dev from './dev.js';
+import buildPage from './build-page.js';
+import buildBrowser from './build-browser.js';
+import serve from './serve.js';
 
 program
   .command('dev', {

@@ -1,4 +1,4 @@
-import { webpack } from './utils/cp';
+import { webpack } from './utils/cp.js';
 import * as yup from 'yup';
 import { cosmiconfig } from 'cosmiconfig';
 

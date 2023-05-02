@@ -1,33 +1,21 @@
 import { Compilation, Module, WebpackPluginFunction } from 'webpack';
-import type { Chalk, Ora, OraInstance } from './types';
 import * as path from 'path';
 import { clearInterval } from 'timers';
+import chalk from 'chalk';
+import ora, { Ora } from 'ora';
 
 const PLUGIN_NAME = 'REPORT_PLUGIN';
 
 export default function reportPlugin () {
   return function (compiler) {
-    let ora: OraInstance;
-    let chalk: Chalk;
     const reporters = new Map<string, CompilationReporter>();
-
-    // Resolve esm dependencies
-    // TODO: How to import ESM from commonjs project?
-    compiler.hooks.beforeCompile.tapPromise(PLUGIN_NAME, async () => {
-      if (!ora) {
-        ora = await import('ora').then(module => module.default);
-      }
-      if (!chalk) {
-        chalk = await import('chalk').then(module => module.default);
-      }
-    });
 
     compiler.hooks.compilation.tap(PLUGIN_NAME, c => {
       const reporter = reporters.get(c.name ?? 'Default');
       if (reporter) {
-        reporters.set(c.name ?? 'Default', new CompilationReporter(c, true, ora, chalk));
+        reporters.set(c.name ?? 'Default', new CompilationReporter(c, true));
       } else {
-        reporters.set(c.name ?? 'Default', new CompilationReporter(c, false, ora, chalk));
+        reporters.set(c.name ?? 'Default', new CompilationReporter(c, false));
       }
     });
 
@@ -52,7 +40,7 @@ class CompilationReporter {
 
   updateInternal?: () => void;
 
-  constructor (public c: Compilation, private rebuild: boolean, public ora: OraInstance, public chalk: Chalk) {
+  constructor (public c: Compilation, private rebuild: boolean) {
     this.id = c.name ?? 'Default';
     const spinner = this.spinner = ora({
       prefixText: chalk.gray.bold(`${this.id}`),
@@ -65,15 +53,24 @@ class CompilationReporter {
 
     if (rebuild) {
       c.hooks.buildModule.tap(PLUGIN_NAME, (module) => {
-        modules.add(module.identifier());
-        this.curr = this.getDisplayName(module);
+        this.handleNewModule(module);
+        this.handleProcessingModule(module);
       });
       c.hooks.succeedModule.tap(PLUGIN_NAME, (module) => {
-        resolvedModules.add(module.identifier());
-        this.ora({
-          text: chalk.gray('rebuilt ') + chalk.white(this.getDisplayName(module)),
-          indent: 2,
-        }).succeed();
+        if (this.handleResolvedModule(module)) {
+          ora({
+            text: chalk.gray('rebuilt ') + chalk.white(this.getDisplayName(module)),
+            indent: 2,
+          }).succeed();
+        } else {
+          ora({
+            text: chalk.gray('rebuilt ') + chalk.white(this.getDisplayName(module)),
+            indent: 2,
+          }).fail();
+          for (let error of [...module.getErrors()!]) {
+            console.error(error.message.split('\n').map(line => '    ' + line).join('\n'));
+          }
+        }
       });
     } else {
       this.spinner.start();
@@ -88,24 +85,38 @@ class CompilationReporter {
 
       this.updateRequest = setInterval(this.updateInternal, this.forceUpdateInterval);
       c.buildQueue.hooks.added.tap(PLUGIN_NAME, module => {
-        modules.add(module.identifier());
+        this.handleNewModule(module);
       });
 
       c.buildQueue.hooks.started.tap(PLUGIN_NAME, module => {
-        this.curr = this.getDisplayName(module);
+        this.handleProcessingModule(module);
       });
 
       c.buildQueue.hooks.result.tap(PLUGIN_NAME, module => {
-        if (module.getErrors()) {
-          failedModules.add(module);
-        } else {
-          resolvedModules.add(module.identifier());
-        }
-        if (module.getWarnings()) {
-          warningModules.add(module);
-        }
+        this.handleResolvedModule(module);
       });
     }
+  }
+
+  handleNewModule (module: Module) {
+    this.modules.add(module.identifier());
+  }
+
+  handleProcessingModule (module: Module) {
+    this.curr = this.getDisplayName(module);
+  }
+
+  handleResolvedModule (module: Module): boolean {
+    if (module.getWarnings()) {
+      this.warningModules.add(module);
+    }
+    if (module.getErrors()) {
+      this.failedModules.add(module);
+      return false;
+    } else {
+      this.resolvedModules.add(module.identifier());
+    }
+    return true;
   }
 
   parsePnpmLikeName (name: string, limit: boolean) {
@@ -119,13 +130,13 @@ class CompilationReporter {
       const res = PNPM_ORG_DEP_REGEXP.exec(name);
       if (res) {
         const [, org, packageName, version, rest] = res;
-        return `${this.chalk.bold.cyanBright(`${org}/${packageName}`)}${this.chalk.gray(`@${version}/${limit ? maxLen(rest, 64) : rest}`)}`;
+        return `${chalk.bold.cyanBright(`${org}/${packageName}`)}${chalk.gray(`@${version}/${limit ? maxLen(rest, 64) : rest}`)}`;
       }
     } else {
       const res = PNPM_NORMAL_DEP_REGEXP.exec(name);
       if (res) {
         const [, packageName, version, rest] = res;
-        return `${this.chalk.bold.cyanBright(packageName)}${this.chalk.gray(`@${version}/${limit ? maxLen(rest, 64) : rest}`)}`;
+        return `${chalk.bold.cyanBright(packageName)}${chalk.gray(`@${version}/${limit ? maxLen(rest, 64) : rest}`)}`;
       }
     }
 
@@ -160,7 +171,7 @@ class CompilationReporter {
       }
     } else {
       type = 'raw';
-      final = this.chalk.gray(`[raw code:${name.length}bytes]`);
+      final = chalk.gray(`[raw code:${name.length}bytes]`);
     }
     return final;
   };
@@ -168,15 +179,23 @@ class CompilationReporter {
   stop () {
     clearInterval(this.updateRequest);
     if (this.failedModules.size) {
-      this.spinner.fail(`${this.chalk.gray(`[${this.resolvedModules.size}/${this.modules.size}]`)} modules processed (${this.failedModules.size} errors, ${this.warningModules.size} warnings)`);
+      this.spinner.fail(`${chalk.gray(`[${this.resolvedModules.size}/${this.modules.size}]`)} modules processed (${this.failedModules.size} errors, ${this.warningModules.size} warnings)`);
       this.failedModules.forEach(module => {
-        console.error(`${this.chalk.redBright('Failed to process module:')} ${this.getDisplayName(module, false)}`);
+        console.error(`${chalk.redBright('Failed to process module:')} ${this.getDisplayName(module, false)}`);
         [...module.getErrors()!].forEach(error => {
           console.error(error.message.split('\n').map(line => '  ' + line).join('\n'));
         });
       });
     } else {
-      this.spinner.succeed(`${this.chalk.gray(`[${this.resolvedModules.size}/${this.modules.size}]`)} modules processed (${this.warningModules.size} warnings)`);
+      this.spinner.succeed(`${chalk.gray(`[${this.resolvedModules.size}/${this.modules.size}]`)} modules processed (${this.warningModules.size} warnings)`);
+    }
+    if (this.warningModules.size) {
+      this.warningModules.forEach(module => {
+        console.warn(`${chalk.yellowBright('Warnings:')} ${this.getDisplayName(module, false)}`);
+        [...module.getWarnings()!].forEach(warning => {
+          console.warn(warning.message.split('\n').map(line => '  ' + line).join('\n'));
+        });
+      });
     }
   }
 }

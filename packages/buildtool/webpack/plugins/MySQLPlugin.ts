@@ -1,7 +1,7 @@
 import { Compiler, WebpackPluginInstance } from 'webpack';
 import { createPool, Pool } from 'mysql2/promise';
-import Cache from '../utils/cache';
-import { getEnv } from '../utils/env';
+import Cache from '../utils/cache.js';
+import { getEnv } from '../utils/env.js';
 
 const db: {
   pool: Pool

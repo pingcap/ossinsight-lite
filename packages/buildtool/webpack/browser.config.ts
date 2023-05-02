@@ -1,11 +1,11 @@
 import { Configuration } from 'webpack';
-import base from './base.config';
-import merge from 'webpack-merge';
+import base from './base.config.js';
+import { merge } from 'webpack-merge';
 import * as path from 'node:path';
 import * as process from 'node:process';
-import RemoveStyleJsPlugin from './plugins/RemoveStyleJsPlugin';
+import RemoveStyleJsPlugin from './plugins/RemoveStyleJsPlugin.js';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import libCommon from './lib-common.config';
+import libCommon from './lib-common.config.js';
 
 export default merge<Configuration>(base, libCommon, {
   mode: 'production',

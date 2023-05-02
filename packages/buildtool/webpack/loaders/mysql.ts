@@ -1,5 +1,5 @@
 import { LoaderDefinitionFunction, PitchLoaderDefinitionFunction } from 'webpack';
-import { db } from '../plugins/MySQLPlugin';
+import { db } from '../plugins/MySQLPlugin.js';
 import * as path from 'node:path';
 import { Pool } from 'mysql2/promise';
 // import Cache from '../cache';

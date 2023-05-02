@@ -2,7 +2,7 @@ import { LoaderDefinitionFunction } from 'webpack';
 import { globSync } from 'glob';
 import * as path from 'node:path';
 import * as fs from 'node:fs';
-import { cwd } from '../utils/path';
+import { cwd } from '../utils/path.js';
 
 type Widgets = Record<string, Widget>
 type Widget = {

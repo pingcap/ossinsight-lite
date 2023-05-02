@@ -1,10 +1,11 @@
-import WebpackDevServer = require('webpack-dev-server');
-import webpack = require('webpack');
-import config from '../webpack/development.config';
-import merge from 'webpack-merge';
+import WebpackDevServer from 'webpack-dev-server';
+import webpack from 'webpack';
+import config from '../webpack/development.config.js';
+import { merge } from 'webpack-merge';
 import Webpack from 'webpack';
+// @ts-ignore
+import logging from 'webpack/lib/logging/runtime.js';
 
-const logging = require('webpack/lib/logging/runtime');
 logging.configureDefaultLogger({
   level: 'error',
 });

@@ -1,9 +1,9 @@
 import { Configuration } from 'webpack';
-import { getSources, getStyles } from './utils/widgets';
-import MySQLPlugin from './plugins/MySQLPlugin';
-import { buildtoolSrc, cwd, webpackBuildSrc } from './utils/path';
-import MiniCssExtractPlugin = require('mini-css-extract-plugin');
-import reportPlugin from './plugins/ReportPlugin';
+import { getSources, getStyles } from './utils/widgets.js';
+import MySQLPlugin from './plugins/MySQLPlugin.js';
+import { buildtoolSrc, cwd, webpackBuildSrc } from './utils/path.js';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import reportPlugin from './plugins/ReportPlugin.js';
 import * as path from 'path';
 
 export default {

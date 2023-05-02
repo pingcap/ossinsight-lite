@@ -1,7 +1,8 @@
 import cp from 'child_process';
-import { webpackBuildSrc } from '../../webpack/utils/path';
+import { webpackBuildSrc } from '../../webpack/utils/path.js';
 import Webpack, { Configuration } from 'webpack';
-import merge from 'webpack-merge';
+import { merge } from 'webpack-merge';
+import chalk from 'chalk';
 
 export async function spawn (name: string, args: string[], env?: Record<string, string>) {
   return new Promise<void>((resolve, reject) => {
@@ -26,7 +27,7 @@ export async function spawn (name: string, args: string[], env?: Record<string, 
 export async function webpack (config: string, env?: Record<string, string>) {
   console.log('[webpack]', config);
 
-  const conf = require(webpackBuildSrc(`${config}.config.js`)).default;
+  const conf = (await import(webpackBuildSrc(`${config}.config.js`))).default;
   return new Promise<void>((resolve, reject) => {
     Webpack(merge(conf, {
       plugins: [
@@ -38,12 +39,12 @@ export async function webpack (config: string, env?: Record<string, string>) {
       } else if (stats) {
         if (stats.hasWarnings()) {
           stats.compilation.getWarnings().forEach(warning => {
-            console.warn(warning.message);
+            console.warn(chalk.yellowBright(warning.message));
           });
         }
         if (stats.hasErrors()) {
           stats.compilation.getErrors().forEach(error => {
-            console.error(error.message);
+            console.error(chalk.redBright(error.message));
           });
         }
         resolve();

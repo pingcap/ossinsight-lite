@@ -1,10 +1,10 @@
 import { Configuration } from 'webpack';
-import base from './base.config';
-import merge from 'webpack-merge';
-import { cwd, devappSrc } from './utils/path';
+import base from './base.config.js';
+import { merge } from 'webpack-merge';
+import { cwd, devappSrc } from './utils/path.js';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import path from 'path';
-import HtmlWebpackPlugin = require('html-webpack-plugin');
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 
 export default merge<Configuration>(base, {
   mode: 'development',
