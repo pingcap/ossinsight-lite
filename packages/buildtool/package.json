@@ -62,6 +62,7 @@
     "react-dom": "^18.2.0"
   },
   "optionalDependencies": {
+    "@primer/octicons": "^18.3.0",
     "@puppeteer/browsers": "^0.5.0",
     "puppeteer-core": "^19.11.1"
   }

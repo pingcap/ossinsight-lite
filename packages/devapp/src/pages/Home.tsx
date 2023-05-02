@@ -14,13 +14,16 @@ export default function Home () {
 
 const items: Item[] = [{
   name: 'internal:Navigator',
-  rect: [-8, -5, 4, 1],
+  rect: [-12, -5, 4, 1],
 }, {
   name: 'internal:Title',
   rect: [-2, -7, 4, 4],
+},{
+  name: 'github/recent-events',
+  rect: [4, -4, 8, 4],
 }, {
   name: 'oh-my-github/personal-overview',
-  rect: [-8, -4, 16, 8],
+  rect: [-12, -4, 16, 8],
 }];
 
 const cache: Record<string, ComponentType<HTMLProps<any>>> = {};

@@ -1,0 +1,10 @@
+.octicon {
+  display: inline;
+}
+
+.widget .recent-events {
+  @apply text-gray-900;
+}
+.widget .recent-events a {
+  @apply text-blue-800;
+}

@@ -14,7 +14,7 @@ export default function RoughSvg ({ children }: { children: ReactElement }) {
     },
   });
 
-  const target = <svg ref={targetRef} {...source.props} style={{ ...source.props.style, display: '' }}></svg>;
+  const target = <svg ref={targetRef} {...source.props} className={source.props.className} style={{ ...source.props.style, display: '' }}></svg>;
 
   useEffect(() => {
     setTransformed(false);
@@ -26,8 +26,11 @@ export default function RoughSvg ({ children }: { children: ReactElement }) {
         strokeWidth: 0.5,
         stroke: 'currentColor',
         fill: 'currentColor',
+        roughness: 0.618,
+        maxRandomnessOffset: 0.9,
       }));
       targetRef.current!.setAttribute('viewBox', sourceRef.current?.getAttribute('viewBox') ?? '');
+      targetRef.current!.setAttribute('class', sourceRef.current?.getAttribute('class') ?? '');
     }
 
     setTransformed(true);

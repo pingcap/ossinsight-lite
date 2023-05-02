@@ -64,4 +64,28 @@ program
     }
   });
 
+program
+  .command('checkout-icon')
+  .argument('<provider>', 'Available: octicons')
+  .argument('<name>', 'Icon name')
+  .option('-S --size <size>', 'size', numberOption)
+  .option('-W --width <width>', 'width', numberOption)
+  .option('-H --height <height>', 'height', numberOption)
+  .option('-p --path <path>', 'output path')
+  .option('--label <label>', 'aria label')
+  .action(async (rawProvider: string, name: string, options: any) => {
+    const provider = await yup.string().oneOf(['octicons']).required().validate(rawProvider);
+    const fn = await import('./checkout-icon/index.js').then(module => module.default(provider, name, options));
+    console.log(`Checkout ${provider}/${name} at ${fn}`);
+  });
+
 void program.parseAsync();
+
+function numberOption (n: string): number | undefined {
+  const value = parseFloat(n);
+  if (!isFinite(value)) {
+    throw new Error(`'${n}' is not a valid number`);
+  }
+
+  return value;
+}
