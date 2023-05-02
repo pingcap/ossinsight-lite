@@ -1,4 +1,5 @@
-import { getConfiguration } from 'puppeteer/lib/esm/puppeteer/getConfiguration.js';
+import { PUPPETEER_REVISIONS } from 'puppeteer-core/lib/esm/puppeteer/revisions.js';
+import { launch } from 'puppeteer-core';
 import { Browser, BrowserPlatform, computeExecutablePath, detectBrowserPlatform, install, resolveBuildId } from '@puppeteer/browsers';
 import * as fs from 'fs';
 import path from 'path';
@@ -13,12 +14,10 @@ export default async function main () {
     platform = BrowserPlatform.MAC;
   }
 
-  const { cacheDirectory, browserRevision } = getConfiguration();
-
   const options = {
     browser: Browser.CHROMIUM,
-    cacheDir: cacheDirectory ?? '.cache/puppeteer',
-    buildId: await resolveBuildId(Browser.CHROMIUM, platform, browserRevision ?? 'latest').catch(() => '1108766'),
+    cacheDir: '.cache/puppeteer',
+    buildId: await resolveBuildId(Browser.CHROMIUM, platform, PUPPETEER_REVISIONS.chromium),
     platform,
   };
 
@@ -29,7 +28,7 @@ export default async function main () {
     return;
   } else {
     console.log('Installing chrome...');
-    const installedBrowser = await install(options);
-    console.log('Installed browser', installedBrowser);
+    // const installedBrowser = await install(options);
+    // console.log('Installed browser', installedBrowser);
   }
 }

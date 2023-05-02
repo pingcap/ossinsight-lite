@@ -1,16 +1,35 @@
-import { launch } from 'puppeteer';
+import { launch } from 'puppeteer-core';
 import serve, { waitAvailable } from './serve.js';
 import getPort from 'get-port';
 import { cwd } from '../webpack/utils/path.js';
 import { getSources } from '../webpack/utils/widgets.js';
+import { Browser, BrowserPlatform, computeExecutablePath, detectBrowserPlatform, resolveBuildId } from '@puppeteer/browsers';
+import { PUPPETEER_REVISIONS } from 'puppeteer-core/lib/esm/puppeteer/revisions.js';
 
 export default async function main () {
+  let platform = detectBrowserPlatform();
+
+  if (!platform) {
+    throw new Error('Cannot detect platform');
+  }
+  if (platform === BrowserPlatform.MAC_ARM) {
+    platform = BrowserPlatform.MAC;
+  }
+
+  const options = {
+    browser: Browser.CHROMIUM,
+    cacheDir: '.cache/puppeteer',
+    buildId: await resolveBuildId(Browser.CHROMIUM, platform, PUPPETEER_REVISIONS.chromium),
+    platform,
+  };
+
   const port = await getPort();
   const origin = `http://127.0.0.1:${port}`;
   const serveProcess = serve(port, true);
 
   try {
     const browserPromise = launch({
+      executablePath: computeExecutablePath(options),
       product: 'chrome',
       headless: 'new',
       args: [
