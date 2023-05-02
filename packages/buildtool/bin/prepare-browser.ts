@@ -3,6 +3,7 @@ import { launch } from 'puppeteer-core';
 import { Browser, BrowserPlatform, computeExecutablePath, detectBrowserPlatform, install, resolveBuildId } from '@puppeteer/browsers';
 import * as fs from 'fs';
 import path from 'path';
+import { cwd } from '../webpack/utils/path.js';
 
 export default async function main () {
   let platform = detectBrowserPlatform();
@@ -16,7 +17,7 @@ export default async function main () {
 
   const options = {
     browser: Browser.CHROMIUM,
-    cacheDir: '.cache/puppeteer',
+    cacheDir: cwd('.cache/puppeteer'),
     buildId: await resolveBuildId(Browser.CHROMIUM, platform, PUPPETEER_REVISIONS.chromium),
     platform,
   };
