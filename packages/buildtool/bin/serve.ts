@@ -11,7 +11,11 @@ const fetch = (global as any).fetch;
 export async function waitAvailable (port = 3001, timeout = 30000, interval = 1000) {
   async function test (signal: AbortSignal) {
     const resp = await fetch(`http://127.0.0.1:${port}/`, { signal });
-    return resp.ok;
+    try {
+      return resp.ok;
+    } catch {
+      return false;
+    }
   }
 
   return new Promise<void>((resolve, reject) => {
