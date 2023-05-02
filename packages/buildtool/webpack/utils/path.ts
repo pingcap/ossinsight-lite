@@ -6,8 +6,12 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const BUILDTOOL_ROOT = path.resolve(__dirname, '../../..');
 
+export function dep (src: string) {
+  return path.join(BUILDTOOL_ROOT, 'node_modules', src);
+}
+
 export function devappSrc (src: string) {
-  return path.join(BUILDTOOL_ROOT, '../devapp/src', src)
+  return dep(path.join('@oss-widgets/devapp/src', src))
 }
 
 export function buildtoolSrc (src: string) {

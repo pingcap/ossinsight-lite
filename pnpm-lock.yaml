@@ -21,6 +21,9 @@ importers:
       '@babel/preset-typescript':
         specifier: ^7.21.4
         version: 7.21.4(@babel/core@7.21.4)
+      '@oss-widgets/devapp':
+        specifier: workspace:*
+        version: link:../devapp
       '@svgr/webpack':
         specifier: ^7.0.0
         version: 7.0.0
@@ -132,10 +135,10 @@ importers:
   packages/devapp:
     devDependencies:
       '@oss-widgets/layout':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../layout
       '@oss-widgets/roughness':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../roughness
       '@types/react':
         specifier: ^18.0.38
@@ -210,10 +213,10 @@ importers:
   packages/widgets:
     devDependencies:
       '@oss-widgets/buildtool':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../buildtool
       '@oss-widgets/roughness':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../roughness
       '@radix-ui/react-tooltip':
         specifier: ^1.0.5

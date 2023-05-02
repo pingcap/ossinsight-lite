@@ -1,6 +1,5 @@
 {
   "name": "@oss-widgets/devapp",
-  "private": true,
   "version": "1.0.0",
   "description": "",
   "type": "module",
@@ -9,8 +8,8 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@oss-widgets/layout": "workspace:^",
-    "@oss-widgets/roughness": "workspace:^",
+    "@oss-widgets/layout": "workspace:*",
+    "@oss-widgets/roughness": "workspace:*",
     "@types/react": "^18.0.38",
     "@types/react-dom": "^18.0.11",
     "@types/react-syntax-highlighter": "^15.5.6",

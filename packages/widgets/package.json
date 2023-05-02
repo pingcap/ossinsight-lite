@@ -17,8 +17,8 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@oss-widgets/buildtool": "workspace:^",
-    "@oss-widgets/roughness": "workspace:^",
+    "@oss-widgets/buildtool": "workspace:*",
+    "@oss-widgets/roughness": "workspace:*",
     "@radix-ui/react-tooltip": "^1.0.5",
     "@types/node": "^18.15.13",
     "@types/react": "^18.0.38",
