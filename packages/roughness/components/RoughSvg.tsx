@@ -1,23 +1,25 @@
-import React, { cloneElement, ReactElement, ReactSVGElement, useEffect, useRef, useState } from 'react';
-import rough from 'roughjs'
+import { cloneElement, ReactElement, useEffect, useRef, useState } from 'react';
+import rough from 'roughjs';
 
 export default function RoughSvg ({ children }: { children: ReactElement }) {
 
   const sourceRef = useRef<SVGSVGElement>(null);
   const targetRef = useRef<SVGSVGElement>(null);
-  const [transformed, setTransformed] = useState(false);
+  const [, setTransformed] = useState(false);
 
   const source = cloneElement(children, {
     ref: sourceRef,
+    style: {
+      display: 'none',
+    },
   });
 
-  const target = <svg ref={targetRef} {...source.props}></svg>;
-
+  const target = <svg ref={targetRef} {...source.props} style={{ ...source.props.style, display: '' }}></svg>;
 
   useEffect(() => {
     setTransformed(false);
 
-    const ctx = rough.svg(targetRef.current!)
+    const ctx = rough.svg(targetRef.current!);
 
     for (let path of sourceRef.current!.getElementsByTagName('path')) {
       targetRef.current!.appendChild(ctx.path(path.getAttribute('d') as string, {
@@ -25,17 +27,15 @@ export default function RoughSvg ({ children }: { children: ReactElement }) {
         stroke: 'currentColor',
         fill: 'currentColor',
       }));
-      targetRef.current!.setAttribute('viewBox', sourceRef.current!.getAttribute('viewBox'));
+      targetRef.current!.setAttribute('viewBox', sourceRef.current?.getAttribute('viewBox') ?? '');
     }
 
     setTransformed(true);
-  }, [])
+  }, []);
 
   return (
     <>
-      <span className='hidden'>
-        {source}
-      </span>
+      {source}
       {target}
     </>
   );

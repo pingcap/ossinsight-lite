@@ -51,7 +51,7 @@ export default {
         },
       },
       {
-        test: /\.css$/i,
+        test: /\.s?css$/i,
         use: [
           MiniCssExtractPlugin.loader,
           'css-loader',
@@ -59,8 +59,10 @@ export default {
             loader: 'postcss-loader',
             options: {
               postcssOptions: {
+                syntax: 'postcss-scss',
                 plugins: {
                   'postcss-preset-env': {},
+                  'tailwindcss/nesting': {},
                   'tailwindcss': {},
                   'autoprefixer': {},
                 },

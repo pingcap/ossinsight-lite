@@ -20,8 +20,8 @@ import RepoIcon from '../../../icons/repo.svg';
 import StarIcon from '../../../icons/star.svg';
 import { prerenderMode } from '@oss-widgets/runtime';
 
-import '../../../chartjs/rough';
-import RoughSvg from '../../../components/RoughSvg';
+import '@oss-widgets/roughness/chartjs';
+import RoughSvg from '@oss-widgets/roughness/components/RoughSvg';
 
 const { cyan, green, red, yellow } = colors;
 
@@ -56,7 +56,7 @@ export default function Widget (props: HTMLProps<HTMLDivElement>) {
   const [portalRoot, setPortalRoolt] = useState<HTMLDivElement | null>(null);
 
   return (
-    <div {...props} className={clsx(props.className, 'bg-white flex flex-col p-4 gap-4 relative font-[CabinSketch]')}>
+    <div {...props} className={clsx(props.className, 'bg-white flex flex-col p-4 gap-4 relative font-sketch')}>
       <div className="flex gap-2">
         <img
           className="block rounded-xl w-12 h-12"

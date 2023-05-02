@@ -1,9 +1,8 @@
 import rc from 'roughjs';
-import { defaults, LineElement, Legend, VisualElement, LegendItem , plugins, Scale } from 'chart.js';
+import { defaults, LineElement, plugins, Scale } from 'chart.js';
 
 defaults.font.family = 'CabinSketch';
 defaults.scale.grid.display = false;
-
 
 Scale.prototype.drawGrid = function (chartArea) {
   // MARK: must call this to prevent chartjs draw default lines
@@ -18,7 +17,7 @@ Scale.prototype.drawGrid = function (chartArea) {
   c.line(chartArea.left, chartArea.top, chartArea.left, chartArea.bottom);
 };
 
-LineElement.prototype.draw = function (this: LineElement, ctx, area) {
+LineElement.prototype.draw = function (this: LineElement, ctx) {
   const c = rc.canvas(ctx.canvas, {
     options: {
       stroke: this.options.borderColor as string,
@@ -33,7 +32,6 @@ LineElement.prototype.draw = function (this: LineElement, ctx, area) {
     lastPoint = point;
   }
 };
-
 
 const originalBeforeDatasetDraw = plugins.Filler.beforeDatasetDraw;
 

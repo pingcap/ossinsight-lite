@@ -1,4 +1,10 @@
+@import "@oss-widgets/roughness/fonts/index.css";
+
 @config "../tailwind.config.js";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html {
+  font-family: CabinSketch, sans-serif;
+}

@@ -1,0 +1,24 @@
+.draggable {
+  position: absolute;
+  transition: box-shadow 200ms ease, transform 100ms ease;
+
+  cursor: pointer;
+
+  &:hover {
+    box-shadow: #666 0 0 24px;
+  }
+
+  &.dragging {
+    cursor: move;
+    box-shadow: #888 0 5px 36px;
+    z-index: 1;
+
+    > * {
+      pointer-events: none;
+    }
+  }
+}
+
+.r-layout-resizing .draggable {
+  transition: none;
+}

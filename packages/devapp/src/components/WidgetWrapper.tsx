@@ -17,7 +17,7 @@ async function SyntaxHighlightLazy () {
 
   return {
     default: function ({ ...props }: SyntaxHighlighterProps) {
-      return <SyntaxHighlight {...props} style={style.default} language="html" />;
+      return <SyntaxHighlight {...props} style={style.default} language="html" codeTagProps={{ className: '!font-[CabinSketch]' }} />;
     },
   };
 }

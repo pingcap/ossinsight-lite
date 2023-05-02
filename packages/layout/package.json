@@ -1,0 +1,17 @@
+{
+  "name": "@oss-widgets/layout",
+  "private": true,
+  "description": "",
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/react": "^18.0.38",
+    "@types/react-dom": "^18.0.11",
+    "clsx": "^1.2.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "typescript": "^5.0.4"
+  }
+}

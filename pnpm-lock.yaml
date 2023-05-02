@@ -69,6 +69,9 @@ importers:
       postcss-preset-env:
         specifier: ^8.3.2
         version: 8.3.2(postcss@8.4.23)
+      postcss-scss:
+        specifier: ^4.0.6
+        version: 4.0.6(postcss@8.4.23)
       serve:
         specifier: ^14.2.0
         version: 14.2.0
@@ -128,6 +131,12 @@ importers:
 
   packages/devapp:
     devDependencies:
+      '@oss-widgets/layout':
+        specifier: workspace:^
+        version: link:../layout
+      '@oss-widgets/roughness':
+        specifier: workspace:^
+        version: link:../roughness
       '@types/react':
         specifier: ^18.0.38
         version: 18.0.38
@@ -137,6 +146,9 @@ importers:
       '@types/react-syntax-highlighter':
         specifier: ^15.5.6
         version: 15.5.6
+      clsx:
+        specifier: ^1.2.1
+        version: 1.2.1
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -153,11 +165,56 @@ importers:
         specifier: ^15.5.0
         version: 15.5.0(react@18.2.0)
 
+  packages/layout:
+    devDependencies:
+      '@types/react':
+        specifier: ^18.0.38
+        version: 18.0.38
+      '@types/react-dom':
+        specifier: ^18.0.11
+        version: 18.0.11
+      clsx:
+        specifier: ^1.2.1
+        version: 1.2.1
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+      react-dom:
+        specifier: ^18.2.0
+        version: 18.2.0(react@18.2.0)
+      typescript:
+        specifier: ^5.0.4
+        version: 5.0.4
+
+  packages/roughness:
+    devDependencies:
+      '@types/react':
+        specifier: ^18.0.38
+        version: 18.0.38
+      '@types/react-dom':
+        specifier: ^18.0.11
+        version: 18.0.11
+      chart.js:
+        specifier: ^4.2.1
+        version: 4.2.1
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+      react-dom:
+        specifier: ^18.2.0
+        version: 18.2.0(react@18.2.0)
+      roughjs:
+        specifier: ^4.5.2
+        version: 4.5.2
+
   packages/widgets:
     devDependencies:
       '@oss-widgets/buildtool':
         specifier: workspace:^
         version: link:../buildtool
+      '@oss-widgets/roughness':
+        specifier: workspace:^
+        version: link:../roughness
       '@radix-ui/react-tooltip':
         specifier: ^1.0.5
         version: 1.0.5(@types/react@18.0.38)(react-dom@18.2.0)(react@18.2.0)
@@ -8259,6 +8316,15 @@ packages:
     resolution: {integrity: sha512-KmF7SBPphT4gPPcKZc7aDkweHiKEEO8cla/GjcBK+ckKxiZslIu3C4GCRW3DNfL0o7yW7kMQu9xlZ1kXRXLXtw==}
     peerDependencies:
       postcss: ^8.0.3
+    dependencies:
+      postcss: 8.4.23
+    dev: false
+
+  /postcss-scss@4.0.6(postcss@8.4.23):
+    resolution: {integrity: sha512-rLDPhJY4z/i4nVFZ27j9GqLxj1pwxE80eAzUNRMXtcpipFYIeowerzBgG3yJhMtObGEXidtIgbUpQ3eLDsf5OQ==}
+    engines: {node: '>=12.0'}
+    peerDependencies:
+      postcss: ^8.4.19
     dependencies:
       postcss: 8.4.23
     dev: false

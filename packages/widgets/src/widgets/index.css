@@ -1,15 +1,5 @@
+@import '@oss-widgets/roughness/fonts/index.css';
+
 @config "../../tailwind.config.js";
 @tailwind components;
 @tailwind utilities;
-
-@font-face {
-  font-family: CabinSketch;
-  src: url(../../public/fonts/CabinSketch-Regular.ttf);
-  font-weight: normal;
-}
-
-@font-face {
-  font-family: CabinSketch;
-  src: url(../../public/fonts/CabinSketch-Bold.ttf);
-  font-weight: bold;
-}

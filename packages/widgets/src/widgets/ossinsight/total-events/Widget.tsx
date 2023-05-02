@@ -22,7 +22,7 @@ export default function Widget ({ ...props }: HTMLProps<HTMLDivElement>) {
     <div {...props}>
       <div className="p-2">
         <div>OSSInsight Total Events</div>
-        <div className={'font-bold font-mono text-gray-800'}>
+        <div className={'font-bold font-sketch text-gray-800'}>
           {prerenderMode
             ? <style className="block text-[14px]">{totalEvents.toLocaleString()}</style>
             : <AnimatedNumbers

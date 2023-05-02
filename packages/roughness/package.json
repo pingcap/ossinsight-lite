@@ -1,0 +1,20 @@
+{
+  "name": "@oss-widgets/roughness",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/react": "^18.0.38",
+    "@types/react-dom": "^18.0.11",
+    "chart.js": "^4.2.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "roughjs": "^4.5.2"
+  }
+}
