@@ -5,7 +5,6 @@ import { cwd } from '../webpack/utils/path.js';
 import { getSources } from '../webpack/utils/widgets.js';
 import { Browser, BrowserPlatform, computeExecutablePath, detectBrowserPlatform, resolveBuildId } from '@puppeteer/browsers';
 import { PUPPETEER_REVISIONS } from 'puppeteer-core/lib/esm/puppeteer/revisions.js';
-import path from 'path';
 
 export default async function main () {
   let platform = detectBrowserPlatform();
@@ -35,7 +34,10 @@ export default async function main () {
       headless: 'new',
       args: [
         '--disable-web-security',
-      ],
+      ].concat(
+        !!process.env.CI ? [
+          '--no-sandbox',
+        ] : []),
       defaultViewport: {
         width: 800,
         height: 418,
