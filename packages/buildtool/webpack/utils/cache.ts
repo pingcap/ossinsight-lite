@@ -1,5 +1,6 @@
 import * as fsp from 'fs/promises';
 import * as path from 'node:path';
+import chalk from 'chalk';
 
 export default class Cache {
   private readonly caches = new Map<string, any>();
@@ -23,13 +24,13 @@ export default class Cache {
     } catch {
       return;
     }
-    const content = await fsp.readFile(this.path, { encoding: 'utf-8' });
-    const obj = JSON.parse(content);
-    if (obj && typeof obj === 'object') {
-      Object.entries(obj).forEach(([key, value]) => this.caches.set(key, value));
-    } else {
-      throw new Error('Bad cache file content');
-    }
+    try {
+      const content = await fsp.readFile(this.path, { encoding: 'utf-8' });
+      const obj = JSON.parse(content);
+      if (obj && typeof obj === 'object') {
+        Object.entries(obj).forEach(([key, value]) => this.caches.set(key, value));
+      }
+    } catch {}
   }
 
   async write () {

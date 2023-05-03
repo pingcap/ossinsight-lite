@@ -1,18 +1,11 @@
 import { webpack } from './utils/cp.js';
-import * as yup from 'yup';
-import { cosmiconfig } from 'cosmiconfig';
+import { getConfig } from '../utils/config.js';
 
 interface Options {
   siteDomain?: string;
 }
 
 export default async function main (options: Options = {}) {
-  const configSchema = yup.object({
-    siteDomain: yup.string().required(),
-  });
-
-  const res = await cosmiconfig('ossw').search(process.cwd());
-
   options = { ...options };
   Object.keys(options).forEach((key) => {
     if ((options as any)[key] == null) {
@@ -20,8 +13,7 @@ export default async function main (options: Options = {}) {
     }
   });
 
-  const rawConfig = { ...res?.config, ...options };
-  const config = await configSchema.validate(rawConfig);
+  const config = { ...await getConfig(), ...options };
 
   await webpack('page', {
     'OSSW_SITE_DOMAIN': config.siteDomain,

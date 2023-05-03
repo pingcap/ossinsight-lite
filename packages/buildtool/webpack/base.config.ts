@@ -1,6 +1,6 @@
 import { Configuration } from 'webpack';
 import { getSources, getStyles } from './utils/widgets.js';
-import MySQLPlugin from './plugins/MySQLPlugin.js';
+import SQLPlugin from './plugins/db/SQLPlugin.js';
 import { buildtoolSrc, webpackBuildSrc } from './utils/path.js';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import reportPlugin from './plugins/ReportPlugin.js';
@@ -18,7 +18,7 @@ export default {
     topLevelAwait: true,
   },
   plugins: [
-    new MySQLPlugin(),
+    new SQLPlugin(),
     reportPlugin(),
   ],
   resolveLoader: {
@@ -90,7 +90,7 @@ export default {
       {
         test: /\.sql(?:\?unique)?$/,
         use: [
-          webpackBuildSrc('loaders/mysql'),
+          webpackBuildSrc('loaders/sql'),
         ],
       },
       {

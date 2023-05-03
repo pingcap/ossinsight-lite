@@ -1,0 +1,10 @@
+{
+  "siteDomain": "https://oss-widgets.vercel.app",
+  "db": [
+    {
+      "name": "default",
+      "type": "mysql",
+      "env": "DATABASE_URL"
+    }
+  ]
+}

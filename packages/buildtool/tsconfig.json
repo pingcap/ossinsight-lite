@@ -11,5 +11,5 @@
     "skipLibCheck": true,
     "outDir": "dist"
   },
-  "include": ["webpack", "bin"]
+  "include": ["webpack", "bin", "utils"]
 }
