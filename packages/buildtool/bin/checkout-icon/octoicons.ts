@@ -24,7 +24,7 @@ export async function checkout (name: string, rawOption: Record<string, any> = {
     }
   }
 
-  const svg = icon.toSVG();
+  const svg = icon.toSVG(svgOptions);
 
   const fn = path.join(options.path, name + '.svg');
   await fsp.mkdir(path.dirname(fn), { recursive: true });

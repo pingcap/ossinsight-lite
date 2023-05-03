@@ -51,6 +51,7 @@
   },
   "devDependencies": {
     "@types/node": "^18.15.13",
+    "@types/primer__octicons": "^17.11.0",
     "@types/react": "^18.0.38",
     "@types/react-dom": "^18.0.11",
     "@types/webpack": "^5.28.1",
