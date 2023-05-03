@@ -54,10 +54,13 @@ class CompilationReporter {
 
   constructor (public c: Compilation, private rebuild: boolean) {
     this.id = c.name ?? 'Default';
+
+    const isEnabled = !process.env.CI && process.env.VERCEL_ENV !== 'development'
+
     const spinner = this.spinner = ora({
       prefixText: chalk.gray.bold(`${this.id}`),
-      suffixText: process.env.CI ? '\n' : undefined,
-      isEnabled: !process.env.CI,
+      suffixText: isEnabled ? undefined : '\n',
+      isEnabled: isEnabled,
     });
 
     const modules = this.modules = new Set<string>();

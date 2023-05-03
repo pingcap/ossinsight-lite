@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "devCommand": "osswidgets-dev",
+  "devCommand": "npm run dev",
   "buildCommand": "npm run build:site",
   "outputDirectory": "page-dist"
 }
