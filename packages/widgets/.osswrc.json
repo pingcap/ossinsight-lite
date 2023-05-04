@@ -2,9 +2,14 @@
   "siteDomain": "https://oss-widgets.vercel.app",
   "db": [
     {
-      "name": "default",
+      "name": "oh-my-github",
       "type": "mysql",
-      "env": "DATABASE_URL"
+      "env": "OH_MY_GITHUB_DATABASE_URL"
+    },
+    {
+      "name": "repo-track",
+      "type": "mysql",
+      "env": "REPO_TRACK_DATABASE_URL"
     }
   ]
 }

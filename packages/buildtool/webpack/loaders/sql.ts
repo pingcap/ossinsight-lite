@@ -1,7 +1,6 @@
 import { LoaderDefinitionFunction } from 'webpack';
 import { dbInstances } from '../plugins/db/SQLPlugin.js';
 import * as path from 'node:path';
-import { Pool } from 'mysql2/promise';
 import { DbInstance } from '../plugins/db/DbInstance.js';
 
 const loader: LoaderDefinitionFunction = function (content, sourceMap, additionalData) {
@@ -10,9 +9,9 @@ const loader: LoaderDefinitionFunction = function (content, sourceMap, additiona
   const load = async () => {
     const id = path.relative(path.join(process.cwd(), 'src/widgets'), this.remainingRequest);
     const firstLine = content.trim().split('\n', 1)[0].trim();
-    let dbi: DbInstance<any>;
+    let dbi: DbInstance<any> | undefined;
     if (firstLine.startsWith('--')) {
-      const matched = /db:(\w+)/.exec(firstLine);
+      const matched = /db:([\w\-]+)/.exec(firstLine);
       if (matched) {
         const [, name] = matched;
         dbi = dbInstances[name];
@@ -22,14 +21,17 @@ const loader: LoaderDefinitionFunction = function (content, sourceMap, additiona
         }
       }
     }
-    dbi = dbInstances['default'];
+    if (!dbi) {
+      dbi = dbInstances['default'];
+    }
+
     if (!dbi) {
       this.emitError(new Error(`db:default not configured`));
       return `export default null`;
     }
 
     const data = await dbi.cache.get(id, async () => {
-      return await sqlQuery(dbi, id, content);
+      return await sqlQuery(dbi!, id, content);
     });
     //
     // const jsonFileName = id.replace(/\.sql(?:\?unique)?$/, '.json');

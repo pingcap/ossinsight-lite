@@ -1,3 +1,4 @@
+-- db:oh-my-github
 WITH events AS (SELECT id, user_id, repo_id
                 FROM issues
                 UNION ALL
