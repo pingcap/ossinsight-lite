@@ -6,8 +6,8 @@ import * as layoutComponents from '../layout-components';
 
 export default function Home () {
   return (
-    <GridLayout gridSize={40} gap={8} width="100vw" height="100vh">
-      <Components items={items} render={render} />
+    <GridLayout gridSize={40} gap={8} width="100vw" height="100vh" guideUi>
+      <Components items={items} render={render} draggable />
     </GridLayout>
   );
 }
@@ -18,13 +18,17 @@ const items: Item[] = [{
 }, {
   name: 'internal:Title',
   rect: [-2, -7, 4, 4],
-},{
+}, {
   name: 'github/recent-events',
   rect: [4, -4, 8, 4],
 }, {
   name: 'oh-my-github/personal-overview',
   rect: [-12, -4, 16, 8],
-}];
+}, {
+  name: 'ossinsight/total-events',
+  rect: [-12, -6, 4, 1],
+},
+];
 
 const cache: Record<string, ComponentType<HTMLProps<any>>> = {};
 
