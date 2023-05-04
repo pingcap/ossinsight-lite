@@ -2,5 +2,10 @@
   "version": 2,
   "devCommand": "npm run dev",
   "buildCommand": "npm run build:site",
-  "outputDirectory": "page-dist"
+  "installCommand": "pnpm install",
+  "outputDirectory": "page-dist",
+  "env": {
+    "OH_MY_GITHUB_DATABASE_URL": "",
+    "REPO_TRACK_DATABASE_URL": ""
+  }
 }
