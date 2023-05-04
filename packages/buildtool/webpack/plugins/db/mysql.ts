@@ -3,7 +3,7 @@ import { createPool, Pool } from 'mysql2/promise';
 
 export class MysqlInstance extends DbInstance<Pool> {
   override closePool (pool: Pool): void | Promise<void> {
-    return pool.end();
+    // return pool.end();
   }
 
   override createPool (envValue: string): Promise<Pool> | Pool {
