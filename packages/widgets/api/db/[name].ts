@@ -1,5 +1,5 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
-import { createConnection } from 'mysql2/promise';
+import { Connection, createConnection } from 'mysql2/promise';
 import * as process from 'process';
 
 // TODO: use config
@@ -29,10 +29,18 @@ export default async function (req: VercelRequest, res: VercelResponse) {
 
   const dbUri = process.env[target.env];
   if (!dbUri) {
-    res.status(500).json({ reason: `${target.env} not configured` })
+    res.status(500).json({ reason: `${target.env} not configured` });
+    return;
   }
 
-  const conn = await createConnection(dbUri);
+  let conn: Connection;
+  try {
+    conn = await createConnection(dbUri);
+  } catch (e) {
+    console.error(`${target.env} =`, dbUri.slice(dbUri.indexOf('prod.aws.tidbcloud.com')))
+    res.status(500).json({ reason: String(e?.message ?? e) });
+    return;
+  }
 
   try {
     const start = Date.now();
