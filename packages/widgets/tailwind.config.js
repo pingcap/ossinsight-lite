@@ -35,6 +35,6 @@ export default {
     },
   },
   plugins: [],
-  // important: '.widget',
+  important: '.widget',
 }
 

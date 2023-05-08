@@ -14,6 +14,11 @@ export default function SQLEditor ({ sql, defaultSql, onSqlChange }: SQLEditorPr
       defaultLanguage="mysql"
       defaultValue={defaultSql}
       onChange={onSqlChange}
+      options={{
+        minimap: {
+          enabled: false,
+        }
+      }}
     />
   );
 }

@@ -4,6 +4,7 @@ import { useDraggableContext } from '../context/draggable.ts';
 import type { Layout } from '../core/layout/base.ts';
 
 export interface DraggableState<E extends HTMLElement> {
+  id: string;
   ref: LegacyRef<E>;
   layout: Layout<any, any>
   shape: Rect;
@@ -29,7 +30,7 @@ const INITIAL_POINT: Point = [0, 0];
 const INITIAL_SHAPE: Rect = [0, 0, 100, 100];
 
 export function useDraggable<E extends HTMLElement> (option: DraggableOption = {}): DraggableState<E> {
-  const { layout } = useDraggableContext<Rect, Point>();
+  const { layout, onDrag } = useDraggableContext<Rect, Point>();
   const id = useId();
   const ref = useRef<E>(null);
   const [shape, setShape] = useState(() => option.initialShape ? option.initialShape : INITIAL_SHAPE);
@@ -77,11 +78,12 @@ export function useDraggable<E extends HTMLElement> (option: DraggableOption = {
     const shape = layout.endDrag();
     if (shape) {
       setShape(shape);
+      onDrag?.(id, shape);
     }
     window.removeEventListener('mousemove', onMove);
     window.removeEventListener('mouseup', onEnd);
     window.removeEventListener('mouseleave', onEnd);
-  }, []);
+  }, [onDrag]);
 
   const draggingOffset = useMemo(() => {
     return offset(start, current);
@@ -108,5 +110,6 @@ export function useDraggable<E extends HTMLElement> (option: DraggableOption = {
     domProps: {
       onMouseDown: onStart,
     },
+    id,
   };
 }

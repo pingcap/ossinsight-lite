@@ -5,7 +5,8 @@
   cursor: pointer;
 
   &:hover {
-    box-shadow: #666 0 0 24px;
+    box-shadow: #aaa 0 0 24px;
+    z-index: 1;
   }
 
   &.dragging {
@@ -15,6 +16,10 @@
 
     > * {
       pointer-events: none;
+    }
+
+    [data-layer-item] {
+      pointer-events: auto;
     }
   }
 }

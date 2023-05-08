@@ -16,7 +16,7 @@ export interface SQLEditorHeaderProps {
 export default function SQLEditorHeader ({ portal, currentDb, onCurrentDbChange, onRun, running = false }: SQLEditorHeaderProps) {
   return (
     <Toolbar.Root
-      className="flex w-full min-w-max h-8 p-1 relative border-b"
+      className="flex w-full min-w-max h-8 p-1 relative"
       aria-label="Editor toolbar"
     >
       <Select.Root
@@ -30,7 +30,7 @@ export default function SQLEditorHeader ({ portal, currentDb, onCurrentDbChange,
           {currentDb ? <CurrentDb db={currentDb} /> : <Fallback />}
         </Select.Trigger>
         <Select.Portal container={portal}>
-          <Select.Content className="overflow-hidden bg-white rounded shadow">
+          <Select.Content className="overflow-hidden bg-white rounded shadow" position='popper'>
             <Select.Viewport>
               {config.db.map(db => (
                 <SelectItem key={db.name} value={db.name} />

@@ -4,6 +4,7 @@ import { PixelLayout } from '../core/layout/pixel.ts';
 
 export interface DraggableContextValues<Shape, Offset> {
   layout: Layout<Shape, Offset>;
+  onDrag?: (id: string, rect: Shape) => void;
 }
 
 const DraggableContext = createContext<DraggableContextValues<any, any>>({

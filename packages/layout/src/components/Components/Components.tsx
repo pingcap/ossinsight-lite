@@ -1,4 +1,4 @@
-import { cloneElement, FC, ReactElement } from 'react';
+import { cloneElement, FC, ReactElement, useCallback, useEffect } from 'react';
 import { Rect, toShapeStyle } from '../../core/types.ts';
 import { useDraggable } from '../../hooks/draggable.ts';
 import clsx from 'clsx';
@@ -14,17 +14,26 @@ export type Item = {
 
 export interface ComponentsProps {
   items: Item[];
+  idMap?: Map<string, string>;
   draggable?: boolean;
 
-  render (name: string, props?: Record<string, any>): ReactElement;
+  render (id: string, name: string, props: Record<string, any> | undefined, draggable: boolean): ReactElement;
 }
 
-const Components: FC<ComponentsProps> = function Components ({ draggable = false, items, render }) {
+const Components: FC<ComponentsProps> = function Components ({ draggable = false, items, render, idMap }) {
+  const register = useCallback((id: string, externalId: string) => {
+    idMap?.set(id, externalId);
+  }, [idMap]);
+
+  const unregister = useCallback((id: string) => {
+    idMap?.delete(id);
+  }, [idMap]);
+
   return (
     <>
       {items.map(item => (
-        <ComponentWrapper rect={item.rect} key={item.id ?? item.name} draggable={draggable}>
-          {render(item.name, item.props)}
+        <ComponentWrapper rect={item.rect} key={item.id ?? item.name} externalId={item.id ?? item.name} draggable={draggable} register={register} unregister={unregister}>
+          {render(item.id ?? item.name, item.name, item.props, draggable)}
         </ComponentWrapper>
       ))}
     </>
@@ -32,15 +41,19 @@ const Components: FC<ComponentsProps> = function Components ({ draggable = false
 };
 
 interface ComponentWrapperProps {
+  externalId: string;
   rect: Rect;
   draggable: boolean;
   children: ReactElement;
+  register: (id: string, externalId: string) => void;
+  unregister: (id: string) => void;
 }
 
 const DRAGGING_STYLE = 'translate3d(0,0,0) translateY(-2px) scale(1.02)';
 
-function ComponentWrapper ({ rect, draggable, children }: ComponentWrapperProps) {
+function ComponentWrapper ({ externalId, rect, draggable, register, unregister, children }: ComponentWrapperProps) {
   const {
+    id,
     ref,
     shape,
     domProps,
@@ -51,6 +64,11 @@ function ComponentWrapper ({ rect, draggable, children }: ComponentWrapperProps)
   });
 
   const shapeStyle = toShapeStyle(layout.toDomShape(shape));
+
+  useEffect(() => {
+    register(id, externalId);
+    return () => unregister(id);
+  }, [externalId, id]);
 
   return (
     <div

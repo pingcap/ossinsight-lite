@@ -1,0 +1,14 @@
+[
+  {
+    "widget": "db/sql",
+    "size": [4, 3],
+    "props": {
+      "currentDb": "oh-my-github",
+      "sql": "SELECT followers_count FROM curr_user;",
+      "visualize": {
+        "type": "gauge",
+        "title": "Followers Count"
+      }
+    }
+  }
+]

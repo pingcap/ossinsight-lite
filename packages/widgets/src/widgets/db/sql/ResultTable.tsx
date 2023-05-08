@@ -16,7 +16,7 @@ export default function ResultTable ({ result, running }: ResultTableProps) {
   }
   return (
     <div className="max-w-full h-full overflow-auto">
-      <table className="table-auto sql-result-table text-sm">
+      <table className="sql-result-table">
         <thead>
         <tr>
           <th>#</th>

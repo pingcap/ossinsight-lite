@@ -2,7 +2,7 @@
 
 
 .sql-result-table {
-  @apply table-auto;
+  @apply table-auto text-sm min-w-full;
 
 }
 
@@ -12,4 +12,16 @@
 
 .sql-result-table tbody {
 
+}
+
+.sql-result-table tr > :first-child, .sql-result-table tr > :first-child {
+  @apply border-l-0;
+}
+
+.sql-result-table tr > :last-child, .sql-result-table tr > :last-child {
+  @apply border-r-0;
+}
+
+.sql-result-table tr:first-of-type th, .sql-result-table tr:last-of-type td {
+  @apply border-b-0;
 }

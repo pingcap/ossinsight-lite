@@ -35,11 +35,15 @@ export function offset<T extends Point | Rect> (from: T, to: T): Point {
   return [to[0] - from[0], to[1] - from[1]];
 }
 
+export function equals<T extends Point | Rect> (a: T, b: T) {
+  return a[0] === b[0] && a[1] === b[1] && a[2] === b[2] && a[3] === b[3];
+}
+
 export function toSizeStyle (t: Size) {
   return {
     width: t[0],
     height: t[1],
-  }
+  };
 }
 
 export function toShapeStyle (t: Point | Rect) {

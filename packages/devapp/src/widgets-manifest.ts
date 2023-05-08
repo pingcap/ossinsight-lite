@@ -5,6 +5,8 @@ type WidgetModule = {
   default: ComponentType<HTMLProps<HTMLDivElement>>,
   preferredSize?: CSSProperties,
   defaultProps?: Record<string, any>,
+  configurable?: boolean,
+  configurablePropsOverwrite?: Record<string, any>,
 }
 type Widget = {
   module: () => Promise<WidgetModule>

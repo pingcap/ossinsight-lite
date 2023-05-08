@@ -7,6 +7,7 @@ import List from './pages/List';
 import Home from './pages/Home';
 import Widget from './pages/WidgetLayout';
 import { useWidgetContext } from './components/WidgetContext';
+import EditWidgetInstance from './pages/EditWidgetInstance';
 
 window.React = React;
 window.ReactDOM = ReactDOM;
@@ -26,6 +27,7 @@ export default function App () {
             />
           ))}
         </Route>
+        <Route path="/edit/:id" Component={EditWidgetInstance} />
       </Routes>
     </BrowserRouter>
   );
@@ -44,8 +46,8 @@ function createWidgetComponent (name: string) {
     const Widget = () => {
       const { props, onPropChange } = useWidgetContext();
       return (
-        <div className='widget' style={WidgetModule.preferredSize}>
-          <InnerWidget className='w-full h-full' {...WidgetModule.defaultProps} {...props} onPropChange={onPropChange} />
+        <div className="widget" style={WidgetModule.preferredSize}>
+          <InnerWidget className="w-full h-full" {...WidgetModule.defaultProps} {...props} onPropChange={onPropChange} />
         </div>
       );
     };

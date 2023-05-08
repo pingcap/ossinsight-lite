@@ -60,7 +60,7 @@ export default function Widget ({ defaultSql, defaultDb, sql, currentDb, mode = 
   return (
     <div ref={ref} {...props} className={clsx('relative', props.className)}>
       <div className="w-full h-[calc(100%-240px)] flex">
-        <div className="max-w-[640px] flex flex-col w-full h-full gap-2">
+        <div className="max-w-[640px] flex flex-col w-full h-full">
           <SQLEditorHeader portal={portal} currentDb={currentDb} onCurrentDbChange={onCurrentDbChange} onRun={() => {
             execute({ sql, db: currentDb });
           }} running={running} />

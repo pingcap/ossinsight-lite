@@ -20,14 +20,14 @@
     "rect": [-12, -6, 4, 1]
   },
   {
+    "id": "followers-count",
     "name": "db/sql",
     "rect": [4, 0, 4, 3],
     "props": {
       "currentDb": "oh-my-github",
-      "sql": "SELECT * FROM curr_user;",
+      "sql": "SELECT followers_count FROM curr_user;",
       "visualize": {
-        "type": "value",
-        "path": [0, "followers_count"],
+        "type": "gauge",
         "title": "Followers Count"
       },
       "mode": "visualization"

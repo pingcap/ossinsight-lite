@@ -1,10 +1,10 @@
 import { VisualizeRuntimeProps, VisualizeType } from './common';
-import ValueVisualize from './ValueVisualize';
+import GaugeVisualize from './GaugeVisualize';
 
 export default function Visualize ({ ...props }: VisualizeType & VisualizeRuntimeProps) {
   switch (props.type) {
-    case 'value':
-      return <ValueVisualize {...props} />;
+    case 'gauge':
+      return <GaugeVisualize {...props} />;
     default:
       return <span>Unknown visualization</span>
   }

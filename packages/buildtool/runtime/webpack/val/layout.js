@@ -1,5 +1,4 @@
 const path = require('path');
-const fsp = require('fs/promises');
 
 module.exports = async function () {
   const dir = process.cwd();
@@ -7,6 +6,17 @@ module.exports = async function () {
   const content = require(fn);
 
   return {
-    code: `export default ${JSON.stringify(content, undefined, 2)}`
+    code: `let layout = ${JSON.stringify(content, undefined, 2)};
+    const storedLayout = localStorage.getItem('widgets:layout');
+    if (storedLayout) {
+      layout = JSON.parse(storedLayout)
+    }
+    
+    export default layout
+    
+    export function save (layout) {
+      localStorage.setItem('widgets:layout', JSON.stringify(layout));
+    }
+    `
   }
 }

@@ -9,4 +9,6 @@ declare module 'widgets:config' {
 declare module 'widgets:layout' {
   const layout: any;
   export default layout;
+
+  export function save (layout: any): any;
 }

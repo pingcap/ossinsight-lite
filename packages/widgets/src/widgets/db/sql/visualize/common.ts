@@ -11,11 +11,16 @@ export type VisualizeConfigProps = {
   onTypeChange: (type: VisualizeType['type']) => void;
 }
 
-export type VisualizeType = VisualizeValue;
+export type VisualizeType = VisualizeGauge;
 
 export type VisualizeValue = {
   type: 'value'
   path: (string | number)[]
+  title: string
+}
+
+export type VisualizeGauge = {
+  type: 'gauge'
   title: string
 }
 

@@ -1,3 +1,5 @@
+import { WidgetMode } from './Widget';
+
 export { default } from './Widget';
 
 export const preferredSize = {
@@ -14,3 +16,8 @@ export const defaultProps = {
     title: 'Followers Count',
   }
 };
+
+export const configurable = true;
+export const configurablePropsOverwrite = {
+  mode: WidgetMode.EDITOR,
+}

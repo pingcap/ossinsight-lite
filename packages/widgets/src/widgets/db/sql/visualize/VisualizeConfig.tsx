@@ -1,10 +1,10 @@
-import { VisualizeConfigProps, VisualizeType } from './common';
-import ValueVisualizeConfig from './ValueVisualizeConfig';
+import { VisualizeConfigProps, VisualizeGauge } from './common';
+import GaugeVisualizeConfig from './GaugeVisualizeConfig';
 
-export default function VisualizeConfig (props: VisualizeType & VisualizeConfigProps) {
+export default function VisualizeConfig (props: VisualizeGauge & VisualizeConfigProps) {
   switch (props.type) {
-    case 'value':
-      return <ValueVisualizeConfig {...props} />;
+    case 'gauge':
+      return <GaugeVisualizeConfig {...props} />;
     default:
       return <span>Unknown visualization</span>;
   }

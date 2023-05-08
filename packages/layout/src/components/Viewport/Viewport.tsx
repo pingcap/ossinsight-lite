@@ -3,7 +3,7 @@ import { Layout } from '../../core/layout/base.ts';
 import { DraggableContextProvider } from '../../context/draggable.ts';
 import './style.scss';
 import { useSize } from '../../hooks/size.ts';
-import { Size, toSizeStyle } from '../../core/types.ts';
+import { Rect, Size, toSizeStyle } from '../../core/types.ts';
 
 export interface ViewportProps {
   layout: Layout<any, any>;
@@ -11,9 +11,10 @@ export interface ViewportProps {
   width?: CSSProperties['width'];
   height?: CSSProperties['height'];
   onResize?: (size: Size) => void;
+  onDrag?: (id: string, rect: Rect) => void;
 }
 
-const Viewport: FC<ViewportProps> = function Viewport ({ layout, width, height, children, onResize }) {
+const Viewport: FC<ViewportProps> = function Viewport ({ layout, onDrag, width, height, children, onResize }) {
   const { ref: wrapperRef, size: wrapperSize } = useSize<HTMLDivElement>({ onResize });
 
   const onResizeRef = useRef(onResize);
@@ -31,7 +32,7 @@ const Viewport: FC<ViewportProps> = function Viewport ({ layout, width, height, 
   useTrackWindowResize();
 
   return (
-    <DraggableContextProvider value={{ layout }}>
+    <DraggableContextProvider value={{ layout, onDrag }}>
       <div ref={wrapperRef} className="viewport-wrapper" style={{ width, height }}>
         <div className="viewport" style={toSizeStyle(viewportSize)}>
           {children}
