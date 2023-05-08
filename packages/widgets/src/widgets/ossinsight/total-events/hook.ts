@@ -25,6 +25,8 @@ export interface EventsTotalState {
   abort (): void;
 }
 
+const API_BASE = `${process.env.OSSW_SITE_DOMAIN}/api/ossinsight`
+
 export const useEventsTotal = create<EventsTotalState>((set, get) => ({
   subscribers: 0,
   events: 0,
@@ -55,7 +57,7 @@ export const useEventsTotal = create<EventsTotalState>((set, get) => ({
 
     async function fetchTotal () {
       try {
-        const res = await fetch('https://api.ossinsight.io/q/events-total', {
+        const res = await fetch(`${API_BASE}/q/events-total`, {
           signal: controller.signal,
         });
         if (!res.ok) {
@@ -80,7 +82,7 @@ export const useEventsTotal = create<EventsTotalState>((set, get) => ({
         return;
       }
       try {
-        const res = await fetch(`https://api.ossinsight.io/q/events-increment?ts=${state.ts}`, {
+        const res = await fetch(`${API_BASE}/q/events-increment?ts=${state.ts}`, {
           signal: controller.signal,
         });
         if (!res.ok) {
