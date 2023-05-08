@@ -41,13 +41,15 @@ export default function Widget ({ defaultSql, defaultDb, sql, currentDb, mode = 
 
   const { execute, running, result, error } = useOperation<{ sql: string, db: string }, any>(doQuery);
 
+  const cb = usePrerenderCallback();
   useEffect(() => {
     if ((sql || defaultSql && currentDb)) {
       execute({ sql: sql || defaultSql, db: currentDb });
+    } else {
+      cb();
     }
   }, []);
 
-  const cb = usePrerenderCallback();
   useEffect(() => {
     if (!running && (result || error)) {
       cb();

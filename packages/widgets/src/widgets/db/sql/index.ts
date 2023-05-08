@@ -9,10 +9,9 @@ export const preferredSize = {
 
 export const defaultProps = {
   currentDb: 'oh-my-github',
-  sql: 'SELECT * FROM curr_user;',
+  sql: 'SELECT followers_count FROM curr_user;',
   visualize: {
-    type: 'value',
-    path: [0, 'followers_count'],
+    type: 'gauge',
     title: 'Followers Count',
   }
 };
