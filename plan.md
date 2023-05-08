@@ -28,7 +28,7 @@
 
 ### [1d] Admin
 
-- feature: config tracking users? / repos via web admin UI
+- feature: config tracking repos via web admin UI
 
 
 ## [1d] Cards
@@ -37,13 +37,15 @@
 - sql editor
 
 
-hooopo TODO:
-- [?] from config to db
-- [2d] merge repos
+- [1d] merge repos
   - merge config env
 
 
-7.5+?d
+6.5+?d
+
+
+hooopo TODO:
+- [?] from config to db
 
 
 merged dir:

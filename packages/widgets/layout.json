@@ -1,0 +1,36 @@
+[
+  {
+    "name": "internal:Navigator",
+    "rect": [-12, -5, 4, 1]
+  },
+  {
+    "name": "internal:Title",
+    "rect": [-2, -7, 4, 4]
+  },
+  {
+    "name": "github/recent-events",
+    "rect": [4, -4, 8, 4]
+  },
+  {
+    "name": "oh-my-github/personal-overview",
+    "rect": [-12, -4, 16, 8]
+  },
+  {
+    "name": "ossinsight/total-events",
+    "rect": [-12, -6, 4, 1]
+  },
+  {
+    "name": "db/sql",
+    "rect": [4, 0, 4, 3],
+    "props": {
+      "currentDb": "oh-my-github",
+      "sql": "SELECT * FROM curr_user;",
+      "visualize": {
+        "type": "value",
+        "path": [0, "followers_count"],
+        "title": "Followers Count"
+      },
+      "mode": "visualization"
+    }
+  }
+]

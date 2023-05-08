@@ -1,22 +1,19 @@
 {
   "compilerOptions": {
-    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "composite": true,
+    "lib": ["ESNext"],
     "target": "ESNext",
     "module": "ESNext",
-    "moduleResolution": "Node",
+    "moduleResolution": "NodeNext",
     "esModuleInterop": true,
     "isolatedModules": true,
+    "resolveJsonModule": true,
     "strict": false,
-    "jsx": "react-jsx",
     "types": [
     ]
   },
   "include": [
-    "src"
-  ],
-  "references": [
-    {
-      "path": "./tsconfig.api.json"
-    }
+    "api",
+    ".osswrc.json"
   ]
 }

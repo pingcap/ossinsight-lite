@@ -10,7 +10,9 @@ const configSchema = yup.object({
   })),
 });
 
-let resolvedConfig: ReturnType<typeof configSchema['validateSync']> | null;
+export type Config = ReturnType<typeof configSchema['validateSync']>;
+
+let resolvedConfig: Config & { __filename?: string } | null;
 
 export async function getConfig () {
   if (resolvedConfig) {
@@ -20,9 +22,9 @@ export async function getConfig () {
   const res = await cosmiconfig('ossw').search(process.cwd());
 
   const rawConfig = { ...res?.config };
-  const config = await configSchema.validate(rawConfig);
 
-  resolvedConfig = config;
+  resolvedConfig = await configSchema.validate(rawConfig);
+  resolvedConfig.__filename = res?.filepath;
 
-  return config;
+  return resolvedConfig;
 }

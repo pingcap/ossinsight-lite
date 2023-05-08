@@ -3,6 +3,7 @@
     "lib": ["ESNext"],
     "target": "ESNext",
     "module": "ESNext",
+    "declaration": true,
     "moduleResolution": "NodeNext",
     "isolatedModules": true,
     "esModuleInterop": true,
@@ -11,5 +12,9 @@
     "skipLibCheck": true,
     "outDir": "dist"
   },
-  "include": ["webpack", "bin", "utils"]
+  "include": [
+    "webpack",
+    "bin",
+    "utils"
+  ]
 }

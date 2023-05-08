@@ -6,6 +6,7 @@ import widgetsManifest from './widgets-manifest';
 import List from './pages/List';
 import Home from './pages/Home';
 import Widget from './pages/WidgetLayout';
+import { useWidgetContext } from './components/WidgetContext';
 
 window.React = React;
 window.ReactDOM = ReactDOM;
@@ -41,9 +42,10 @@ function createWidgetComponent (name: string) {
     const WidgetModule = await widgetsManifest[name].module();
     const InnerWidget = WidgetModule.default;
     const Widget = () => {
+      const { props, onPropChange } = useWidgetContext();
       return (
         <div className='widget' style={WidgetModule.preferredSize}>
-          <InnerWidget className='w-full h-full' />
+          <InnerWidget className='w-full h-full' {...WidgetModule.defaultProps} {...props} onPropChange={onPropChange} />
         </div>
       );
     };

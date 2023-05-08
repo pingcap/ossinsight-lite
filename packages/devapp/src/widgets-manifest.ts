@@ -1,7 +1,11 @@
 import { ComponentType, CSSProperties, HTMLProps } from 'react';
 
 type Widgets = Record<string, Widget>
-type WidgetModule = { default: ComponentType<HTMLProps<HTMLDivElement>>, preferredSize?: CSSProperties }
+type WidgetModule = {
+  default: ComponentType<HTMLProps<HTMLDivElement>>,
+  preferredSize?: CSSProperties,
+  defaultProps?: Record<string, any>,
+}
 type Widget = {
   module: () => Promise<WidgetModule>
   source: string

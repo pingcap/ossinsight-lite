@@ -13,7 +13,7 @@ export default async function main (options: Options = {}) {
     }
   });
 
-  const config = { ...await getConfig(), ...options };
+  const { __filename, ...config } = { ...await getConfig(), ...options };
 
   await webpack('page', {
     'OSSW_SITE_DOMAIN': config.siteDomain,

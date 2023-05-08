@@ -1,10 +1,10 @@
 import cp from 'child_process';
-import { webpackBuildSrc } from '../../webpack/utils/path.js';
+import { cwd, webpackBuildSrc } from '../../webpack/utils/path.js';
 import Webpack, { Configuration } from 'webpack';
 import { merge } from 'webpack-merge';
 import chalk from 'chalk';
 
-interface ProcessPromise<T> extends Promise<T> {
+export interface ProcessPromise<T> extends Promise<T> {
   abort (reason?: any): void;
 }
 
@@ -50,8 +50,9 @@ export async function webpack (config: string, env?: Record<string, string>) {
   console.log('[webpack]', config);
 
   const conf = (await import(webpackBuildSrc(`${config}.config.js`))).default;
+  const clientConf = (await tryImport(`webpack.config.js`))?.default;
   return new Promise<void>((resolve, reject) => {
-    Webpack(merge(conf, {
+    Webpack(merge(conf, { ...clientConf }, {
       plugins: [
         new Webpack.EnvironmentPlugin(env ?? {}),
       ],
@@ -73,4 +74,8 @@ export async function webpack (config: string, env?: Record<string, string>) {
       }
     });
   });
+}
+
+export function tryImport (path: string) {
+  return import(cwd(path)).catch(err => null)
 }

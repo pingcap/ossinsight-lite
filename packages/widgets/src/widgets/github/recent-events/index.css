@@ -3,7 +3,7 @@
 }
 
 .widget .recent-events {
-  @apply text-gray-900;
+  @apply text-gray-900 overflow-hidden;
 }
 .widget .recent-events a {
   @apply text-blue-800;

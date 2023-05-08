@@ -1,0 +1,15 @@
+@import "react-awesome-animated-number/dist/index.css";
+
+
+.sql-result-table {
+  @apply table-auto;
+
+}
+
+.sql-result-table td, .sql-result-table th {
+  @apply px-2 border;
+}
+
+.sql-result-table tbody {
+
+}

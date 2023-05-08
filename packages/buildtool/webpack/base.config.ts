@@ -4,6 +4,7 @@ import SQLPlugin from './plugins/db/SQLPlugin.js';
 import { buildtoolSrc, webpackBuildSrc } from './utils/path.js';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import reportPlugin from './plugins/ReportPlugin.js';
+import appSchemePlugin from './plugins/AppSchemePlugin.js';
 
 export default {
   entry: {
@@ -18,6 +19,7 @@ export default {
     topLevelAwait: true,
   },
   plugins: [
+    appSchemePlugin(),
     new SQLPlugin(),
     reportPlugin(),
   ],
@@ -49,6 +51,12 @@ export default {
             ],
           },
         },
+      },
+      {
+        test: /webpack\/val\/[^.]+\.js$/,
+        use: [
+          'val-loader',
+        ],
       },
       {
         test: /\.s?css$/i,

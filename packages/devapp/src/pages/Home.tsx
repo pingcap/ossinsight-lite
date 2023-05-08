@@ -3,36 +3,20 @@ import GridLayout from '@oss-widgets/layout/src/components/GridLayout';
 import { ComponentType, HTMLProps, lazy, ReactElement, Suspense } from 'react';
 import widgets from '../widgets-manifest';
 import * as layoutComponents from '../layout-components';
+import layout from 'widgets:layout';
 
 export default function Home () {
   return (
     <GridLayout gridSize={40} gap={8} width="100vw" height="100vh" guideUi>
-      <Components items={items} render={render} draggable />
+      <Components items={layout} render={render} draggable />
     </GridLayout>
   );
 }
 
-const items: Item[] = [{
-  name: 'internal:Navigator',
-  rect: [-12, -5, 4, 1],
-}, {
-  name: 'internal:Title',
-  rect: [-2, -7, 4, 4],
-}, {
-  name: 'github/recent-events',
-  rect: [4, -4, 8, 4],
-}, {
-  name: 'oh-my-github/personal-overview',
-  rect: [-12, -4, 16, 8],
-}, {
-  name: 'ossinsight/total-events',
-  rect: [-12, -6, 4, 1],
-},
-];
-
 const cache: Record<string, ComponentType<HTMLProps<any>>> = {};
 
 function render (name: string, props?: Record<string, any>): ReactElement {
+  console.log(props);
   let Component: ComponentType<HTMLProps<any>>;
   if (name.startsWith('internal:')) {
     const componentName = name.split(':')[1];
@@ -50,9 +34,9 @@ function render (name: string, props?: Record<string, any>): ReactElement {
   }
 
   return (
-    <div className="widget" {...props}>
+    <div className="widget">
       <Suspense fallback="loading...">
-        <Component style={{ width: '100%', height: '100%' }} />
+        <Component style={{ width: '100%', height: '100%' }} {...props} />
       </Suspense>
     </div>
   );

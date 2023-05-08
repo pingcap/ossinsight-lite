@@ -1,7 +1,7 @@
 dist-browser
 tsconfig.build.tsbuildinfo
 .db
-.env.local
+.env
 .vercel
 page-dist
 .cache

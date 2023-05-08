@@ -1,9 +1,10 @@
-import { cloneElement, lazy, ReactElement, useEffect, useMemo, useState } from 'react';
+import { cloneElement, lazy, ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import manifest, { WidgetModule } from '../widgets-manifest';
 
 import CopyButton from './CopyButton';
 import { Light as SyntaxHighlight, SyntaxHighlighterProps } from 'react-syntax-highlighter';
 import ClientOnly from './ClientOnly';
+import { WidgetContext } from './WidgetContext';
 
 async function SyntaxHighlightLazy () {
   const [xml, js, style] = await Promise.all([
@@ -33,6 +34,7 @@ const origin = process.env.OSSW_SITE_DOMAIN;
 
 export default function WidgetWrapper ({ name, children }: WidgetWrapperProps) {
   const [module, setModule] = useState<WidgetModule>();
+  const { props, updateProp } = useWidgetProps();
 
   useEffect(() => {
     manifest[name].module().then(module => setModule(module));
@@ -54,18 +56,26 @@ export default function WidgetWrapper ({ name, children }: WidgetWrapperProps) {
   ReactDOM
     .createRoot(document.getElementById('widget'))
     .render(React.createElement(Widget, {
-      style: ${JSON.stringify(module?.preferredSize)}
+      style: ${JSON.stringify(module?.preferredSize)},
+      ...(${JSON.stringify({ ...module?.defaultProps, ...props }, undefined, 2).replace(/\n/g, '\n      ')})
     }))
 </script>
 `;
-  }, [name, module?.preferredSize]);
+  }, [name, module?.preferredSize, module?.defaultProps, props]);
 
   return (
     <div className="py-4 w-full min-h-screen flex flex-col items-center justify-center bg-gray-100">
       <main className="bg-white shadow-lg">
-        {cloneElement(children, {
-          style: { ...module?.preferredSize },
-        })}
+        <WidgetContext
+          value={{
+            props,
+            onPropChange: updateProp,
+          }}
+        >
+          {cloneElement(children, {
+            style: { ...module?.preferredSize },
+          })}
+        </WidgetContext>
       </main>
       <div className="w-[680px]">
         <div className="mt-2 p-2 text-gray-400 border rounded bg-white">
@@ -89,4 +99,17 @@ export default function WidgetWrapper ({ name, children }: WidgetWrapperProps) {
       </div>
     </div>
   );
+}
+
+function useWidgetProps () {
+  const [props, setProps] = useState<Record<string, any>>({})
+
+  const updateProp = useCallback((name: string, value: any) => {
+    setProps(props => ({ ...props, [name]: value }))
+  }, [])
+
+  return {
+    props,
+    updateProp,
+  }
 }
