@@ -65,7 +65,7 @@ export default async function main () {
   } catch (e) {
     throw e;
   } finally {
-    serveProcess.abort('shutdown');
+    serveProcess.kill('SIGTERM');
   }
 }
 

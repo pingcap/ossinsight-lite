@@ -27,7 +27,12 @@ export default async function (req: VercelRequest, res: VercelResponse) {
     return;
   }
 
-  const conn = await createConnection(process.env[target.env]);
+  const dbUri = process.env[target.env];
+  if (!dbUri) {
+    res.status(500).json({ reason: `${target.env} not configured` })
+  }
+
+  const conn = await createConnection(dbUri);
 
   try {
     const start = Date.now();
