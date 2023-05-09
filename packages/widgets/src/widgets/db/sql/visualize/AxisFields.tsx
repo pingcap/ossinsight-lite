@@ -21,6 +21,11 @@ export default function AxisFields<Axis extends BaseAxis> ({ axis }: AxisFieldsP
         control={<input className="outline-none flex-1 border-b px-2 py-1" placeholder="Input a title" />}
         name={`${axis}.label`}
       />
+      <Field
+        label="Axis type"
+        control={<input className="outline-none flex-1 border-b px-2 py-1" placeholder="Input a title" />}
+        name={`${axis}.type`}
+      />
     </fieldset>
   );
 }

@@ -34,7 +34,7 @@ export default function ResultDisplay ({ editing = false, portal, visualize, res
           {visualize ? <Visualize {...visualize} result={result} running={running} /> : <pre className="overflow-auto">{JSON.stringify(result, undefined, 2)}</pre>}
         </div>
         <div className="max-h-[320px] min-h-[240px] w-full p-4 border-t">
-          <Form className="overflow-auto" values={visualize} onChange={onVisualizeChange}>
+          <Form className="max-h-full overflow-auto" values={visualize} onChange={onVisualizeChange}>
             <Suspense fallback="Loading...">
               <VisualizeConfig {...visualize} />
             </Suspense>

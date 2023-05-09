@@ -9,7 +9,10 @@ export type VisualizeConfigProps = {
   portal?: HTMLDivElement | null
 }
 
-export type VisualizeType = VisualizeGauge | VisualizeLineChart;
+export type VisualizeType =
+  VisualizeGauge |
+  VisualizeLineChart |
+  VisualizeBarChart;
 
 export type VisualizeGauge = {
   type: 'gauge'
@@ -23,12 +26,20 @@ export type Axis = {
   color?: string
 }
 
-export type VisualizeLineChart = {
-  type: 'chart:line'
+export type VisualizeXYChart = {
   title: string
   x: Axis
   y: Axis
 }
+
+export type VisualizeLineChart = VisualizeXYChart & {
+  type: 'chart:line'
+}
+
+export type VisualizeBarChart = VisualizeXYChart & {
+  type: 'chart:bar'
+}
+
 
 export function getValue (result: any, path: (string | number)[]) {
   return path.reduce((value, index) => value?.[index], result);

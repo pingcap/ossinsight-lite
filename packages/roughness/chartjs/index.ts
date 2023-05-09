@@ -1,5 +1,7 @@
 import rc from 'roughjs';
-import { defaults, LineElement, plugins, Scale } from 'chart.js';
+import { BarElement, defaults, LineElement, plugins, Scale } from 'chart.js';
+import type BarElementType from 'chart.js/dist/elements/element.bar';
+import type LineElementType from 'chart.js/dist/elements/element.line';
 
 defaults.font.family = 'CabinSketch';
 defaults.scale.grid.display = false;
@@ -17,7 +19,7 @@ Scale.prototype.drawGrid = function (chartArea) {
   c.line(chartArea.left, chartArea.top, chartArea.left, chartArea.bottom);
 };
 
-LineElement.prototype.draw = function (this: LineElement, ctx) {
+LineElement.prototype.draw = function (this: LineElementType, ctx) {
   const c = rc.canvas(ctx.canvas, {
     options: {
       stroke: this.options.borderColor as string,
@@ -31,6 +33,73 @@ LineElement.prototype.draw = function (this: LineElement, ctx) {
     c.line(lastPoint.x, lastPoint.y, point.x, point.y, { seed: 0 });
     lastPoint = point;
   }
+
+  if (this.animated) {
+    this._pointsUpdated = false;
+    this._path = undefined;
+  }
+};
+
+BarElement.prototype.draw = function (this: BarElementType, ctx) {
+  const c = rc.canvas(ctx.canvas, {
+    options: {
+      stroke: this.options.borderColor as string,
+      fill: this.options.backgroundColor as string,
+    },
+  });
+
+  const getBarBounds = (bar: typeof this, useFinalPosition: boolean) => {
+    const { x, y, base, width, height } = bar.getProps([
+      'x',
+      'y',
+      'base',
+      'width',
+      'height',
+    ], useFinalPosition);
+    let left: number, right: number, top: number, bottom: number, half: number;
+    if (bar.horizontal) {
+      half = height / 2;
+      left = Math.min(x, base);
+      right = Math.max(x, base);
+      top = y - half;
+      bottom = y + half;
+    } else {
+      half = width / 2;
+      left = x - half;
+      right = x + half;
+      top = Math.min(y, base);
+      bottom = Math.max(y, base);
+    }
+    return {
+      left,
+      top,
+      right,
+      bottom,
+    };
+  };
+
+  const { left, top, right, bottom } = getBarBounds(this, false);
+
+  let path: [number, number][];
+  if (this.horizontal) {
+    path = [
+      [left, top],
+      [right, top],
+      [right, bottom],
+      [left, bottom],
+    ];
+  } else {
+    path = [
+      [left, bottom],
+      [left, top],
+      [right, top],
+      [right, bottom],
+    ];
+  }
+  c.linearPath(path);
+  c.polygon(path, {
+    stroke: 'none',
+  })
 };
 
 const originalBeforeDatasetDraw = plugins.Filler.beforeDatasetDraw;
@@ -57,7 +126,7 @@ plugins.Filler.beforeDatasetDraw = function (chart, args, options) {
       points.unshift(points[0].slice());
 
       c.polygon(points, {
-        stroke: 'transparent',
+        stroke: 'none',
         seed: 0,
       });
       return;

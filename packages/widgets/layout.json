@@ -36,7 +36,7 @@
   {
     "id": "tidb-star-history",
     "name": "db/sql",
-    "rect": [-8, 1, 12, 6],
+    "rect": [-8, 1, 10, 6],
     "props": {
       "currentDb": "repo-track",
       "sql": "SELECT DATE_FORMAT(sr.starred_at, '%Y-%m')                                                 AS v_month,\n       COUNT(*)                                                                            AS v_stars,\n       (SELECT COUNT(*)\n        FROM starred_repos csr\n                 LEFT JOIN repos r ON r.id = csr.repo_id\n        WHERE DATE_FORMAT(sr.starred_at, '%Y-%m') >= DATE_FORMAT(csr.starred_at, '%Y-%m')) AS v_total\nFROM starred_repos sr\n         LEFT JOIN repos r ON r.id = sr.repo_id\nWHERE r.name = 'tidb'\n  AND r.owner = 'pingcap'\nGROUP BY 1\nORDER BY 1",
@@ -53,6 +53,30 @@
           "label": "Stars"
         },
         "title": "Star history of pingcap/tidb"
+      },
+      "mode": "visualization"
+    }
+  },
+  {
+    "id": "recent-focused-on",
+    "name": "db/sql",
+    "rect": [2, 1, 10, 6],
+    "props": {
+      "currentDb": "oh-my-github",
+      "sql": "WITH common AS (SELECT DATE_ADD(NOW(), INTERVAL -3 MONTH) AS recent_days),\n     activities AS (SELECT repo_id, user_id, id AS _id, 'issue' AS type\n                    FROM issues\n                    WHERE created_at > (SELECT recent_days FROM common)\n                    UNION\n                    SELECT repo_id, user_id, id AS _id, 'pr' AS type\n                    FROM pull_requests\n                    WHERE created_at > (SELECT recent_days FROM common)\n                    UNION\n                    SELECT repo_id, user_id, starred_repos.repo_id AS _id, 'star' AS type\n                    FROM starred_repos\n                    WHERE starred_at > (SELECT recent_days FROM common)\n                    UNION\n                    SELECT repo_id, user_id, id AS _id, 'issue_comment' AS type\n                    FROM issue_comments\n                    WHERE created_at > (SELECT recent_days FROM common))\nSELECT IFNULL(CONCAT(r.owner, '/', r.name), '(unknown)') AS repo,\n       COUNT(*)                                          AS activities\nFROM activities a\n         LEFT JOIN repos r ON a.repo_id = r.id\nWHERE a.user_id = (SELECT id FROM curr_user)\nGROUP BY 1 ORDER BY 2 DESC",
+      "visualize": {
+        "type": "chart:bar",
+        "x": {
+          "type": "value",
+          "field": "activities",
+          "label": "Activities"
+        },
+        "y": {
+          "type": "category",
+          "field": "repo",
+          "label": "Repo"
+        },
+        "title": "Recently focused on"
       },
       "mode": "visualization"
     }

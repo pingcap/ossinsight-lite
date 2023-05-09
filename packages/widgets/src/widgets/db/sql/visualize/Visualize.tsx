@@ -3,6 +3,7 @@ import { lazy } from 'react';
 
 const GaugeVisualize = lazy(() => import('./GaugeVisualize'));
 const LineChartVisualize = lazy(() => import('./LineChartVisualize'));
+const BarChartVisualize = lazy(() => import('./BarChartVisualize'));
 
 export default function Visualize ({ ...props }: VisualizeType & VisualizeRuntimeProps) {
   switch (props.type) {
@@ -10,6 +11,8 @@ export default function Visualize ({ ...props }: VisualizeType & VisualizeRuntim
       return <GaugeVisualize {...props} />;
     case 'chart:line':
       return <LineChartVisualize {...props} />;
+    case 'chart:bar':
+      return <BarChartVisualize {...props} />;
     default:
       return <span>Unknown visualization</span>;
   }
