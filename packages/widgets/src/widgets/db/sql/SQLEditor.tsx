@@ -9,7 +9,7 @@ export interface SQLEditorProps {
 export default function SQLEditor ({ sql, defaultSql, onSqlChange }: SQLEditorProps) {
   return (
     <Editor
-      className='flex-1 w-full'
+      className='h-full w-full'
       value={sql}
       defaultLanguage="mysql"
       defaultValue={defaultSql}

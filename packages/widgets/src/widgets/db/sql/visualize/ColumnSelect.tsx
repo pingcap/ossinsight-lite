@@ -42,7 +42,7 @@ const ColumnSelect = forwardRef<HTMLButtonElement | null, ColumnSelectProps>(({
         </Select.Icon>
       </Select.Trigger>
       <Select.Portal container={portal}>
-        <Select.Content className="overflow-hidden max-h-[280px] bg-white rounded shadow" position="popper">
+        <Select.Content className="overflow-hidden z-50 max-h-[280px] bg-white rounded shadow" position="popper">
           <Select.ScrollUpButton className="flex items-center justify-center h-[25px] bg-white text-violet11 cursor-default">
             <RoughSvg>
               <ChevronUpIcon />

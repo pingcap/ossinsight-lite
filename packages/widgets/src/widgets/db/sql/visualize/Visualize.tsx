@@ -1,5 +1,6 @@
 import { VisualizeRuntimeProps, VisualizeType } from './common';
 import { lazy } from 'react';
+import ResultTable from '../ResultTable';
 
 const GaugeVisualize = lazy(() => import('./GaugeVisualize'));
 const LineChartVisualize = lazy(() => import('./LineChartVisualize'));
@@ -7,6 +8,8 @@ const BarChartVisualize = lazy(() => import('./BarChartVisualize'));
 
 export default function Visualize ({ ...props }: VisualizeType & VisualizeRuntimeProps) {
   switch (props.type) {
+    case 'table':
+      return <ResultTable {...props} />
     case 'gauge':
       return <GaugeVisualize {...props} />;
     case 'chart:line':

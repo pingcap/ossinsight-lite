@@ -10,9 +10,15 @@ export type VisualizeConfigProps = {
 }
 
 export type VisualizeType =
+  VisualizeTable |
   VisualizeGauge |
   VisualizeLineChart |
   VisualizeBarChart;
+
+export type VisualizeTable = {
+  type: 'table'
+  title: string
+}
 
 export type VisualizeGauge = {
   type: 'gauge'
@@ -39,7 +45,6 @@ export type VisualizeLineChart = VisualizeXYChart & {
 export type VisualizeBarChart = VisualizeXYChart & {
   type: 'chart:bar'
 }
-
 
 export function getValue (result: any, path: (string | number)[]) {
   return path.reduce((value, index) => value?.[index], result);

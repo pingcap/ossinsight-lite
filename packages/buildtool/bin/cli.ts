@@ -74,7 +74,7 @@ program
   .option('-p --path <path>', 'output path')
   .option('--label <label>', 'aria label')
   .action(async (rawProvider: string, name: string, options: any) => {
-    const provider = await yup.string().oneOf(['octicons']).required().validate(rawProvider);
+    const provider = await yup.string().oneOf(['octicons', 'twbs']).required().validate(rawProvider);
     const fn = await import('./checkout-icon/index.js').then(module => module.default(provider, name, options));
     console.log(`Checkout ${provider}/${name} at ${fn}`);
   });

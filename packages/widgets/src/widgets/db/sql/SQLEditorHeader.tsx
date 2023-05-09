@@ -4,16 +4,19 @@ import { SelectItemProps } from '@radix-ui/react-select';
 import config from 'widgets:config';
 import { forwardRef } from 'react';
 import clsx from 'clsx';
+import SlidersIcon from '../../../icons/twbs/sliders.svg';
+import RoughSvg from '@oss-widgets/roughness/components/RoughSvg';
 
 export interface SQLEditorHeaderProps {
   onRun?: () => void;
-  running?: boolean
+  onVisualize?: () => void;
+  running?: boolean;
   portal?: HTMLDivElement | null;
   currentDb?: string;
   onCurrentDbChange?: (db: string) => void;
 }
 
-export default function SQLEditorHeader ({ portal, currentDb, onCurrentDbChange, onRun, running = false }: SQLEditorHeaderProps) {
+export default function SQLEditorHeader ({ portal, currentDb, onCurrentDbChange, onRun, onVisualize, running = false }: SQLEditorHeaderProps) {
   return (
     <Toolbar.Root
       className="flex w-full min-w-max h-8 p-1 relative"
@@ -30,7 +33,7 @@ export default function SQLEditorHeader ({ portal, currentDb, onCurrentDbChange,
           {currentDb ? <CurrentDb db={currentDb} /> : <Fallback />}
         </Select.Trigger>
         <Select.Portal container={portal}>
-          <Select.Content className="overflow-hidden bg-white rounded shadow" position='popper'>
+          <Select.Content className="overflow-hidden bg-white rounded shadow" position="popper">
             <Select.Viewport>
               {config.db.map(db => (
                 <SelectItem key={db.name} value={db.name} />
@@ -40,7 +43,17 @@ export default function SQLEditorHeader ({ portal, currentDb, onCurrentDbChange,
         </Select.Portal>
       </Select.Root>
       <Toolbar.Button
-        className={clsx("text-white bg-gray-500 rounded ml-auto text-sm px-4")}
+        className={clsx('inline-flex items-center gap-1 text-white bg-gray-500 rounded ml-auto text-sm px-4')}
+        disabled={running}
+        onClick={onVisualize}
+      >
+        <RoughSvg>
+          <SlidersIcon width={14} height={14} />
+        </RoughSvg>
+        Visualize
+      </Toolbar.Button>
+      <Toolbar.Button
+        className={clsx('text-white bg-gray-500 rounded ml-2 text-sm px-4')}
         disabled={running}
         onClick={onRun}
       >
