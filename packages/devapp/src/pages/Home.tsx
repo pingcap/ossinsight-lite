@@ -36,7 +36,7 @@ export default function Home () {
   );
 }
 
-type ResolvedComponentType = ComponentType<HTMLProps<any>>;
+type ResolvedComponentType = ComponentType<any>;
 const cache: Record<string, ResolvedComponentType> = {};
 
 function render (id: string, name: string, props: Record<string, any> | undefined, draggable: boolean): ReactElement {
@@ -44,7 +44,7 @@ function render (id: string, name: string, props: Record<string, any> | undefine
   if (name.startsWith('internal:')) {
     const componentName = name.split(':')[1];
     Component = (layoutComponents as any)[componentName];
-    return <Component {...props} />;
+    return <Component _id={id} {...props} />;
   }
 
   Component = cache[name];
@@ -57,7 +57,7 @@ function render (id: string, name: string, props: Record<string, any> | undefine
       const C: ResolvedComponentType = module.default;
       const configurable = module.configurable;
       return {
-        default: cache[name] = ({ draggable, ...props }: any) => (
+        default: cache[name] = ({ _id: id, draggable, ...props }: any) => (
           <>
             {draggable && configurable && (
               <Link className="absolute right-0.5 top-0.5 z-10" data-layer-item to={`/edit/${encodeURIComponent(id)}`}>
@@ -77,7 +77,7 @@ function render (id: string, name: string, props: Record<string, any> | undefine
     <div className="widget relative">
       <Suspense fallback="loading...">
         <>
-          <Component style={{ width: '100%', height: '100%' }} {...props} draggable={draggable} />
+          <Component style={{ width: '100%', height: '100%' }} {...props} _id={id} draggable={draggable} />
         </>
       </Suspense>
     </div>
