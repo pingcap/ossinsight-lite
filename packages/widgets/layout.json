@@ -1,34 +1,58 @@
 [
   {
     "name": "internal:Navigator",
-    "rect": [-12, -5, 4, 1]
+    "rect": [8, 0, 4, 1]
   },
   {
     "name": "internal:Title",
-    "rect": [-2, -7, 4, 4]
+    "rect": [-4, -10, 4, 4]
   },
   {
     "name": "github/recent-events",
-    "rect": [4, -4, 8, 4]
+    "rect": [4, -6, 8, 4]
   },
   {
     "name": "oh-my-github/personal-overview",
-    "rect": [-12, -4, 16, 8]
+    "rect": [-12, -7, 16, 8]
   },
   {
     "name": "ossinsight/total-events",
-    "rect": [-12, -6, 4, 1]
+    "rect": [8, -2, 4, 1]
   },
   {
     "id": "followers-count",
     "name": "db/sql",
-    "rect": [4, 0, 4, 3],
+    "rect": [4, -2, 4, 3],
     "props": {
       "currentDb": "oh-my-github",
       "sql": "SELECT followers_count FROM curr_user;",
       "visualize": {
         "type": "gauge",
         "title": "Followers Count"
+      },
+      "mode": "visualization"
+    }
+  },
+  {
+    "id": "tidb-star-history",
+    "name": "db/sql",
+    "rect": [-8, 1, 12, 6],
+    "props": {
+      "currentDb": "repo-track",
+      "sql": "SELECT DATE_FORMAT(sr.starred_at, '%Y-%m')                                                 AS v_month,\n       COUNT(*)                                                                            AS v_stars,\n       (SELECT COUNT(*)\n        FROM starred_repos csr\n                 LEFT JOIN repos r ON r.id = csr.repo_id\n        WHERE DATE_FORMAT(sr.starred_at, '%Y-%m') >= DATE_FORMAT(csr.starred_at, '%Y-%m')) AS v_total\nFROM starred_repos sr\n         LEFT JOIN repos r ON r.id = sr.repo_id\nWHERE r.name = 'tidb'\n  AND r.owner = 'pingcap'\nGROUP BY 1\nORDER BY 1",
+      "visualize": {
+        "type": "chart:line",
+        "x": {
+          "type": "month",
+          "field": "v_month",
+          "label": "Month"
+        },
+        "y": {
+          "type": "value",
+          "field": "v_stars",
+          "label": "Stars"
+        },
+        "title": "Star history of pingcap/tidb"
       },
       "mode": "visualization"
     }

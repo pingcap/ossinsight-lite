@@ -7,21 +7,27 @@ export type VisualizeConfigProps = {
   columns: { name: string }[] | undefined
   running: any
   portal?: HTMLDivElement | null
-  onPropChange: (key: Exclude<keyof VisualizeType, 'type'>, value: any) => void;
-  onTypeChange: (type: VisualizeType['type']) => void;
 }
 
-export type VisualizeType = VisualizeGauge;
-
-export type VisualizeValue = {
-  type: 'value'
-  path: (string | number)[]
-  title: string
-}
+export type VisualizeType = VisualizeGauge | VisualizeLineChart;
 
 export type VisualizeGauge = {
   type: 'gauge'
   title: string
+}
+
+export type Axis = {
+  type: 'category' | 'value' | 'datetime' | 'day' | 'month' | 'year'
+  field: string
+  label?: string
+  color?: string
+}
+
+export type VisualizeLineChart = {
+  type: 'chart:line'
+  title: string
+  x: Axis
+  y: Axis
 }
 
 export function getValue (result: any, path: (string | number)[]) {

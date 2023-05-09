@@ -69,6 +69,7 @@ export default {
               postcssOptions: {
                 syntax: 'postcss-scss',
                 plugins: {
+                  'postcss-import': {},
                   'postcss-preset-env': {},
                   'tailwindcss/nesting': {},
                   'tailwindcss': {},

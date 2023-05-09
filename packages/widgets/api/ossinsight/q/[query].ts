@@ -12,7 +12,7 @@ export default async function (req: VercelRequest, res: VercelResponse) {
     }
   });
 
-  const response = await fetch(uri)
+  const response = await fetch(uri.toString())
 
   res.status(response.status).json(await response.json());
 }

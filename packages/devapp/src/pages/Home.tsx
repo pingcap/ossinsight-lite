@@ -60,7 +60,7 @@ function render (id: string, name: string, props: Record<string, any> | undefine
         default: cache[name] = ({ draggable, ...props }: any) => (
           <>
             {draggable && configurable && (
-              <Link className="absolute right-0.5 top-0.5" data-layer-item to={`/edit/${encodeURIComponent(id)}`}>
+              <Link className="absolute right-0.5 top-0.5 z-10" data-layer-item to={`/edit/${encodeURIComponent(id)}`}>
                 <RoughSvg>
                   <PencilIcon width="1em" height="1em" />
                 </RoughSvg>

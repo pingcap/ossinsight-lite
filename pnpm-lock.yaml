@@ -73,6 +73,9 @@ importers:
       ora:
         specifier: ^6.3.0
         version: 6.3.0
+      postcss-import:
+        specifier: ^15.1.0
+        version: 15.1.0(postcss@8.4.23)
       postcss-loader:
         specifier: ^7.2.4
         version: 7.2.4(@types/node@18.15.13)(postcss@8.4.23)(ts-node@10.9.1)(typescript@5.0.4)(webpack@5.81.0)
@@ -223,6 +226,25 @@ importers:
         specifier: ^4.5.2
         version: 4.5.2
 
+  packages/ui:
+    dependencies:
+      react-hook-form:
+        specifier: ^7.43.9
+        version: 7.43.9(react@18.2.0)
+    devDependencies:
+      '@types/react':
+        specifier: ^18.0.38
+        version: 18.0.38
+      '@types/react-dom':
+        specifier: ^18.0.11
+        version: 18.0.11
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+      react-dom:
+        specifier: ^18.2.0
+        version: 18.2.0(react@18.2.0)
+
   packages/widgets:
     dependencies:
       mysql2:
@@ -247,6 +269,9 @@ importers:
       '@oss-widgets/roughness':
         specifier: workspace:*
         version: link:../roughness
+      '@oss-widgets/ui':
+        specifier: workspace:^
+        version: link:../ui
       '@radix-ui/react-form':
         specifier: ^0.0.2
         version: 0.0.2(react-dom@18.2.0)(react@18.2.0)
@@ -7128,7 +7153,6 @@ packages:
     hasBin: true
     dependencies:
       js-tokens: 4.0.0
-    dev: true
 
   /lower-case@2.0.2:
     resolution: {integrity: sha512-7fm3l3NAF9WfN6W3JOmf5drwpVqX78JtoGJ3A6W0a6ZnldM41w2fV5D490psKFTpMds8TJse/eHLFFsNHHjHgg==}
@@ -8483,6 +8507,18 @@ packages:
       read-cache: 1.0.0
       resolve: 1.22.2
 
+  /postcss-import@15.1.0(postcss@8.4.23):
+    resolution: {integrity: sha512-hpr+J05B2FVYUAXHeK1YyI267J/dDDhMU6B6civm8hSY1jYJnBXxzKDKDswzJmtLHryrjhnDjqqp/49t8FALew==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      postcss: ^8.0.0
+    dependencies:
+      postcss: 8.4.23
+      postcss-value-parser: 4.2.0
+      read-cache: 1.0.0
+      resolve: 1.22.2
+    dev: false
+
   /postcss-initial@4.0.1(postcss@8.4.23):
     resolution: {integrity: sha512-0ueD7rPqX8Pn1xJIjay0AZeIuDoF+V+VvMt/uOnn+4ezUKhZM/NokDeP6DwMNyIoYByuN/94IQnt5FEkaN59xQ==}
     peerDependencies:
@@ -9056,6 +9092,15 @@ packages:
       scheduler: 0.23.0
     dev: true
 
+  /react-hook-form@7.43.9(react@18.2.0):
+    resolution: {integrity: sha512-AUDN3Pz2NSeoxQ7Hs6OhQhDr6gtF9YRuutGDwPQqhSUAHJSgGl2VeY3qN19MG0SucpjgDiuMJ4iC5T5uB+eaNQ==}
+    engines: {node: '>=12.22.0'}
+    peerDependencies:
+      react: ^16.8.0 || ^17 || ^18
+    dependencies:
+      react: 18.2.0
+    dev: false
+
   /react-refresh@0.14.0:
     resolution: {integrity: sha512-wViHqhAd8OHeLS/IRMJjTSDHF3U9eWi62F/MledQGPdJGDhodXJ9PBLNGr6WWL7qlH12Mt3TyTpbS+hGXMjCzQ==}
     engines: {node: '>=0.10.0'}
@@ -9154,7 +9199,6 @@ packages:
     engines: {node: '>=0.10.0'}
     dependencies:
       loose-envify: 1.4.0
-    dev: true
 
   /read-cache@1.0.0:
     resolution: {integrity: sha512-Owdv/Ft7IjOgm/i0xvNDZ1LrRANRfew4b2prF3OWMQLxLfu3bS8FVhCsrSCMK4lR56Y9ya+AThoTpDCTxCmpRA==}

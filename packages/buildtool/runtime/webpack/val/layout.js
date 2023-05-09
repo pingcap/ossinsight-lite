@@ -12,6 +12,8 @@ module.exports = async function () {
       layout = JSON.parse(storedLayout)
     }
     
+    window.printCurrentLayout = () => console.log(JSON.stringify(layout, undefined, 2))    
+    
     export default layout
     
     export function save (layout) {

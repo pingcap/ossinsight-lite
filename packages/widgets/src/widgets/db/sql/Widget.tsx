@@ -8,6 +8,8 @@ import ResultDisplay from './ResultDisplay';
 import { VisualizeType } from './visualize/common';
 import ResultTable from './ResultTable';
 import { usePrerenderCallback } from '@oss-widgets/runtime';
+import useRefCallback from '@oss-widgets/ui/hooks/ref-callback';
+import updatePartial from '@oss-widgets/ui/utils/update-partial';
 
 export enum WidgetMode {
   EDITOR = 'editor',
@@ -35,15 +37,16 @@ export default function Widget ({ defaultSql, defaultDb, sql, currentDb, mode = 
     onPropChange?.('currentDb', db);
   }, [onPropChange]);
 
-  const onVisualizeChange = useCallback((visualize: VisualizeType) => {
+  const onVisualizeChange = useRefCallback((partialVisualize: Partial<VisualizeType>) => {
+    updatePartial(visualize, partialVisualize);
     onPropChange?.('visualize', visualize);
-  }, [onPropChange]);
+  });
 
   const { execute, running, result, error } = useOperation<{ sql: string, db: string }, any>(doQuery);
 
   const cb = usePrerenderCallback();
   useEffect(() => {
-    if ((sql || defaultSql && currentDb)) {
+    if ((sql || defaultSql) && currentDb) {
       execute({ sql: sql || defaultSql, db: currentDb });
     } else {
       cb();
@@ -57,7 +60,11 @@ export default function Widget ({ defaultSql, defaultDb, sql, currentDb, mode = 
   }, [running, result, error]);
 
   if (mode === WidgetMode.VISUALIZATION) {
-    return <ResultDisplay visualize={visualize} running={running} result={result} />;
+    return (
+      <div {...props}>
+        <ResultDisplay visualize={visualize} running={running} error={error} result={result} />
+      </div>
+    );
   }
   return (
     <div ref={ref} {...props} className={clsx('relative', props.className)}>
@@ -69,7 +76,7 @@ export default function Widget ({ defaultSql, defaultDb, sql, currentDb, mode = 
           <SQLEditor sql={sql} defaultSql={defaultSql} onSqlChange={onSqlChange} />
         </div>
         <div className="flex-1 overflow-hidden border-l">
-          <ResultDisplay editing portal={portal} visualize={visualize} running={running} result={result} onVisualizeChange={onVisualizeChange} />
+          <ResultDisplay editing portal={portal} visualize={visualize} running={running} result={result} error={error} onVisualizeChange={onVisualizeChange} />
         </div>
       </div>
       <div className="h-[240px] w-full">

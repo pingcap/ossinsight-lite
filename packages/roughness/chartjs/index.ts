@@ -48,6 +48,9 @@ plugins.Filler.beforeDatasetDraw = function (chart, args, options) {
         },
       });
       const points = args.meta.data.filter(point => !point.skip).map(point => [point.x, point.y]);
+      if (points.length === 0) {
+        return;
+      }
       // console.log(chart.chartArea.bottom);
       points.push([points[points.length - 1][0], chart.chartArea.bottom]);
       points.push([points[0][0], chart.chartArea.bottom]);

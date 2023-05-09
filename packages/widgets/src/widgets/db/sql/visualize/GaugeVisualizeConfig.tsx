@@ -1,17 +1,15 @@
 import { VisualizeConfigProps, VisualizeGauge } from './common';
-import { ChangeEvent, useCallback } from 'react';
+import { Field } from '@oss-widgets/ui/components/form';
 
-export default function GaugeVisualizeConfig ({ title, onPropChange }: VisualizeGauge & VisualizeConfigProps) {
-  const onTitleChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    onPropChange('title', event.target.value);
-  }, [onPropChange]);
+export default function GaugeVisualizeConfig ({}: VisualizeGauge) {
 
   return (
     <div className="relative">
-      <div className="flex gap-2">
-        <label className="text-gray-400">Title</label>
-        <input className="outline-none" value={title} placeholder="Input title..." min={1} onChange={onTitleChange} />
-      </div>
+      <Field
+        label="Title"
+        control={<input className="outline-none flex-1 border-b px-2 py-1" placeholder="Input a title" />}
+        name="title"
+      />
       {/*<div className="flex gap-2">*/}
       {/*  <label className="text-gray-400">Field</label>*/}
       {/*  <Select.Root value={path[1] as string} onValueChange={onFieldChange}>*/}

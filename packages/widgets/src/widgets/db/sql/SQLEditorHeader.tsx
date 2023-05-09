@@ -20,7 +20,7 @@ export default function SQLEditorHeader ({ portal, currentDb, onCurrentDbChange,
       aria-label="Editor toolbar"
     >
       <Select.Root
-        value={currentDb}
+        value={currentDb ?? null}
         onValueChange={onCurrentDbChange}
       >
         <Select.Trigger
