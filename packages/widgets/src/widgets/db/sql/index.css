@@ -1,5 +1,4 @@
 @import "react-awesome-animated-number/dist/index.css";
-@import "@oss-widgets/ui/index.css";
 
 .sql-result-table {
   @apply table-auto text-sm min-w-full;

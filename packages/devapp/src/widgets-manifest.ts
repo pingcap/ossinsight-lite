@@ -1,8 +1,8 @@
-import { ComponentType, CSSProperties, HTMLProps } from 'react';
+import { ComponentType, CSSProperties, ForwardedRef, HTMLProps } from 'react';
 
 type Widgets = Record<string, Widget>
 type WidgetModule = {
-  default: ComponentType<HTMLProps<HTMLDivElement>>,
+  default: (props: HTMLProps<HTMLDivElement>, ref: ForwardedRef<HTMLDivElement>) => JSX.Element,
   preferredSize?: CSSProperties,
   defaultProps?: Record<string, any>,
   configurable?: boolean,

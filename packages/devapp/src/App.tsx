@@ -1,4 +1,4 @@
-import React, { ComponentType, createElement, lazy, Suspense } from 'react';
+import React, { ComponentType, createElement, forwardRef, lazy, Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import { Route, Routes } from 'react-router';
@@ -42,7 +42,7 @@ function createWidgetComponent (name: string) {
   }
   const Lazy = lazy(async () => {
     const WidgetModule = await widgetsManifest[name].module();
-    const InnerWidget = WidgetModule.default;
+    const InnerWidget = forwardRef(WidgetModule.default);
     const Widget = () => {
       const { props, onPropChange } = useWidgetContext();
       return (

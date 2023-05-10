@@ -13,7 +13,8 @@ export const defaultProps = {
   visualize: {
     type: 'gauge',
     title: 'Followers Count',
-  }
+  },
+  mode: 'visualization',
 };
 
 export const configurable = true;

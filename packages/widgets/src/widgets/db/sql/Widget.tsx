@@ -1,4 +1,4 @@
-import { HTMLProps, Suspense, useCallback, useEffect, useState } from 'react';
+import { ForwardedRef, HTMLProps, Suspense, useCallback, useContext, useEffect, useState } from 'react';
 import SQLEditor from './SQLEditor';
 import SQLEditorHeader from './SQLEditorHeader';
 import clsx from 'clsx';
@@ -6,7 +6,6 @@ import { useSize } from '../../../utils/size';
 import { useOperation } from '../../../utils/operation';
 import ResultDisplay from './ResultDisplay';
 import { VisualizeType } from './visualize/common';
-import { usePrerenderCallback } from '@oss-widgets/runtime';
 import useRefCallback from '@oss-widgets/ui/hooks/ref-callback';
 import updatePartial from '@oss-widgets/ui/utils/update-partial';
 import * as Dialog from '@radix-ui/react-dialog';
@@ -15,6 +14,9 @@ import { Form } from '@oss-widgets/ui/components/form';
 import ChartTypeToggle from './visualize/ChartTypeToggle';
 import VisualizeConfig from './visualize/VisualizeConfig';
 import { migrate } from './visualize/guess';
+import { ContextMenuItem } from '@oss-widgets/ui/components/context-menu';
+import WidgetContext from '@oss-widgets/ui/context/widget';
+import mergeRefs from '@oss-widgets/ui/utils/merge-refs';
 
 export enum WidgetMode {
   EDITOR = 'editor',
@@ -31,7 +33,7 @@ export interface WidgetProps extends HTMLProps<HTMLDivElement> {
   onPropChange?: (name: string, value: any) => void;
 }
 
-export default function Widget ({ defaultSql, defaultDb, sql, currentDb, mode = WidgetMode.EDITOR, onPropChange, visualize, ...props }: WidgetProps) {
+export default function Widget ({ defaultSql, defaultDb, sql, currentDb, mode = WidgetMode.EDITOR, onPropChange, visualize, ...props }: WidgetProps, forwardedRef: ForwardedRef<HTMLDivElement>) {
   const { size, ref } = useSize<HTMLDivElement>();
   const [openVisualizeDialog, setOpenVisualizeDialog] = useState(false);
 
@@ -63,15 +65,22 @@ export default function Widget ({ defaultSql, defaultDb, sql, currentDb, mode = 
     }
   }, []);
 
+  const { enabled, configurable, configure } = useContext(WidgetContext);
+
   if (mode === WidgetMode.VISUALIZATION) {
     return (
-      <div {...props}>
+      <div {...props} ref={forwardedRef}>
+        {enabled && (
+          <>
+            {configurable && <ContextMenuItem id="configure" text="Configure" action={configure} order={1} />}
+          </>
+        )}
         <ResultDisplay visualize={visualize} running={running} error={error} result={result} />
       </div>
     );
   }
   return (
-    <div ref={ref} {...props} className={clsx('relative', props.className)}>
+    <div ref={mergeRefs(ref, forwardedRef)} {...props} className={clsx('relative', props.className)}>
       <div className="w-full flex flex-col w-full h-full">
         <SQLEditorHeader
           currentDb={currentDb}

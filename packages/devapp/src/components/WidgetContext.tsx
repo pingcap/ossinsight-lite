@@ -1,15 +1,8 @@
-import { createContext, useContext } from 'react';
+import WidgetContext from '@oss-widgets/ui/context/widget';
+import { useContext } from 'react';
 
-const Context = createContext<{
-  props: any,
-  onPropChange: (name: string, value: any) => void,
-}>({
-  props: {},
-  onPropChange: () => {},
-});
-
-export const WidgetContext = Context.Provider;
+export const WidgetContextProvider = WidgetContext.Provider;
 
 export function useWidgetContext () {
-  return useContext(Context);
+  return useContext(WidgetContext);
 }

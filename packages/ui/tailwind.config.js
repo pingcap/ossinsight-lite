@@ -1,7 +1,9 @@
+import path from 'path';
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
-    "./components/**/*.{html,js,ts,jsx,tsx}"
+    path.join(__dirname, "./components/**/*.{html,js,ts,jsx,tsx}"),
   ],
   theme: {
     extend: {

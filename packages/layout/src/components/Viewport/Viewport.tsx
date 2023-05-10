@@ -1,9 +1,10 @@
-import { CSSProperties, FC, ReactNode, useEffect, useMemo, useRef } from 'react';
+import { CSSProperties, forwardRef, ReactNode, useEffect, useMemo, useRef } from 'react';
 import { Layout } from '../../core/layout/base.ts';
 import { DraggableContextProvider } from '../../context/draggable.ts';
 import './style.scss';
 import { useSize } from '../../hooks/size.ts';
 import { Rect, Size, toSizeStyle } from '../../core/types.ts';
+import mergeRefs from '@oss-widgets/ui/utils/merge-refs.ts'
 
 export interface ViewportProps {
   layout: Layout<any, any>;
@@ -14,7 +15,7 @@ export interface ViewportProps {
   onDrag?: (id: string, rect: Rect) => void;
 }
 
-const Viewport: FC<ViewportProps> = function Viewport ({ layout, onDrag, width, height, children, onResize }) {
+const Viewport = forwardRef<HTMLDivElement, ViewportProps>(function Viewport ({ layout, onDrag, width, height, children, onResize }, forwardedRef) {
   const { ref: wrapperRef, size: wrapperSize } = useSize<HTMLDivElement>({ onResize });
 
   const onResizeRef = useRef(onResize);
@@ -33,14 +34,14 @@ const Viewport: FC<ViewportProps> = function Viewport ({ layout, onDrag, width, 
 
   return (
     <DraggableContextProvider value={{ layout, onDrag }}>
-      <div ref={wrapperRef} className="viewport-wrapper" style={{ width, height }}>
+      <div ref={mergeRefs(wrapperRef, forwardedRef)} className="viewport-wrapper" style={{ width, height }}>
         <div className="viewport" style={toSizeStyle(viewportSize)}>
           {children}
         </div>
       </div>
     </DraggableContextProvider>
   );
-};
+});
 
 Viewport.displayName = 'Viewport';
 

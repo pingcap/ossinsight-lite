@@ -25,7 +25,7 @@ export interface EventsTotalState {
   abort (): void;
 }
 
-const API_BASE = `${process.env.OSSW_SITE_DOMAIN}/api/ossinsight`
+const API_BASE = `${process.env.OSSW_SITE_DOMAIN}/api/ossinsight`;
 
 export const useEventsTotal = create<EventsTotalState>((set, get) => ({
   subscribers: 0,
@@ -72,7 +72,9 @@ export const useEventsTotal = create<EventsTotalState>((set, get) => ({
           ts: latest_timestamp,
         });
       } catch (e) {
-        console.error(e);
+        if (e?.name !== 'AbortError') {
+          console.error(e);
+        }
       }
     }
 
@@ -96,7 +98,9 @@ export const useEventsTotal = create<EventsTotalState>((set, get) => ({
           ts: latest_timestamp,
         }));
       } catch (e) {
-        console.error(e);
+        if (e?.name !== 'AbortError') {
+          console.error(e);
+        }
       }
     }
 

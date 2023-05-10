@@ -1,6 +1,6 @@
 import { useParams } from 'react-router';
 import layout, { save } from 'widgets:layout';
-import { lazy, Suspense, useCallback, useMemo, useState } from 'react';
+import { forwardRef, lazy, Suspense, useCallback, useMemo, useState } from 'react';
 import widgetsManifest from '../widgets-manifest';
 import clsx from 'clsx';
 
@@ -20,7 +20,7 @@ export default function EditWidgetInstance () {
   const Component = useMemo(() => {
     if (widget) {
       return lazy(() => widget.module().then(module => {
-        const Component = module.default;
+        const Component = forwardRef(module.default);
         return {
           default: (props: any) => {
             const [userProps, setUserProps] = useState(() => ({}));

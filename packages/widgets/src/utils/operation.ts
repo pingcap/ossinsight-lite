@@ -33,6 +33,9 @@ export function useOperation<P, T> (action: OperationOptions<P, T>): OperationRe
           return res;
         })
         .catch(err => {
+          if (err?.name === 'AbortError') {
+            return;
+          }
           setError(err);
           return Promise.reject(err);
         })

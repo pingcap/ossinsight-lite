@@ -1,9 +1,9 @@
-import React, { HTMLProps, useEffect, useLayoutEffect } from 'react';
+import React, { ForwardedRef, HTMLProps, useEffect, useLayoutEffect } from 'react';
 import { useEventsTotal } from './hook';
 import AnimatedNumbers from 'react-awesome-animated-number';
 import { prerenderMode, usePrerenderCallback } from '@oss-widgets/runtime';
 
-export default function Widget ({ ...props }: HTMLProps<HTMLDivElement>) {
+export default function Widget ({ ...props }: HTMLProps<HTMLDivElement>, ref: ForwardedRef<HTMLDivElement>) {
   const { totalEvents, subscribe, unsubscribe } = useEventsTotal();
   const prerenderCallback = usePrerenderCallback();
 
@@ -19,7 +19,7 @@ export default function Widget ({ ...props }: HTMLProps<HTMLDivElement>) {
   }, [totalEvents]);
 
   return (
-    <div {...props}>
+    <div ref={ref} {...props}>
       <div className="p-2">
         <div>OSSInsight Total Events</div>
         <div className={'font-bold font-sketch text-gray-800'}>

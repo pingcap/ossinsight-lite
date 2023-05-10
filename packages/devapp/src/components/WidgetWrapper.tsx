@@ -4,7 +4,7 @@ import manifest, { WidgetModule } from '../widgets-manifest';
 import CopyButton from './CopyButton';
 import { Light as SyntaxHighlight, SyntaxHighlighterProps } from 'react-syntax-highlighter';
 import ClientOnly from './ClientOnly';
-import { WidgetContext } from './WidgetContext';
+import { WidgetContextProvider } from './WidgetContext';
 
 async function SyntaxHighlightLazy () {
   const [xml, js, style] = await Promise.all([
@@ -66,8 +66,11 @@ export default function WidgetWrapper ({ name, children }: WidgetWrapperProps) {
   return (
     <div className="py-4 w-full min-h-screen flex flex-col items-center justify-center bg-gray-100">
       <main className="bg-white shadow-lg">
-        <WidgetContext
+        <WidgetContextProvider
           value={{
+            enabled: false,
+            configurable: false,
+            configure () {},
             props,
             onPropChange: updateProp,
           }}
@@ -75,7 +78,7 @@ export default function WidgetWrapper ({ name, children }: WidgetWrapperProps) {
           {cloneElement(children, {
             style: { ...module?.preferredSize },
           })}
-        </WidgetContext>
+        </WidgetContextProvider>
       </main>
       <div className="w-[680px]">
         <div className="mt-2 p-2 text-gray-400 border rounded bg-white">
