@@ -77,7 +77,12 @@ export default async function (req: VercelRequest, res: VercelResponse) {
       spent: end - start,
       ttl: 1800,
     };
-    await kv.setex(cacheKey, 1800, data);
+    try {
+      await kv.setex(cacheKey, 1800, data);
+    } catch (e) {
+      // ignore if kv not configured.
+      console.error(e);
+    }
     res.status(200);
     res.json(data);
     res.end();
