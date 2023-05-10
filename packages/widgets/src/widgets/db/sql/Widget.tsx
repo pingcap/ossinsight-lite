@@ -17,6 +17,7 @@ import { migrate } from './visualize/guess';
 import { ContextMenuItem } from '@oss-widgets/ui/components/context-menu';
 import WidgetContext from '@oss-widgets/ui/context/widget';
 import mergeRefs from '@oss-widgets/ui/utils/merge-refs';
+import { getCache, setCache } from './cache';
 
 export enum WidgetMode {
   EDITOR = 'editor',
@@ -57,11 +58,11 @@ export default function Widget ({ defaultSql, defaultDb, sql, currentDb, mode = 
     onPropChange?.('visualize', migrate(visualize, type, result));
   });
 
-  const { execute, running, result, error } = useOperation<{ sql: string, db: string }, any>(doQuery);
+  const { execute, running, result, error } = useOperation<{ sql: string, db: string, force: boolean }, any>(doQuery);
 
   useEffect(() => {
     if ((sql || defaultSql) && currentDb) {
-      execute({ sql: sql || defaultSql, db: currentDb });
+      execute({ sql: sql || defaultSql, db: currentDb, force: false });
     }
   }, []);
 
@@ -86,7 +87,7 @@ export default function Widget ({ defaultSql, defaultDb, sql, currentDb, mode = 
           currentDb={currentDb}
           onCurrentDbChange={onCurrentDbChange}
           onRun={() => {
-            execute({ sql, db: currentDb });
+            execute({ sql, db: currentDb, force: true });
           }}
           onVisualize={() => {
             setOpenVisualizeDialog(true);
@@ -124,14 +125,24 @@ export default function Widget ({ defaultSql, defaultDb, sql, currentDb, mode = 
   );
 }
 
-async function doQuery (prop: { sql: string, db: string }, signal: AbortSignal): Promise<any> {
-  const res = await fetch(`${process.env.OSSW_SITE_DOMAIN}/api/db/${prop.db}`, {
+async function doQuery (prop: { sql: string, db: string, force: boolean }, signal: AbortSignal): Promise<any> {
+  if (!prop.force) {
+    const data = await getCache(prop.db, prop.sql);
+    if (data && data.expired > Date.now()) {
+      return data;
+    }
+  }
+
+  const res = await fetch(`${process.env.OSSW_SITE_DOMAIN}/api/db/${prop.db}?force=${prop.force}`, {
     method: 'post',
     body: prop.sql,
     signal,
   });
   if (res.ok) {
-    return await res.json();
+    const data = await res.json();
+    data.expired = Date.now() + data.ttl * 1000;
+    await setCache(prop.db, prop.sql, data);
+    return data;
   } else {
     try {
       const response = await res.json();
