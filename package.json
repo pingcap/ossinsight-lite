@@ -11,7 +11,8 @@
     "devtool:build": "pnpm --filter @oss-widgets/buildtool run build",
     "devtool:dev": "pnpm --filter @oss-widgets/buildtool run dev",
     "vercel:dev": "vercel dev",
-    "vercel:build": "vercel build"
+    "vercel:build": "vercel build",
+    "postinstall": "npm run devtool:build"
   },
   "keywords": [],
   "author": "",
