@@ -126,11 +126,13 @@ export default function Widget ({ defaultSql, defaultDb, sql, currentDb, mode = 
 }
 
 async function doQuery (prop: { sql: string, db: string, force: boolean }, signal: AbortSignal): Promise<any> {
+  let invalidCache;
   if (!prop.force) {
     const data = await getCache(prop.db, prop.sql);
-    if (data && data.expired > Date.now()) {
+    if (data && (!isFinite(data.expired) || data.expired > Date.now())) {
       return data;
     }
+    invalidCache = data;
   }
 
   const res = await fetch(`${process.env.OSSW_SITE_DOMAIN}/api/db/${prop.db}?force=${prop.force}`, {
@@ -140,11 +142,16 @@ async function doQuery (prop: { sql: string, db: string, force: boolean }, signa
   });
   if (res.ok) {
     const data = await res.json();
-    data.expired = Date.now() + data.ttl * 1000;
+    if (isFinite(data.ttl)) {
+      data.expired = Date.now() + data.ttl * 1000;
+    }
     await setCache(prop.db, prop.sql, data);
     return data;
   } else {
     try {
+      if (invalidCache) {
+        return invalidCache;
+      }
       const response = await res.json();
       return Promise.reject(new Error(response?.message ?? JSON.stringify(response)));
     } catch {
