@@ -1,9 +1,10 @@
-import { cloneElement, FC, ReactElement, useCallback, useEffect } from 'react';
+import { cloneElement, FC, ReactElement, useCallback, useEffect, useState } from 'react';
 import { Rect, toShapeStyle } from '../../core/types.ts';
 import { useDraggable } from '../../hooks/draggable.ts';
 import clsx from 'clsx';
 import './draggable.scss';
 import { DraggableItemContextProvider } from '../../context/draggable-item.ts';
+import { Resizer } from './resizer.tsx';
 
 export type Item = {
   id?: string
@@ -52,6 +53,7 @@ interface ComponentWrapperProps {
 const DRAGGING_STYLE = 'translate3d(0,0,0) translateY(-2px) scale(1.02)';
 
 function ComponentWrapper ({ externalId, rect, draggable, register, unregister, children }: ComponentWrapperProps) {
+  const [, setVersion] = useState(0);
   const {
     id,
     ref,
@@ -61,9 +63,13 @@ function ComponentWrapper ({ externalId, rect, draggable, register, unregister, 
     layout,
   } = useDraggable<HTMLDivElement>({
     initialShape: rect,
+    notify: () => {
+      setVersion(v => v + 1);
+    },
   });
 
-  const shapeStyle = toShapeStyle(layout.toDomShape(shape));
+  const properShape = id === layout.dragging?.id ? layout.currentShape : layout.elements.get(id)?.shape ?? shape;
+  const shapeStyle = toShapeStyle(layout.toDomShape(properShape));
 
   useEffect(() => {
     register(id, externalId);
@@ -91,6 +97,14 @@ function ComponentWrapper ({ externalId, rect, draggable, register, unregister, 
             height: '100%',
           },
         })}
+        {draggable && (
+          <div className='resize-handles'>
+            <Resizer id={id} shape={shape} position="end" type="vertical" />
+            <Resizer id={id} shape={shape} position="end" type="horizontal" />
+            <Resizer id={id} shape={shape} position="start" type="vertical" />
+            <Resizer id={id} shape={shape} position="start" type="horizontal" />
+          </div>
+        )}
       </DraggableItemContextProvider>
     </div>
   );

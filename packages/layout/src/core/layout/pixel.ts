@@ -1,14 +1,21 @@
 import { Layout } from './base.ts';
-import { move, Point, Rect } from '../types.ts';
+import { move, Point, Rect, resize } from '../types.ts';
 
 export class PixelLayout extends Layout<Rect, Point> {
   cloneShape (shape: Rect): Rect {
     return [...shape];
   }
 
-  override drag (offset: Point): false | Rect {
+  protected override drag (offset: Point): false | Rect {
     if (this.dragging) {
       return this.currentShape = normalizePosition(move(this.dragging.shape, offset));
+    }
+    return false;
+  }
+
+  protected override resize (offset: Point): false | Rect {
+    if (this.dragging) {
+      return this.currentShape = normalizePosition(resize(this.dragging.shape, offset, this.resizeOptions?.start ?? false));
     }
     return false;
   }
@@ -27,6 +34,14 @@ export class PixelLayout extends Layout<Rect, Point> {
 
   override toDomOffset (offset: Point): Point {
     return offset;
+  }
+
+  override prepareResizeOffset (offset: Point, vertical: boolean): Point {
+    if (vertical) {
+      return [offset[0], 0];
+    } else {
+      return [0, offset[1]];
+    }
   }
 }
 

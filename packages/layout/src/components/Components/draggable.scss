@@ -1,12 +1,21 @@
+.resize-handles {
+  opacity: 0;
+  transition: opacity .2s;
+}
+
 .draggable {
   position: absolute;
-  transition: box-shadow 200ms ease, transform 100ms ease;
+  transition: box-shadow 200ms ease, transform 100ms ease, width 100ms ease, height 100ms ease;
 
   cursor: pointer;
 
   &:hover {
     box-shadow: #aaa 0 0 24px;
     z-index: 1;
+
+    .resize-handles {
+      opacity: 1;
+    }
   }
 
   &.dragging {
@@ -21,9 +30,71 @@
     [data-layer-item] {
       pointer-events: auto;
     }
+
+    .resize-handles {
+      opacity: 1;
+    }
   }
 }
 
 .r-layout-resizing .draggable {
   transition: none;
+}
+
+.resize-handle {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+
+  &-trigger {
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    opacity: 0.3;
+    transition: opacity .2s ease;
+  }
+
+  &.dragging, &:hover {
+    .resize-handle-trigger {
+      opacity: 1;
+    }
+  }
+
+  &.vertical {
+    top: 0;
+    height: 100%;
+
+    &.start {
+      left: -8px;
+    }
+
+    &.end {
+      right: -8px;
+    }
+
+    .resize-handle-trigger {
+      cursor: ew-resize;
+    }
+  }
+
+  &.horizontal {
+    left: 0;
+    width: 100%;
+
+    &.start {
+      top: -8px;
+    }
+
+    &.end {
+      bottom: -8px;
+    }
+
+    .resize-handle-trigger {
+      cursor: ns-resize;
+    }
+  }
 }

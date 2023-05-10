@@ -1,5 +1,5 @@
 import { Layout } from './base.ts';
-import { move, Point, Rect, Size } from '../types.ts';
+import { move, Point, Rect, resize, Size } from '../types.ts';
 
 export type GridLayoutOptions = {
   gridSize: number;
@@ -29,9 +29,16 @@ export class GridLayout extends Layout<Rect, Point> {
     return [...shape];
   }
 
-  override drag (offset: Point): false | Rect {
+  protected override drag (offset: Point): false | Rect {
     if (this.dragging) {
       return this.currentShape = move(this.dragging.shape, offset);
+    }
+    return false;
+  }
+
+  protected override resize (offset: Point): false | Rect {
+    if (this.dragging) {
+      return this.currentShape = resize(this.dragging.shape, offset, this.resizeOptions!.start);
     }
     return false;
   }
@@ -69,6 +76,14 @@ export class GridLayout extends Layout<Rect, Point> {
   }
 
   updateOptions (_: GridLayoutOptions) {
+  }
+
+  override prepareResizeOffset (offset: Point, vertical: boolean): Point {
+    if (vertical) {
+      return [offset[0], 0];
+    } else {
+      return [0, offset[1]];
+    }
   }
 }
 
