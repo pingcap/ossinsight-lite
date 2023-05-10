@@ -6,7 +6,7 @@ export interface ResultTableProps {
   running?: boolean;
 }
 
-export default function ResultTable ({ result, running }: ResultTableProps) {
+export default function TableVisualize ({ result, running }: ResultTableProps) {
   if (!result) {
     return (
       <div className="w-full h-full flex items-center justify-center border-t">

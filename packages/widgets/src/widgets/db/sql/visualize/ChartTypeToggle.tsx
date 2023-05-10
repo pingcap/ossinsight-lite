@@ -23,6 +23,11 @@ const ChartTypeToggle = forwardRef<HTMLDivElement, ChartTypeToggleProps<any>>(({
       value={value}
       onValueChange={onChange}
     >
+      <ToggleGroup.Item className={itemClasses} value="gauge" aria-label="Gauge">
+        <span>
+          42
+        </span>
+      </ToggleGroup.Item>
       <ToggleGroup.Item className={itemClasses} value="table" aria-label="Raw table">
         <RoughSvg>
           <TableIcon />
