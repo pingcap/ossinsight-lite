@@ -4,6 +4,10 @@ import { SelectItemProps } from '@radix-ui/react-select';
 import config from 'widgets:config';
 import { forwardRef } from 'react';
 import clsx from 'clsx';
+import PlayIcon from '../../../icons/twbs/play-fill.svg';
+import RoughSvg from '@oss-widgets/roughness/components/RoughSvg';
+import RoughBox from '../../../components/rough/Box';
+import colors from 'tailwindcss/colors';
 
 export interface SQLEditorHeaderProps {
   onRun?: () => void;
@@ -13,10 +17,15 @@ export interface SQLEditorHeaderProps {
   onCurrentDbChange?: (db: string) => void;
 }
 
+const dbDisplayNames: Record<string, any> = {};
+config.db.forEach((db) => {
+  dbDisplayNames[db.name] = db.display;
+});
+
 export default function SQLEditorHeader ({ portal, currentDb, onCurrentDbChange, onRun, running = false }: SQLEditorHeaderProps) {
   return (
     <Toolbar.Root
-      className="flex w-full min-w-max h-8 p-1 relative"
+      className="flex w-full min-w-max h-12 p-1 relative"
       aria-label="Editor toolbar"
     >
       <Select.Root
@@ -27,24 +36,30 @@ export default function SQLEditorHeader ({ portal, currentDb, onCurrentDbChange,
           className=" inline-flex items-center justify-center rounded leading-none gap-1 bg-white text-gray-700 outline-none"
           aria-label="Food"
         >
-          {currentDb ? <CurrentDb db={currentDb} /> : <Fallback />}
+          {dbDisplayNames[currentDb] ? <CurrentDb db={dbDisplayNames[currentDb]} /> : <Fallback />}
         </Select.Trigger>
         <Select.Portal container={portal}>
           <Select.Content className="overflow-hidden bg-white rounded shadow" position="popper">
             <Select.Viewport>
               {config.db.map(db => (
-                <SelectItem key={db.name} value={db.name} />
+                <SelectItem key={db.name} value={db.name} textValue={db.display} />
               ))}
             </Select.Viewport>
           </Select.Content>
         </Select.Portal>
       </Select.Root>
       <Toolbar.Button
-        className={clsx('text-white bg-gray-500 rounded ml-2 text-sm px-4')}
+        className={clsx('text-green-600 ml-auto p-2 text-sm relative overflow-visible')}
         disabled={running}
         onClick={onRun}
       >
-        Run
+        <span className="relative z-10 px-4 font-bold inline-flex gap-2 items-center ">
+          Run
+          <RoughSvg>
+            <PlayIcon />
+          </RoughSvg>
+        </span>
+        <RoughBox color={colors.green['400']} />
       </Toolbar.Button>
     </Toolbar.Root>
   );
@@ -53,7 +68,7 @@ export default function SQLEditorHeader ({ portal, currentDb, onCurrentDbChange,
 const CurrentDb = ({ db }: { db: string }) => {
   return (
     <span>
-      Current DB: {db}
+      Datasource: <b>{db}</b>
     </span>
   );
 };
@@ -69,7 +84,7 @@ const Fallback = () => {
 const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>((props, ref) => {
   return (
     <Select.Item {...props} className={clsx('text-gray-800 px-2 py-1 cursor-pointer outline-none bg-white hover:bg-gray-100 transition-colors', props.className)} ref={ref}>
-      {props.value}
+      {props.textValue}
     </Select.Item>
   );
 });

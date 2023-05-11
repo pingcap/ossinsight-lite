@@ -1,4 +1,5 @@
 import { WidgetMode } from './Widget';
+import './index.css'
 
 export { default } from './Widget';
 
@@ -8,7 +9,7 @@ export const preferredSize = {
 };
 
 export const defaultProps = {
-  currentDb: 'oh-my-github',
+  currentDb: 'github-personal',
   sql: `SELECT 'Hello OSSWidgets!'`,
   visualize: {
     type: 'gauge',

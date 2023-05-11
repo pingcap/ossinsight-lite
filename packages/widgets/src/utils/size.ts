@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState, ElementRef, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export type ElementSize = {
   width: number
@@ -12,19 +12,19 @@ const zeroSize: ElementSize = {
 
 export interface UseSizeOption {
   defaultSize?: ElementSize;
+  parent?: boolean;
 }
 
-export function useSize <Element extends HTMLElement>({ defaultSize }: UseSizeOption = {}) {
+export function useSize<Element extends HTMLElement | SVGElement> ({ defaultSize, parent = false }: UseSizeOption = {}) {
   const [size, setSize] = useState(defaultSize ?? zeroSize);
 
   const ref = useRef<Element | null>();
 
   useEffect(() => {
-    const el = ref.current;
+    const el = parent ? ref.current?.parentElement : ref.current;
     if (el) {
       const { width, height } = el.getBoundingClientRect();
       setSize({ width, height });
-
 
       const ro = new ResizeObserver(([entry]) => {
         const { width, height } = entry.contentRect;
@@ -35,7 +35,7 @@ export function useSize <Element extends HTMLElement>({ defaultSize }: UseSizeOp
 
       return () => ro.disconnect();
     }
-  }, []);
+  }, [parent]);
 
   return {
     size, ref,

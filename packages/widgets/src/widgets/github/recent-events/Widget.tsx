@@ -6,7 +6,7 @@ import clsx from 'clsx';
 import { Alert } from '../../../components/alert';
 import AlertIcon from '../../../icons/octicons/alert.svg';
 import RoughSvg from '@oss-widgets/roughness/components/RoughSvg';
-import cu from '../../oh-my-github/personal-overview/curr_user.sql?unique';
+import cu from '../../oh-my-github/curr_user.sql?unique';
 
 export default function Widget (props: HTMLProps<HTMLDivElement>, ref: ForwardedRef<HTMLDivElement>) {
   const { events, reload } = useRecentEvents();

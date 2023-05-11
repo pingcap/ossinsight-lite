@@ -1,6 +1,6 @@
 import Components from '@oss-widgets/layout/src/components/Components';
 import GridLayout from '@oss-widgets/layout/src/components/GridLayout';
-import { ComponentType, forwardRef, lazy, Suspense, useCallback, useState } from 'react';
+import { ComponentType, forwardRef, lazy, Suspense, useCallback, useMemo, useState } from 'react';
 import widgets, { Widget } from '../widgets-manifest';
 import * as layoutComponents from '../layout-components';
 import EditModeSwitch from '../components/EditModeSwitch';
@@ -56,12 +56,49 @@ export default function Home () {
 
                 // TODO: dirty fix: use passed in props do not updates.
                 const item = useItem(id);
-                const props = { ...inProps, ...rest, ...item?.props }
+                const props = { ...inProps, ...rest, ...item?.props };
+
+                const deleteAction = useRefCallback(() => {
+                  deleteWidget(id);
+                });
+
+                const duplicateAction = useRefCallback(() => {
+                  duplicateWidget(id);
+                });
+
+                const menu = useMemo(() => {
+                  return (
+                    <>
+                      <ContextMenuItem
+                        key="duplicate"
+                        id="duplicate"
+                        text="Duplicate"
+                        action={duplicateAction}
+                        order={0}
+                      />
+                      <ContextMenuItem
+                        key="delete"
+                        id="delete"
+                        text={<span className="text-red-400">Delete</span>}
+                        action={deleteAction}
+                        order={0}
+                        group={1}
+                      />
+                    </>
+                  );
+                }, []);
 
                 if (name.startsWith('internal:')) {
                   const componentName = name.split(':')[1];
                   Component = (layoutComponents as any)[componentName];
-                  return <Component _id={id} {...props} />;
+
+                  return (
+                    <ContextMenu
+                      trigger={<Component _id={id} {...props} />}
+                    >
+                      {menu}
+                    </ContextMenu>
+                  );
                 }
 
                 Component = cache[name];
@@ -85,14 +122,6 @@ export default function Home () {
                           navigate(`/edit/${encodeURIComponent(id)}`);
                         }, []);
 
-                        const deleteAction = useRefCallback(() => {
-                          deleteWidget(id);
-                        });
-
-                        const duplicateAction = useRefCallback(() => {
-                          duplicateWidget(id);
-                        });
-
                         const onPropChange = useRefCallback((key: string, value: any) => {
                           updateItemProps(id, (props: any) => ({ ...props, [key]: value }));
                         });
@@ -111,21 +140,7 @@ export default function Home () {
                             <ContextMenu
                               trigger={<WidgetComponent {...props} ref={ref} />}
                             >
-                              <ContextMenuItem
-                                key="duplicate"
-                                id="duplicate"
-                                text="Duplicate"
-                                action={duplicateAction}
-                                order={0}
-                              />
-                              <ContextMenuItem
-                                key="delete"
-                                id="delete"
-                                text={<span className="text-red-400">Delete</span>}
-                                action={deleteAction}
-                                order={0}
-                                group={1}
-                              />
+                              {menu}
                             </ContextMenu>
                           </WidgetContextProvider>
                         );

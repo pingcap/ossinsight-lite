@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { Octokit } from '@octokit/rest';
 import { components } from '@octokit/openapi-types';
-import cu from '../../oh-my-github/personal-overview/curr_user.sql?unique';
+import cu from '../../oh-my-github/curr_user.sql?unique';
 
 const octokit = new Octokit();
 

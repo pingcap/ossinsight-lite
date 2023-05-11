@@ -6,11 +6,11 @@ import kv from '@vercel/kv';
 // TODO: use config
 const db = [
   {
-    'name': 'oh-my-github',
+    'name': 'github-personal',
     'env': 'OH_MY_GITHUB_DATABASE_URL',
   },
   {
-    'name': 'repo-track',
+    'name': 'github-repos',
     'env': 'REPO_TRACK_DATABASE_URL',
   },
 ];
