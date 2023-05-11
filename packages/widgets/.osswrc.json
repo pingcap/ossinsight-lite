@@ -1,5 +1,5 @@
 {
-  "siteDomain": "https://oss-widgets.vercel.app",
+  "siteDomain": "https://ossinsight-lite.vercel.app",
   "db": [
     {
       "name": "oh-my-github",
