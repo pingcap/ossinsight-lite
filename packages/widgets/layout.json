@@ -2,7 +2,7 @@
   {
     "name": "internal:Navigator",
     "rect": [
-      -11,
+      -10,
       -7,
       3,
       2
@@ -11,7 +11,7 @@
   {
     "name": "internal:Title",
     "rect": [
-      -15,
+      -14,
       -7,
       4,
       2
@@ -20,7 +20,7 @@
   {
     "name": "oh-my-github/personal-overview",
     "rect": [
-      -15,
+      -14,
       -5,
       16,
       6
@@ -29,7 +29,7 @@
   {
     "name": "ossinsight/total-events",
     "rect": [
-      -4,
+      -3,
       -7,
       4,
       2
@@ -39,7 +39,7 @@
     "id": "followers-count",
     "name": "db/sql",
     "rect": [
-      -8,
+      -7,
       -7,
       4,
       2
@@ -58,7 +58,7 @@
     "id": "tidb-star-history",
     "name": "db/sql",
     "rect": [
-      -15,
+      -14,
       2,
       8,
       5
@@ -87,7 +87,7 @@
     "id": "recent-focused-on",
     "name": "db/sql",
     "rect": [
-      -7,
+      -6,
       2,
       8,
       5
@@ -116,17 +116,17 @@
     "id": "free-editor",
     "name": "db/sql",
     "rect": [
-      1,
+      2,
       -7,
-      13,
+      12,
       14
     ],
     "props": {
       "currentDb": "oh-my-github",
-      "sql": "SELECT * FROM followers f LEFT JOIN users u ON f.user_id = u.id;",
+      "sql": "SELECT * FROM followers f LEFT JOIN users u ON f.target_user_id = u.id;",
       "visualize": {
         "type": "table",
-        "title": "Followers"
+        "title": "Untitled"
       },
       "mode": "editor"
     }
