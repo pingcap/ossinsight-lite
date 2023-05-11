@@ -69,6 +69,7 @@ export default function WidgetWrapper ({ name, children }: WidgetWrapperProps) {
         <WidgetContextProvider
           value={{
             enabled: false,
+            editingLayout: false,
             configurable: false,
             configure () {},
             props,

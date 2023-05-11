@@ -12,7 +12,7 @@ import { useLayoutManager } from '../components/LayoutManager';
 import useRefCallback from '@oss-widgets/ui/hooks/ref-callback';
 
 export default function Home () {
-  const { items, updateItemRect, addItem, removeItem, duplicateItem, useRectNotify, usePropsNotify, download } = useLayoutManager();
+  const { items, updateItemRect, updateItemProps, addItem, removeItem, duplicateItem, useRectNotify, usePropsNotify, download, useItem } = useLayoutManager();
   const [editMode, setEditMode] = useState(process.env.NODE_ENV === 'development');
   const map = useMap<string, string>();
 
@@ -45,9 +45,19 @@ export default function Home () {
           <GridLayout gridSize={40} gap={8} width="100vw" height="100vh" guideUi={editMode} onDrag={handleDrag}>
             <EditModeSwitch className="absolute right-1 top-1" checked={editMode} onCheckedChange={setEditMode} />
             <button className="absolute right-1 top-8" onClick={download}>Download layout.json</button>
-            <Components items={items} draggable={editMode} idMap={map} useHooks={useRectNotify}>
-              {(id, name, props, draggable) => {
+            <Components
+              items={items}
+              draggable={editMode}
+              idMap={map}
+              useHooks={runAll(useRectNotify, usePropsNotify)}
+            >
+              {useCallback(({ id, name, props: inProps, draggable, ...rest }) => {
                 let Component: ResolvedComponentType;
+
+                // TODO: dirty fix: use passed in props do not updates.
+                const item = useItem(id);
+                const props = { ...inProps, ...rest, ...item?.props }
+
                 if (name.startsWith('internal:')) {
                   const componentName = name.split(':')[1];
                   Component = (layoutComponents as any)[componentName];
@@ -62,7 +72,7 @@ export default function Home () {
                   }
 
                   cache[name] = Component = lazy(() => widget.module().then(module => {
-                    const C = forwardRef(module.default);
+                    const WidgetComponent = forwardRef(module.default);
                     const configurable = module.configurable ?? false;
 
                     return {
@@ -83,18 +93,23 @@ export default function Home () {
                           duplicateWidget(id);
                         });
 
+                        const onPropChange = useRefCallback((key: string, value: any) => {
+                          updateItemProps(id, (props: any) => ({ ...props, [key]: value }));
+                        });
+
                         return (
                           <WidgetContextProvider
                             value={{
                               enabled: true,
+                              editingLayout: editMode,
                               configurable,
-                              onPropChange: () => {},
-                              props: props,
-                              configure: configure,
+                              onPropChange,
+                              props,
+                              configure,
                             }}
                           >
                             <ContextMenu
-                              trigger={<C {...props} ref={ref} />}
+                              trigger={<WidgetComponent {...props} ref={ref} />}
                             >
                               <ContextMenuItem
                                 key="duplicate"
@@ -120,7 +135,7 @@ export default function Home () {
                 }
 
                 return (
-                  <div className="widget relative bg-white">
+                  <div className="widget relative bg-white" {...rest}>
                     <Suspense fallback="loading...">
                       <>
                         <Component style={{ width: '100%', height: '100%' }} {...props} _id={id} draggable={draggable} />
@@ -128,7 +143,7 @@ export default function Home () {
                     </Suspense>
                   </div>
                 );
-              }}
+              }, [])}
             </Components>
           </GridLayout>
         </div>
@@ -156,4 +171,10 @@ const cache: Record<string, ResolvedComponentType> = {};
 export function useMap<K, V> () {
   const [map] = useState(() => new Map<K, V>());
   return map;
+}
+
+function runAll (...func: ((id: string) => any)[]): (id: string) => void {
+  return ((id) => {
+    func.forEach(f => f(id));
+  });
 }

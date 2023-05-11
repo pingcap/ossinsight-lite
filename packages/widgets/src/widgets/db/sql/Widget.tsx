@@ -11,7 +11,6 @@ import updatePartial from '@oss-widgets/ui/utils/update-partial';
 import * as Dialog from '@radix-ui/react-dialog';
 import { VisualizeContext } from './visualize/context';
 import { Form } from '@oss-widgets/ui/components/form';
-import ChartTypeToggle from './visualize/ChartTypeToggle';
 import VisualizeConfig from './visualize/VisualizeConfig';
 import { migrate } from './visualize/guess';
 import { ContextMenuItem } from '@oss-widgets/ui/components/context-menu';
@@ -34,7 +33,9 @@ export interface WidgetProps extends HTMLProps<HTMLDivElement> {
   onPropChange?: (name: string, value: any) => void;
 }
 
-export default function Widget ({ defaultSql, defaultDb, sql, currentDb, mode = WidgetMode.EDITOR, onPropChange, visualize, ...props }: WidgetProps, forwardedRef: ForwardedRef<HTMLDivElement>) {
+export default function Widget ({ defaultSql, defaultDb, sql, currentDb, mode = WidgetMode.EDITOR, visualize, ...props }: WidgetProps, forwardedRef: ForwardedRef<HTMLDivElement>) {
+  const { onPropChange } = useContext(WidgetContext);
+
   const { size, ref } = useSize<HTMLDivElement>();
   const [openVisualizeDialog, setOpenVisualizeDialog] = useState(false);
 
@@ -48,7 +49,7 @@ export default function Widget ({ defaultSql, defaultDb, sql, currentDb, mode = 
 
   const onVisualizeChange = useRefCallback((partialVisualize: Partial<VisualizeType>) => {
     updatePartial(visualize, partialVisualize);
-    onPropChange?.('visualize', visualize);
+    onPropChange?.('visualize', { ...visualize });
   });
 
   const onVisualizeTypeChange = useRefCallback((type: VisualizeType['type']) => {
@@ -82,38 +83,40 @@ export default function Widget ({ defaultSql, defaultDb, sql, currentDb, mode = 
   }
   return (
     <div ref={mergeRefs(ref, forwardedRef)} {...props} className={clsx('relative', props.className)}>
-      <div className="w-full flex flex-col w-full h-full">
+      <div className={clsx("w-full h-full flex flex-col", enabled && 'border')}>
         <SQLEditorHeader
           currentDb={currentDb}
           onCurrentDbChange={onCurrentDbChange}
           onRun={() => {
             execute({ sql, db: currentDb, force: true });
           }}
-          onVisualize={() => {
-            setOpenVisualizeDialog(true);
-          }}
           running={running}
         />
         <div className="min-h-[240px] max-h-[320px] w-full border-b">
           <SQLEditor sql={sql} defaultSql={defaultSql} onSqlChange={onSqlChange} />
         </div>
-        <div className="flex-1 w-full overflow-hidden border-l">
-          <ResultDisplay editing visualize={visualize} running={running} result={result} error={error} />
+        <div className="flex-1 w-full overflow-hidden">
+          <ResultDisplay
+            editing
+            visualize={visualize}
+            onVisualizeTypeChange={onVisualizeTypeChange}
+            onClickVisualizeOptions={() => {
+              setOpenVisualizeDialog(true);
+            }}
+            running={running}
+            result={result}
+            error={error}
+          />
           <Dialog.Root open={openVisualizeDialog} onOpenChange={setOpenVisualizeDialog}>
             <Dialog.Portal>
               <Dialog.Overlay className="bg-black bg-opacity-60 data-[state=open]:animate-overlayShow fixed inset-0" />
               <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-0 left-0 max-h-[85vh] w-full bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
                 <Dialog.Title className="text-gray-700 m-0 text-xl font-medium">Visualization</Dialog.Title>
                 <VisualizeContext.Provider value={{ result: result?.data, running, error, columns: result?.columns }}>
-                  <Form className="overflow-auto grid grid-cols-3" values={visualize} onChange={onVisualizeChange}>
-                    <div className="col-span-1 p-2">
-                      <ChartTypeToggle value={visualize.type} onChange={onVisualizeTypeChange} />
-                    </div>
-                    <div className="col-span-2 p-2">
-                      <Suspense fallback="Loading...">
-                        <VisualizeConfig {...visualize} />
-                      </Suspense>
-                    </div>
+                  <Form className="overflow-auto p-2" values={visualize} onChange={onVisualizeChange}>
+                    <Suspense fallback="Loading...">
+                      <VisualizeConfig {...visualize} />
+                    </Suspense>
                   </Form>
                 </VisualizeContext.Provider>
               </Dialog.Content>

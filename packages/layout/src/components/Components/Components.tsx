@@ -1,4 +1,4 @@
-import { cloneElement, FC, ReactElement, useEffect, useState } from 'react';
+import { cloneElement, createElement, FC, ReactElement, useEffect, useState } from 'react';
 import { Rect, toShapeStyle } from '../../core/types.ts';
 import { useDraggable } from '../../hooks/draggable.ts';
 import clsx from 'clsx';
@@ -14,12 +14,19 @@ export type Item = {
   props?: Record<string, any>
 }
 
+export interface ComponentProps {
+  id: string,
+  name: string,
+  props: Record<string, any> | undefined,
+  draggable: boolean
+}
+
 export interface ComponentsProps {
   items: Item[];
   idMap?: Map<string, string>;
   draggable?: boolean;
 
-  children (id: string, name: string, props: Record<string, any> | undefined, draggable: boolean): ReactElement;
+  children (props: ComponentProps): ReactElement;
 
   onRegister?: (externalId: string) => void;
   onUnregister?: (externalId: string) => void;
@@ -45,7 +52,7 @@ const Components: FC<ComponentsProps> = function Components ({ draggable = false
     <>
       {items.map(item => (
         <ComponentWrapper rect={item.rect} key={item.id ?? item.name} externalId={item.id ?? item.name} draggable={draggable} register={register} unregister={unregister} useHooks={useHooks}>
-          {children(item.id ?? item.name, item.name, item.props, draggable)}
+          {createElement(children, { id: item.id ?? item.name, name: item.name, props: item.props, draggable })}
         </ComponentWrapper>
       ))}
     </>

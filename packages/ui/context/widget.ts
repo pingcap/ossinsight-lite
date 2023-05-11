@@ -3,6 +3,7 @@ import { createContext } from 'react';
 export type WidgetContextValues = {
   enabled: boolean
   configurable: boolean
+  editingLayout: boolean,
   props: any
   configure (): void
   onPropChange: (name: string, value: any) => void
@@ -11,6 +12,7 @@ export type WidgetContextValues = {
 const WidgetContext = createContext<WidgetContextValues>({
   enabled: false,
   configurable: false,
+  editingLayout: false,
   props: {},
   configure () {},
   onPropChange: () => {},
