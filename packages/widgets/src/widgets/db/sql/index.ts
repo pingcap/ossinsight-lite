@@ -10,7 +10,7 @@ export const preferredSize = {
 
 export const defaultProps = {
   currentDb: 'github-personal',
-  sql: `SELECT 'Hello OSSWidgets!'`,
+  sql: `SELECT 'Hello OSSInsight Lite!'`,
   visualize: {
     type: 'gauge',
     title: 'Greeting',
