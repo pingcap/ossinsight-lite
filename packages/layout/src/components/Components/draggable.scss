@@ -24,11 +24,11 @@
     z-index: 1;
 
     > * {
-      pointer-events: none;
+      pointer-events: none !important;
     }
 
     [data-layer-item] {
-      pointer-events: auto;
+      pointer-events: auto !important;
     }
 
     .resize-handles {

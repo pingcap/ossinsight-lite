@@ -84,6 +84,8 @@ export function useDraggable<E extends HTMLElement> (option: DraggableOption = {
       if (option.resize) {
         onDrag?.(option.resize.target, shape);
         layout.notify(option.resize.target);
+      } else {
+        onDrag?.(id, shape);
       }
     }
     window.removeEventListener('mousemove', onMove);

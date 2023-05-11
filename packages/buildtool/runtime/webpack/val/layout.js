@@ -14,11 +14,6 @@ module.exports = async function () {
     
     window.printCurrentLayout = () => console.log(JSON.stringify(layout, undefined, 2))    
     
-    export default layout
-    
-    export function save (layout) {
-      localStorage.setItem('widgets:layout', JSON.stringify(layout));
-    }
-    `
+    export default layout `
   }
 }

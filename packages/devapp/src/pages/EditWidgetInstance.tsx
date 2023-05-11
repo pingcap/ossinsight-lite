@@ -1,14 +1,16 @@
 import { useParams } from 'react-router';
-import layout, { save } from 'widgets:layout';
-import { forwardRef, lazy, Suspense, useCallback, useMemo, useState } from 'react';
+import { forwardRef, lazy, Suspense, useMemo } from 'react';
 import widgetsManifest from '../widgets-manifest';
 import clsx from 'clsx';
+import { useLayoutManager } from '../components/LayoutManager';
+import useRefCallback from '@oss-widgets/ui/hooks/ref-callback';
+import { Link } from 'react-router-dom';
 
 export default function EditWidgetInstance () {
-  const params = useParams<{ id: string }>();
-  const item = useMemo(() => {
-    return layout.find((item: any) => item.id === params.id);
-  }, [params.id]);
+  const id = useParams<{ id: string }>().id ?? '__NEVER__';
+  const { useItem, updateItemProps } = useLayoutManager();
+
+  const item = useItem(id);
 
   const widget = useMemo(() => {
     if (!item) {
@@ -23,21 +25,15 @@ export default function EditWidgetInstance () {
         const Component = forwardRef(module.default);
         return {
           default: (props: any) => {
-            const [userProps, setUserProps] = useState(() => ({}));
-
-            const handlePropChange = useCallback((key: string, value: string) => {
-              setUserProps(props => ({ ...props, [key]: value }));
-              item.props[key] = value;
-              save(layout);
-            }, []);
+            const handlePropChange = useRefCallback((key: string, value: string) => {
+              updateItemProps(id, (props: any) => ({ ...props, [key]: value }));
+            });
 
             return (
               <Component
                 {...props}
-                className={clsx('w-full h-full', props.className)}
-                {...item.props}
-                {...userProps}
                 {...module.configurablePropsOverwrite}
+                className={clsx('w-full h-full', module.configurablePropsOverwrite?.className, props.className)}
                 onPropChange={handlePropChange}
               />
             );
@@ -53,8 +49,9 @@ export default function EditWidgetInstance () {
 
   if (!item) {
     return (
-      <div className="flex items-center justify-center h-screen text-xl text-gray-700">
+      <div className="flex items-center justify-center h-screen text-xl text-gray-700 gap-4">
         Widget not found
+        <Link to="/">HOME</Link>
       </div>
     );
   }
@@ -62,15 +59,16 @@ export default function EditWidgetInstance () {
   return (
     <div className="h-screen">
       <div className="p-2 bg-gray-200 text-gray-700 border-b flex gap-2 items-center h-[36px]">
+        <Link to="/">HOME</Link>
         <span>
           {'Editing '}
           <b>{item.name}#{item.id}</b>
         </span>
-        <span className='flex-1'/>
-        <button className='text-sm bg-gray-700 rounded text-white px-2'>
+        <span className="flex-1" />
+        <button className="text-sm bg-gray-700 rounded text-white px-2">
           Duplicate
         </button>
-        <button className='text-sm bg-red-700 rounded text-white px-2'>
+        <button className="text-sm bg-red-700 rounded text-white px-2">
           Delete
         </button>
       </div>
@@ -78,7 +76,7 @@ export default function EditWidgetInstance () {
         <Suspense
           fallback="loading..."
         >
-          <Component />
+          <Component {...item.props} />
         </Suspense>
       </div>
     </div>
