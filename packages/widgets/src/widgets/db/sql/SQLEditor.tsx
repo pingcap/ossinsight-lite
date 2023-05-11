@@ -1,12 +1,10 @@
 import Editor from '@monaco-editor/react';
 import { editor } from 'monaco-editor';
 
-const theme = import ('monaco-themes/themes/Tomorrow.json');
+import theme from 'monaco-themes/themes/Tomorrow.json';
 
-theme.then(data => {
-  editor.defineTheme('tomorrow', data as any);
-  editor.setTheme('tomorrow');
-});
+editor.defineTheme('tomorrow', theme as any);
+editor.setTheme('tomorrow');
 
 export interface SQLEditorProps {
   sql?: string;
@@ -18,7 +16,7 @@ export default function SQLEditor ({ sql, defaultSql, onSqlChange }: SQLEditorPr
   return (
     <Editor
       className="h-full w-full"
-      theme='tommorrow'
+      theme="tommorrow"
       value={sql}
       defaultLanguage="mysql"
       defaultValue={defaultSql}
