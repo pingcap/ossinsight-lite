@@ -6,6 +6,7 @@
     "moduleResolution": "Node",
     "esModuleInterop": true,
     "isolatedModules": true,
+    "resolveJsonModule": true,
     "strict": false,
     "jsx": "react-jsx",
     "types": [

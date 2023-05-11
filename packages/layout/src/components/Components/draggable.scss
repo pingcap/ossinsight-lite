@@ -5,13 +5,14 @@
 
 .draggable {
   position: absolute;
-  transition: box-shadow 200ms ease, transform 100ms ease, width 100ms ease, height 100ms ease;
+  transition: outline-color 200ms ease, transform 100ms ease, width 100ms ease, height 100ms ease;
 
   cursor: pointer;
+  outline: 2px dashed transparent;
 
   &:hover {
-    box-shadow: #aaa 0 0 24px;
     z-index: 1;
+    outline: 2px dashed gray;
 
     .resize-handles {
       opacity: 1;

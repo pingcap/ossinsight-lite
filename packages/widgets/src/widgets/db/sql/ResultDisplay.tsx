@@ -8,6 +8,8 @@ import clsx from 'clsx';
 import RoughSvg from '@oss-widgets/roughness/components/RoughSvg';
 import SlidersIcon from '../../../icons/twbs/sliders.svg';
 import WidgetContext from '@oss-widgets/ui/context/widget'
+import RoughBox from '../../../components/rough/Box';
+import colors from 'tailwindcss/colors';
 
 export interface ResultDisplayProps {
   editing?: boolean;
@@ -33,17 +35,21 @@ export default function ResultDisplay ({ editing = false, portal, visualize, onV
   return (
     <div className={'w-full h-full flex flex-col gap-2 p-4'}>
       {editing && (
-        <div className="flex gap-2">
+        <div className="flex gap-2 p-1">
           <ChartTypeToggle value={visualize.type} onChange={onVisualizeTypeChange} />
           <button
-            className={clsx('inline-flex items-center gap-1 text-white bg-gray-500 rounded text-sm px-4')}
+            className={clsx('relative text-gray-700 text-sm p-2 ml-auto')}
             disabled={running}
             onClick={onClickVisualizeOptions}
           >
-            <RoughSvg>
-              <SlidersIcon width={14} height={14} />
-            </RoughSvg>
-            Config
+            <span className='inline-flex items-center gap-1 relative z-10 px-2'>
+              Config
+              <RoughSvg>
+                <SlidersIcon width={14} height={14} />
+              </RoughSvg>
+            </span>
+
+            <RoughBox color={colors.gray['400']} />
           </button>
         </div>
       )}
