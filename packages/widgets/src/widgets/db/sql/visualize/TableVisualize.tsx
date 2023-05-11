@@ -15,8 +15,8 @@ export default function TableVisualize ({ result, running }: ResultTableProps) {
     );
   }
   return (
-    <div className="max-w-full max-h-full overflow-auto">
-      <table className="sql-result-table">
+    <div className="w-full h-full overflow-auto">
+      <table className="sql-result-table min-w-full">
         <thead>
         <tr>
           <th>#</th>

@@ -21,6 +21,6 @@
   @apply border-r-0;
 }
 
-.sql-result-table tr:first-of-type th, .sql-result-table tr:last-of-type td {
+.sql-result-table tr:last-of-type th, .sql-result-table tr:last-of-type td {
   @apply border-b-0;
 }
