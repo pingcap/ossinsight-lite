@@ -13,7 +13,7 @@ import { VisualizeContext } from './visualize/context';
 import { Form } from '@oss-widgets/ui/components/form';
 import VisualizeConfig from './visualize/VisualizeConfig';
 import { migrate } from './visualize/guess';
-import { ContextMenuItem } from '@oss-widgets/ui/components/context-menu';
+import { MenuItem } from '@oss-widgets/ui/components/menu';
 import WidgetContext from '@oss-widgets/ui/context/widget';
 import mergeRefs from '@oss-widgets/ui/utils/merge-refs';
 import { getCache, setCache } from './cache';
@@ -73,9 +73,7 @@ export default function Widget ({ defaultSql, defaultDb, sql, currentDb, mode = 
     return (
       <div {...props} ref={forwardedRef}>
         {enabled && (
-          <>
-            {configurable && <ContextMenuItem id="configure" text="Configure" action={configure} order={1} />}
-          </>
+          <MenuItem id="configure" text="Configure" action={configure} order={1} group={0} disabled={!configurable} />
         )}
         <ResultDisplay visualize={visualize} running={running} error={error} result={result} />
       </div>
@@ -83,7 +81,7 @@ export default function Widget ({ defaultSql, defaultDb, sql, currentDb, mode = 
   }
   return (
     <div ref={mergeRefs(ref, forwardedRef)} {...props} className={clsx('relative', props.className)}>
-      <div className={clsx("w-full h-full flex flex-col", enabled && 'border')}>
+      <div className={clsx('w-full h-full flex flex-col', enabled && 'border')}>
         <SQLEditorHeader
           currentDb={currentDb}
           onCurrentDbChange={onCurrentDbChange}

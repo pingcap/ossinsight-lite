@@ -1,10 +1,11 @@
-import { CSSProperties, forwardRef, ReactNode, useEffect, useMemo, useRef } from 'react';
+import { CSSProperties, forwardRef, ReactNode, useEffect, useMemo } from 'react';
 import { Layout } from '../../core/layout/base.ts';
 import { DraggableContextProvider } from '../../context/draggable.ts';
 import './style.scss';
 import { useSize } from '../../hooks/size.ts';
 import { Rect, Size, toSizeStyle } from '../../core/types.ts';
-import mergeRefs from '@oss-widgets/ui/utils/merge-refs.ts'
+import mergeRefs from '@oss-widgets/ui/utils/merge-refs.ts';
+import useRefCallback from '@oss-widgets/ui/hooks/ref-callback.ts';
 
 export interface ViewportProps {
   layout: Layout<any, any>;
@@ -18,14 +19,13 @@ export interface ViewportProps {
 const Viewport = forwardRef<HTMLDivElement, ViewportProps>(function Viewport ({ layout, onDrag, width, height, children, onResize }, forwardedRef) {
   const { ref: wrapperRef, size: wrapperSize } = useSize<HTMLDivElement>({ onResize });
 
-  const onResizeRef = useRef(onResize);
-  onResizeRef.current = onResize;
+  const onResizeRef = useRefCallback(onResize ?? (() => {}));
 
   const viewportSize: Size = useMemo(() => {
     const newSize = layout.computeViewportSize(wrapperSize);
     const [, , w, h] = layout.toDomShape([0, 0, ...newSize]);
     setTimeout(() => {
-      onResizeRef.current?.(newSize);
+      onResizeRef(newSize);
     }, 0);
     return [w, h];
   }, [wrapperSize, layout]);

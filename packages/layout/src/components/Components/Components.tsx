@@ -1,4 +1,4 @@
-import { cloneElement, createElement, FC, ReactElement, useEffect, useState } from 'react';
+import { cloneElement, FC, ReactElement, useEffect, useState } from 'react';
 import { Rect, toShapeStyle } from '../../core/types.ts';
 import { useDraggable } from '../../hooks/draggable.ts';
 import clsx from 'clsx';
@@ -16,25 +16,24 @@ export type Item = {
 
 export interface ComponentProps {
   id: string,
-  name: string,
-  props: Record<string, any> | undefined,
   draggable: boolean
 }
 
 export interface ComponentsProps {
-  items: Item[];
+  itemIds: string[];
+
   idMap?: Map<string, string>;
   draggable?: boolean;
 
-  children (props: ComponentProps): ReactElement;
+  children (props: ComponentProps): ReactElement | null;
 
   onRegister?: (externalId: string) => void;
   onUnregister?: (externalId: string) => void;
 
-  useHooks?: (externalId: string) => void;
+  useRect: (externalId: string) => Rect;
 }
 
-const Components: FC<ComponentsProps> = function Components ({ draggable = false, items, idMap, onRegister, onUnregister, useHooks, children }) {
+const Components: FC<ComponentsProps> = function Components ({ draggable = false, itemIds, idMap, onRegister, onUnregister, useRect, children }) {
   const register = useRefCallback((id: string, externalId: string) => {
     idMap?.set(id, externalId);
     onRegister?.(externalId);
@@ -48,11 +47,13 @@ const Components: FC<ComponentsProps> = function Components ({ draggable = false
     }
   });
 
+  const Children = children;
+
   return (
     <>
-      {items.map(item => (
-        <ComponentWrapper rect={item.rect} key={item.id ?? item.name} externalId={item.id ?? item.name} draggable={draggable} register={register} unregister={unregister} useHooks={useHooks}>
-          {createElement(children, { id: item.id ?? item.name, name: item.name, props: item.props, draggable })}
+      {itemIds.map(id => (
+        <ComponentWrapper key={id} externalId={id} draggable={draggable} register={register} unregister={unregister} useRect={useRect}>
+          <Children id={id} draggable={draggable} />
         </ComponentWrapper>
       ))}
     </>
@@ -61,18 +62,18 @@ const Components: FC<ComponentsProps> = function Components ({ draggable = false
 
 interface ComponentWrapperProps {
   externalId: string;
-  rect: Rect;
   draggable: boolean;
   children: ReactElement;
   register: (id: string, externalId: string) => void;
   unregister: (id: string) => void;
-  useHooks?: (externalId: string) => void;
+  useRect: (externalId: string) => Rect;
 }
 
 const DRAGGING_STYLE = 'translate3d(0,0,0) translateY(-2px) scale(1.02)';
 
-function ComponentWrapper ({ externalId, rect, draggable, register, unregister, useHooks, children }: ComponentWrapperProps) {
+function ComponentWrapper ({ externalId, draggable, register, unregister, useRect, children }: ComponentWrapperProps) {
   const [, setVersion] = useState(0);
+  const rect = useRect(externalId);
   const {
     id,
     ref,
@@ -95,12 +96,11 @@ function ComponentWrapper ({ externalId, rect, draggable, register, unregister, 
     return () => unregister(id);
   }, [externalId, id]);
 
-  useHooks?.(externalId);
-
   return (
     <div
       ref={ref}
       className={clsx({
+        'draggable-target': true,
         draggable,
         dragging,
       })}
@@ -112,12 +112,7 @@ function ComponentWrapper ({ externalId, rect, draggable, register, unregister, 
       {...(draggable ? domProps : undefined)}
     >
       <DraggableItemContextProvider shape={shape} layout={layout}>
-        {cloneElement(children, {
-          style: {
-            width: '100%',
-            height: '100%',
-          },
-        })}
+        {children}
         {draggable && (
           <div className="resize-handles">
             <Resizer id={id} shape={shape} position="end" type="vertical" />

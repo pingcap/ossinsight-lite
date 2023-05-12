@@ -1,31 +1,34 @@
 import * as RuiContextMenu from '@radix-ui/react-context-menu';
 import { FC, PropsWithChildren, ReactElement, ReactNode } from 'react';
-import { ContextMenuContextProvider, useContextMenuContext } from './context.tsx';
-import ContextMenuContent from './ContextMenuContent.tsx';
 import { stopPropagation } from './common.ts';
+import { Menu } from '../menu/Menu.tsx';
+import { renderGroup, renderItem, renderParentItem, renderSeparator } from './content.tsx';
+import { useBindingNames } from '../../hooks/binding/hooks.ts';
+import { MenuContent } from '../menu';
 
 export interface ContextMenuProps {
+  name: string;
   trigger: ReactElement;
   children?: ReactNode;
 }
 
-export const ContextMenu: FC<ContextMenuProps> = ({ trigger, children }: ContextMenuProps) => {
+export const ContextMenu: FC<ContextMenuProps> = ({ name, trigger, children }: ContextMenuProps) => {
   return (
-    <ContextMenuContextProvider>
-      <ContextMenuRoot>
+    <Menu name={name}>
+      <ContextMenuRoot name={name}>
         {trigger}
       </ContextMenuRoot>
       {children}
-    </ContextMenuContextProvider>
+    </Menu>
   );
 };
 
-function ContextMenuRoot ({ children }: PropsWithChildren) {
-  const { groups } = useContextMenuContext();
+function ContextMenuRoot ({ name, children }: PropsWithChildren<{ name: string }>) {
+  const names = useBindingNames(`menu.${name}`);
 
   return (
     <RuiContextMenu.Root>
-      <RuiContextMenu.Trigger asChild disabled={groups.length === 0}>
+      <RuiContextMenu.Trigger asChild disabled={names.length === 0}>
         {children}
       </RuiContextMenu.Trigger>
       <RuiContextMenu.Portal>
@@ -33,7 +36,13 @@ function ContextMenuRoot ({ children }: PropsWithChildren) {
           className="bg-white rounded pointer-events-none shadow p-2 z-40 text-sm flex flex-col gap-2"
           onMouseDown={stopPropagation}
         >
-          <ContextMenuContent />
+          <MenuContent
+            key="menu"
+            name={name}
+            renderGroup={renderGroup}
+            renderSeparator={renderSeparator}
+            renderParentItem={renderParentItem}
+            renderItem={renderItem} />
         </RuiContextMenu.Content>
       </RuiContextMenu.Portal>
     </RuiContextMenu.Root>

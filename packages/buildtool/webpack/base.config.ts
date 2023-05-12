@@ -48,6 +48,7 @@ export default {
             ],
             plugins: [
               '@babel/syntax-import-assertions',
+              ['@babel/plugin-proposal-decorators', { version: '2023-01' }],
             ],
           },
         },

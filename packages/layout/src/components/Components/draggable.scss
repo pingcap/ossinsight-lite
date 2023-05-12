@@ -3,6 +3,13 @@
   transition: opacity .2s;
 }
 
+.draggable-target {
+  > :not(.resize-handles) {
+    width: 100%;
+    height: 100%;
+  }
+}
+
 .draggable {
   position: absolute;
   transition: outline-color 200ms ease, transform 100ms ease, width 100ms ease, height 100ms ease;

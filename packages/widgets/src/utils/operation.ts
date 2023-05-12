@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import useRefCallback from '@oss-widgets/ui/hooks/ref-callback';
 
 export type OperationOptions<P, T> = {
   (props: P, signal: AbortSignal): Promise<T>
@@ -13,8 +14,7 @@ export type OperationResult<P, T> = {
 }
 
 export function useOperation<P, T> (action: OperationOptions<P, T>): OperationResult<P, T> {
-  const actionRef = useRef(action);
-  actionRef.current = action;
+  action = useRefCallback(action);
   const [result, setResult] = useState<T>(null);
   const [error, setError] = useState<unknown>(undefined);
   const [running, setRunning] = useState(false);
@@ -27,7 +27,7 @@ export function useOperation<P, T> (action: OperationOptions<P, T>): OperationRe
       setResult(null);
       setError(undefined);
       setRunning(true);
-      return actionRef.current(prop, controller.signal)
+      return action(prop, controller.signal)
         .then(res => {
           setResult(res);
           return res;

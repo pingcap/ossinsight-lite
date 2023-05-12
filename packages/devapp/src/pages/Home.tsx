@@ -1,37 +1,52 @@
 import Components from '@oss-widgets/layout/src/components/Components';
 import GridLayout from '@oss-widgets/layout/src/components/GridLayout';
-import { ComponentType, forwardRef, lazy, Suspense, useCallback, useMemo, useState } from 'react';
+import { ComponentType, forwardRef, lazy, memo, Suspense, useCallback, useMemo, useState } from 'react';
 import widgets, { Widget } from '../widgets-manifest';
 import * as layoutComponents from '../layout-components';
 import EditModeSwitch from '../components/EditModeSwitch';
 import { move, Rect } from '@oss-widgets/layout/src/core/types';
-import { ContextMenu, ContextMenuItem } from '@oss-widgets/ui/components/context-menu';
+import { ContextMenu } from '@oss-widgets/ui/components/context-menu';
+import { MenuItem } from '@oss-widgets/ui/components/menu';
 import { WidgetContextProvider } from '../components/WidgetContext';
 import { useNavigate } from 'react-router-dom';
 import { useLayoutManager } from '../components/LayoutManager';
 import useRefCallback from '@oss-widgets/ui/hooks/ref-callback';
+import { useComponentBindingContext } from '@oss-widgets/ui/hooks/binding/context';
+import { useBindingNames, useBindingValuePath, useImmutableBindingValuePath } from '@oss-widgets/ui/hooks/binding/hooks';
 
 export default function Home () {
-  const { items, updateItemRect, updateItemProps, addItem, removeItem, duplicateItem, useRectNotify, usePropsNotify, download, useItem } = useLayoutManager();
+  const { duplicateItem, download } = useLayoutManager();
   const [editMode, setEditMode] = useState(process.env.NODE_ENV === 'development');
   const map = useMap<string, string>();
+
+  const { registerRaw, unregisterRaw, update } = useComponentBindingContext('layout-items');
+  const itemIds = useBindingNames('layout-items');
+
+  const useRect = useCallback((id: string) => {
+    return useBindingValuePath('layout-items', id, ['rect']);
+  }, []);
 
   const handleDrag = useCallback((id: string, rect: Rect) => {
     const externalId = map.get(id);
     if (!externalId) {
       return;
     }
-    updateItemRect(externalId, rect);
+    update(externalId, item => {
+      item.rect = rect;
+      return item;
+    });
   }, []);
 
   const addModule = useCallback((name: string, widget: Widget) => {
     widget.module().then(module => {
-      addItem(`${name}-${Math.round(Date.now() / 1000)}`, name, [0, 0, 8, 3], module.defaultProps ?? {});
+      const id = `${name}-${Math.round(Date.now() / 1000)}`;
+      registerRaw(id, {
+        id,
+        name,
+        rect: [0, 0, 8, 3],
+        props: module.defaultProps ?? {},
+      });
     });
-  }, []);
-
-  const deleteWidget = useCallback((id: string) => {
-    removeItem(id);
   }, []);
 
   const duplicateWidget = useCallback((id: string) => {
@@ -40,26 +55,28 @@ export default function Home () {
 
   return (
     <ContextMenu
+      name='bg'
       trigger={
         <div data-x-context-menu-trigger={true}> {/* TODO: ContextMenu to GridLayout not work. */}
           <GridLayout gridSize={40} gap={8} width="100vw" height="100vh" guideUi={editMode} onDrag={handleDrag}>
             <EditModeSwitch className="absolute right-1 top-1" checked={editMode} onCheckedChange={setEditMode} />
             <button className="absolute right-1 top-8" onClick={download}>Download layout.json</button>
             <Components
-              items={items}
+              itemIds={itemIds}
               draggable={editMode}
               idMap={map}
-              useHooks={runAll(useRectNotify, usePropsNotify)}
+              useRect={useRect}
             >
-              {useCallback(({ id, name, props: inProps, draggable, ...rest }) => {
+              {memo(({ id, draggable, ...rest }) => {
                 let Component: ResolvedComponentType;
 
-                // TODO: dirty fix: use passed in props do not updates.
-                const item = useItem(id);
-                const props = { ...inProps, ...rest, ...item?.props };
+                const itemPros = useBindingValuePath('layout-items', id, ['props']);
+                const name = useImmutableBindingValuePath('layout-items', id, ['name']);
+
+                const props = { ...rest, ...itemPros };
 
                 const deleteAction = useRefCallback(() => {
-                  deleteWidget(id);
+                  unregisterRaw(id);
                 });
 
                 const duplicateAction = useRefCallback(() => {
@@ -69,20 +86,23 @@ export default function Home () {
                 const menu = useMemo(() => {
                   return (
                     <>
-                      <ContextMenuItem
+                      <MenuItem
                         key="duplicate"
                         id="duplicate"
                         text="Duplicate"
                         action={duplicateAction}
+                        group={0}
                         order={0}
+                        disabled={false}
                       />
-                      <ContextMenuItem
+                      <MenuItem
                         key="delete"
                         id="delete"
                         text={<span className="text-red-400">Delete</span>}
                         action={deleteAction}
                         order={0}
                         group={1}
+                        disabled={false}
                       />
                     </>
                   );
@@ -90,10 +110,11 @@ export default function Home () {
 
                 if (name.startsWith('internal:')) {
                   const componentName = name.split(':')[1];
-                  Component = (layoutComponents as any)[componentName];
+                  Component = forwardRef((layoutComponents as any)[componentName]);
 
                   return (
                     <ContextMenu
+                      name={`widgets.${id}`}
                       trigger={<Component _id={id} {...props} />}
                     >
                       {menu}
@@ -114,7 +135,6 @@ export default function Home () {
 
                     return {
                       default: forwardRef(({ _id: id, draggable, ...props }: any, ref) => {
-                        usePropsNotify(id);
 
                         const navigate = useNavigate();
 
@@ -123,7 +143,7 @@ export default function Home () {
                         }, []);
 
                         const onPropChange = useRefCallback((key: string, value: any) => {
-                          updateItemProps(id, (props: any) => ({ ...props, [key]: value }));
+                          update(id, (props: any) => ({ ...props, [key]: value }));
                         });
 
                         return (
@@ -138,6 +158,7 @@ export default function Home () {
                             }}
                           >
                             <ContextMenu
+                              name={`widgets.${id}`}
                               trigger={<WidgetComponent {...props} ref={ref} />}
                             >
                               {menu}
@@ -158,16 +179,16 @@ export default function Home () {
                     </Suspense>
                   </div>
                 );
-              }, [])}
+              })}
             </Components>
           </GridLayout>
         </div>
       }
     >
-      <ContextMenuItem text="New" id="new">
+      <MenuItem text="New" id="new" group={0} order={0} disabled={false}>
         {Object.entries(widgets).map(([k, v]) => {
           return {
-            key: k,
+            id: k,
             disabled: false,
             text: k,
             action: () => {
@@ -175,7 +196,7 @@ export default function Home () {
             },
           };
         })}
-      </ContextMenuItem>
+      </MenuItem>
     </ContextMenu>
   );
 }

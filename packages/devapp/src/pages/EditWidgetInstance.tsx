@@ -2,22 +2,24 @@ import { useParams } from 'react-router';
 import { forwardRef, lazy, Suspense, useMemo } from 'react';
 import widgetsManifest from '../widgets-manifest';
 import clsx from 'clsx';
-import { useLayoutManager } from '../components/LayoutManager';
 import useRefCallback from '@oss-widgets/ui/hooks/ref-callback';
 import { Link } from 'react-router-dom';
+import { useBindingValuePath, useImmutableBindingValuePath } from '@oss-widgets/ui/hooks/binding/hooks';
+import { useComponentBindingContext } from '@oss-widgets/ui/hooks/binding/context';
 
 export default function EditWidgetInstance () {
   const id = useParams<{ id: string }>().id ?? '__NEVER__';
-  const { useItem, updateItemProps } = useLayoutManager();
 
-  const item = useItem(id);
+  const { update } = useComponentBindingContext('layout-items');
+  const name = useImmutableBindingValuePath('layout-items', id, ['name']);
+  const props = useBindingValuePath('layout-items', id, ['props']);
 
   const widget = useMemo(() => {
-    if (!item) {
+    if (!name) {
       return undefined;
     }
-    return widgetsManifest[item.name];
-  }, [item?.name]);
+    return widgetsManifest[name];
+  }, [name]);
 
   const Component = useMemo(() => {
     if (widget) {
@@ -26,7 +28,7 @@ export default function EditWidgetInstance () {
         return {
           default: (props: any) => {
             const handlePropChange = useRefCallback((key: string, value: string) => {
-              updateItemProps(id, (props: any) => ({ ...props, [key]: value }));
+              update(id, (props: any) => ({ ...props, [key]: value }));
             });
 
             return (
@@ -47,7 +49,7 @@ export default function EditWidgetInstance () {
     }
   }, [widget]);
 
-  if (!item) {
+  if (!name) {
     return (
       <div className="flex items-center justify-center h-screen text-xl text-gray-700 gap-4">
         Widget not found
@@ -62,7 +64,7 @@ export default function EditWidgetInstance () {
         <Link to="/">HOME</Link>
         <span>
           {'Editing '}
-          <b>{item.name}#{item.id}</b>
+          <b>{name}#{id}</b>
         </span>
         <span className="flex-1" />
         <button className="text-sm bg-gray-700 rounded text-white px-2">
@@ -76,7 +78,7 @@ export default function EditWidgetInstance () {
         <Suspense
           fallback="loading..."
         >
-          <Component {...item.props} />
+          <Component {...props} />
         </Suspense>
       </div>
     </div>
