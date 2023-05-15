@@ -7,10 +7,6 @@ module.exports = async function () {
 
   return {
     code: `let layout = ${JSON.stringify(content, undefined, 2)};
-    const storedLayout = localStorage.getItem('widgets:layout');
-    if (storedLayout) {
-      layout = JSON.parse(storedLayout)
-    }
     
     window.printCurrentLayout = () => console.log(JSON.stringify(layout, undefined, 2))    
     

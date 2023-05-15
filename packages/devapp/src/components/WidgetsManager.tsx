@@ -5,7 +5,7 @@ import useRefCallback from '@oss-widgets/ui/hooks/ref-callback';
 import { useThrottleIdle } from '@oss-widgets/ui/hooks/throttle';
 import { ReactBindCollections, useCollection, useReactBindCollections } from '@oss-widgets/ui/hooks/bind';
 import { withSuspense } from '@oss-widgets/ui/utils/suspense';
-import { migrate, Version } from '@oss-widgets/ui/hooks/migration';
+import { Fixup, migrate, Version } from '@oss-widgets/ui/hooks/migration';
 import type { Dashboard, ItemReference, LayoutConfigV0, LayoutConfigV1, LayoutItem } from '../types/config';
 import { LibraryItem } from '../types/config';
 
@@ -160,6 +160,25 @@ const layoutVersions: Version[] = [
   },
 ];
 
+const layoutVersionFixup: Record<string | number, Fixup> = {
+  [1]: (prev: LayoutConfigV1): LayoutConfigV1 => {
+    if (!prev.dashboard.default) {
+      prev.dashboard.default = {
+        layout: {
+          type: 'grid',
+          size: 40,
+          gap: 8,
+        },
+        items: layout.map(({ id, name, rect }: any) => ({
+          id: id ?? name,
+          rect,
+        })),
+      };
+    }
+    return prev;
+  },
+};
+
 const AutoSave = withSuspense(function AutoSave () {
   const id = useId();
   const library = useCollection('library');
@@ -180,7 +199,7 @@ const AutoSave = withSuspense(function AutoSave () {
     if (browserCached) {
       browserCached = JSON.parse(browserCached);
     }
-    let config = migrate<LayoutConfigV1>(browserCached, { versions: layoutVersions });
+    let config = migrate<LayoutConfigV1>(browserCached, { versions: layoutVersions, fixup: layoutVersionFixup });
     let addedItems = new Set<string>();
     let addedDashboards = new Map<string, Set<string>>();
 

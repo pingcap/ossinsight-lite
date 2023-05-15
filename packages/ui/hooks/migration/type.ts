@@ -3,3 +3,5 @@ export type Version = {
 
   migrate: (previous: any) => any
 }
+
+export type Fixup = (previous: any) => any;
