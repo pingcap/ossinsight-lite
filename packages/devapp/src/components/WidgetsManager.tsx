@@ -3,12 +3,15 @@ import { PropsWithChildren, useCallback, useEffect, useId } from 'react';
 import layout from 'widgets:layout';
 import useRefCallback from '@oss-widgets/ui/hooks/ref-callback';
 import { useThrottleIdle } from '@oss-widgets/ui/hooks/throttle';
-import { useCollection, useReactBindCollections } from '@oss-widgets/ui/hooks/bind';
+import { ReactBindCollections, useCollection, useReactBindCollections } from '@oss-widgets/ui/hooks/bind';
 import { withSuspense } from '@oss-widgets/ui/utils/suspense';
+import { migrate, Version } from '@oss-widgets/ui/hooks/migration';
+import type { Dashboard, ItemReference, LayoutConfigV0, LayoutConfigV1, LayoutItem } from '../types/config';
+import { LibraryItem } from '../types/config';
 
 declare module '@oss-widgets/ui/hooks/bind' {
-  interface BindMap {
-    'layout-items': LayoutItem;
+  interface BindMap extends Record<`dashboard.${string}.items`, ItemReference> {
+    'library': LibraryItem;
   }
 }
 
@@ -17,11 +20,11 @@ export default function WidgetsManager ({ children }: PropsWithChildren) {
   const id = useId();
 
   useEffect(() => {
-    const collection = collections.add('layout-items');
+    const collection = collections.add('library');
     collection.needLoaded();
 
     return () => {
-      collections.del('layout-items');
+      collections.del('library');
     };
   }, []);
 
@@ -33,40 +36,68 @@ export default function WidgetsManager ({ children }: PropsWithChildren) {
   );
 }
 
-export type LayoutItem = {
-  id?: string | undefined
-  name: string
-  rect: Rect
-  props: any
-}
-
 export type LayoutManager = ReturnType<typeof useLayoutManager>;
 
-export function useLayoutManager () {
-  const collection = useCollection('layout-items');
+export type { LayoutItem } from '../types/config';
 
-  const getAll = useRefCallback(() => {
-    return [...collection.entries()]
-      .reduce((res, [k, v]) => {
-        res[k as string] = v.current;
-        return res;
-      }, {} as Record<string, LayoutItem>);
+export function toConfigV1 (collections: ReactBindCollections): LayoutConfigV1 {
+  const library = collections.getNullable('library')!;
+  const dashboards = collections.getByRegexp(/^dashboard\.(\w+)\.items$/);
+
+  return {
+    version: 1,
+    library: library.values,
+    dashboard: dashboards.reduce((record, [key, dashboard]) => {
+      record[key] = {
+        layout: {
+          type: 'grid',
+          size: 40,
+          gap: 8,
+        },
+        items: dashboard.values,
+      };
+      return record;
+    }, {} as Record<string, Dashboard>),
+  };
+}
+
+export function useLayoutManager () {
+  const collections = useReactBindCollections();
+  const library = useCollection('library');
+  const dashboard = useCollection('dashboard.default.items');
+
+  const getAll = useRefCallback((): LayoutConfigV1 => {
+    return toConfigV1(collections);
   });
 
   const duplicateItem = useCallback((id: string, rect: (rect: Rect) => Rect, props?: (props: any) => any) => {
-    const subject = collection.getNullable(id);
-    if (subject) {
+    const subject = library.getNullable(id);
+    const position = dashboard.getNullable(id);
+    if (subject && position) {
       const prev = subject.current;
-      const prevRect: Rect = [...prev.rect];
+      const prevRect: Rect = [...position.current.rect];
       const prevProps = cloneJson(prev.props);
-      const newOne = {
+      const newItem = {
         id: `${prev.name}-${Math.round(Date.now() / 1000)}`,
         name: prev.name,
-        rect: [...(rect?.(prevRect) ?? prevRect)] as Rect,
         props: cloneJson(props?.(prevProps) ?? prevProps),
       };
-      collection.add(newOne.id, newOne);
+      const newPosition = {
+        id: newItem.id,
+        rect: [...(rect?.(prevRect) ?? prevRect)] as Rect,
+      };
+      library.add(newItem.id, newItem);
+      dashboard.add(newItem.id, newPosition);
     }
+  }, []);
+
+  const newItem = useCallback(({ rect, ...item }: LayoutItem) => {
+    const id = item.id ?? item.name;
+    library.add(id, item);
+    dashboard.add(id, {
+      id,
+      rect,
+    });
   }, []);
 
   const download = useRefCallback(() => {
@@ -86,48 +117,118 @@ export function useLayoutManager () {
     });
   });
 
-  return { download, duplicateItem };
+  return { download, duplicateItem, newItem };
 }
+
+const layoutVersions: Version[] = [
+  {
+    version: 0,
+    migrate: prev => {
+      let layoutConfig;
+      if (prev) {
+        layoutConfig = prev;
+      }
+      if (!layoutConfig) {
+        layoutConfig = layout;
+      }
+      return layoutConfig;
+    },
+  },
+  {
+    version: 1,
+    migrate (prev: LayoutConfigV0): LayoutConfigV1 {
+      return {
+        version: 1,
+        library: prev.map(({ rect, ...rest }) => {
+          return rest;
+        }),
+        dashboard: {
+          default: {
+            layout: {
+              type: 'grid',
+              size: 40,
+              gap: 8,
+            },
+            items: prev.map(({ id, name, rect }) => ({
+              id: id ?? name,
+              rect,
+            })),
+          },
+        },
+      };
+    },
+  },
+];
 
 const AutoSave = withSuspense(function AutoSave () {
   const id = useId();
-  const collection = useCollection('layout-items');
+  const library = useCollection('library');
+  const collections = useReactBindCollections();
 
   const save = useRefCallback(() => {
     console.debug('[layout:autosave] save');
 
     // TODO: save to storage services.
-    localStorage.setItem('widgets:layout', JSON.stringify([...collection.entries()]
-      .map(([_, v]) => v.current)));
+    localStorage.setItem('widgets:layout', JSON.stringify(toConfigV1(collections)));
   });
 
   const throttleSave = useThrottleIdle(save);
 
   useEffect(() => {
-    console.debug('[layout:autosave] loading cached = %o, rid = %o', !!localStorage.getItem('widgets:layout'), id);
-    const browserCached = localStorage.getItem('widgets:layout');
-    let realLayout = layout;
-    let added = new Set<string>();
-
+    console.debug('[layout] loading cached = %o, rid = %o', !!localStorage.getItem('widgets:layout'), id);
+    let browserCached = localStorage.getItem('widgets:layout');
     if (browserCached) {
-      realLayout = JSON.parse(browserCached);
+      browserCached = JSON.parse(browserCached);
     }
-    realLayout.forEach((item: LayoutItem) => {
-      const key = item.id ?? item.name;
-      collection.add(key, item);
-      added.add(key);
-    });
-    collection.markLoaded();
+    let config = migrate<LayoutConfigV1>(browserCached, { versions: layoutVersions });
+    let addedItems = new Set<string>();
+    let addedDashboards = new Map<string, Set<string>>();
 
-    console.debug('[layout:autosave] loaded');
-    const sub = collection.subscribeAll(() => {
+    config.library.forEach(item => {
+      const key = item.id ?? item.name;
+      library.add(key, item);
+      addedItems.add(key);
+    });
+
+    library.markLoaded();
+    console.debug(`[layout] loaded version = ${config.version}`);
+
+    for (let [name, dashboardConfig] of Object.entries(config.dashboard)) {
+      const dashboard = collections.add(`dashboard.${name}.items`);
+      const addedItems = new Set<string>;
+
+      dashboardConfig.items.forEach(item => {
+        dashboard.add(item.id, item);
+      });
+
+      addedDashboards.set(name, addedItems);
+    }
+
+    const sub = library.subscribeAll(() => {
       throttleSave();
     });
+
+    const dashboards = collections.getByRegexp(/^dashboard\.(\w+)\.items$/);
+
+    const dashboardSubs = dashboards.map(([, dashboard]) => dashboard.subscribeAll(() => {
+      throttleSave();
+    }));
+
     return () => {
-      console.debug('[layout:autosave] clean rid = %o', id);
-      collection.resetLoaded();
       sub.unsubscribe();
-      added.forEach(key => collection.del(key));
+      dashboardSubs.forEach(sub => sub.unsubscribe());
+
+      console.debug('[layout] clean rid = %o', id);
+
+      addedDashboards.forEach((items, name) => {
+        const dashboard = collections.getNullable(`dashboard.${name}.items`)!;
+        dashboard.resetLoaded();
+        items.forEach(item => dashboard.del(item));
+        collections.del(`dashboard.${name}.items`);
+      });
+
+      library.resetLoaded();
+      addedItems.forEach(key => library.del(key));
     };
   }, []);
 

@@ -44,6 +44,18 @@ export abstract class BindBase<Key extends KeyType, Value, InitialArgs extends a
     return ab;
   }
 
+  getByRegexp (reg: RegExp): [string, Value][] {
+    return [...this.entries()].flatMap(([key, value]) => {
+      if (typeof key === 'string') {
+        const res = reg.exec(key);
+        if (res) {
+          return [[res[1], value]];
+        }
+      }
+      return [];
+    });
+  }
+
   add (key: Key, ...args: InitialArgs) {
     if (this._store.has(key)) {
       throw new BindKeyDuplicatedError(key);
@@ -92,20 +104,20 @@ export abstract class BindBase<Key extends KeyType, Value, InitialArgs extends a
   }
 
   resetLoaded () {
-    this._loaded.current = true
+    this._loaded.current = true;
     this._loaded.markMutating();
   }
 
   get isNeedLoaded () {
-    return this._loaded.current
+    return this._loaded.current;
   }
 
   onceLoaded (cb: PureCallback): Unsubscribable {
     if (this._loaded.current) {
       cb();
       return {
-        unsubscribe () {}
-      }
+        unsubscribe () {},
+      };
     } else {
       const sub = this._loaded.subscribe((loaded) => {
         if (loaded) {

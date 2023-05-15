@@ -34,4 +34,15 @@ export class ReactBindCollection<Data> extends BindBase<KeyType, ReactiveValue<D
       .pipe(filter(([, thisKey, event]) => key === thisKey && event === BindingTypeEvent.UPDATED))
       .subscribe(([value]) => next(value.current));
   }
+
+  get values () {
+    return [...this._store.values()].map(i => i.current);
+  }
+
+  get asRecord () {
+    return [...this._store.entries()].reduce((record, [key, val]) => {
+      record[key] = val.current;
+      return record;
+    }, {} as Record<KeyType, Data>);
+  }
 }

@@ -3,7 +3,7 @@ import { SetStateAction, useCallback, useEffect, useRef, useState } from 'react'
 import { getValue, isPromiseLike, pick } from './utils';
 import { useReactBindCollections } from './ReactBindCollections';
 import { BindBase } from './BindBase';
-import { ReactBindCollection } from './ReactBindCollection.tsx';
+import { ReactBindCollection } from './ReactBindCollection.ts';
 import { BindKeyDuplicatedError } from './error';
 import { Unsubscribable } from 'rxjs';
 

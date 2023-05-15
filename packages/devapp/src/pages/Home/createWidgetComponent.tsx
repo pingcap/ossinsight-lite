@@ -6,7 +6,7 @@ import * as layoutComponents from '../../layout-components';
 import widgets from '../../widgets-manifest';
 import { useNavigate } from 'react-router-dom';
 import { WidgetContextProvider } from '../../components/WidgetContext';
-import { ReactBindCollection } from 'packages/ui/hooks/bind/ReactBindCollection';
+import { ReactBindCollection } from '@oss-widgets/ui/hooks/bind/ReactBindCollection';
 import { LayoutItem, useLayoutManager } from '../../components/WidgetsManager';
 import { ComponentProps } from '@oss-widgets/layout/src/components/Components';
 import { move } from '@oss-widgets/layout/src/core/types';
@@ -14,8 +14,9 @@ import clsx from 'clsx';
 import { Menu } from '@oss-widgets/ui/components/menu/Menu';
 import { ContextMenu } from '@oss-widgets/ui/components/context-menu';
 import { Consume } from '@oss-widgets/ui/hooks/bind/types';
+import { LibraryItem } from '../../types/config';
 
-export function createWidgetComponent (collection: ReactBindCollection<LayoutItem>) {
+export function createWidgetComponent (library: ReactBindCollection<LibraryItem>) {
   type ResolvedComponentType = ComponentType<any>;
   const cache: Record<string, ResolvedComponentType> = {};
 
@@ -25,7 +26,7 @@ export function createWidgetComponent (collection: ReactBindCollection<LayoutIte
     const { id, draggable, dragging, editMode, active, onActiveChange, ...rest } = componentProps;
     const passThroughProps = { draggable, dragging, editMode, active, onActiveChange };
 
-    const { props: itemProps, name } = useWatchItemFields('layout-items', id, ['name', 'props']);
+    const { props: itemProps, name } = useWatchItemFields('library', id, ['name', 'props']);
     const props = { ...rest, ...itemProps };
 
     if (name.startsWith('internal:')) {
@@ -36,7 +37,7 @@ export function createWidgetComponent (collection: ReactBindCollection<LayoutIte
         <Menu name={`widgets.${id}`}>
           <WidgetComponentWrapper
             id={id}
-            collection={collection}
+            library={library}
             editMode={editMode}
             dragging={dragging}
             active={active}
@@ -69,7 +70,7 @@ export function createWidgetComponent (collection: ReactBindCollection<LayoutIte
             }, []);
 
             const onPropChange = useRefCallback((key: string, value: any) => {
-              collection.update(id, (props: any) => ({ ...props, [key]: value }));
+              library.update(id, (props: any) => ({ ...props, [key]: value }));
             });
 
             return (
@@ -86,7 +87,7 @@ export function createWidgetComponent (collection: ReactBindCollection<LayoutIte
                 <Menu name={`widgets.${id}`}>
                   <WidgetComponentWrapper
                     id={id}
-                    collection={collection}
+                    library={library}
                     editMode={editMode}
                     dragging={dragging}
                     active={active}
@@ -116,7 +117,7 @@ export function createWidgetComponent (collection: ReactBindCollection<LayoutIte
 
 type WidgetState = {
   id: string
-  collection: ReactBindCollection<LayoutItem>,
+  library: ReactBindCollection<LibraryItem>,
   editMode: boolean
   dragging: boolean
   active: boolean
@@ -138,12 +139,12 @@ function WidgetComponentWrapper ({ children, ...props }: WidgetState & { childre
   }
 }
 
-export function EditingLayer ({ id, editMode, dragging, collection, active, onActiveChange }: WidgetState) {
+export function EditingLayer ({ id, editMode, dragging, library, active, onActiveChange }: WidgetState) {
   const [hover, setHover] = useState(false);
   const { duplicateItem } = useLayoutManager();
 
   const deleteAction = useRefCallback(() => {
-    collection.del(id);
+    library.del(id);
   });
 
   const duplicateAction = useRefCallback(() => {

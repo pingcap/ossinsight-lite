@@ -30,8 +30,6 @@ class ErrorBoundary extends Component<PropsWithChildren<{}>, { hasError: boolean
   }
 }
 
-console.trace('[layout:root] go, main');
-
 createRoot(document.getElementById('app')!).render(
   <StrictMode>
     <ErrorBoundary>

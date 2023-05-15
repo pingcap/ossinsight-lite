@@ -11,17 +11,18 @@ import { NavMenu } from '@oss-widgets/ui/components/nav-menu';
 import { createWidgetComponent } from './createWidgetComponent';
 
 function Home () {
-  const { download } = useLayoutManager();
+  const { download, newItem } = useLayoutManager();
   const [editMode, setEditMode] = useState(false);
   const [active, setActive] = useState<string>();
   const map = useMap<string, string>();
 
-  const collection = useCollection('layout-items');
+  const library = useCollection('library');
+  const dashboard = useCollection('dashboard.default.items');
 
-  const itemIds = useCollectionKeys(collection) as string[];
+  const itemIds = useCollectionKeys(dashboard) as string[];
 
   const useRect = useCallback((id: string) => {
-    return useWatchItemField('layout-items', id, 'rect');
+    return useWatchItemField('dashboard.default.items', id, 'rect');
   }, []);
 
   const handleDrag = useCallback(async (id: string, rect: Rect) => {
@@ -29,17 +30,17 @@ function Home () {
     if (!externalId) {
       return;
     }
-    collection.update(externalId, item => {
+    dashboard.update(externalId, item => {
       item.rect = rect;
       return item;
     });
   }, []);
 
   const addModule = useCallback((name: string, widget: Widget) => {
-    Promise.all([widget.module(), collection])
-      .then(([module, collection]) => {
+    Promise.all([widget.module(), dashboard])
+      .then(([module]) => {
         const id = `${name}-${Math.round(Date.now() / 1000)}`;
-        collection.add(id, {
+        newItem({
           id,
           name,
           rect: [0, 0, 8, 3],
@@ -48,7 +49,7 @@ function Home () {
       });
   }, []);
 
-  const WidgetComponent = useMemo(() => memo(createWidgetComponent(collection), (a, b) => {
+  const WidgetComponent = useMemo(() => memo(createWidgetComponent(library), (a, b) => {
     return a.active === b.active && a.editMode === b.editMode && a.id === b.id && a.draggable === b.draggable && a.dragging === b.dragging;
   }), []);
 

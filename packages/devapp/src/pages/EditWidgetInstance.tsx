@@ -10,8 +10,8 @@ import WidgetContext from '@oss-widgets/ui/context/widget';
 export default function EditWidgetInstance () {
   const id = useParams<{ id: string }>().id ?? '__NEVER__';
 
-  const collection = useCollection('layout-items');
-  const { name, props } = useWatchItemFields('layout-items', id, ['name', 'props']);
+  const collection = useCollection('library');
+  const { name, props } = useWatchItemFields('library', id, ['name', 'props']);
 
   const widget = useMemo(() => {
     if (!name) {

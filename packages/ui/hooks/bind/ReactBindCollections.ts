@@ -1,24 +1,10 @@
-import { ReactBindCollection } from './ReactBindCollection.tsx';
+import { ReactBindCollection } from './ReactBindCollection.ts';
 import { BindKey } from './types';
-import { createContext, useContext, useMemo } from 'react';
+import { createContext, useContext } from 'react';
 import { BindBase } from './BindBase';
 import { isDev } from '../../utils/dev.ts';
 
-const NO_DEP: [] = [];
-
-export interface ReactBindParentProps {
-
-}
-
-export function ReactBindCollections () {
-  const collections = useMemo(() => new ReactBindCollectionsContext(), NO_DEP);
-
-  return (
-    <Context.Provider value={collections} />
-  );
-}
-
-export class ReactBindCollectionsContext extends BindBase<BindKey, ReactBindCollection<any>> {
+export class ReactBindCollections extends BindBase<BindKey, ReactBindCollection<any>> {
   constructor () {
     super();
   }
@@ -27,10 +13,10 @@ export class ReactBindCollectionsContext extends BindBase<BindKey, ReactBindColl
     return new ReactBindCollection<any>();
   }
 
-  static readonly default = new ReactBindCollectionsContext();
+  static readonly default = new ReactBindCollections();
 }
 
-const Context = createContext<ReactBindCollectionsContext>(ReactBindCollectionsContext.default);
+const Context = createContext<ReactBindCollections>(ReactBindCollections.default);
 
 export function useReactBindCollections () {
   return useContext(Context);
@@ -38,14 +24,14 @@ export function useReactBindCollections () {
 
 declare global {
   interface Window {
-    sc: ReactBindCollectionsContext;
+    sc: ReactBindCollections;
     detectScErrors: () => void;
   }
 }
 
-window.sc = ReactBindCollectionsContext.default;
+window.sc = ReactBindCollections.default;
 window.detectScErrors = () => {
-  const collections = ReactBindCollectionsContext.default;
+  const collections = ReactBindCollections.default;
   setInterval(() => {
     requestIdleCallback(() => {
       // @ts-ignore
