@@ -66,10 +66,6 @@ export function useLayoutManager () {
   const library = useCollection('library');
   const dashboard = useCollection('dashboard.default.items');
 
-  const getAll = useRefCallback((): LayoutConfigV1 => {
-    return toConfigV1(collections);
-  });
-
   const duplicateItem = useCallback((id: string, rect: (rect: Rect) => Rect, props?: (props: any) => any) => {
     const subject = library.getNullable(id);
     const position = dashboard.getNullable(id);
@@ -101,7 +97,7 @@ export function useLayoutManager () {
   }, []);
 
   const download = useRefCallback(() => {
-    const content = JSON.stringify(Object.values(getAll()), undefined, 2);
+    const content = JSON.stringify(toConfigV1(collections), undefined, 2);
     const file = new File([content], 'layout.json', {
       type: 'application/json',
       endings: 'native',
