@@ -1,18 +1,30 @@
 import { MenuItemProps } from './types.ts';
-import { useBinding } from '../../hooks/binding';
 import { useContext, useEffect } from 'react';
 import { MenuContext } from './Menu.tsx';
+import { withSuspense } from '../../utils/suspense.tsx';
+import { useCollection, useUpdater } from '../../hooks/bind';
 
-export function MenuItem (props: MenuItemProps) {
+export const MenuItem = withSuspense(function MenuItem (props: MenuItemProps) {
   const { name } = useContext(MenuContext);
-  const [, setValue] = useBinding(`menu.${name}`, props.id, props);
+  const collection = useCollection(`menu.${name}`);
+  const updater = useUpdater(`menu.${name}`, props.id);
+
+  let justAdded: boolean = false;
 
   useEffect(() => {
-    setValue(props);
-  }, [props.id, props.text, props.group, props.order, props.extraText, props.disabled, specialKey(props)]);
+    collection.add(props.id, props);
+    justAdded = true;
+    return () => collection.del(props.id);
+  }, [name, props.id]);
+
+  useEffect(() => {
+    if (justAdded) {
+      updater(props);
+    }
+  }, [name, props.id, props.text, props.group, props.order, props.extraText, props.disabled, specialKey(props)]);
 
   return <></>;
-}
+});
 
 const specialKey = (item: MenuItemProps) => {
   if ('children' in item) {

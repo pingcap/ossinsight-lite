@@ -10,12 +10,9 @@ export default merge<Configuration>(base, {
   mode: 'development',
   experiments: {},
   entry: {
-    main: {
-      import: devappSrc('main.tsx'),
-      dependOn: 'vendor',
-    },
     vendor: ['react', 'react/jsx-runtime', 'react-dom'],
     'devapp-entry': cwd('src/devapp-entry'),
+    main: devappSrc('main.tsx'),
   },
   devtool: 'eval-source-map',
   devServer: {

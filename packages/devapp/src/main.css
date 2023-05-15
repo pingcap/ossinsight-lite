@@ -8,3 +8,8 @@
 html {
   font-family: CabinSketch, sans-serif;
 }
+
+.draggable.active {
+  z-index: 1;
+  outline: 2px dashed gray;
+}

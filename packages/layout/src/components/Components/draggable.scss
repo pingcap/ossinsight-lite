@@ -17,6 +17,10 @@
   cursor: pointer;
   outline: 2px dashed transparent;
 
+  [data-layer-item] {
+    pointer-events: auto !important;
+  }
+
   &:hover {
     z-index: 1;
     outline: 2px dashed gray;
@@ -35,10 +39,6 @@
       pointer-events: none !important;
     }
 
-    [data-layer-item] {
-      pointer-events: auto !important;
-    }
-
     .resize-handles {
       opacity: 1;
     }
@@ -54,7 +54,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 2;
+  z-index: 40;
 
   &-trigger {
     padding: 4px;

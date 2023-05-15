@@ -1,48 +1,44 @@
 import * as RuiContextMenu from '@radix-ui/react-context-menu';
-import { FC, PropsWithChildren, ReactElement, ReactNode } from 'react';
+import { FC, PropsWithChildren, ReactElement, Suspense } from 'react';
 import { stopPropagation } from './common.ts';
-import { Menu } from '../menu/Menu.tsx';
-import { renderGroup, renderItem, renderParentItem, renderSeparator } from './content.tsx';
-import { useBindingNames } from '../../hooks/binding/hooks.ts';
+import { Menu, MenuProps } from '../menu/Menu.tsx';
+import * as renderers from './content.tsx';
 import { MenuContent } from '../menu';
+import { Consume } from '../../hooks/bind/types.ts';
 
-export interface ContextMenuProps {
-  name: string;
+export interface ContextMenuProps extends MenuProps {
   trigger: ReactElement;
-  children?: ReactNode;
+  onOpenChange?: Consume<boolean>;
 }
 
-export const ContextMenu: FC<ContextMenuProps> = ({ name, trigger, children }: ContextMenuProps) => {
+export const ContextMenu: FC<ContextMenuProps> = ({ name, auto, trigger, onOpenChange, children }: ContextMenuProps) => {
   return (
-    <Menu name={name}>
-      <ContextMenuRoot name={name}>
+    <Menu name={name} auto={auto}>
+      <ContextMenuRoot name={name} onOpenChange={onOpenChange}>
         {trigger}
       </ContextMenuRoot>
-      {children}
+      <Suspense fallback="children loading">
+        {children}
+      </Suspense>
     </Menu>
   );
 };
 
-function ContextMenuRoot ({ name, children }: PropsWithChildren<{ name: string }>) {
-  const names = useBindingNames(`menu.${name}`);
-
+function ContextMenuRoot ({ name, onOpenChange, children }: PropsWithChildren<{ name: string, onOpenChange?: Consume<boolean> }>) {
   return (
-    <RuiContextMenu.Root>
-      <RuiContextMenu.Trigger asChild disabled={names.length === 0}>
+    <RuiContextMenu.Root onOpenChange={onOpenChange}>
+      <RuiContextMenu.Trigger asChild>
         {children}
       </RuiContextMenu.Trigger>
       <RuiContextMenu.Portal>
         <RuiContextMenu.Content
           className="bg-white rounded pointer-events-none shadow p-2 z-40 text-sm flex flex-col gap-2"
           onMouseDown={stopPropagation}
+          hideWhenDetached
         >
-          <MenuContent
-            key="menu"
-            name={name}
-            renderGroup={renderGroup}
-            renderSeparator={renderSeparator}
-            renderParentItem={renderParentItem}
-            renderItem={renderItem} />
+          <menu>
+            <MenuContent key="menu" name={name} {...renderers} />
+          </menu>
         </RuiContextMenu.Content>
       </RuiContextMenu.Portal>
     </RuiContextMenu.Root>

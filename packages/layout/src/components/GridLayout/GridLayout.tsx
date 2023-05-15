@@ -7,7 +7,7 @@ import { Size } from '../../core/types.ts';
 
 const INITIAL_SIZE: Size = [0, 0];
 
-export interface GridLayoutProps extends GridLayoutOptions, Pick<ViewportProps, 'width' | 'height' | 'onDrag'> {
+export interface GridLayoutProps extends GridLayoutOptions, Pick<ViewportProps, 'onDrag' | 'className'> {
   children?: ReactNode;
   guideUi?: boolean;
 }

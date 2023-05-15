@@ -8,19 +8,20 @@ import Home from './pages/Home';
 import Widget from './pages/WidgetLayout';
 import { useWidgetContext } from './components/WidgetContext';
 import EditWidgetInstance from './pages/EditWidgetInstance';
-import LayoutManager from './components/LayoutManager';
+import WidgetsManager from './components/WidgetsManager';
+import { withSuspense } from '@oss-widgets/ui/utils/suspense';
 
 window.React = React;
 window.ReactDOM = ReactDOM;
 
 export default function App () {
   return (
-    <LayoutManager>
+    <WidgetsManager>
       <BrowserRouter>
         <Routes location={window.location}>
-          <Route path="/" element={<Home />} />
+          <Route path="/" Component={Home} />
           <Route path="/browse" element={<List />} />
-          <Route path="/browse" element={<Widget />}>
+          <Route path="/browse" Component={withSuspense(Widget, 'Widget loading')}>
             {Object.keys(widgetsManifest).sort().map((name) => (
               <Route
                 key={name}
@@ -32,7 +33,7 @@ export default function App () {
           <Route path="/edit/:id" Component={EditWidgetInstance} />
         </Routes>
       </BrowserRouter>
-    </LayoutManager>
+    </WidgetsManager>
   );
 }
 

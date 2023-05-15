@@ -1,8 +1,8 @@
-import { useBindingValues } from '../../hooks/binding/hooks.ts';
-import { forwardRef, MenuHTMLAttributes, ReactElement, useMemo } from 'react';
+import { useCollection, useCollectionValues } from '../../hooks/bind';
+import { ReactElement, useMemo } from 'react';
 import { MenuActionItemProps, MenuItemGroupProps, MenuParentItemProps, SubMenuItemProps } from './types.ts';
 
-export interface MenuContentProps extends Omit<MenuHTMLAttributes<HTMLMenuElement>, 'children'> {
+export interface MenuContentProps {
 
   name: string;
 
@@ -19,8 +19,9 @@ export interface MenuContentProps extends Omit<MenuHTMLAttributes<HTMLMenuElemen
   renderItem (item: MenuActionItemProps | SubMenuItemProps, subMenu: boolean): ReactElement;
 }
 
-export const MenuContent = forwardRef<HTMLMenuElement, MenuContentProps>(function MenuContent ({ name, renderGroup, renderItem, renderParentItem, renderSeparator, ...props }: MenuContentProps, ref) {
-  const values = useBindingValues(`menu.${name}`);
+export function MenuContent ({ name, renderGroup, renderItem, renderParentItem, renderSeparator }: MenuContentProps) {
+  const collection = useCollection(`menu.${name}`);
+  const values = useCollectionValues(collection);
 
   const groups = useMemo(() => {
     const groups: MenuItemGroupProps[] = [];
@@ -36,7 +37,7 @@ export const MenuContent = forwardRef<HTMLMenuElement, MenuContentProps>(functio
       group.items[order] = item;
     });
     return groups.map(normalizeGroup);
-  }, []);
+  }, [values]);
 
   const children: ReactElement[] = [];
 
@@ -54,11 +55,11 @@ export const MenuContent = forwardRef<HTMLMenuElement, MenuContentProps>(functio
   });
 
   return (
-    <menu {...props} ref={ref}>
+    <>
       {children}
-    </menu>
+    </>
   );
-});
+}
 
 function normalizeGroup ({ items, ...rest }: MenuItemGroupProps): MenuItemGroupProps {
   return {

@@ -1,4 +1,4 @@
-import { CSSProperties, forwardRef, ReactNode, useEffect, useMemo } from 'react';
+import { CSSProperties, forwardRef, ReactNode, useEffect, useState } from 'react';
 import { Layout } from '../../core/layout/base.ts';
 import { DraggableContextProvider } from '../../context/draggable.ts';
 import './style.scss';
@@ -6,35 +6,39 @@ import { useSize } from '../../hooks/size.ts';
 import { Rect, Size, toSizeStyle } from '../../core/types.ts';
 import mergeRefs from '@oss-widgets/ui/utils/merge-refs.ts';
 import useRefCallback from '@oss-widgets/ui/hooks/ref-callback.ts';
+import clsx from 'clsx';
 
 export interface ViewportProps {
   layout: Layout<any, any>;
   children?: ReactNode;
-  width?: CSSProperties['width'];
-  height?: CSSProperties['height'];
+  className?: string;
   onResize?: (size: Size) => void;
   onDrag?: (id: string, rect: Rect) => void;
 }
 
-const Viewport = forwardRef<HTMLDivElement, ViewportProps>(function Viewport ({ layout, onDrag, width, height, children, onResize }, forwardedRef) {
+const Viewport = forwardRef<HTMLDivElement, ViewportProps>(function Viewport ({ className, layout, onDrag, width, height, children, onResize }, forwardedRef) {
   const { ref: wrapperRef, size: wrapperSize } = useSize<HTMLDivElement>({ onResize });
 
   const onResizeRef = useRefCallback(onResize ?? (() => {}));
 
-  const viewportSize: Size = useMemo(() => {
+  const [viewportSize, setViewportSize] = useState(() => {
     const newSize = layout.computeViewportSize(wrapperSize);
     const [, , w, h] = layout.toDomShape([0, 0, ...newSize]);
-    setTimeout(() => {
-      onResizeRef(newSize);
-    }, 0);
     return [w, h];
+  });
+
+  useEffect(() => {
+    const newSize = layout.computeViewportSize(wrapperSize);
+    const [, , w, h] = layout.toDomShape([0, 0, ...newSize]);
+    setViewportSize([w, h]);
+    onResizeRef(newSize);
   }, [wrapperSize, layout]);
 
   useTrackWindowResize();
 
   return (
     <DraggableContextProvider value={{ layout, onDrag }}>
-      <div ref={mergeRefs(wrapperRef, forwardedRef)} className="viewport-wrapper" style={{ width, height }}>
+      <div ref={mergeRefs(wrapperRef, forwardedRef)} className={clsx('viewport-wrapper', className)} style={{ width, height }}>
         <div className="viewport" style={toSizeStyle(viewportSize)}>
           {children}
         </div>

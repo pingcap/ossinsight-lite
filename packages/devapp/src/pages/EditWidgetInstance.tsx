@@ -4,15 +4,14 @@ import widgetsManifest from '../widgets-manifest';
 import clsx from 'clsx';
 import useRefCallback from '@oss-widgets/ui/hooks/ref-callback';
 import { Link } from 'react-router-dom';
-import { useBindingValuePath, useImmutableBindingValuePath } from '@oss-widgets/ui/hooks/binding/hooks';
-import { useComponentBindingContext } from '@oss-widgets/ui/hooks/binding/context';
+import { useCollection, useWatchItemFields } from '@oss-widgets/ui/hooks/bind';
+import WidgetContext from '@oss-widgets/ui/context/widget';
 
 export default function EditWidgetInstance () {
   const id = useParams<{ id: string }>().id ?? '__NEVER__';
 
-  const { update } = useComponentBindingContext('layout-items');
-  const name = useImmutableBindingValuePath('layout-items', id, ['name']);
-  const props = useBindingValuePath('layout-items', id, ['props']);
+  const collection = useCollection('layout-items');
+  const { name, props } = useWatchItemFields('layout-items', id, ['name', 'props']);
 
   const widget = useMemo(() => {
     if (!name) {
@@ -28,16 +27,26 @@ export default function EditWidgetInstance () {
         return {
           default: (props: any) => {
             const handlePropChange = useRefCallback((key: string, value: string) => {
-              update(id, (props: any) => ({ ...props, [key]: value }));
+              collection.update(id, (props: any) => ({ ...props, [key]: value }));
             });
 
             return (
-              <Component
-                {...props}
-                {...module.configurablePropsOverwrite}
-                className={clsx('w-full h-full', module.configurablePropsOverwrite?.className, props.className)}
-                onPropChange={handlePropChange}
-              />
+              <WidgetContext.Provider
+                value={{
+                  configurable: module.configurable ?? false,
+                  enabled: false,
+                  editingLayout: false,
+                  onPropChange: handlePropChange,
+                  props: { ...props, ...module.configurablePropsOverwrite },
+                  configure () {},
+                }}
+              >
+                <Component
+                  {...props}
+                  {...module.configurablePropsOverwrite}
+                  className={clsx('w-full h-full', module.configurablePropsOverwrite?.className, props.className)}
+                />
+              </WidgetContext.Provider>
             );
           },
         };

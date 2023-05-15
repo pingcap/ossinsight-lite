@@ -34,7 +34,7 @@ export interface WidgetProps extends HTMLProps<HTMLDivElement> {
 }
 
 export default function Widget ({ defaultSql, defaultDb, sql, currentDb, mode = WidgetMode.EDITOR, visualize, ...props }: WidgetProps, forwardedRef: ForwardedRef<HTMLDivElement>) {
-  const { onPropChange } = useContext(WidgetContext);
+  const { onPropChange, enabled, configurable, configure } = useContext(WidgetContext);
 
   const { size, ref } = useSize<HTMLDivElement>();
   const [openVisualizeDialog, setOpenVisualizeDialog] = useState(false);
@@ -67,13 +67,13 @@ export default function Widget ({ defaultSql, defaultDb, sql, currentDb, mode = 
     }
   }, []);
 
-  const { enabled, configurable, configure } = useContext(WidgetContext);
-
   if (mode === WidgetMode.VISUALIZATION) {
     return (
       <div {...props} ref={forwardedRef}>
         {enabled && (
-          <MenuItem id="configure" text="Configure" action={configure} order={1} group={0} disabled={!configurable} />
+          <Suspense fallback={<></>}>
+            <MenuItem id="configure" text="Configure" action={configure} order={1} group={0} disabled={!configurable} />
+          </Suspense>
         )}
         <ResultDisplay visualize={visualize} running={running} error={error} result={result} />
       </div>
