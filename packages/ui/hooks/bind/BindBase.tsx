@@ -87,6 +87,7 @@ export abstract class BindBase<Key extends KeyType, Value, InitialArgs extends a
 
   markLoaded () {
     this._loaded.next(true);
+    this._loaded.current = true;
     this._loaded.markReadonly();
   }
 

@@ -11,8 +11,8 @@ import { NavMenu } from '@oss-widgets/ui/components/nav-menu';
 import { createWidgetComponent } from './createWidgetComponent';
 
 function Home () {
-  const { duplicateItem, download } = useLayoutManager();
-  const [editMode, setEditMode] = useState(process.env.NODE_ENV === 'development');
+  const { download } = useLayoutManager();
+  const [editMode, setEditMode] = useState(false);
   const [active, setActive] = useState<string>();
   const map = useMap<string, string>();
 
