@@ -76,7 +76,7 @@ export function useCollectionKeys<Data> (collection: ReactBindCollection<Data>) 
   useEffect(() => {
     let onceLoadSub: Unsubscribable | undefined;
     if (requireLoad) {
-      onceLoadSub = collection.onceLoaded(() => setKeys(collection.keys),);
+      onceLoadSub = collection.onceLoaded(() => setKeys(collection.keys));
     }
     const subscription = collection.subscribeKeys(setKeys);
     return () => {
@@ -169,13 +169,13 @@ function defaultCompare (l: any, r: any, k: any): boolean {
   return Object.is(l[k], r[k]);
 }
 
-export function useWatchItemFields<K extends BindKey, Path extends keyof BindValue<K>> (type: K, id: KeyType, paths: Path[], compareFn: ComparePath<BindValue<K>, Path> = defaultCompare): Pick<BindValue<K>, Path> {
+export function useWatchItemFields<K extends BindKey, Path extends keyof BindValue<K>> (type: K, id: KeyType, paths: Path[], compareFn: ComparePath<Pick<BindValue<K>, Path>, Path> = defaultCompare): Pick<BindValue<K>, Path> {
   const bind = useCollection(type);
   const reactiveValue = useBind(bind, id);
   const [fields, setFields] = useState(pick(reactiveValue.current, paths));
 
   useEffect(() => {
-    let staledItem = reactiveValue.current;
+    let staledItem: Pick<BindValue<K>, Path> = pick(reactiveValue.current, paths);
 
     const unsubscribe = bind.subscribe(id, newItem => {
       let updated = false;
@@ -185,8 +185,8 @@ export function useWatchItemFields<K extends BindKey, Path extends keyof BindVal
         }
       }
       if (updated) {
-        setFields(pick(newItem, paths));
-        staledItem = newItem;
+        staledItem = pick(newItem, paths);
+        setFields(staledItem);
       }
     });
     return () => unsubscribe.unsubscribe();

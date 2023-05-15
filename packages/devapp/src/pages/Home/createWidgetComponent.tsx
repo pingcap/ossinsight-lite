@@ -7,7 +7,7 @@ import widgets from '../../widgets-manifest';
 import { useNavigate } from 'react-router-dom';
 import { WidgetContextProvider } from '../../components/WidgetContext';
 import { ReactBindCollection } from '@oss-widgets/ui/hooks/bind/ReactBindCollection';
-import { LayoutItem, useLayoutManager } from '../../components/WidgetsManager';
+import { useLayoutManager } from '../../components/WidgetsManager';
 import { ComponentProps } from '@oss-widgets/layout/src/components/Components';
 import { move } from '@oss-widgets/layout/src/core/types';
 import clsx from 'clsx';
@@ -61,16 +61,23 @@ export function createWidgetComponent (library: ReactBindCollection<LibraryItem>
         const configurable = module.configurable ?? false;
 
         return {
-          default: forwardRef(({ _id: id, draggable, dragging, editMode, active, onActiveChange, ...props }: any, ref) => {
-
+          default: forwardRef(({ _id: id, draggable, dragging, editMode, active, onActiveChange, ...passInProps }: any, ref) => {
             const navigate = useNavigate();
+
+            const { props: watchingProps } = useWatchItemFields('library', id, ['props']);
+
+            const props = { ...passInProps, ...watchingProps };
+
 
             const configureAction = useCallback(() => {
               navigate(`/edit/${encodeURIComponent(id)}`);
             }, []);
 
             const onPropChange = useRefCallback((key: string, value: any) => {
-              library.update(id, (props: any) => ({ ...props, [key]: value }));
+              library.update(id, (item) => {
+                item.props = { ...item.props, [key]: value };
+                return item
+              });
             });
 
             return (

@@ -49,9 +49,7 @@ function Home () {
       });
   }, []);
 
-  const WidgetComponent = useMemo(() => memo(createWidgetComponent(library), (a, b) => {
-    return a.active === b.active && a.editMode === b.editMode && a.id === b.id && a.draggable === b.draggable && a.dragging === b.dragging;
-  }), []);
+  const WidgetComponent = useMemo(() => memo(createWidgetComponent(library), isPropsEquals(['onActiveChange'])), []);
 
   return (
     <>
@@ -113,3 +111,21 @@ export default function () {
     </div>
   );
 }
+
+const isPropsEquals = <T extends Record<string, any>> (ignores: (keyof T)[] = []) => {
+  const ignoresSet = new Set(ignores);
+  return (a: T, b: T) => {
+    const aKeys = Object.keys(a).filter(k => !ignoresSet.has(k));
+    const bKeys = Object.keys(b).filter(k => !ignoresSet.has(k));
+
+    if (aKeys.length !== bKeys.length) {
+      return false;
+    }
+    for (let aKey of aKeys) {
+      if (a[aKey] !== b[aKey]) {
+        return false;
+      }
+    }
+    return true;
+  };
+};

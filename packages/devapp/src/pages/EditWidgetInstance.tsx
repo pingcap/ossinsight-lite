@@ -10,7 +10,7 @@ import WidgetContext from '@oss-widgets/ui/context/widget';
 export default function EditWidgetInstance () {
   const id = useParams<{ id: string }>().id ?? '__NEVER__';
 
-  const collection = useCollection('library');
+  const library = useCollection('library');
   const { name, props } = useWatchItemFields('library', id, ['name', 'props']);
 
   const widget = useMemo(() => {
@@ -27,7 +27,10 @@ export default function EditWidgetInstance () {
         return {
           default: (props: any) => {
             const handlePropChange = useRefCallback((key: string, value: string) => {
-              collection.update(id, (props: any) => ({ ...props, [key]: value }));
+              library.update(id, (item) => {
+                item.props = { ...props, [key]: value };
+                return item;
+              });
             });
 
             return (
