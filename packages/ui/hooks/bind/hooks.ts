@@ -147,6 +147,10 @@ export function useWatchItem<K extends BindKey> (type: K, id: KeyType): BindValu
   return value;
 }
 
+function isBind<T> (value: any): value is ReactBindCollection<T> {
+  return value instanceof ReactBindCollection;
+}
+
 export function useWatchItemField<K extends BindKey, Path extends keyof BindValue<K>> (type: K, id: KeyType, path: Path, compareFn: Compare<BindValue<K>[Path]> = Object.is): BindValue<K>[Path] {
   const bind = useCollection(type);
   const reactiveValue = useBind(bind, id);
@@ -169,8 +173,8 @@ function defaultCompare (l: any, r: any, k: any): boolean {
   return Object.is(l[k], r[k]);
 }
 
-export function useWatchItemFields<K extends BindKey, Path extends keyof BindValue<K>> (type: K, id: KeyType, paths: Path[], compareFn: ComparePath<Pick<BindValue<K>, Path>, Path> = defaultCompare): Pick<BindValue<K>, Path> {
-  const bind = useCollection(type);
+export function useWatchItemFields<K extends BindKey, Path extends keyof BindValue<K>> (target: K | ReactBindCollection<BindValue<K>>, id: KeyType, paths: Path[], compareFn: ComparePath<Pick<BindValue<K>, Path>, Path> = defaultCompare): Pick<BindValue<K>, Path> {
+  const bind = isBind(target) ? target : useCollection(target);
   const reactiveValue = useBind(bind, id);
   const [fields, setFields] = useState(pick(reactiveValue.current, paths));
 

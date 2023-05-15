@@ -14,9 +14,9 @@ import clsx from 'clsx';
 import { Menu } from '@oss-widgets/ui/components/menu/Menu';
 import { ContextMenu } from '@oss-widgets/ui/components/context-menu';
 import { Consume } from '@oss-widgets/ui/hooks/bind/types';
-import { LibraryItem } from '../../types/config';
+import { ItemReference, LibraryItem } from '../../types/config';
 
-export function createWidgetComponent (library: ReactBindCollection<LibraryItem>) {
+export function createWidgetComponent (library: ReactBindCollection<LibraryItem>, dashboard: ReactBindCollection<ItemReference>) {
   type ResolvedComponentType = ComponentType<any>;
   const cache: Record<string, ResolvedComponentType> = {};
 
@@ -37,7 +37,7 @@ export function createWidgetComponent (library: ReactBindCollection<LibraryItem>
         <Menu name={`widgets.${id}`}>
           <WidgetComponentWrapper
             id={id}
-            library={library}
+            dashboard={dashboard}
             editMode={editMode}
             dragging={dragging}
             active={active}
@@ -94,7 +94,7 @@ export function createWidgetComponent (library: ReactBindCollection<LibraryItem>
                 <Menu name={`widgets.${id}`}>
                   <WidgetComponentWrapper
                     id={id}
-                    library={library}
+                    dashboard={dashboard}
                     editMode={editMode}
                     dragging={dragging}
                     active={active}
@@ -124,7 +124,7 @@ export function createWidgetComponent (library: ReactBindCollection<LibraryItem>
 
 type WidgetState = {
   id: string
-  library: ReactBindCollection<LibraryItem>,
+  dashboard: ReactBindCollection<ItemReference>,
   editMode: boolean
   dragging: boolean
   active: boolean
@@ -146,12 +146,12 @@ function WidgetComponentWrapper ({ children, ...props }: WidgetState & { childre
   }
 }
 
-export function EditingLayer ({ id, editMode, dragging, library, active, onActiveChange }: WidgetState) {
+export function EditingLayer ({ id, editMode, dragging, dashboard, active, onActiveChange }: WidgetState) {
   const [hover, setHover] = useState(false);
   const { duplicateItem } = useLayoutManager();
 
   const deleteAction = useRefCallback(() => {
-    library.del(id);
+    dashboard.del(id);
   });
 
   const duplicateAction = useRefCallback(() => {

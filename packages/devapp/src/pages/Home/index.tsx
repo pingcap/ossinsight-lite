@@ -49,7 +49,7 @@ function Home () {
       });
   }, []);
 
-  const WidgetComponent = useMemo(() => memo(createWidgetComponent(library), isPropsEquals(['onActiveChange'])), []);
+  const WidgetComponent = useMemo(() => memo(createWidgetComponent(library, dashboard), isPropsEquals(['onActiveChange'])), []);
 
   return (
     <>
