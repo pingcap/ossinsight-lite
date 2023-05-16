@@ -48,7 +48,7 @@ export default merge<Configuration>(base, {
       template: devappSrc('index.ejs'),
     }),
     new HtmlWebpackPlugin({
-      filename: `dashboard/index.html`,
+      filename: `dashboards/index.html`,
       template: devappSrc('index.ejs'),
     })
   ],
