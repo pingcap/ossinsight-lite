@@ -5,15 +5,11 @@ import { stopPropagation } from './common.ts';
 
 const separatorClasses = 'border-b';
 
-export const renderGroup: MenuContentProps['renderGroup'] = (_, children) => {
-  return children;
-};
-
 export const renderSeparator: MenuContentProps['renderSeparator'] = (previousIndex) => {
   return <RuiContextMenu.Separator className={separatorClasses} key={`group-${previousIndex}-separator`} />;
 };
 
-export const renderParentItem: MenuContentProps['renderParentItem'] = (item, children) => {
+export const renderParentItem: MenuContentProps['renderParentItem'] = (item, _, children) => {
   return (
     <RuiContextMenu.Sub key={item.id}>
       <RuiContextMenu.SubTrigger
@@ -43,9 +39,10 @@ export const renderItem: MenuContentProps['renderItem'] = (item) => {
       key={item.id}
     >
       {item.text}
-      <span>
-        {item.extraText}
-      </span>
     </RuiContextMenu.Item>
   );
 };
+
+export const renderCustomItem: MenuContentProps['renderCustomItem'] = () => {
+  throw new Error('ContextMenu does not support custom item.');
+}

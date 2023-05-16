@@ -6,7 +6,7 @@ import { BindBase } from './BindBase';
 import { ReactBindCollection } from './ReactBindCollection.ts';
 import { BindKeyDuplicatedError } from './error';
 import { Unsubscribable } from 'rxjs';
-import { ReactiveValue } from './ReactiveValueSubject.ts';
+import { ReactiveValue, ReactiveValueSubject } from './ReactiveValueSubject.ts';
 
 function useEffectCallback<Callback extends (...args: any[]) => any> (cb: Callback): Callback {
   const ref = useRef(cb);
@@ -17,34 +17,6 @@ function useEffectCallback<Callback extends (...args: any[]) => any> (cb: Callba
   return useCallback(((...args) => {
     return ref.current(...args);
   }) as Callback, []);
-}
-
-function wrapPromise<T> (promise: Promise<T>) {
-  let status = 'pending';
-  let response;
-
-  const suspender = promise.then(
-    (res) => {
-      status = 'success';
-      response = res;
-    },
-    (err) => {
-      status = 'error';
-      response = err;
-    },
-  );
-  const read = () => {
-    switch (status) {
-      case 'pending':
-        throw suspender;
-      case 'error':
-        throw response;
-      default:
-        return response;
-    }
-  };
-
-  return { read };
 }
 
 export function useAsync<T> (input: T | Promise<T>): T {
@@ -63,12 +35,16 @@ export function useCollection<K extends BindKey> (type: K): ReactBindCollection<
   return useBind(useReactBindCollections(), type);
 }
 
+export function useReadItem<Data> (collection: ReactBindCollection<Data>, id: KeyType) {
+  return useBind(collection, id);
+}
+
 export function useAsyncCollection<K extends BindKey> (type: K): Promise<ReactBindCollection<BindValue<K>>> {
   const collectionOrPromise = useReactBindCollections();
   return Promise.resolve(collectionOrPromise.get(type));
 }
 
-export function useCollectionKeys<Key extends KeyType, Data> (collection: BindBase<Key, Data, any>) {
+export function useCollectionKeys<Key extends KeyType, Data> (collection: BindBase<Key, Data, any>, watchAll = false) {
   const requireLoad = useRef(collection.isNeedLoaded);
   const [keys, setKeys] = useState<Key[]>(() => {
     return collection.keys;
@@ -79,33 +55,28 @@ export function useCollectionKeys<Key extends KeyType, Data> (collection: BindBa
     if (requireLoad) {
       onceLoadSub = collection.onceLoaded(() => setKeys(collection.keys));
     }
-    const subscription = collection.subscribeKeys(setKeys);
+    const subscription = watchAll
+      ? collection.events.subscribe(() => setKeys(collection.keys))
+      : collection.subscribeKeys(setKeys);
     return () => {
       subscription.unsubscribe();
       onceLoadSub?.unsubscribe();
     };
-  }, []);
+  }, [collection]);
 
   return keys;
 }
 
-function collect<Data> (collection: ReactBindCollection<Data>): Record<KeyType, Data> {
-  return [...collection.entries()].reduce((record, [key, subject]) => {
-    record[key] = subject.current;
-    return record;
-  }, {} as Record<KeyType, Data>);
-}
-
-export function useCollectionValues<Data> (collection: ReactBindCollection<Data>): Record<KeyType, Data> {
-  const [values, setValues] = useState<Record<KeyType, Data>>(() => collect(collection));
+export function useCollectionValues<Data> (collection: ReactBindCollection<Data>): Data[] {
+  const [values, setValues] = useState(() => collection.values);
 
   useEffect(() => {
     const sub = collection.subscribeAll(() => {
-      setValues(collect(collection));
+      setValues(collection.values);
     });
 
     return () => sub.unsubscribe();
-  }, []);
+  }, [collection]);
 
   return values;
 }
@@ -123,7 +94,7 @@ export function useItem<K extends BindKey> (type: K, id: KeyType, initialValue: 
       subscription.unsubscribe();
       bind.del(id);
     };
-  }, [id]);
+  }, [bind, id]);
 
   const update = useCallback((value: SetStateAction<BindValue<K>>) => {
     bind.update(id, value);
@@ -141,7 +112,7 @@ export function useWatchReactiveValue<V> (item: ReactiveValue<V>): V {
     });
 
     return () => unsubscribable.unsubscribe();
-  }, []);
+  }, [item]);
 
   return value;
 }
@@ -169,7 +140,7 @@ export function useWatchItemField<K extends BindKey, Path extends keyof BindValu
       }
     });
     return () => unsubscribe.unsubscribe();
-  }, []);
+  }, [bind, id]);
 
   return value;
 }
@@ -199,7 +170,7 @@ export function useWatchItemFields<K extends BindKey, Path extends keyof BindVal
       }
     });
     return () => unsubscribe.unsubscribe();
-  }, []);
+  }, [target, id]);
 
   return fields;
 }
@@ -207,7 +178,7 @@ export function useWatchItemFields<K extends BindKey, Path extends keyof BindVal
 export function useUpdater<K extends BindKey> (type: K, id: KeyType) {
   const bind = useCollection(type);
 
-  return useEffectCallback((value: SetStateAction<BindValue<K>>) => {
+  return useCallback((value: SetStateAction<BindValue<K>>) => {
     bind.update(id, value);
-  });
+  }, [bind, id]);
 }

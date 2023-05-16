@@ -5,16 +5,11 @@ import { useConfig } from '../components/WidgetsManager';
 import useRefCallback from '@oss-widgets/ui/hooks/ref-callback';
 import RoughBox from '@oss-widgets/ui/components/roughness/shape/box';
 
-export default function () {
+export function useDashboards () {
   const keys = useCollectionKeys(useReactBindCollections());
   const { config } = useConfig();
-  const [text, setText] = useState('');
-  const navigate = useNavigate();
-  const onCreate = useRefCallback(() => {
-    navigate(`/dashboards/${encodeURIComponent(text)}`);
-  });
 
-  const dashboards = useMemo(() => {
+  return useMemo(() => {
     const initialConfigKeys = Object.keys(config?.dashboard ?? {});
     const stale = keys.flatMap(key => {
       const res = /^dashboard\.(\w+)\.items$/.exec(key);
@@ -27,6 +22,17 @@ export default function () {
 
     return [...new Set([...initialConfigKeys, ...stale])].sort();
   }, [config, keys]);
+
+}
+
+export default function () {
+  const [text, setText] = useState('');
+  const navigate = useNavigate();
+  const onCreate = useRefCallback(() => {
+    navigate(`/dashboards/${encodeURIComponent(text)}`);
+  });
+
+  const dashboards = useDashboards();
 
   return (
     <div className="container m-auto p-4">
@@ -45,7 +51,7 @@ export default function () {
             onChange={e => setText(e.target.value)}
           />
           <button className="inline-block relative mx-2 overflow-visible" onClick={onCreate}>
-            <span className='z-10 px-2'>
+            <span className="z-10 px-2">
               Create new dashboard
             </span>
             <RoughBox color="#93a376" />

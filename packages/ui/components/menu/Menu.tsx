@@ -11,7 +11,7 @@ export interface MenuProps {
 export type MenuKey<K extends string> = `menu.${K}`;
 
 declare module '../../hooks/bind' {
-  interface BindMap extends Record<`menu.${string}`, MenuItemProps> {
+  interface BindMap extends Record<MenuKey<string>, MenuItemProps> {
   }
 }
 
@@ -22,7 +22,7 @@ export function Menu ({ name, auto = true, children }: MenuProps) {
   }
   if (auto) {
     return (
-      <MenuContext.Provider value={{ name }}>
+      <MenuContext.Provider value={{ name, parentId: undefined }}>
         <Registry name={name} />
         {children}
       </MenuContext.Provider>
@@ -47,6 +47,9 @@ function Registry ({ name }: { name: string }) {
   return null;
 }
 
-export const MenuContext = createContext({
+export const MenuContext = createContext<{ name: string, parentId: string | undefined }>({
   name: '',
+  parentId: undefined,
 });
+
+MenuContext.displayName = 'X-MenuContext';

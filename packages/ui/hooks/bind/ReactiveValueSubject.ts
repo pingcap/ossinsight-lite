@@ -1,6 +1,6 @@
-import { Subject, Subscribable } from 'rxjs';
+import { Subject } from 'rxjs';
 
-export interface ReactiveValue<T> extends Subscribable<T> {
+export interface ReactiveValue<T> extends Subject<T> {
   current: T;
 }
 
@@ -23,7 +23,7 @@ export class ReactiveValueSubject<T> extends Subject<T> implements ReactiveValue
 
   next (value: T) {
     if (this._readonly) {
-      throw new Error('mutating readonly value')
+      throw new Error('mutating readonly value');
     }
     super.next(value);
   }

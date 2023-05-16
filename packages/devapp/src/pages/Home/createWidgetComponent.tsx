@@ -178,7 +178,6 @@ export function EditingLayer ({ id, editMode, dragging, dashboard, active, onAct
         id="duplicate"
         text="Duplicate"
         action={duplicateAction}
-        group={0}
         order={0}
         disabled={false}
       />
@@ -187,8 +186,7 @@ export function EditingLayer ({ id, editMode, dragging, dashboard, active, onAct
         id="delete"
         text={<span className="text-red-400">Delete</span>}
         action={deleteAction}
-        order={0}
-        group={1}
+        order={1}
         disabled={false}
       />
     </ContextMenu>

@@ -1,29 +1,39 @@
-import { ReactNode } from 'react';
+import { DependencyList, ReactNode } from 'react';
 
 type BaseItemProps = {
   id: string
-  group: number
   order: number
-  text: ReactNode
-  extraText?: ReactNode
-  disabled: boolean
+  text?: ReactNode
+  disabled?: boolean
 }
 
 export type ActionSpecialProps = { action: () => void; };
-export type ParentSpecialProps = { children: SubMenuItemProps[] };
+export type ParentSpecialProps = { parent: true, children: ReactNode };
+export type CustomSpecialProps = { custom: true, children: ReactNode };
+export type SeparatorSpecialProps = { separator: true };
 
 export type MenuActionItemProps = BaseItemProps & ActionSpecialProps;
+export type MenuCustomItemProps = BaseItemProps & CustomSpecialProps;
 export type MenuParentItemProps = BaseItemProps & ParentSpecialProps;
-export type MenuItemProps = MenuActionItemProps | MenuParentItemProps;
-
-export type SubMenuItemProps = {
-  id: string
-  text: ReactNode
-  extraText?: ReactNode
-  disabled: boolean
-  action: () => void;
-}
+export type MenuSeparatorItemProps = BaseItemProps & SeparatorSpecialProps;
+export type MenuItemProps = MenuActionItemProps | MenuParentItemProps | MenuCustomItemProps | MenuSeparatorItemProps;
 
 export type MenuItemGroupProps = {
   items: MenuItemProps[]
+}
+
+export function isCustomItem (v: MenuItemProps): v is MenuCustomItemProps {
+  return 'custom' in v && v.custom;
+}
+
+export function isActionItem (v: MenuItemProps): v is MenuActionItemProps {
+  return 'action' in v;
+}
+
+export function isSeparatorItem (v: MenuItemProps): v is MenuSeparatorItemProps {
+  return 'separator' in v && v.separator;
+}
+
+export function isParentItem (v: MenuItemProps): v is MenuParentItemProps {
+  return 'parent' in v && v.parent;
 }

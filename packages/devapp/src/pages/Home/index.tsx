@@ -4,12 +4,13 @@ import { memo, Suspense, useCallback, useEffect, useMemo, useState } from 'react
 import widgets, { Widget } from '../../widgets-manifest';
 import EditModeSwitch from '../../components/EditModeSwitch';
 import { Rect } from '@oss-widgets/layout/src/core/types';
-import { MenuItem } from '@oss-widgets/ui/components/menu';
+import { MenuItem, MenuItemSlot } from '@oss-widgets/ui/components/menu';
 import { useLayoutManager } from '../../components/WidgetsManager';
 import { useCollection, useCollectionKeys, useReactBindCollections, useWatchItemField } from '@oss-widgets/ui/hooks/bind';
 import { createWidgetComponent } from './createWidgetComponent';
 import { useParams } from 'react-router';
 import { useNavigate } from 'react-router-dom';
+import PlusIcon from '../../icons/plus.svg';
 
 function Home () {
   const { dashboard: dashboardName = 'default' } = useParams<{ dashboard?: string }>();
@@ -58,22 +59,21 @@ function Home () {
   return (
     <>
       {editMode && (
-        <MenuItem text="New" id="new" group={0} order={100} disabled={false}>
-          {Object.entries(widgets).map(([k, v]) => {
-            return {
-              id: k,
-              disabled: false,
-              text: k,
-              action: () => {
-                addModule(k, v);
-              },
-            };
+        <MenuItem text={<PlusIcon width={20} height={20} />} id="new" order={2} disabled={false} parent>
+          {Object.entries(widgets).map(([k, v], index) => {
+            return <MenuItem id={k} key={k} order={index} text={k} disabled={false} action={() => {
+              addModule(k, v);
+            }} />;
           })}
         </MenuItem>
       )}
-      <GridLayout gridSize={40} gap={8} className="relative w-screen h-[calc(100vh-48px)]" guideUi={editMode} onDrag={handleDrag}>
-        <EditModeSwitch className="absolute right-1 top-1" checked={editMode} onCheckedChange={setEditMode} />
-        <button className="absolute right-1 top-8" onClick={download}>Download layout.json</button>
+      <GridLayout gridSize={40} gap={8} className="relative w-screen overflow-x-hidden h-[calc(100vh-40px)]" guideUi={editMode} onDrag={handleDrag}>
+        <MenuItemSlot id="More">
+          <MenuItem id="EditModeSwitch" order={-1} disabled={false} custom>
+            <EditModeSwitch className="m-1" checked={editMode} onCheckedChange={setEditMode} />
+          </MenuItem>
+          <MenuItem id="DownloadLayoutJSON" order={100} action={download} text="Download layout.json" />
+        </MenuItemSlot>
         <Components
           itemIds={itemIds}
           draggable={editMode}

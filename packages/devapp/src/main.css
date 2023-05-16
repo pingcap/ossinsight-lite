@@ -11,6 +11,8 @@ html {
 
 body {
   min-height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
   background: rgb(255,225,238);
   background: linear-gradient(16deg, rgba(255,225,238,1) 0%, rgba(181,215,255,1) 100%);
 }

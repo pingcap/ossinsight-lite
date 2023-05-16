@@ -1,77 +1,67 @@
-import { useCollection, useCollectionValues } from '../../hooks/bind';
-import { ReactElement, useMemo } from 'react';
-import { MenuActionItemProps, MenuItemGroupProps, MenuParentItemProps, SubMenuItemProps } from './types.ts';
+import { ReactBindCollection, useCollection, useCollectionKeys, useWatchItem } from '../../hooks/bind';
+import { ReactElement, ReactNode } from 'react';
+import { isActionItem, isCustomItem, isSeparatorItem, MenuActionItemProps, MenuCustomItemProps, MenuItemProps, MenuParentItemProps, MenuSeparatorItemProps } from './types.ts';
+import { KeyType } from '../../hooks/bind/types.ts';
+import { MenuKey } from './Menu.tsx';
 
 export interface MenuContentProps {
 
   name: string;
 
-  renderGroup (group: Omit<MenuItemGroupProps, 'items'>, children: ReactElement[]): ReactElement[];
+  renderSeparator (item: MenuSeparatorItemProps): ReactElement;
 
-  renderSeparator (previousIndex: number, previousGroup: MenuItemGroupProps, nextGroup: MenuItemGroupProps): ReactElement;
+  renderParentItem (parent: Omit<MenuParentItemProps, 'children'>, isSub: boolean, children: ReactNode): ReactElement;
 
-  renderParentItem (parent: Omit<MenuParentItemProps, 'children'>, children: ReactElement[]): ReactElement;
+  renderCustomItem (custom: MenuCustomItemProps): ReactElement;
 
-  renderItem (item: MenuActionItemProps, subMenu: false): ReactElement;
-
-  renderItem (item: SubMenuItemProps, subMenu: true): ReactElement;
-
-  renderItem (item: MenuActionItemProps | SubMenuItemProps, subMenu: boolean): ReactElement;
+  renderItem (item: MenuActionItemProps): ReactElement;
 }
 
-export function MenuContent ({ name, renderGroup, renderItem, renderParentItem, renderSeparator }: MenuContentProps) {
-  const collection = useCollection(`menu.${name}`);
-  const values = useCollectionValues(collection);
-
-  const groups = useMemo(() => {
-    const groups: MenuItemGroupProps[] = [];
-    Object.values(values).forEach((item) => {
-      const group = groups[item.group] = groups[item.group] || { items: [] };
-
-      // find a blank place
-      let order = item.order;
-      while (group.items[order]) {
-        order++;
-      }
-
-      group.items[order] = item;
-    });
-    return groups.map(normalizeGroup);
-  }, [values]);
-
-  const children: ReactElement[] = [];
-
-  groups.forEach((group, index) => {
-    if (index > 0) {
-      children.push(renderSeparator(index - 1, groups[index - 1], group));
-    }
-    children.push(...renderGroup(group, group.items.map(item => (
-      'children' in item
-        ? renderParentItem(item, item.children.map(
-          subItem => renderItem(subItem, true),
-        ))
-        : renderItem(item, false)
-    ))));
-  });
+export function MenuContent (menu: MenuContentProps) {
+  const collection = useCollection(`menu.${menu.name}`);
+  const ids = useCollectionKeys(collection);
 
   return (
     <>
-      {children}
+      {ids.map((id) => <RenderAny key={String(id)} id={id} menuKey={`menu.${menu.name}`} isRoot menu={menu} />)}
     </>
   );
 }
 
-function normalizeGroup ({ items, ...rest }: MenuItemGroupProps): MenuItemGroupProps {
-  return {
-    items: normalizeArrays(items).sort((a, b) => a.order - b.order),
-    ...rest,
-  };
+interface RenderProps {
+  id: KeyType,
+  menuKey: MenuKey<string>,
+  menu: MenuContentProps
+  isRoot?: boolean
 }
 
-function normalizeArrays<T> (arr: T[]) {
-  const keys: number[] = [];
-  for (const key in arr) {
-    keys.push(parseInt(key));
+function RenderAny ({ id, menuKey, menu, isRoot = false }: RenderProps) {
+  const item = useWatchItem(menuKey, id);
+
+  if (isCustomItem(item)) {
+    return renderCustom(item, menu);
+  } else if (isActionItem(item)) {
+    return renderAction(item, menu);
+  } else if (isSeparatorItem(item)) {
+    return menu.renderSeparator(item);
+  } else {
+    return <RenderParent props={item} menu={menu} menuKey={menuKey} isRoot={isRoot} />;
   }
-  return keys.sort().map(i => arr[i]);
+}
+
+function RenderParent ({ menu, menuKey, props, isRoot }: { menuKey: MenuKey<string>, props: MenuParentItemProps, menu: MenuContentProps, isRoot: boolean }) {
+  menuKey = `${String(menuKey)}.${props.id}` as MenuKey<string>;
+  const keys = useCollectionKeys(useCollection(menuKey));
+
+  return menu.renderParentItem(props, !isRoot, (
+    <>{keys.map(key => <RenderAny id={key} key={String(key)} menuKey={menuKey} menu={menu} />)}</>
+  ));
+}
+
+function renderCustom (item: MenuCustomItemProps, menu: MenuContentProps) {
+  return menu.renderCustomItem(item);
+}
+
+function renderAction (item: MenuActionItemProps, menu: MenuContentProps) {
+  return menu.renderItem(item);
 }

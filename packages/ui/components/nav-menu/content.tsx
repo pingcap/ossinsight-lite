@@ -1,33 +1,23 @@
 import * as RuiNavigationMenu from '@radix-ui/react-navigation-menu';
-import { CaretDownIcon } from '@radix-ui/react-icons';
 import { MenuContentProps } from '../menu';
+import clsx from 'clsx';
 
-export const renderGroup: MenuContentProps['renderGroup'] = (_, children) => {
-  return children;
+export const renderSeparator: MenuContentProps['renderSeparator'] = (item) => {
+  return <RuiNavigationMenu.Item className="flex-1 h-full" key={item.id} style={{ order: item.order }} />;
 };
 
-export const renderSeparator: MenuContentProps['renderSeparator'] = () => {
-  return <></>;
-};
-
-export const renderParentItem: MenuContentProps['renderParentItem'] = (item, children) => {
+export const renderParentItem: MenuContentProps['renderParentItem'] = (item, isSub, children) => {
   return (
-    <RuiNavigationMenu.Item key={item.id}>
+    <RuiNavigationMenu.Item key={item.id} style={{ order: item.order }} className='relative'>
       <RuiNavigationMenu.Trigger
-        className="min-w-[112px] outline-none bg-transparent transition:colors p-1 cursor-pointer flex justify-between items-center"
+        className="relative z-0 outline-none bg-transparent transition:colors p-1 cursor-pointer flex justify-between items-center"
         disabled={item.disabled}
       >
         {item.text}
-        <span className="text-gray-400">
-          <CaretDownIcon
-            className="relative top-[1px] transition-transform duration-[250ms] ease-in group-data-[state=open]:-rotate-180"
-            aria-hidden
-          />
-        </span>
       </RuiNavigationMenu.Trigger>
-      <RuiNavigationMenu.Content>
+      <RuiNavigationMenu.Content className={clsx('absolute z-[11px] bg-white rounded shadow-sm min-w-max p-2', isSub ? 'right-[calc(100%+8px)] top-0' : 'right-0 top-full')}>
         <RuiNavigationMenu.Sub>
-          <RuiNavigationMenu.List>
+          <RuiNavigationMenu.List className='flex flex-col'>
             {children}
           </RuiNavigationMenu.List>
         </RuiNavigationMenu.Sub>
@@ -38,13 +28,18 @@ export const renderParentItem: MenuContentProps['renderParentItem'] = (item, chi
 
 export const renderItem: MenuContentProps['renderItem'] = (item) => {
   return (
-    <RuiNavigationMenu.Item key={item.id}>
-      <RuiNavigationMenu.Trigger onClick={item.action} disabled={item.disabled} className="min-w-[112px] outline-none bg-transparent transition:colors p-1 cursor-pointer flex justify-between items-center">
+    <RuiNavigationMenu.Item key={item.id} style={{ order: item.order }}>
+      <RuiNavigationMenu.Trigger onClick={item.action} disabled={item.disabled} className="outline-none bg-transparent transition:colors p-1 cursor-pointer flex justify-between items-center">
         {item.text}
-        <span>
-          {item.extraText}
-        </span>
       </RuiNavigationMenu.Trigger>
+    </RuiNavigationMenu.Item>
+  );
+};
+
+export const renderCustomItem: MenuContentProps['renderCustomItem'] = (item) => {
+  return (
+    <RuiNavigationMenu.Item key={item.id} style={{ order: item.order }}>
+      {item.children}
     </RuiNavigationMenu.Item>
   );
 };

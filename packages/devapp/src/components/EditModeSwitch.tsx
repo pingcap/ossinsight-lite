@@ -9,7 +9,7 @@ export type EditModeSwitchProps = Pick<SwitchProps, 'checked' | 'onCheckedChange
 
 export default function EditModeSwitch ({ className, ...props }: EditModeSwitchProps) {
   return (
-    <div className={clsx('flex items-center', className)}>
+    <div className={clsx('flex items-center justify-between', className)}>
       <label className="text-gray-900 text-[15px] leading-none pr-[15px] cursor-pointer" htmlFor="edit-mode">
         Edit mode
       </label>

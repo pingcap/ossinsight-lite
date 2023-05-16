@@ -1,10 +1,5 @@
 import * as RuiToolbar from '@radix-ui/react-toolbar';
 import { MenuContentProps } from '../menu';
-import { stopPropagation } from './common.ts';
-
-export const renderGroup: MenuContentProps['renderGroup'] = (_, children) => {
-  return children;
-};
 
 export const renderSeparator: MenuContentProps['renderSeparator'] = () => {
   return <></>;
@@ -22,9 +17,10 @@ export const renderItem: MenuContentProps['renderItem'] = (item) => {
       data-layer-item
     >
       {item.text}
-      <span>
-        {item.extraText}
-      </span>
     </RuiToolbar.Button>
   );
 };
+
+export const renderCustomItem: MenuContentProps['renderCustomItem'] = () => {
+  throw new Error('ToolbarMenu does not support custom item.');
+}

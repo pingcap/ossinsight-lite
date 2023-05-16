@@ -16,9 +16,10 @@ export class ReactBindCollection<Data> extends BindBase<KeyType, ReactiveValue<D
   update (key: KeyType, value: SetStateAction<Data>) {
     const rv = this._store.get(key);
     if (!rv) {
-      throw new BindKeyNotExistsError(key);
+      throw new BindKeyNotExistsError(key, this._key);
     }
     rv.current = nextValue(rv.current, value);
+    rv.next(rv.current);
     this._eventBus.next([rv, key, BindingTypeEvent.UPDATED]);
   }
 

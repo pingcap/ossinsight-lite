@@ -78,7 +78,7 @@ export abstract class BindBase<Key extends KeyType, Value, InitialArgs extends a
   del (key: Key) {
     const value = this._store.get(key);
     if (!value) {
-      throw new BindKeyNotExistsError(key);
+      throw new BindKeyNotExistsError(key, this._key);
     }
     this._store.delete(key);
     this._eventBus.next([value, key, BindingTypeEvent.DELETED]);

@@ -1,18 +1,16 @@
-import React, { ComponentType, createElement, forwardRef, lazy, Suspense } from 'react';
+import React, { ComponentType } from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, useNavigate } from 'react-router-dom';
 import { Route, Routes } from 'react-router';
-import widgetsManifest from './widgets-manifest';
 import List from './pages/List';
 import Home from './pages/Home';
-import Widget from './pages/WidgetLayout';
-import { useWidgetContext } from './components/WidgetContext';
 import EditWidgetInstance from './pages/EditWidgetInstance';
 import WidgetsManager from './components/WidgetsManager';
-import { withSuspense } from '@oss-widgets/ui/utils/suspense';
-import Dashboards from './pages/Dashboards';
+import Dashboards, { useDashboards } from './pages/Dashboards';
 import { NavMenu } from '@oss-widgets/ui/components/nav-menu';
 import { MenuItem } from '@oss-widgets/ui/components/menu';
+import { withSuspense } from '@oss-widgets/ui/utils/suspense';
+import ThreeDotsIcon from './icons/three-dots.svg';
 
 window.React = React;
 window.ReactDOM = ReactDOM;
@@ -25,7 +23,7 @@ export default function App () {
           <MenuItems />
           <Routes location={window.location}>
             <Route path="/" Component={Home} />
-            <Route path="/dashboards" Component={Dashboards}/>
+            <Route path="/dashboards" Component={Dashboards} />
             <Route path="/dashboards/:dashboard" Component={Home} />
             <Route path="/browse" element={<List />} />
             <Route path="/edit/:id" Component={EditWidgetInstance} />
@@ -38,13 +36,23 @@ export default function App () {
 
 const widgets: Record<string, ComponentType<any>> = {};
 
-const MenuItems = () => {
+const MenuItems = withSuspense(() => {
   const navigate = useNavigate();
+  const dashboards = useDashboards();
   return (
     <>
-      <MenuItem id="Home" group={0} order={0} text="Home" disabled={false} action={() => navigate('/')} />
-      <MenuItem id="Widgets" group={0} order={1} text="Widgets" disabled={false} action={() => navigate('/browse')} />
-      <MenuItem id="Dashboards" group={0} order={2} text="Dashboards" disabled={false} action={() => navigate('/dashboards')} />
+      <MenuItem id="Logo" order={0} text="Home" disabled={false} custom>
+        <span>
+          OSSInsight Lite
+        </span>
+      </MenuItem>
+      <MenuItem id="sep" order={1} disabled={false} separator />
+      <MenuItem id="More" order={100} text={<ThreeDotsIcon />} disabled={false} parent>
+        <MenuItem id="Dashboards" order={1} text="Dashboards" disabled={false} parent>
+          {dashboards.map((dashboard, index) => <MenuItem key={dashboard} id={dashboard} order={index} disabled={false} text={dashboard} action={() => navigate(dashboard === 'default' ? '/' : `/dashboards/${dashboard}`)} />)}
+        </MenuItem>
+        <MenuItem id="Widgets" order={1} text="Widgets" disabled={false} action={() => navigate('/widgets')} />
+      </MenuItem>
     </>
-  )
-}
+  );
+});
