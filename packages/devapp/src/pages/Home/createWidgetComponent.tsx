@@ -15,6 +15,7 @@ import { Menu } from '@oss-widgets/ui/components/menu/Menu';
 import { ContextMenu } from '@oss-widgets/ui/components/context-menu';
 import { Consume } from '@oss-widgets/ui/hooks/bind/types';
 import { ItemReference, LibraryItem } from '../../types/config';
+import { getConfigurable } from '../../utils/widgets';
 
 export function createWidgetComponent (library: ReactBindCollection<LibraryItem>, dashboard: ReactBindCollection<ItemReference>) {
   type ResolvedComponentType = ComponentType<any>;
@@ -58,7 +59,7 @@ export function createWidgetComponent (library: ReactBindCollection<LibraryItem>
 
       cache[name] = Component = lazy(() => widget.module().then(module => {
         const WidgetComponent = forwardRef(module.default);
-        const configurable = module.configurable ?? false;
+        const configurable = getConfigurable(module, props) ?? false;
 
         return {
           default: forwardRef(({ _id: id, draggable, dragging, editMode, active, onActiveChange, ...passInProps }: any, ref) => {

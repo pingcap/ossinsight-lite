@@ -6,6 +6,7 @@ import useRefCallback from '@oss-widgets/ui/hooks/ref-callback';
 import { Link } from 'react-router-dom';
 import { useCollection, useWatchItemFields } from '@oss-widgets/ui/hooks/bind';
 import WidgetContext from '@oss-widgets/ui/context/widget';
+import { getConfigurable } from '../utils/widgets';
 
 export default function EditWidgetInstance () {
   const id = useParams<{ id: string }>().id ?? '__NEVER__';
@@ -36,7 +37,7 @@ export default function EditWidgetInstance () {
             return (
               <WidgetContext.Provider
                 value={{
-                  configurable: module.configurable ?? false,
+                  configurable: getConfigurable(module, props) ?? false,
                   enabled: false,
                   editingLayout: false,
                   onPropChange: handlePropChange,

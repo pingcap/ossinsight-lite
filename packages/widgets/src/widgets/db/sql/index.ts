@@ -1,5 +1,5 @@
 import { WidgetMode } from './Widget';
-import './index.css'
+import './index.css';
 
 export { default } from './Widget';
 
@@ -15,10 +15,14 @@ export const defaultProps = {
     type: 'gauge',
     title: 'Greeting',
   },
-  mode: 'visualization',
+  mode: WidgetMode.VISUALIZATION,
 };
 
-export const configurable = true;
+export const configurable = (props) => props.mode !== WidgetMode.EDITOR;
 export const configurablePropsOverwrite = {
   mode: WidgetMode.EDITOR,
-}
+};
+
+export const widgetListItemPropsOverwrite = {
+  mode: WidgetMode.VISUALIZATION,
+};

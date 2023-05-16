@@ -6,6 +6,7 @@ import { BindBase } from './BindBase';
 import { ReactBindCollection } from './ReactBindCollection.ts';
 import { BindKeyDuplicatedError } from './error';
 import { Unsubscribable } from 'rxjs';
+import { ReactiveValue } from './ReactiveValueSubject.ts';
 
 function useEffectCallback<Callback extends (...args: any[]) => any> (cb: Callback): Callback {
   const ref = useRef(cb);
@@ -46,9 +47,9 @@ function wrapPromise<T> (promise: Promise<T>) {
   return { read };
 }
 
-function useAsync<T> (input: T | Promise<T>): T {
+export function useAsync<T> (input: T | Promise<T>): T {
   if (isPromiseLike(input)) {
-    throw wrapPromise(input).read();
+    throw input;
   } else {
     return input;
   }
@@ -131,13 +132,11 @@ export function useItem<K extends BindKey> (type: K, id: KeyType, initialValue: 
   return [state, update];
 }
 
-export function useWatchItem<K extends BindKey> (type: K, id: KeyType): BindValue<K> {
-  const bind = useCollection(type);
-  const reactiveValue = useBind(bind, id);
-  const [value, setValue] = useState<BindValue<K>>(reactiveValue.current);
+export function useWatchReactiveValue<V> (item: ReactiveValue<V>): V {
+  const [value, setValue] = useState(item.current);
 
   useEffect(() => {
-    const unsubscribable = reactiveValue.subscribe({
+    const unsubscribable = item.subscribe({
       next: setValue,
     });
 
@@ -145,6 +144,12 @@ export function useWatchItem<K extends BindKey> (type: K, id: KeyType): BindValu
   }, []);
 
   return value;
+}
+
+export function useWatchItem<K extends BindKey> (type: K, id: KeyType): BindValue<K> {
+  const bind = useCollection(type);
+  const reactiveValue = useBind(bind, id);
+  return useWatchReactiveValue(reactiveValue);
 }
 
 function isBind<T> (value: any): value is ReactBindCollection<T> {

@@ -21,5 +21,8 @@
     "react-router": "^6.10.0",
     "react-router-dom": "^6.10.0",
     "react-syntax-highlighter": "^15.5.0"
+  },
+  "dependencies": {
+    "rxjs": "^7.8.1"
   }
 }

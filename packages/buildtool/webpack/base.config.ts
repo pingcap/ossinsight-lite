@@ -49,7 +49,8 @@ export default {
             plugins: [
               '@babel/syntax-import-assertions',
               ['@babel/plugin-proposal-decorators', { version: '2023-01' }],
-            ],
+              process.env.NODE_ENV === 'development' ? 'react-refresh/babel' : undefined,
+            ].filter(Boolean),
           },
         },
       },

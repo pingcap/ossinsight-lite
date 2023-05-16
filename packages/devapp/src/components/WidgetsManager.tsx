@@ -20,8 +20,8 @@ export default function WidgetsManager ({ children }: PropsWithChildren) {
   const id = useId();
 
   useEffect(() => {
-    const collection = collections.add('library');
-    collection.needLoaded();
+    const library = collections.add('library');
+    library.needLoaded();
 
     return () => {
       collections.del('library');

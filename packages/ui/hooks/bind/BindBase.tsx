@@ -1,4 +1,4 @@
-import { filter, firstValueFrom, map, Subject, Unsubscribable } from 'rxjs';
+import { filter, firstValueFrom, map, Observable, Subject, Subscription, Unsubscribable } from 'rxjs';
 import { BindingTypeEvent, Consume, KeyType, PureCallback } from './types';
 import { BindKeyDuplicatedError, BindKeyNotExistsError } from './error';
 import { ReactiveValueSubject } from './ReactiveValueSubject.ts';
@@ -84,12 +84,20 @@ export abstract class BindBase<Key extends KeyType, Value, InitialArgs extends a
     this._eventBus.next([value, key, BindingTypeEvent.DELETED]);
   }
 
-  subscribeKeys (cb: Consume<Key[]>) {
-    return this._eventBus
-      .pipe(filter(isKeyMutateEvent))
-      .subscribe(() => {
-        cb(this.keys);
-      });
+  subscribeKeys (): Observable<Key[]>
+  subscribeKeys (cb: Consume<Key[]>): Subscription
+  subscribeKeys (cb?: Consume<Key[]>): Subscription | Observable<Key[]> {
+    if (cb) {
+      return this._eventBus
+        .pipe(filter(isKeyMutateEvent))
+        .subscribe(() => {
+          cb(this.keys);
+        });
+    } else {
+      return this._eventBus
+        .pipe(filter(isKeyMutateEvent))
+        .pipe(map(() => this.keys));
+    }
   }
 
   needLoaded () {

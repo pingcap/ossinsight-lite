@@ -5,6 +5,7 @@ import { cwd, devappSrc } from './utils/path.js';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
 
 export default merge<Configuration>(base, {
   mode: 'development',
@@ -27,6 +28,7 @@ export default merge<Configuration>(base, {
     new HtmlWebpackPlugin({
       template: devappSrc('index.ejs'),
     }),
+    new ReactRefreshWebpackPlugin(),
   ],
   output: {
     publicPath: '/',

@@ -1,6 +1,6 @@
 import { BindingTypeEvent, Consume, KeyType } from './types';
 import { BindBase } from './BindBase';
-import { filter } from 'rxjs';
+import { filter, Observable, Subscription } from 'rxjs';
 import { BindKeyNotExistsError } from './error';
 import { SetStateAction } from 'react';
 import { nextValue } from './utils';
@@ -22,11 +22,17 @@ export class ReactBindCollection<Data> extends BindBase<KeyType, ReactiveValue<D
     this._eventBus.next([rv, key, BindingTypeEvent.UPDATED]);
   }
 
-  subscribeAll (consume: Consume<[Data, KeyType, BindingTypeEvent]>) {
-    return this._eventBus
-      .subscribe(([rv, key, event]) => {
-        consume([rv.current, key, event]);
-      });
+  subscribeAll (): Observable<[ReactiveValue<Data>, KeyType, BindingTypeEvent]>
+  subscribeAll (consume: Consume<[Data, KeyType, BindingTypeEvent]>): Subscription
+  subscribeAll (consume?: Consume<[Data, KeyType, BindingTypeEvent]>): Subscription | Observable<[ReactiveValue<Data>, KeyType, BindingTypeEvent]> {
+    if (consume) {
+      return this._eventBus
+        .subscribe(([rv, key, event]) => {
+          consume([rv.current, key, event]);
+        });
+    } else {
+      return this._eventBus;
+    }
   }
 
   subscribe (key: KeyType, next: (value: Data) => void) {
@@ -35,8 +41,13 @@ export class ReactBindCollection<Data> extends BindBase<KeyType, ReactiveValue<D
       .subscribe(([value]) => next(value.current));
   }
 
+
+  get rawValues () {
+    return [...this._store.values()];
+  }
+
   get values () {
-    return [...this._store.values()].map(i => i.current);
+    return this.rawValues.map(i => i.current);
   }
 
   get asRecord () {
