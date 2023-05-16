@@ -20,7 +20,7 @@ export default function SQLEditor ({ sql, defaultSql, onSqlChange }: SQLEditorPr
       defaultValue={defaultSql}
       onChange={onSqlChange}
       beforeMount={monaco => {
-        monaco.editor.defineTheme('tomorrow', theme);
+        monaco.editor.defineTheme('tomorrow', theme as any);
       }}
       options={{
         fontFamily: 'CabinSketch',
