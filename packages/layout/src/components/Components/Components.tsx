@@ -1,4 +1,4 @@
-import { cloneElement, ComponentType, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
+import { ComponentType, ReactElement, useEffect, useMemo, useState } from 'react';
 import { Rect, toShapeStyle } from '../../core/types.ts';
 import { useDraggable } from '../../hooks/draggable.ts';
 import clsx from 'clsx';

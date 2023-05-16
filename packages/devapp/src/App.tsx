@@ -51,7 +51,7 @@ const MenuItems = withSuspense(() => {
         <MenuItem id="Dashboards" order={1} text="Dashboards" disabled={false} parent>
           {dashboards.map((dashboard, index) => <MenuItem key={dashboard} id={dashboard} order={index} disabled={false} text={dashboard} action={() => navigate(dashboard === 'default' ? '/' : `/dashboards/${dashboard}`)} />)}
         </MenuItem>
-        <MenuItem id="Widgets" order={1} text="Widgets" disabled={false} action={() => navigate('/widgets')} />
+        <MenuItem id="Widgets" order={1} text="Widgets" disabled={false} action={() => navigate('/browse')} />
       </MenuItem>
     </>
   );
