@@ -29,7 +29,8 @@ program
 
         if (options['generateThumbnails'] === true || (process.env.CI && options['generateThumbnails'] !== false)) {
           await import('./prepare-browser.js').then(module => module.default());
-          await import('./thumbnail.js').then(module => module.default());
+          // TODO: use database to store widgets and then enable prerender
+          // await import('./thumbnail.js').then(module => module.default());
         }
       }
         break;
