@@ -7,7 +7,7 @@ export default function LineChartVisualizeConfig ({}: VisualizeBarChart) {
     <>
       <Field
         label="Title"
-        control={<input className="outline-none flex-1 border-b px-2 py-1" placeholder="Input a title" />}
+        control={<input className="bg-transparent text-white outline-none flex-1 border-b px-2 py-1" placeholder="Input a title" />}
         name="title"
       />
       <AxisFields axis="x" />

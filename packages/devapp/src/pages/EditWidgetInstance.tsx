@@ -72,22 +72,8 @@ export default function EditWidgetInstance () {
   }
 
   return (
-    <div className="h-screen">
-      <div className="p-2 bg-gray-200 text-gray-700 border-b flex gap-2 items-center h-[36px]">
-        <Link to="/">HOME</Link>
-        <span>
-          {'Editing '}
-          <b>{name}#{id}</b>
-        </span>
-        <span className="flex-1" />
-        <button className="text-sm bg-gray-700 rounded text-white px-2">
-          Duplicate
-        </button>
-        <button className="text-sm bg-red-700 rounded text-white px-2">
-          Delete
-        </button>
-      </div>
-      <div className="widget w-full h-[calc(100%-36px)]">
+    <div className="h-[calc(100vh-40px)]">
+      <div className="w-full h-full">
         <Suspense
           fallback="loading..."
         >

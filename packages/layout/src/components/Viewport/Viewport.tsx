@@ -16,7 +16,7 @@ export interface ViewportProps {
   onDrag?: (id: string, rect: Rect) => void;
 }
 
-const Viewport = forwardRef<HTMLDivElement, ViewportProps>(function Viewport ({ className, layout, onDrag, width, height, children, onResize }, forwardedRef) {
+const Viewport = forwardRef<HTMLDivElement, ViewportProps>(function Viewport ({ className, layout, onDrag, children, onResize }, forwardedRef) {
   const { ref: wrapperRef, size: wrapperSize } = useSize<HTMLDivElement>({ onResize });
 
   const onResizeRef = useRefCallback(onResize ?? (() => {}));
@@ -38,7 +38,7 @@ const Viewport = forwardRef<HTMLDivElement, ViewportProps>(function Viewport ({ 
 
   return (
     <DraggableContextProvider value={{ layout, onDrag, viewportSize }}>
-      <div ref={mergeRefs(wrapperRef, forwardedRef)} className={clsx('viewport-wrapper', className)} style={{ width, height }}>
+      <div ref={mergeRefs(wrapperRef, forwardedRef)} className={clsx('viewport-wrapper', className)}>
         <div className="viewport" style={toSizeStyle(viewportSize)}>
           {children}
         </div>

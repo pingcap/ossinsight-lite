@@ -1,7 +1,8 @@
-import { filter, firstValueFrom, map, Observable, Subject, Subscription, Unsubscribable } from 'rxjs';
+import { filter, firstValueFrom, map, throttleTime, Observable, Subject, Subscription, Unsubscribable, asyncScheduler } from 'rxjs';
 import { BindingTypeEvent, Consume, KeyType, PureCallback } from './types';
 import { BindKeyDuplicatedError, BindKeyNotExistsError } from './error';
 import { ReactiveValueSubject } from './ReactiveValueSubject.ts';
+import { isDev } from '../../utils/dev.ts';
 
 export abstract class BindBase<Key extends KeyType, Value, InitialArgs extends any[] = []> {
   protected readonly _store = new Map<Key, Value>();
@@ -75,6 +76,12 @@ export abstract class BindBase<Key extends KeyType, Value, InitialArgs extends a
     return this._store.has(key);
   }
 
+  delIfExists (key: Key) {
+    if (this.has(key)) {
+      this.del(key);
+    }
+  }
+
   del (key: Key) {
     const value = this._store.get(key);
     if (!value) {
@@ -82,6 +89,17 @@ export abstract class BindBase<Key extends KeyType, Value, InitialArgs extends a
     }
     this._store.delete(key);
     this._eventBus.next([value, key, BindingTypeEvent.DELETED]);
+
+    if (isDev) {
+      if (value instanceof BindBase) {
+        if (value._store.size > 0) {
+          console.warn(`[bind-dev-leak-detect] Bind ${String(this._key ?? 'ROOT')}#${String(key)} not released all subscribers when deleted.`, value.keys)
+        }
+        if (value._pendingStore.size > 0) {
+          console.warn(`[bind-dev-leak-detect] Bind ${String(this._key ?? 'ROOT')}#${String(key)} not released all subscribers when deleted.`, value.keys)
+        }
+      }
+    }
   }
 
   get events () {

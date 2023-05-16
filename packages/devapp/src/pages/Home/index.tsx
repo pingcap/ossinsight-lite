@@ -1,16 +1,17 @@
 import Components from '@oss-widgets/layout/src/components/Components';
 import GridLayout from '@oss-widgets/layout/src/components/GridLayout';
-import { memo, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
+import { memo, Suspense, useCallback, useMemo, useState } from 'react';
 import widgets, { Widget } from '../../widgets-manifest';
 import EditModeSwitch from '../../components/EditModeSwitch';
 import { Rect } from '@oss-widgets/layout/src/core/types';
 import { MenuItem, MenuItemSlot } from '@oss-widgets/ui/components/menu';
 import { useLayoutManager } from '../../components/WidgetsManager';
-import { useCollection, useCollectionKeys, useReactBindCollections, useWatchItemField } from '@oss-widgets/ui/hooks/bind';
+import { useCollection, useCollectionKeys, useWatchItemField } from '@oss-widgets/ui/hooks/bind';
 import { createWidgetComponent } from './createWidgetComponent';
 import { useParams } from 'react-router';
-import { useNavigate } from 'react-router-dom';
 import PlusIcon from '../../icons/plus.svg';
+import { DashboardContext } from './context';
+import { DashboardAutoSave } from './DashboardAutoSave';
 
 function Home () {
   const { dashboard: dashboardName = 'default' } = useParams<{ dashboard?: string }>();
@@ -26,7 +27,14 @@ function Home () {
 
   const useRect = useCallback((id: string) => {
     return useWatchItemField(`dashboard.${dashboardName}.items`, id, 'rect');
-  }, []);
+  }, [dashboardName]);
+
+  const updateRect = useCallback((id: string, rect: Rect) => {
+    dashboard.update(id, props => {
+      props.rect = rect;
+      return props;
+    });
+  }, [dashboard]);
 
   const handleDrag = useCallback(async (id: string, rect: Rect) => {
     const externalId = map.get(id);
@@ -37,11 +45,11 @@ function Home () {
       item.rect = rect;
       return item;
     });
-  }, []);
+  }, [dashboard]);
 
   const addModule = useCallback((name: string, widget: Widget) => {
-    Promise.all([widget.module(), dashboard])
-      .then(([module]) => {
+    widget.module()
+      .then((module) => {
         const id = `${name}-${Math.round(Date.now() / 1000)}`;
         newItem({
           id,
@@ -50,14 +58,12 @@ function Home () {
           props: module.defaultProps ?? {},
         });
       });
-  }, []);
+  }, [dashboard]);
 
-  const WidgetComponent = useMemo(() => memo(createWidgetComponent(library, dashboard), isPropsEquals(['onActiveChange'])), []);
-
-  const navigate = useNavigate();
+  const WidgetComponent = useMemo(() => memo(createWidgetComponent(), isPropsEquals(['onActiveChange'])), []);
 
   return (
-    <>
+    <DashboardContext.Provider value={{ dashboardName }}>
       {editMode && (
         <MenuItem text={<PlusIcon width={20} height={20} />} id="new" order={2} disabled={false} parent>
           {Object.entries(widgets).map(([k, v], index) => {
@@ -67,18 +73,19 @@ function Home () {
           })}
         </MenuItem>
       )}
+      <MenuItemSlot id="More">
+        <MenuItem id="EditModeSwitch" order={-1} disabled={false} custom>
+          <EditModeSwitch className="m-1" checked={editMode} onCheckedChange={setEditMode} />
+        </MenuItem>
+        <MenuItem id="DownloadLayoutJSON" order={100} action={download} text="Download layout.json" />
+      </MenuItemSlot>
       <GridLayout gridSize={40} gap={8} className="relative w-screen overflow-x-hidden h-[calc(100vh-40px)]" guideUi={editMode} onDrag={handleDrag}>
-        <MenuItemSlot id="More">
-          <MenuItem id="EditModeSwitch" order={-1} disabled={false} custom>
-            <EditModeSwitch className="m-1" checked={editMode} onCheckedChange={setEditMode} />
-          </MenuItem>
-          <MenuItem id="DownloadLayoutJSON" order={100} action={download} text="Download layout.json" />
-        </MenuItemSlot>
         <Components
           itemIds={itemIds}
           draggable={editMode}
           idMap={map}
           useRect={useRect}
+          updateRect={updateRect}
           wrap={el => <Suspense fallback={<>loading item</>} key={el.key}>{el}</Suspense>}
           commonProps={id => ({
             editMode,
@@ -97,7 +104,7 @@ function Home () {
           Component={WidgetComponent}
         />
       </GridLayout>
-    </>
+    </DashboardContext.Provider>
   );
 }
 
@@ -112,23 +119,9 @@ export default function () {
       <Suspense fallback="Home Loading...">
         <Home />
       </Suspense>
-      <Registry />
+      <DashboardAutoSave />
     </div>
   );
-}
-
-function Registry () {
-  const { dashboard: dashboardName = 'default' } = useParams<{ dashboard?: string }>();
-  const collections = useReactBindCollections();
-
-  useEffect(() => {
-    if (!collections.has(`dashboard.${dashboardName}.items`)) {
-      const c = collections.add(`dashboard.${dashboardName}.items`);
-      c.needLoaded();
-    }
-  });
-
-  return null;
 }
 
 const isPropsEquals = <T extends Record<string, any>> (ignores: (keyof T)[] = []) => {

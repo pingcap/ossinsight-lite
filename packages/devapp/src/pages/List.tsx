@@ -16,14 +16,15 @@ import useRefCallback from '@oss-widgets/ui/hooks/ref-callback';
 const names = Object.keys(widgetsManifest).sort();
 
 function useWidgets (library: ReactBindCollection<LibraryItem>, name: string) {
-  const requireLoad = useRef(library.isNeedLoaded);
   const filterFn = (item: ReactiveValue<LibraryItem>) => item.current.name === name;
   const [items, setItems] = useState(() => library.rawValues.filter(filterFn));
 
   useEffect(() => {
     let onceLoadSub: Unsubscribable | undefined;
-    if (requireLoad) {
+    if (library.isNeedLoaded) {
       onceLoadSub = library.onceLoaded(() => setItems(library.rawValues.filter(filterFn)));
+    } else {
+      setItems(library.rawValues.filter(filterFn));
     }
 
     const sub = library.subscribeAll()

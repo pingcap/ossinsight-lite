@@ -1,23 +1,12 @@
 import { BindKey, BindValue, Compare, ComparePath, Consume, KeyType, ValueOrGetter } from './types';
-import { SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
+import { SetStateAction, useCallback, useEffect, useState } from 'react';
 import { getValue, isPromiseLike, pick } from './utils';
 import { useReactBindCollections } from './ReactBindCollections';
 import { BindBase } from './BindBase';
 import { ReactBindCollection } from './ReactBindCollection.ts';
 import { BindKeyDuplicatedError } from './error';
 import { Unsubscribable } from 'rxjs';
-import { ReactiveValue, ReactiveValueSubject } from './ReactiveValueSubject.ts';
-
-function useEffectCallback<Callback extends (...args: any[]) => any> (cb: Callback): Callback {
-  const ref = useRef(cb);
-  useEffect(() => {
-    ref.current = cb;
-  });
-
-  return useCallback(((...args) => {
-    return ref.current(...args);
-  }) as Callback, []);
-}
+import { ReactiveValue } from './ReactiveValueSubject.ts';
 
 export function useAsync<T> (input: T | Promise<T>): T {
   if (isPromiseLike(input)) {
@@ -45,14 +34,14 @@ export function useAsyncCollection<K extends BindKey> (type: K): Promise<ReactBi
 }
 
 export function useCollectionKeys<Key extends KeyType, Data> (collection: BindBase<Key, Data, any>, watchAll = false) {
-  const requireLoad = useRef(collection.isNeedLoaded);
   const [keys, setKeys] = useState<Key[]>(() => {
     return collection.keys;
   });
 
   useEffect(() => {
     let onceLoadSub: Unsubscribable | undefined;
-    if (requireLoad) {
+    setKeys(collection.keys);
+    if (collection.isNeedLoaded) {
       onceLoadSub = collection.onceLoaded(() => setKeys(collection.keys));
     }
     const subscription = watchAll
@@ -130,16 +119,19 @@ function isBind<T> (value: any): value is ReactBindCollection<T> {
 export function useWatchItemField<K extends BindKey, Path extends keyof BindValue<K>> (type: K, id: KeyType, path: Path, compareFn: Compare<BindValue<K>[Path]> = Object.is): BindValue<K>[Path] {
   const bind = useCollection(type);
   const reactiveValue = useBind(bind, id);
-  const [value, setValue] = useState(reactiveValue.current[path]);
+  const [value, setValue] = useState(() => reactiveValue.current[path]);
 
   useEffect(() => {
+    setValue(reactiveValue.current[path]);
     const unsubscribe = bind.subscribe(id, newValue => {
       const newPathValue = newValue[path];
       if (!compareFn(value, newPathValue)) {
         setValue(newPathValue);
       }
     });
-    return () => unsubscribe.unsubscribe();
+    return () => {
+      unsubscribe.unsubscribe();
+    };
   }, [bind, id]);
 
   return value;

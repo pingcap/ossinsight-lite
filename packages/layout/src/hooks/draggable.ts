@@ -14,19 +14,18 @@ export interface DraggableState<E extends HTMLElement> {
 }
 
 export interface DraggableOption {
-  initialShape?: Rect;
+  shape: Rect;
+  onShapeChange: (shape: Rect) => void;
   resize?: ResizeOptions & { target: string };
   notify?: () => void;
 }
 
 const INITIAL_POINT: Point = [0, 0];
-const INITIAL_SHAPE: Rect = [0, 0, 100, 100];
 
-export function useDraggable<E extends HTMLElement> (option: DraggableOption = {}): DraggableState<E> {
+export function useDraggable<E extends HTMLElement> ({ shape: propShape, notify, onShapeChange, resize }: DraggableOption): DraggableState<E> {
   const { layout, onDrag } = useDraggableContext<Rect, Point>();
   const id = useId();
   const ref = useRef<E>(null);
-  const [shape, setShape] = useState(() => option.initialShape ? option.initialShape : INITIAL_SHAPE);
 
   const [dragging, setDragging] = useState(false);
   const [start, setStart] = useState(INITIAL_POINT);
@@ -35,40 +34,31 @@ export function useDraggable<E extends HTMLElement> (option: DraggableOption = {
   const internalProcessingRef = useRef(false);
 
   useEffect(() => {
-    if (option.resize) {
+    if (resize) {
       return;
     }
     const cr = ref.current!.getBoundingClientRect();
-    const shape = option.initialShape ?? layout.fromDomShape([cr.left, cr.top, cr.width, cr.height]);
+    const shape = propShape ?? layout.fromDomShape([cr.left, cr.top, cr.width, cr.height]);
     layout.register({
       id,
       shape,
-      notify: option.notify ?? (() => {}),
+      notify: notify ?? (() => {}),
     });
-    setShape(shape);
+    onShapeChange(shape);
     return () => {
       layout.unregister(id);
     };
-  }, [layout, !!option.resize]);
+  }, [layout, !!resize, onShapeChange]);
 
-  const onStart = useCallback((event: MouseEvent) => {
-    if (event.button !== 0) {
-      return;
+  useEffect(() => {
+    if (propShape) {
+      onShapeChange(propShape);
+      const element = layout.elements.get(id);
+      if (element) {
+        element.shape = propShape;
+      }
     }
-    event.stopPropagation();
-    setDragging(true);
-    setStart([event.clientX, event.clientY]);
-    setCurrent([event.clientX, event.clientY]);
-    if (option.resize) {
-      layout.starResize(option.resize.target, option.resize);
-      layout.notify(option.resize.target);
-    } else {
-      layout.starDrag(id);
-    }
-    window.addEventListener('mousemove', onMove);
-    window.addEventListener('mouseup', onEnd);
-    window.addEventListener('mouseleave', onEnd);
-  }, [layout]);
+  }, [propShape, onShapeChange]);
 
   const onMove = useCallback((event: globalThis.MouseEvent) => {
     setCurrent([event.clientX, event.clientY]);
@@ -78,12 +68,12 @@ export function useDraggable<E extends HTMLElement> (option: DraggableOption = {
     setDragging(false);
     setStart(INITIAL_POINT);
     setCurrent(INITIAL_POINT);
-    const shape = option.resize ? layout.endResize() : layout.endDrag();
+    const shape = resize ? layout.endResize() : layout.endDrag();
     if (shape) {
-      setShape(shape);
-      if (option.resize) {
-        onDrag?.(option.resize.target, shape);
-        layout.notify(option.resize.target);
+      onShapeChange(shape);
+      if (resize) {
+        onDrag?.(resize.target, shape);
+        layout.notify(resize.target);
       } else {
         onDrag?.(id, shape);
       }
@@ -91,7 +81,26 @@ export function useDraggable<E extends HTMLElement> (option: DraggableOption = {
     window.removeEventListener('mousemove', onMove);
     window.removeEventListener('mouseup', onEnd);
     window.removeEventListener('mouseleave', onEnd);
-  }, [onDrag, option.resize?.target]);
+  }, [onDrag, resize?.target, onShapeChange]);
+
+  const onStart = useCallback((event: MouseEvent) => {
+    if (event.button !== 0) {
+      return;
+    }
+    event.stopPropagation();
+    setDragging(true);
+    setStart([event.clientX, event.clientY]);
+    setCurrent([event.clientX, event.clientY]);
+    if (resize) {
+      layout.starResize(resize.target, resize);
+      layout.notify(resize.target);
+    } else {
+      layout.starDrag(id);
+    }
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onEnd);
+    window.addEventListener('mouseleave', onEnd);
+  }, [layout, onMove, onEnd]);
 
   const draggingOffset = useMemo(() => {
     return offset(start, current);
@@ -105,18 +114,18 @@ export function useDraggable<E extends HTMLElement> (option: DraggableOption = {
     const prevShape = layout.currentShape!;
     const shape = layout.doAction(layout.fromDomOffset(draggingOffset));
     if (shape && !equals(prevShape, shape)) {
-      setShape(shape);
-      if (option.resize) {
-        layout.notify(option.resize.target);
+      onShapeChange?.(shape);
+      if (resize) {
+        layout.notify(resize.target);
       }
     }
     internalProcessingRef.current = false;
-  }, [layout, draggingOffset, onDrag, option.resize?.target]);
+  }, [layout, draggingOffset, onDrag, resize?.target, onShapeChange]);
 
   return {
     ref,
     layout,
-    shape,
+    shape: propShape,
     draggingOffset,
     dragging: layout.dragging?.id === id || dragging,
     domProps: {

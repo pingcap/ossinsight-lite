@@ -1,4 +1,4 @@
-import { DependencyList, ReactNode } from 'react';
+import { ReactNode } from 'react';
 
 type BaseItemProps = {
   id: string
@@ -17,10 +17,6 @@ export type MenuCustomItemProps = BaseItemProps & CustomSpecialProps;
 export type MenuParentItemProps = BaseItemProps & ParentSpecialProps;
 export type MenuSeparatorItemProps = BaseItemProps & SeparatorSpecialProps;
 export type MenuItemProps = MenuActionItemProps | MenuParentItemProps | MenuCustomItemProps | MenuSeparatorItemProps;
-
-export type MenuItemGroupProps = {
-  items: MenuItemProps[]
-}
 
 export function isCustomItem (v: MenuItemProps): v is MenuCustomItemProps {
   return 'custom' in v && v.custom;

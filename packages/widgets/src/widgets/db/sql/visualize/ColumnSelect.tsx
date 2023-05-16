@@ -31,7 +31,7 @@ const ColumnSelect = forwardRef<HTMLButtonElement | null, ColumnSelectProps>(({
       value={value}
       onValueChange={onChange}
     >
-      <Select.Trigger className="inline-flex items-center justify-center outline-none" ref={ref}>
+      <Select.Trigger className="bg-transparent text-white inline-flex items-center justify-center outline-none" ref={ref}>
         <Select.Value>
           {value}
         </Select.Value>

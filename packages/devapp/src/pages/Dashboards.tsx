@@ -1,7 +1,7 @@
 import { useCollectionKeys, useReactBindCollections } from '@oss-widgets/ui/hooks/bind';
 import React, { useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useConfig } from '../components/WidgetsManager';
+import { DashboardKeyRegExp, useConfig } from '../components/WidgetsManager';
 import useRefCallback from '@oss-widgets/ui/hooks/ref-callback';
 import RoughBox from '@oss-widgets/ui/components/roughness/shape/box';
 
@@ -12,7 +12,7 @@ export function useDashboards () {
   return useMemo(() => {
     const initialConfigKeys = Object.keys(config?.dashboard ?? {});
     const stale = keys.flatMap(key => {
-      const res = /^dashboard\.(\w+)\.items$/.exec(key);
+      const res = DashboardKeyRegExp.exec(key);
       if (res) {
         return [res[1]];
       } else {

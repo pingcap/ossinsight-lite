@@ -44,7 +44,7 @@ window.detectScErrors = () => {
         // @ts-ignore
         if (bind._pendingStore.size > 0) {
           // @ts-ignore
-          console.warn(`[error:detection]`, [...collections._pendingStore.keys()].map(key => `${name}.${key}`), 'are not initialized, make sure these keys are registered somewhere outside <Suspense />');
+          console.warn(`[error:detection]`, [...bind._pendingStore.keys()].map(key => `${name}#${key}`), 'are not initialized, make sure these keys are registered somewhere outside <Suspense />');
         }
       }
     });

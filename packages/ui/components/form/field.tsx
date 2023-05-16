@@ -19,7 +19,7 @@ export function Field<F extends FieldValues, N extends FieldPath<F>> ({ name, la
 
   return (
     <div className="flex gap-2 items-center">
-      <label className="text-gray-400 max-w-[120px]" htmlFor={htmlId}>{label}</label>
+      <label className="text-white max-w-[120px]" htmlFor={htmlId}>{label}</label>
       {cloneElement(control, { ...field, id: htmlId })}
     </div>
   );

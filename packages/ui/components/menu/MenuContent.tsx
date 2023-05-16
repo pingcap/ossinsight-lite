@@ -1,6 +1,6 @@
-import { ReactBindCollection, useCollection, useCollectionKeys, useWatchItem } from '../../hooks/bind';
+import { useCollection, useCollectionKeys, useWatchItem } from '../../hooks/bind';
 import { ReactElement, ReactNode } from 'react';
-import { isActionItem, isCustomItem, isSeparatorItem, MenuActionItemProps, MenuCustomItemProps, MenuItemProps, MenuParentItemProps, MenuSeparatorItemProps } from './types.ts';
+import { isActionItem, isCustomItem, isSeparatorItem, MenuActionItemProps, MenuCustomItemProps, MenuParentItemProps, MenuSeparatorItemProps } from './types.ts';
 import { KeyType } from '../../hooks/bind/types.ts';
 import { MenuKey } from './Menu.tsx';
 

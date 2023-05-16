@@ -1,4 +1,4 @@
-import { cloneElement, ComponentType, ReactElement, useEffect, useState } from 'react';
+import { cloneElement, ComponentType, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { Rect, toShapeStyle } from '../../core/types.ts';
 import { useDraggable } from '../../hooks/draggable.ts';
 import clsx from 'clsx';
@@ -32,13 +32,14 @@ export interface ComponentsProps<Props> {
   onUnregister?: (externalId: string) => void;
 
   useRect: (externalId: string) => Rect;
+  updateRect: (externalId: string, rect: Rect) => void;
 
   wrap?: (children: ReactElement) => ReactElement;
 
   commonProps: (externalId: string) => Props & { wrapperClassName?: string | undefined };
 }
 
-function Components<Props extends Record<string, any>> ({ draggable = false, itemIds, idMap, onRegister, onUnregister, useRect, Component, wrap = el => el, commonProps }: ComponentsProps<Props>) {
+function Components<Props extends Record<string, any>> ({ draggable = false, itemIds, idMap, onRegister, onUnregister, useRect, updateRect, Component, wrap = el => el, commonProps }: ComponentsProps<Props>) {
   const register = useRefCallback((id: string, externalId: string) => {
     idMap?.set(id, externalId);
     onRegister?.(externalId);
@@ -58,7 +59,7 @@ function Components<Props extends Record<string, any>> ({ draggable = false, ite
         const { wrapperClassName, ...rest } = commonProps(id);
 
         return wrap(
-          <ComponentWrapper key={id} className={wrapperClassName} externalId={id} draggable={draggable} register={register} unregister={unregister} useRect={useRect}>
+          <ComponentWrapper key={id} className={wrapperClassName} externalId={id} draggable={draggable} register={register} unregister={unregister} useRect={useRect} updateRect={updateRect}>
             {dragging => <Component id={id} draggable={draggable} dragging={dragging} {...rest as Props} />}
           </ComponentWrapper>,
         );
@@ -75,13 +76,15 @@ interface ComponentWrapperProps {
   register: (id: string, externalId: string) => void;
   unregister: (id: string) => void;
   useRect: (externalId: string) => Rect;
+  updateRect: (externalId: string, rect: Rect) => void;
 }
 
 const DRAGGING_STYLE = 'translate3d(0,0,0) translateY(-2px) scale(1.02)';
 
-function ComponentWrapper ({ className, externalId, draggable, register, unregister, useRect, children }: ComponentWrapperProps) {
+function ComponentWrapper ({ className, externalId, draggable, register, unregister, useRect, updateRect, children }: ComponentWrapperProps) {
   const [, setVersion] = useState(0);
   const rect = useRect(externalId);
+  const onShapeChange = useMemo(() => (rect: Rect) => updateRect(externalId, rect), [externalId, updateRect]);
   const {
     id,
     ref,
@@ -90,13 +93,14 @@ function ComponentWrapper ({ className, externalId, draggable, register, unregis
     dragging,
     layout,
   } = useDraggable<HTMLDivElement>({
-    initialShape: rect,
+    shape: rect,
+    onShapeChange,
     notify: () => {
       setVersion(v => v + 1);
     },
   });
 
-  const properShape = id === layout.dragging?.id ? layout.currentShape : layout.elements.get(id)?.shape ?? shape;
+  const properShape = id === layout.dragging?.id ? layout.currentShape : shape;
   const shapeStyle = toShapeStyle(layout.toDomShape(properShape));
 
   useEffect(() => {
@@ -120,7 +124,7 @@ function ComponentWrapper ({ className, externalId, draggable, register, unregis
       {...(draggable ? domProps : undefined)}
     >
       <DraggableItemContextProvider shape={shape} layout={layout}>
-        {cloneElement(children(dragging))}
+        {children(dragging)}
         {draggable && (
           <div className="resize-handles">
             <Resizer id={id} shape={shape} position="end" type="vertical" />

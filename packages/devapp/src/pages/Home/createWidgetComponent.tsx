@@ -1,7 +1,7 @@
-import { useCollection, useWatchItemFields } from '@oss-widgets/ui/hooks/bind';
+import { useCollection, useUpdater, useWatchItemFields } from '@oss-widgets/ui/hooks/bind';
 import useRefCallback from '@oss-widgets/ui/hooks/ref-callback';
 import { MenuItem } from '@oss-widgets/ui/components/menu';
-import { ComponentType, forwardRef, lazy, ReactElement, Suspense, useCallback, useState } from 'react';
+import { ComponentType, forwardRef, lazy, ReactElement, Suspense, useCallback, useContext, useState } from 'react';
 import * as layoutComponents from '../../layout-components';
 import widgets from '../../widgets-manifest';
 import { useNavigate } from 'react-router-dom';
@@ -16,8 +16,9 @@ import { ContextMenu } from '@oss-widgets/ui/components/context-menu';
 import { Consume } from '@oss-widgets/ui/hooks/bind/types';
 import { ItemReference, LibraryItem } from '../../types/config';
 import { getConfigurable } from '../../utils/widgets';
+import { DashboardContext } from './context';
 
-export function createWidgetComponent (library: ReactBindCollection<LibraryItem>, dashboard: ReactBindCollection<ItemReference>) {
+export function createWidgetComponent () {
   type ResolvedComponentType = ComponentType<any>;
   const cache: Record<string, ResolvedComponentType> = {};
 
@@ -38,7 +39,6 @@ export function createWidgetComponent (library: ReactBindCollection<LibraryItem>
         <Menu name={`widgets.${id}`}>
           <WidgetComponentWrapper
             id={id}
-            dashboard={dashboard}
             editMode={editMode}
             dragging={dragging}
             active={active}
@@ -66,19 +66,19 @@ export function createWidgetComponent (library: ReactBindCollection<LibraryItem>
             const navigate = useNavigate();
 
             const { props: watchingProps } = useWatchItemFields('library', id, ['props']);
+            const updater = useUpdater('library', id)
 
             const props = { ...passInProps, ...watchingProps };
-
 
             const configureAction = useCallback(() => {
               navigate(`/edit/${encodeURIComponent(id)}`);
             }, []);
 
             const onPropChange = useRefCallback((key: string, value: any) => {
-              library.update(id, (item) => {
+              updater((item) => {
                 item.props = { ...item.props, [key]: value };
-                return item
-              });
+                return item;
+              })
             });
 
             return (
@@ -95,7 +95,6 @@ export function createWidgetComponent (library: ReactBindCollection<LibraryItem>
                 <Menu name={`widgets.${id}`}>
                   <WidgetComponentWrapper
                     id={id}
-                    dashboard={dashboard}
                     editMode={editMode}
                     dragging={dragging}
                     active={active}
@@ -113,7 +112,7 @@ export function createWidgetComponent (library: ReactBindCollection<LibraryItem>
 
     return (
       <div className="widget relative rounded-lg shadow bg-white bg-opacity-60 overflow-hidden" {...rest}>
-        <Suspense fallback="loading...">
+        <Suspense fallback={<div className='w-full h-full flex items-center justify-center text-xl text-gray-400'>Loading</div>}>
           <>
             <Component style={{ width: '100%', height: '100%' }} {...props} {...passThroughProps} _id={componentProps.id} />
           </>
@@ -125,7 +124,6 @@ export function createWidgetComponent (library: ReactBindCollection<LibraryItem>
 
 type WidgetState = {
   id: string
-  dashboard: ReactBindCollection<ItemReference>,
   editMode: boolean
   dragging: boolean
   active: boolean
@@ -147,10 +145,13 @@ function WidgetComponentWrapper ({ children, ...props }: WidgetState & { childre
   }
 }
 
-export function EditingLayer ({ id, editMode, dragging, dashboard, active, onActiveChange }: WidgetState) {
+export function EditingLayer ({ id, editMode, dragging, active, onActiveChange }: WidgetState) {
+  const { dashboardName } = useContext(DashboardContext)
+  const dashboard = useCollection(`dashboard.${dashboardName}.items`);
   const [hover, setHover] = useState(false);
   const library = useCollection('library');
   const { duplicateItem } = useLayoutManager({ dashboard, library });
+
 
   const deleteAction = useRefCallback(() => {
     dashboard.del(id);

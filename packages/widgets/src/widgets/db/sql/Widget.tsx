@@ -72,7 +72,7 @@ export default function Widget ({ defaultSql, defaultDb, sql, currentDb, mode = 
       <div {...props} ref={forwardedRef}>
         {enabled && (
           <Suspense fallback={<></>}>
-            <MenuItem id="configure" text="Configure" action={configure} order={1} group={0} disabled={!configurable} />
+            <MenuItem id="configure" text="Configure" action={configure} order={1} disabled={!configurable} />
           </Suspense>
         )}
         <ResultDisplay visualize={visualize} running={running} error={error} result={result} />
@@ -107,9 +107,9 @@ export default function Widget ({ defaultSql, defaultDb, sql, currentDb, mode = 
           />
           <Dialog.Root open={openVisualizeDialog} onOpenChange={setOpenVisualizeDialog}>
             <Dialog.Portal>
-              <Dialog.Overlay className="bg-black bg-opacity-60 data-[state=open]:animate-overlayShow fixed inset-0" />
-              <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-0 left-0 max-h-[85vh] w-full p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
-                <Dialog.Title className="text-gray-700 m-0 text-xl font-medium">Visualization</Dialog.Title>
+              <Dialog.Overlay className="bg-black bg-opacity-70 data-[state=open]:animate-overlayShow fixed inset-0" />
+              <Dialog.Content className="z-10 backdrop-blur data-[state=open]:animate-contentShow fixed top-[40px] left-0 max-h-[85vh] w-full p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
+                <Dialog.Title className="text-white m-0 text-xl font-medium">Visualization</Dialog.Title>
                 <VisualizeContext.Provider value={{ result: result?.data, running, error, columns: result?.columns }}>
                   <Form className="overflow-auto p-2" values={visualize} onChange={onVisualizeChange}>
                     <Suspense fallback="Loading...">

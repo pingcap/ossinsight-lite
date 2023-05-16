@@ -30,17 +30,17 @@ export const MenuItem = withSuspense(function MenuItem (props: MenuItemProps) {
   const isParent = isParentItem(props);
 
   useEffect(() => {
-    collection.add(props.id, props);
     const parentKey: MenuKey<string> = `${collectionKey}.${props.id}`;
     if (isParent) {
       collections.add(parentKey);
     }
+    collection.add(props.id, props);
 
     return () => {
+      collection.del(props.id);
       if (isParent) {
         collections.del(parentKey);
       }
-      collection.del(props.id);
     };
   }, [name, props.id, isParent]);
 

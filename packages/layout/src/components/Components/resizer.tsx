@@ -3,15 +3,18 @@ import HorizontalIcon from './grip-horizontal.svg';
 import VerticalIcon from './grip-vertical.svg';
 import { useDraggable } from '../../hooks/draggable.ts';
 import { Rect } from '../../core/types.ts';
+import { useState } from 'react';
 
 const icons = {
   vertical: VerticalIcon,
   horizontal: HorizontalIcon,
 };
 
-export function Resizer ({ id, shape: initialShape, position, type }: { id: string, shape: Rect, position: 'start' | 'end', type: 'vertical' | 'horizontal' }) {
+export function Resizer ({ id, shape: propShape, position, type }: { id: string, shape: Rect, position: 'start' | 'end', type: 'vertical' | 'horizontal' }) {
+  const [shape, setShape] = useState(propShape)
   const { ref, domProps, dragging } = useDraggable<HTMLDivElement>({
-    initialShape,
+    shape,
+    onShapeChange: setShape,
     resize: {
       vertical: type === 'vertical',
       start: position === 'start',
