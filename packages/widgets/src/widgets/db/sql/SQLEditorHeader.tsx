@@ -25,7 +25,7 @@ config.db.forEach((db) => {
 export default function SQLEditorHeader ({ portal, currentDb, onCurrentDbChange, onRun, running = false }: SQLEditorHeaderProps) {
   return (
     <Toolbar.Root
-      className="flex w-full min-w-max h-12 p-1 relative"
+      className="flex w-full min-w-max h-12 p-1 px-4 relative"
       aria-label="Editor toolbar"
     >
       <Select.Root
@@ -33,7 +33,7 @@ export default function SQLEditorHeader ({ portal, currentDb, onCurrentDbChange,
         onValueChange={onCurrentDbChange}
       >
         <Select.Trigger
-          className=" inline-flex items-center justify-center rounded leading-none gap-1 bg-white text-gray-700 outline-none"
+          className=" inline-flex items-center justify-center rounded leading-none gap-1 text-gray-700 outline-none"
           aria-label="Food"
         >
           {dbDisplayNames[currentDb] ? <CurrentDb db={dbDisplayNames[currentDb]} /> : <Fallback />}

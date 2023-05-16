@@ -1,4 +1,4 @@
-import { CSSProperties, forwardRef, ReactNode, useEffect, useState } from 'react';
+import { forwardRef, ReactNode, useEffect, useState } from 'react';
 import { Layout } from '../../core/layout/base.ts';
 import { DraggableContextProvider } from '../../context/draggable.ts';
 import './style.scss';
@@ -24,7 +24,7 @@ const Viewport = forwardRef<HTMLDivElement, ViewportProps>(function Viewport ({ 
   const [viewportSize, setViewportSize] = useState(() => {
     const newSize = layout.computeViewportSize(wrapperSize);
     const [, , w, h] = layout.toDomShape([0, 0, ...newSize]);
-    return [w, h];
+    return [w, h] as Size;
   });
 
   useEffect(() => {
@@ -37,7 +37,7 @@ const Viewport = forwardRef<HTMLDivElement, ViewportProps>(function Viewport ({ 
   useTrackWindowResize();
 
   return (
-    <DraggableContextProvider value={{ layout, onDrag }}>
+    <DraggableContextProvider value={{ layout, onDrag, viewportSize }}>
       <div ref={mergeRefs(wrapperRef, forwardedRef)} className={clsx('viewport-wrapper', className)} style={{ width, height }}>
         <div className="viewport" style={toSizeStyle(viewportSize)}>
           {children}

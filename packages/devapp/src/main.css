@@ -9,6 +9,12 @@ html {
   font-family: CabinSketch, sans-serif;
 }
 
+body {
+  min-height: 100vh;
+  background: rgb(255,225,238);
+  background: linear-gradient(16deg, rgba(255,225,238,1) 0%, rgba(181,215,255,1) 100%);
+}
+
 .draggable.active {
   z-index: 1;
   outline: 2px dashed gray;

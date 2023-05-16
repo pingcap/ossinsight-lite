@@ -81,7 +81,7 @@ export default function Widget ({ defaultSql, defaultDb, sql, currentDb, mode = 
   }
   return (
     <div ref={mergeRefs(ref, forwardedRef)} {...props} className={clsx('relative', props.className)}>
-      <div className={clsx('w-full h-full flex flex-col', enabled && 'border')}>
+      <div className={clsx('w-full h-full flex flex-col')}>
         <SQLEditorHeader
           currentDb={currentDb}
           onCurrentDbChange={onCurrentDbChange}
@@ -90,7 +90,7 @@ export default function Widget ({ defaultSql, defaultDb, sql, currentDb, mode = 
           }}
           running={running}
         />
-        <div className="min-h-[240px] max-h-[320px] w-full border-b">
+        <div className="min-h-[240px] max-h-[320px] w-full">
           <SQLEditor sql={sql} defaultSql={defaultSql} onSqlChange={onSqlChange} />
         </div>
         <div className="flex-1 w-full overflow-hidden">
@@ -108,7 +108,7 @@ export default function Widget ({ defaultSql, defaultDb, sql, currentDb, mode = 
           <Dialog.Root open={openVisualizeDialog} onOpenChange={setOpenVisualizeDialog}>
             <Dialog.Portal>
               <Dialog.Overlay className="bg-black bg-opacity-60 data-[state=open]:animate-overlayShow fixed inset-0" />
-              <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-0 left-0 max-h-[85vh] w-full bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
+              <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-0 left-0 max-h-[85vh] w-full p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
                 <Dialog.Title className="text-gray-700 m-0 text-xl font-medium">Visualization</Dialog.Title>
                 <VisualizeContext.Provider value={{ result: result?.data, running, error, columns: result?.columns }}>
                   <Form className="overflow-auto p-2" values={visualize} onChange={onVisualizeChange}>

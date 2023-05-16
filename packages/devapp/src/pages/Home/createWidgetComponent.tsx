@@ -43,7 +43,7 @@ export function createWidgetComponent (library: ReactBindCollection<LibraryItem>
             active={active}
             onActiveChange={onActiveChange}
           >
-            <Component _id={id} {...props} />
+            <Component _id={id} {...props} className={clsx('w-full h-full', props.className)} />
           </WidgetComponentWrapper>
         </Menu>
       );
@@ -111,7 +111,7 @@ export function createWidgetComponent (library: ReactBindCollection<LibraryItem>
     }
 
     return (
-      <div className="widget relative bg-white" {...rest}>
+      <div className="widget relative rounded-lg shadow bg-white bg-opacity-60 overflow-hidden" {...rest}>
         <Suspense fallback="loading...">
           <>
             <Component style={{ width: '100%', height: '100%' }} {...props} {...passThroughProps} _id={componentProps.id} />

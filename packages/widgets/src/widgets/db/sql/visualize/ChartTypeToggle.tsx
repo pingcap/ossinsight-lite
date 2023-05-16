@@ -12,7 +12,7 @@ interface ChartTypeToggleProps<T> {
   onChange: (value: T) => void;
 }
 
-const itemClasses = 'hover:bg-gray-400 color-gray-700 data-[state=on]:bg-gray-300 flex h-[35px] w-[35px] items-center justify-center bg-white text-base leading-4 first:rounded-l last:rounded-r focus:z-10 focus:outline-none';
+const itemClasses = 'bg-opacity-60 hover:bg-gray-400 color-gray-700 data-[state=on]:bg-gray-300 flex h-[35px] w-[35px] items-center justify-center bg-white text-base leading-4 first:rounded-l last:rounded-r focus:z-10 focus:outline-none transition-colors';
 
 const ChartTypeToggle = forwardRef<HTMLDivElement, ChartTypeToggleProps<any>>(({ className, value, onChange }, ref) => {
   return (

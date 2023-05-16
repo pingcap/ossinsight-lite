@@ -13,7 +13,7 @@ const Backdrop: FC<BackdropProps> = function Backdrop ({ gridSize, gap, size }) 
     <div className='absolute left-1 top-1'>
       {gridSize} {gap} {size.toString()}
       <svg xmlns="http://www.w3.org/2000/svg" style={{ display: 'none' }}>
-        <symbol id="guide-point" width={8} height={8} viewBox="0 0 8 8" stroke="#d8d8d8">
+        <symbol id="guide-point" width={8} height={8} viewBox="0 0 8 8" stroke="white">
           <path d="M0,4 H8 M4,0 V8" />
         </symbol>
       </svg>

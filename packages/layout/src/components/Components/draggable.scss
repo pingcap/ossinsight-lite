@@ -11,6 +11,7 @@
 }
 
 .draggable {
+  @apply rounded-lg;
   position: absolute;
   transition: outline-color 200ms ease, transform 100ms ease, width 100ms ease, height 100ms ease;
 
@@ -34,6 +35,8 @@
     cursor: move;
     box-shadow: #888 0 5px 36px;
     z-index: 1;
+    perspective: 10000px;
+    perspective-origin: 50% 50%;
 
     > * {
       pointer-events: none !important;
