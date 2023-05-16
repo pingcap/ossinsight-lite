@@ -121,7 +121,7 @@ export abstract class BindBase<Key extends KeyType, Value, InitialArgs extends a
   }
 
   get isNeedLoaded () {
-    return this._loaded.current;
+    return !this._loaded.current;
   }
 
   onceLoaded (cb: PureCallback): Unsubscribable {

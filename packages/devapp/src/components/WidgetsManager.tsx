@@ -246,7 +246,10 @@ const AutoSave = withSuspense(function AutoSave ({ config, onConfigLoaded }: { c
         dashboard.add(item.id, item);
         items.add(item.id);
       });
-      dashboard.markLoaded();
+
+      if (dashboard.isNeedLoaded) {
+        dashboard.markLoaded();
+      }
 
       throttleSave();
       dashboardSubs.push(dashboard.subscribeAll(() => {
