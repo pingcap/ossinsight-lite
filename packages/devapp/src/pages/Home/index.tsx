@@ -1,28 +1,30 @@
 import Components from '@oss-widgets/layout/src/components/Components';
 import GridLayout from '@oss-widgets/layout/src/components/GridLayout';
-import { memo, Suspense, useCallback, useMemo, useState } from 'react';
+import { memo, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import widgets, { Widget } from '../../widgets-manifest';
 import EditModeSwitch from '../../components/EditModeSwitch';
 import { Rect } from '@oss-widgets/layout/src/core/types';
 import { MenuItem } from '@oss-widgets/ui/components/menu';
 import { useLayoutManager } from '../../components/WidgetsManager';
-import { useCollection, useCollectionKeys, useWatchItemField } from '@oss-widgets/ui/hooks/bind';
-import { NavMenu } from '@oss-widgets/ui/components/nav-menu';
+import { useCollection, useCollectionKeys, useReactBindCollections, useWatchItemField } from '@oss-widgets/ui/hooks/bind';
 import { createWidgetComponent } from './createWidgetComponent';
+import { useParams } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 function Home () {
-  const { download, newItem } = useLayoutManager();
+  const { dashboard: dashboardName = 'default' } = useParams<{ dashboard?: string }>();
   const [editMode, setEditMode] = useState(false);
   const [active, setActive] = useState<string>();
   const map = useMap<string, string>();
 
   const library = useCollection('library');
-  const dashboard = useCollection('dashboard.default.items');
+  const dashboard = useCollection(`dashboard.${dashboardName}.items`);
+  const { download, newItem } = useLayoutManager({ dashboard, library });
 
   const itemIds = useCollectionKeys(dashboard) as string[];
 
   const useRect = useCallback((id: string) => {
-    return useWatchItemField('dashboard.default.items', id, 'rect');
+    return useWatchItemField(`dashboard.${dashboardName}.items`, id, 'rect');
   }, []);
 
   const handleDrag = useCallback(async (id: string, rect: Rect) => {
@@ -51,10 +53,12 @@ function Home () {
 
   const WidgetComponent = useMemo(() => memo(createWidgetComponent(library, dashboard), isPropsEquals(['onActiveChange'])), []);
 
+  const navigate = useNavigate();
+
   return (
     <>
-      {editMode && <NavMenu name="nav" className="h-[40px] fixed left-0 top-0 p-[4px] min-w-[250px]">
-        <MenuItem text="New" id="new" group={0} order={0} disabled={false}>
+      {editMode && (
+        <MenuItem text="New" id="new" group={0} order={100} disabled={false}>
           {Object.entries(widgets).map(([k, v]) => {
             return {
               id: k,
@@ -66,8 +70,8 @@ function Home () {
             };
           })}
         </MenuItem>
-      </NavMenu>}
-      <GridLayout gridSize={40} gap={8} className="relative top-[48px] w-screen h-[calc(100vh-48px)]" guideUi={editMode} onDrag={handleDrag}>
+      )}
+      <GridLayout gridSize={40} gap={8} className="relative w-screen h-[calc(100vh-48px)]" guideUi={editMode} onDrag={handleDrag}>
         <EditModeSwitch className="absolute right-1 top-1" checked={editMode} onCheckedChange={setEditMode} />
         <button className="absolute right-1 top-8" onClick={download}>Download layout.json</button>
         <Components
@@ -108,8 +112,23 @@ export default function () {
       <Suspense fallback="Home Loading...">
         <Home />
       </Suspense>
+      <Registry />
     </div>
   );
+}
+
+function Registry () {
+  const { dashboard: dashboardName = 'default' } = useParams<{ dashboard?: string }>();
+  const collections = useReactBindCollections();
+
+  useEffect(() => {
+    if (!collections.has(`dashboard.${dashboardName}.items`)) {
+      const c = collections.add(`dashboard.${dashboardName}.items`);
+      c.needLoaded();
+    }
+  });
+
+  return null;
 }
 
 const isPropsEquals = <T extends Record<string, any>> (ignores: (keyof T)[] = []) => {

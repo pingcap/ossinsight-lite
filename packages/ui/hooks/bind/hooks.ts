@@ -68,9 +68,9 @@ export function useAsyncCollection<K extends BindKey> (type: K): Promise<ReactBi
   return Promise.resolve(collectionOrPromise.get(type));
 }
 
-export function useCollectionKeys<Data> (collection: ReactBindCollection<Data>) {
+export function useCollectionKeys<Key extends KeyType, Data> (collection: BindBase<Key, Data, any>) {
   const requireLoad = useRef(collection.isNeedLoaded);
-  const [keys, setKeys] = useState<KeyType[]>(() => {
+  const [keys, setKeys] = useState<Key[]>(() => {
     return collection.keys;
   });
 

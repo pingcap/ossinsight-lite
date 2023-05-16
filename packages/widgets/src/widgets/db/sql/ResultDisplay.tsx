@@ -1,14 +1,12 @@
 import { VisualizeType } from './visualize/common';
 import Visualize from './visualize/Visualize';
-import { Suspense, useContext } from 'react';
+import { Suspense } from 'react';
 import { Alert } from '../../../components/alert';
 import ChartTypeToggle from './visualize/ChartTypeToggle';
-import * as Toolbar from '@radix-ui/react-toolbar';
 import clsx from 'clsx';
 import RoughSvg from '@oss-widgets/roughness/components/RoughSvg';
 import SlidersIcon from '../../../icons/twbs/sliders.svg';
-import WidgetContext from '@oss-widgets/ui/context/widget'
-import RoughBox from '../../../components/rough/Box';
+import RoughBox from '@oss-widgets/ui/components/roughness/shape/box';
 import colors from 'tailwindcss/colors';
 
 export interface ResultDisplayProps {
@@ -42,7 +40,7 @@ export default function ResultDisplay ({ editing = false, portal, visualize, onV
             disabled={running}
             onClick={onClickVisualizeOptions}
           >
-            <span className='inline-flex items-center gap-1 relative z-10 px-2'>
+            <span className="inline-flex items-center gap-1 relative z-10 px-2">
               Config
               <RoughSvg>
                 <SlidersIcon width={14} height={14} />

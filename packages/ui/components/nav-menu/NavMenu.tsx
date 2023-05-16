@@ -12,8 +12,8 @@ export interface NavMenuProps extends NavigationMenuProps, MenuProps {
 export function NavMenu ({ name, auto, children, ...props }: NavMenuProps) {
   return (
     <Menu name={name} auto={auto}>
-      <NavigationMenu.Root {...props} className={clsx('z-[1]', props.className)}>
-        <NavigationMenu.List>
+      <NavigationMenu.Root {...props} className={clsx('relative z-[1]', props.className)}>
+        <NavigationMenu.List className='flex gap-2'>
           <Suspense fallback="menu loading">
             <MenuContent name={name} {...renderers} />
           </Suspense>

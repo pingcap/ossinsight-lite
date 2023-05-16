@@ -30,5 +30,5 @@ export type LayoutConfigV0 = LayoutItem[];
 export type LayoutConfigV1 = {
   version: 1
   library: LibraryItem[]
-  dashboard: Record<'default', Dashboard>
+  dashboard: Record<string, Dashboard>
 }

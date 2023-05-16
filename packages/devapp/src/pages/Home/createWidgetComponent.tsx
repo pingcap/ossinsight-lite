@@ -1,4 +1,4 @@
-import { useWatchItemFields } from '@oss-widgets/ui/hooks/bind';
+import { useCollection, useWatchItemFields } from '@oss-widgets/ui/hooks/bind';
 import useRefCallback from '@oss-widgets/ui/hooks/ref-callback';
 import { MenuItem } from '@oss-widgets/ui/components/menu';
 import { ComponentType, forwardRef, lazy, ReactElement, Suspense, useCallback, useState } from 'react';
@@ -149,7 +149,8 @@ function WidgetComponentWrapper ({ children, ...props }: WidgetState & { childre
 
 export function EditingLayer ({ id, editMode, dragging, dashboard, active, onActiveChange }: WidgetState) {
   const [hover, setHover] = useState(false);
-  const { duplicateItem } = useLayoutManager();
+  const library = useCollection('library');
+  const { duplicateItem } = useLayoutManager({ dashboard, library });
 
   const deleteAction = useRefCallback(() => {
     dashboard.del(id);

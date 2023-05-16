@@ -14,7 +14,7 @@ export const renderParentItem: MenuContentProps['renderParentItem'] = (item, chi
   return (
     <RuiNavigationMenu.Item key={item.id}>
       <RuiNavigationMenu.Trigger
-        className="outline-none flex justify-between items-center"
+        className="min-w-[112px] outline-none bg-transparent transition:colors p-1 cursor-pointer flex justify-between items-center"
         disabled={item.disabled}
       >
         {item.text}
@@ -38,12 +38,8 @@ export const renderParentItem: MenuContentProps['renderParentItem'] = (item, chi
 
 export const renderItem: MenuContentProps['renderItem'] = (item) => {
   return (
-    <RuiNavigationMenu.Item
-      className="min-w-[112px] outline-none bg-transparent hover:bg-gray-50 transition:colors p-1 cursor-pointer flex justify-between items-center"
-      onClick={item.action}
-      key={item.id}
-    >
-      <RuiNavigationMenu.Trigger disabled={item.disabled}>
+    <RuiNavigationMenu.Item key={item.id}>
+      <RuiNavigationMenu.Trigger onClick={item.action} disabled={item.disabled} className="min-w-[112px] outline-none bg-transparent transition:colors p-1 cursor-pointer flex justify-between items-center">
         {item.text}
         <span>
           {item.extraText}

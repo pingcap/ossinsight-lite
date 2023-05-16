@@ -8,8 +8,8 @@ import appSchemePlugin from './plugins/AppSchemePlugin.js';
 
 export default {
   entry: {
-    ...getSources(),
-    ...getStyles(),
+    // ...getSources(),
+    // ...getStyles(),
   },
   output: {
     filename: '[name].js',

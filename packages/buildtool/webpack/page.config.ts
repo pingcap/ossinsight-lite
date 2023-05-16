@@ -47,12 +47,10 @@ export default merge<Configuration>(base, {
       filename: `browse/index.html`,
       template: devappSrc('index.ejs'),
     }),
-    ...Object.keys(getSources()).map((entry) => {
-      return new HtmlWebpackPlugin({
-        filename: `browse/${entry}.html`,
-        template: devappSrc('index.ejs'),
-      });
-    }),
+    new HtmlWebpackPlugin({
+      filename: `dashboard/index.html`,
+      template: devappSrc('index.ejs'),
+    })
   ],
   output: {
     filename: 'assets/js/[name].js',

@@ -63,7 +63,7 @@ export function MenuContent ({ name, renderGroup, renderItem, renderParentItem, 
 
 function normalizeGroup ({ items, ...rest }: MenuItemGroupProps): MenuItemGroupProps {
   return {
-    items: normalizeArrays(items),
+    items: normalizeArrays(items).sort((a, b) => a.order - b.order),
     ...rest,
   };
 }

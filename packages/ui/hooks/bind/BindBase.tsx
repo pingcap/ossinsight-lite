@@ -84,6 +84,10 @@ export abstract class BindBase<Key extends KeyType, Value, InitialArgs extends a
     this._eventBus.next([value, key, BindingTypeEvent.DELETED]);
   }
 
+  get events () {
+    return this._eventBus;
+  }
+
   subscribeKeys (): Observable<Key[]>
   subscribeKeys (cb: Consume<Key[]>): Subscription
   subscribeKeys (cb?: Consume<Key[]>): Subscription | Observable<Key[]> {

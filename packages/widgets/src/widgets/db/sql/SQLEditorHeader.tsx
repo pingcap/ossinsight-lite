@@ -6,7 +6,7 @@ import { forwardRef } from 'react';
 import clsx from 'clsx';
 import PlayIcon from '../../../icons/twbs/play-fill.svg';
 import RoughSvg from '@oss-widgets/roughness/components/RoughSvg';
-import RoughBox from '../../../components/rough/Box';
+import RoughBox from '@oss-widgets/ui/components/roughness/shape/box';
 import colors from 'tailwindcss/colors';
 
 export interface SQLEditorHeaderProps {
