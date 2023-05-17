@@ -34,8 +34,6 @@ export default function App () {
   );
 }
 
-const widgets: Record<string, ComponentType<any>> = {};
-
 const MenuItems = withSuspense(() => {
   const navigate = useNavigate();
   const dashboards = useDashboards();

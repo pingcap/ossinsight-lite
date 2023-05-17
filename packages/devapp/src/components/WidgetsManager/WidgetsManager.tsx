@@ -60,8 +60,7 @@ const ConfigContext = createContext<{
   }>({
     config: null as never,
     saveConfig: () => {},
-  })
-;
+  });
 
 export function useConfig () {
   return useContext(ConfigContext);
@@ -69,11 +68,17 @@ export function useConfig () {
 
 export type { LayoutItem } from '../../types/config';
 
+const WidgetCacheContext = createContext<Record<string, any>>({});
+
+export function useWidgetCache () {
+  return useContext(WidgetCacheContext);
+}
+
 const defaultLayoutConfig: Dashboard['layout'] = {
   type: `gird:responsive`,
   size: [40, 16],
   gap: 8,
-}
+};
 
 export function toConfigV1 (currentConfig: LayoutConfigV1 | undefined, collections: ReactBindCollections): LayoutConfigV1 {
   const library = collections.getNullable('library')!;

@@ -7,7 +7,7 @@ import { Rect } from '@oss-widgets/layout/src/core/types';
 import { MenuItem, MenuItemSlot } from '@oss-widgets/ui/components/menu';
 import { useLayoutManager } from '../../components/WidgetsManager';
 import { useCollection, useCollectionKeys, useWatchItemField } from '@oss-widgets/ui/hooks/bind';
-import { createWidgetComponent } from './createWidgetComponent';
+import { createWidgetComponent, WidgetStateProps } from './createWidgetComponent';
 import { useParams } from 'react-router';
 import PlusIcon from '../../icons/plus.svg';
 import { DashboardContext } from './context';
@@ -79,8 +79,8 @@ function Home () {
         </MenuItem>
         <MenuItem id="DownloadLayoutJSON" order={100} action={download} text="Download layout.json" />
       </MenuItemSlot>
-      <GridLayout gridSize={40} gap={8} className="relative w-screen overflow-x-hidden h-[calc(100vh-40px)]" guideUi={editMode} onDrag={handleDrag}>
-        <Components
+      <GridLayout gridSize={[40, 40]} gap={8} className="relative w-screen overflow-x-hidden h-[calc(100vh-40px)]" guideUi={editMode} onDrag={handleDrag}>
+        <Components<WidgetStateProps>
           itemIds={itemIds}
           draggable={editMode}
           idMap={map}

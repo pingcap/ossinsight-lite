@@ -1,12 +1,9 @@
-import { useCollection, useUpdater, useWatchItemFields } from '@oss-widgets/ui/hooks/bind';
+import { useCollection, useWatchItemFields } from '@oss-widgets/ui/hooks/bind';
 import useRefCallback from '@oss-widgets/ui/hooks/ref-callback';
 import { MenuItem } from '@oss-widgets/ui/components/menu';
-import { ComponentType, forwardRef, lazy, ReactElement, Suspense, useCallback, useContext, useState } from 'react';
+import { Component, ComponentType, forwardRef, ReactElement, Suspense, useContext, useState } from 'react';
 import * as layoutComponents from '../../layout-components';
 import widgets from '../../widgets-manifest';
-import { useNavigate } from 'react-router-dom';
-import { WidgetContextProvider } from '../../components/WidgetContext';
-import { ReactBindCollection } from '@oss-widgets/ui/hooks/bind/ReactBindCollection';
 import { useLayoutManager } from '../../components/WidgetsManager';
 import { ComponentProps } from '@oss-widgets/layout/src/components/Components';
 import { move } from '@oss-widgets/layout/src/core/types';
@@ -14,28 +11,50 @@ import clsx from 'clsx';
 import { Menu } from '@oss-widgets/ui/components/menu/Menu';
 import { ContextMenu } from '@oss-widgets/ui/components/context-menu';
 import { Consume } from '@oss-widgets/ui/hooks/bind/types';
-import { ItemReference, LibraryItem } from '../../types/config';
-import { getConfigurable } from '../../utils/widgets';
 import { DashboardContext } from './context';
+import { WidgetCoordinator } from './WidgetCoordinator';
+
+export interface WidgetComponentProps extends ComponentProps, WidgetStateProps {
+
+}
+
+export interface WidgetStateProps {
+  editMode: boolean,
+  active: boolean,
+  onActiveChange: Consume<boolean>
+}
 
 export function createWidgetComponent () {
   type ResolvedComponentType = ComponentType<any>;
-  const cache: Record<string, ResolvedComponentType> = {};
+  const internalCache: Record<string, ResolvedComponentType> = {};
 
-  return ({ ...componentProps }: ComponentProps & { editMode: boolean, active: boolean, onActiveChange: Consume<boolean> }) => {
-    let Component: ResolvedComponentType;
+  return forwardRef<HTMLDivElement, WidgetComponentProps>(({ ...componentProps }, ref) => {
+    let el: ReactElement;
 
     const { id, draggable, dragging, editMode, active, onActiveChange, ...rest } = componentProps;
-    const passThroughProps = { draggable, dragging, editMode, active, onActiveChange };
 
     const { props: itemProps, name } = useWatchItemFields('library', id, ['name', 'props']);
     const props = { ...rest, ...itemProps };
 
     if (name.startsWith('internal:')) {
+      let Component: ResolvedComponentType;
       const componentName = name.split(':')[1];
-      Component = forwardRef((layoutComponents as any)[componentName]);
 
-      return (
+      Component = internalCache[componentName];
+      if (!Component) {
+        Component = internalCache[componentName] = forwardRef((layoutComponents as any)[componentName]);
+      }
+      el = <Component _id={id} {...props} className={clsx('w-full h-full', props.className)} />;
+    } else {
+      if (!widgets[name]) {
+        throw new Error(`Unknown widget ${name}`);
+      }
+
+      el = <WidgetCoordinator name={name} _id={id} editMode={editMode} draggable={draggable} props={{ ...props, className: clsx('w-full h-full', props.className) }} ref={ref} />;
+    }
+
+    return (
+      <div className="widget relative rounded-lg shadow bg-white bg-opacity-60 overflow-hidden" {...rest}>
         <Menu name={`widgets.${id}`}>
           <WidgetComponentWrapper
             id={id}
@@ -44,82 +63,14 @@ export function createWidgetComponent () {
             active={active}
             onActiveChange={onActiveChange}
           >
-            <Component _id={id} {...props} className={clsx('w-full h-full', props.className)} />
+            <Suspense fallback={<div className="w-full h-full flex items-center justify-center text-xl text-gray-400">Loading</div>}>
+              {el}
+            </Suspense>
           </WidgetComponentWrapper>
         </Menu>
-      );
-    }
-
-    Component = cache[name];
-    if (!Component) {
-      const widget = widgets[name];
-      if (!widget) {
-        throw new Error(`Unknown widget ${name}`);
-      }
-
-      cache[name] = Component = lazy(() => widget.module().then(module => {
-        const WidgetComponent = forwardRef(module.default);
-        const configurable = getConfigurable(module, props) ?? false;
-
-        return {
-          default: forwardRef(({ _id: id, draggable, dragging, editMode, active, onActiveChange, ...passInProps }: any, ref) => {
-            const navigate = useNavigate();
-
-            const { props: watchingProps } = useWatchItemFields('library', id, ['props']);
-            const updater = useUpdater('library', id)
-
-            const props = { ...passInProps, ...watchingProps };
-
-            const configureAction = useCallback(() => {
-              navigate(`/edit/${encodeURIComponent(id)}`);
-            }, []);
-
-            const onPropChange = useRefCallback((key: string, value: any) => {
-              updater((item) => {
-                item.props = { ...item.props, [key]: value };
-                return item;
-              })
-            });
-
-            return (
-              <WidgetContextProvider
-                value={{
-                  enabled: true,
-                  editingLayout: editMode,
-                  configurable,
-                  onPropChange,
-                  props,
-                  configure: configureAction,
-                }}
-              >
-                <Menu name={`widgets.${id}`}>
-                  <WidgetComponentWrapper
-                    id={id}
-                    editMode={editMode}
-                    dragging={dragging}
-                    active={active}
-                    onActiveChange={onActiveChange}
-                  >
-                    <WidgetComponent {...props} ref={ref} />
-                  </WidgetComponentWrapper>
-                </Menu>
-              </WidgetContextProvider>
-            );
-          }),
-        };
-      })) as any;
-    }
-
-    return (
-      <div className="widget relative rounded-lg shadow bg-white bg-opacity-60 overflow-hidden" {...rest}>
-        <Suspense fallback={<div className='w-full h-full flex items-center justify-center text-xl text-gray-400'>Loading</div>}>
-          <>
-            <Component style={{ width: '100%', height: '100%' }} {...props} {...passThroughProps} _id={componentProps.id} />
-          </>
-        </Suspense>
       </div>
     );
-  };
+  });
 }
 
 type WidgetState = {
@@ -146,12 +97,11 @@ function WidgetComponentWrapper ({ children, ...props }: WidgetState & { childre
 }
 
 export function EditingLayer ({ id, editMode, dragging, active, onActiveChange }: WidgetState) {
-  const { dashboardName } = useContext(DashboardContext)
+  const { dashboardName } = useContext(DashboardContext);
   const dashboard = useCollection(`dashboard.${dashboardName}.items`);
   const [hover, setHover] = useState(false);
   const library = useCollection('library');
   const { duplicateItem } = useLayoutManager({ dashboard, library });
-
 
   const deleteAction = useRefCallback(() => {
     dashboard.del(id);
