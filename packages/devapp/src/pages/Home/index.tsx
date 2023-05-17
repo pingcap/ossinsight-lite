@@ -1,17 +1,20 @@
 import Components from '@oss-widgets/layout/src/components/Components';
 import GridLayout from '@oss-widgets/layout/src/components/GridLayout';
-import { memo, Suspense, useCallback, useMemo, useState } from 'react';
+import { memo, Suspense, useCallback, useState } from 'react';
 import widgets, { Widget } from '../../widgets-manifest';
 import EditModeSwitch from '../../components/EditModeSwitch';
-import { Rect } from '@oss-widgets/layout/src/core/types';
+import { equals, Rect } from '@oss-widgets/layout/src/core/types';
 import { MenuItem, MenuItemSlot } from '@oss-widgets/ui/components/menu';
-import { useLayoutManager } from '../../components/WidgetsManager';
-import { useCollection, useCollectionKeys, useWatchItemField } from '@oss-widgets/ui/hooks/bind';
+import { defaultLayoutConfig, useLayoutManager } from '../../components/WidgetsManager';
+import { useCollection, useCollectionKeys, useReadItem } from '@oss-widgets/ui/hooks/bind';
 import { WidgetComponent, WidgetStateProps } from './createWidgetComponent';
 import { useParams } from 'react-router';
 import PlusIcon from '../../icons/plus.svg';
 import { DashboardContext } from './context';
 import { DashboardAutoSave } from './DashboardAutoSave';
+import { DashboardRegistry, useDashboardItems } from '../../core/dashboard';
+import { Dashboard } from '../../types/config';
+import { useWatchReactiveValueField } from '@oss-widgets/ui/hooks/bind/hooks';
 
 function Home () {
   const { dashboard: dashboardName = 'default' } = useParams<{ dashboard?: string }>();
@@ -20,32 +23,33 @@ function Home () {
   const map = useMap<string, string>();
 
   const library = useCollection('library');
-  const dashboard = useCollection(`dashboard.${dashboardName}.items`);
-  const { download, newItem } = useLayoutManager({ dashboard, library });
+  const items = useDashboardItems(dashboardName);
+  const { download, newItem } = useLayoutManager({ dashboard: items, library });
 
-  const itemIds = useCollectionKeys(dashboard) as string[];
+  const itemIds = useCollectionKeys(items) as string[];
 
   const useRect = useCallback((id: string) => {
-    return useWatchItemField(`dashboard.${dashboardName}.items`, id, 'rect');
-  }, [dashboardName]);
+    const item = useReadItem(items, id);
+    return useWatchReactiveValueField(item, 'rect', equals);
+  }, [items]);
 
   const updateRect = useCallback((id: string, rect: Rect) => {
-    dashboard.update(id, props => {
+    items.update(id, props => {
       props.rect = rect;
       return props;
     });
-  }, [dashboard]);
+  }, [items]);
 
   const handleDrag = useCallback(async (id: string, rect: Rect) => {
     const externalId = map.get(id);
     if (!externalId) {
       return;
     }
-    dashboard.update(externalId, item => {
+    items.update(externalId, item => {
       item.rect = rect;
       return item;
     });
-  }, [dashboard]);
+  }, [items]);
 
   const addModule = useCallback((name: string, widget: Widget) => {
     widget.module()
@@ -58,7 +62,7 @@ function Home () {
           props: module.defaultProps ?? {},
         });
       });
-  }, [dashboard]);
+  }, [items]);
 
   return (
     <DashboardContext.Provider value={{ dashboardName }}>
@@ -112,15 +116,29 @@ export function useMap<K, V> () {
 }
 
 export default function () {
+  const { dashboard: dashboardName = 'default' } = useParams<{ dashboard?: string }>();
+
   return (
     <div id="home-page">
       <Suspense fallback="Home Loading...">
         <Home />
       </Suspense>
-      <DashboardAutoSave />
+      <Suspense fallback="Dashboard Loading...">
+        <DashboardRegistry name={dashboardName} defaultDashboard={defaultDashboard} />
+      </Suspense>
+      <Suspense>
+        <DashboardAutoSave />
+      </Suspense>
     </div>
   );
 }
+
+const defaultDashboard = (): Dashboard => {
+  return {
+    layout: { ...defaultLayoutConfig },
+    items: [],
+  };
+};
 
 const isPropsEquals = <T extends Record<string, any>> (ignores: (keyof T)[] = []) => {
   const ignoresSet = new Set(ignores);

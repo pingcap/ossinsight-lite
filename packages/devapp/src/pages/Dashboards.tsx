@@ -1,24 +1,18 @@
-import { useCollectionKeys, useReactBindCollections } from '@oss-widgets/ui/hooks/bind';
+import { useCollection, useCollectionKeys, useReactBindCollections } from '@oss-widgets/ui/hooks/bind';
 import React, { useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { DashboardKeyRegExp, useConfig } from '../components/WidgetsManager';
+import { useConfig } from '../components/WidgetsManager';
 import useRefCallback from '@oss-widgets/ui/hooks/ref-callback';
 import RoughBox from '@oss-widgets/ui/components/roughness/shape/box';
 
 export function useDashboards () {
   const keys = useCollectionKeys(useReactBindCollections());
   const { config } = useConfig();
+  const dashboards = useCollection('dashboards');
 
   return useMemo(() => {
     const initialConfigKeys = Object.keys(config?.dashboard ?? {});
-    const stale = keys.flatMap(key => {
-      const res = DashboardKeyRegExp.exec(key);
-      if (res) {
-        return [res[1]];
-      } else {
-        return [];
-      }
-    });
+    const stale = dashboards.keys as string[];
 
     return [...new Set([...initialConfigKeys, ...stale])].sort();
   }, [config, keys]);

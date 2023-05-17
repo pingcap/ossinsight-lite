@@ -19,4 +19,9 @@ export enum BindingTypeEvent {
   UPDATED,
 }
 
+// BindBase will auto call Disposable.dispose when delete an item.
+export interface Disposable {
+  dispose ();
+}
+
 export {};

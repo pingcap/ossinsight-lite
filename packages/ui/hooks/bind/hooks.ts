@@ -96,11 +96,32 @@ export function useWatchReactiveValue<V> (item: ReactiveValue<V>): V {
   const [value, setValue] = useState(item.current);
 
   useEffect(() => {
+    setValue(item.current);
+
     const unsubscribable = item.subscribe({
       next: setValue,
     });
 
     return () => unsubscribable.unsubscribe();
+  }, [item]);
+
+  return value;
+}
+
+export function useWatchReactiveValueField<V, Path extends keyof V> (item: ReactiveValue<V>, path: Path, compareFn: Compare<V[Path]> = Object.is): V[Path] {
+  const [value, setValue] = useState(() => item.current[path]);
+
+  useEffect(() => {
+    setValue(item.current[path]);
+    const unsubscribe = item.subscribe(newValue => {
+      const newPathValue = newValue[path];
+      if (!compareFn(value, newPathValue)) {
+        setValue(newPathValue);
+      }
+    });
+    return () => {
+      unsubscribe.unsubscribe();
+    };
   }, [item]);
 
   return value;
@@ -119,22 +140,8 @@ function isBind<T> (value: any): value is ReactBindCollection<T> {
 export function useWatchItemField<K extends BindKey, Path extends keyof BindValue<K>> (type: K, id: KeyType, path: Path, compareFn: Compare<BindValue<K>[Path]> = Object.is): BindValue<K>[Path] {
   const bind = useCollection(type);
   const reactiveValue = useBind(bind, id);
-  const [value, setValue] = useState(() => reactiveValue.current[path]);
 
-  useEffect(() => {
-    setValue(reactiveValue.current[path]);
-    const unsubscribe = bind.subscribe(id, newValue => {
-      const newPathValue = newValue[path];
-      if (!compareFn(value, newPathValue)) {
-        setValue(newPathValue);
-      }
-    });
-    return () => {
-      unsubscribe.unsubscribe();
-    };
-  }, [bind, id]);
-
-  return value;
+  return useWatchReactiveValueField(reactiveValue, path, compareFn);
 }
 
 function defaultCompare (l: any, r: any, k: any): boolean {

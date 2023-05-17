@@ -10,12 +10,10 @@ import { AutoSaveLibrary } from './AutoSaveLibrary';
 import { useSignal } from './signal';
 import { PureCallback } from '@oss-widgets/ui/hooks/bind/types';
 import { useThrottleIdle } from '@oss-widgets/ui/hooks/throttle';
-
-export const DashboardKeyRegExp = /^dashboard\.(\w+)\.items$/;
-export type DashboardKey = `dashboard.${string}.items`
+import { DashboardInstance } from '../../core/dashboard';
 
 declare module '@oss-widgets/ui/hooks/bind' {
-  interface BindMap extends Record<DashboardKey, ItemReference> {
+  interface BindMap {
     'library': LibraryItem;
   }
 }
@@ -39,9 +37,11 @@ export default function WidgetsManager ({ children }: PropsWithChildren) {
 
   useEffect(() => {
     const library = collections.add('library');
+    collections.add('dashboards');
     library.needLoaded();
 
     return () => {
+      collections.del('dashboards');
       collections.del('library');
     };
   }, []);
@@ -55,12 +55,12 @@ export default function WidgetsManager ({ children }: PropsWithChildren) {
 }
 
 const ConfigContext = createContext<{
-    config: LayoutConfigV1
-    saveConfig: PureCallback
-  }>({
-    config: null as never,
-    saveConfig: () => {},
-  });
+  config: LayoutConfigV1
+  saveConfig: PureCallback
+}>({
+  config: null as never,
+  saveConfig: () => {},
+});
 
 export function useConfig () {
   return useContext(ConfigContext);
@@ -74,7 +74,7 @@ export function useWidgetCache () {
   return useContext(WidgetCacheContext);
 }
 
-const defaultLayoutConfig: Dashboard['layout'] = {
+export const defaultLayoutConfig: Dashboard['layout'] = {
   type: `gird:responsive`,
   size: [40, 16],
   gap: 8,
@@ -82,15 +82,15 @@ const defaultLayoutConfig: Dashboard['layout'] = {
 
 export function toConfigV1 (currentConfig: LayoutConfigV1 | undefined, collections: ReactBindCollections): LayoutConfigV1 {
   const library = collections.getNullable('library')!;
-  const dashboards = collections.getByRegexp(DashboardKeyRegExp);
+  const dashboards: ReactBindCollection<DashboardInstance> = collections.getNullable('dashboards')!;
 
   return {
     version: 1,
     library: library.values,
-    dashboard: dashboards.reduce((record, [key, dashboard]) => {
-      record[key] = {
-        layout: defaultLayoutConfig,
-        items: dashboard.values,
+    dashboard: [...dashboards.entries()].reduce((record, [key, dashboard]) => {
+      record[String(key)] = {
+        layout: dashboard.current.layout,
+        items: dashboard.current.items.values,
       };
       return record;
     }, currentConfig?.dashboard ?? {}),

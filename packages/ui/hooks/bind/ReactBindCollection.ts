@@ -42,7 +42,6 @@ export class ReactBindCollection<Data> extends BindBase<KeyType, ReactiveValue<D
       .subscribe(([value]) => next(value.current));
   }
 
-
   get rawValues () {
     return [...this._store.values()];
   }

@@ -13,6 +13,7 @@ import { ContextMenu } from '@oss-widgets/ui/components/context-menu';
 import { Consume } from '@oss-widgets/ui/hooks/bind/types';
 import { DashboardContext } from './context';
 import { WidgetCoordinator } from './WidgetCoordinator';
+import { useDashboardItems } from '../../core/dashboard';
 
 export interface WidgetComponentProps extends ComponentProps, WidgetStateProps {
 
@@ -96,13 +97,13 @@ function WidgetComponentWrapper ({ children, ...props }: WidgetState & { childre
 
 export function EditingLayer ({ id, editMode, dragging, active, onActiveChange }: WidgetState) {
   const { dashboardName } = useContext(DashboardContext);
-  const dashboard = useCollection(`dashboard.${dashboardName}.items`);
+  const items = useDashboardItems(dashboardName);
   const [hover, setHover] = useState(false);
   const library = useCollection('library');
-  const { duplicateItem } = useLayoutManager({ dashboard, library });
+  const { duplicateItem } = useLayoutManager({ dashboard: items, library });
 
   const deleteAction = useRefCallback(() => {
-    dashboard.del(id);
+    items.del(id);
   });
 
   const duplicateAction = useRefCallback(() => {

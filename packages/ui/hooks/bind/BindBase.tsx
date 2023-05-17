@@ -1,5 +1,5 @@
-import { filter, firstValueFrom, map, throttleTime, Observable, Subject, Subscription, Unsubscribable, asyncScheduler } from 'rxjs';
-import { BindingTypeEvent, Consume, KeyType, PureCallback } from './types';
+import { filter, firstValueFrom, map, Observable, Subject, Subscription, Unsubscribable } from 'rxjs';
+import { BindingTypeEvent, Consume, Disposable, KeyType, PureCallback } from './types';
 import { BindKeyDuplicatedError, BindKeyNotExistsError } from './error';
 import { ReactiveValueSubject } from './ReactiveValueSubject.ts';
 import { isDev } from '../../utils/dev.ts';
@@ -87,16 +87,19 @@ export abstract class BindBase<Key extends KeyType, Value, InitialArgs extends a
     if (!value) {
       throw new BindKeyNotExistsError(key, this._key);
     }
+    if (isDisposable(value)) {
+      value.dispose();
+    }
     this._store.delete(key);
     this._eventBus.next([value, key, BindingTypeEvent.DELETED]);
 
     if (isDev) {
       if (value instanceof BindBase) {
         if (value._store.size > 0) {
-          console.warn(`[bind-dev-leak-detect] Bind ${String(this._key ?? 'ROOT')}#${String(key)} not released all subscribers when deleted.`, value.keys)
+          console.warn(`[bind-dev-leak-detect] Bind ${String(this._key ?? 'ROOT')}#${String(key)} not released all subscribers when deleted.`, value.keys);
         }
         if (value._pendingStore.size > 0) {
-          console.warn(`[bind-dev-leak-detect] Bind ${String(this._key ?? 'ROOT')}#${String(key)} not released all subscribers when deleted.`, value.keys)
+          console.warn(`[bind-dev-leak-detect] Bind ${String(this._key ?? 'ROOT')}#${String(key)} not released all subscribers when deleted.`, value.keys);
         }
       }
     }
@@ -168,4 +171,8 @@ const keyMutateEvents = [BindingTypeEvent.CREATED, BindingTypeEvent.DELETED];
 
 function isKeyMutateEvent<K, V> ([, , type]: GeneralEvent<K, V>) {
   return keyMutateEvents.includes(type);
+}
+
+function isDisposable (v: any): v is Disposable {
+  return v && typeof v === 'object' && typeof (v as Disposable).dispose === 'function';
 }

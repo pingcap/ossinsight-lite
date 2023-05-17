@@ -1,4 +1,4 @@
-import React, { ComponentType } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, useNavigate } from 'react-router-dom';
 import { Route, Routes } from 'react-router';
@@ -35,8 +35,6 @@ export default function App () {
 }
 
 const MenuItems = withSuspense(() => {
-  const navigate = useNavigate();
-  const dashboards = useDashboards();
   return (
     <>
       <MenuItem id="Logo" order={0} text="Home" disabled={false} custom>
@@ -46,11 +44,19 @@ const MenuItems = withSuspense(() => {
       </MenuItem>
       <MenuItem id="sep" order={1} disabled={false} separator />
       <MenuItem id="More" order={100} text={<ThreeDotsIcon />} disabled={false} parent>
-        <MenuItem id="Dashboards" order={1} text="Dashboards" disabled={false} parent>
-          {dashboards.map((dashboard, index) => <MenuItem key={dashboard} id={dashboard} order={index} disabled={false} text={dashboard} action={() => navigate(dashboard === 'default' ? '/' : `/dashboards/${dashboard}`)} />)}
-        </MenuItem>
+        <DashboardMenuItems />
         <MenuItem id="Widgets" order={1} text="Widgets" disabled={false} action={() => navigate('/browse')} />
       </MenuItem>
     </>
+  );
+});
+
+const DashboardMenuItems = withSuspense(() => {
+  const dashboards = useDashboards();
+  const navigate = useNavigate();
+  return (
+    <MenuItem id="Dashboards" order={2} text="Dashboards" disabled={false} parent>
+      {dashboards.map((dashboard, index) => <MenuItem key={dashboard} id={dashboard} order={index} disabled={false} text={dashboard} action={() => navigate(dashboard === 'default' ? '/' : `/dashboards/${dashboard}`)} />)}
+    </MenuItem>
   );
 });

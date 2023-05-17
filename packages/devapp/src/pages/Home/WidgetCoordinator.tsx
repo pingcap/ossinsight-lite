@@ -1,5 +1,5 @@
-import { Widget, WidgetModule } from '../../widgets-manifest';
-import { forwardRef, Suspense, useCallback, useMemo, useState } from 'react';
+import { WidgetModule } from '../../widgets-manifest';
+import { forwardRef, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import WidgetInstance from '../../components/WidgetInstance';
 import { getConfigurable } from '../../utils/widgets';
 import { useNavigate } from 'react-router-dom';
@@ -18,11 +18,8 @@ export interface WidgetCoordinator {
 export const WidgetCoordinator = forwardRef<HTMLDivElement, WidgetCoordinator>(({ name, _id: id, draggable, editMode, props: passInProps }, ref) => {
   const [module, setModule] = useState<WidgetModule>();
 
-  const configurable = useMemo(() => {
-    if (!module) return false;
-    return getConfigurable(module, { ...module.defaultProps, ...passInProps });
-  }, [module, passInProps]);
-
+  // TODO: Configurable
+  const configurable = false;
   const navigate = useNavigate();
 
   const { props: watchingProps } = useWatchItemFields('library', id, ['props']);
@@ -52,9 +49,9 @@ export const WidgetCoordinator = forwardRef<HTMLDivElement, WidgetCoordinator>((
         configure: configureAction,
       }}
     >
-      <Suspense fallback='Loading...'>
-        <WidgetInstance name={name} onWidgetLoad={(module) => setModule(module)} ref={ref} props={props} />
+      <Suspense fallback="Loading...">
+        <WidgetInstance name={name} ref={ref} props={props} />
       </Suspense>
     </WidgetContextProvider>
   );
-})
+});
