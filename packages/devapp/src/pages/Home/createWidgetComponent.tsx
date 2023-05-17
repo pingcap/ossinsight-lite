@@ -24,55 +24,53 @@ export interface WidgetStateProps {
   onActiveChange: Consume<boolean>
 }
 
-export function createWidgetComponent () {
-  type ResolvedComponentType = ComponentType<any>;
-  const internalCache: Record<string, ResolvedComponentType> = {};
+type ResolvedComponentType = ComponentType<any>;
 
-  return forwardRef<HTMLDivElement, WidgetComponentProps>(({ ...componentProps }, ref) => {
-    let el: ReactElement;
+const internalCache: Record<string, ResolvedComponentType> = {};
 
-    const { id, draggable, dragging, editMode, active, onActiveChange, ...rest } = componentProps;
+export const WidgetComponent = forwardRef<HTMLDivElement, WidgetComponentProps>(({ ...componentProps }, ref) => {
+  let el: ReactElement;
 
-    const { props: itemProps, name } = useWatchItemFields('library', id, ['name', 'props']);
-    const props = { ...rest, ...itemProps };
+  const { id, draggable, dragging, editMode, active, onActiveChange, ...rest } = componentProps;
 
-    if (name.startsWith('internal:')) {
-      let Component: ResolvedComponentType;
-      const componentName = name.split(':')[1];
+  const { props: itemProps, name } = useWatchItemFields('library', id, ['name', 'props']);
+  const props = { ...rest, ...itemProps };
 
-      Component = internalCache[componentName];
-      if (!Component) {
-        Component = internalCache[componentName] = forwardRef((layoutComponents as any)[componentName]);
-      }
-      el = <Component _id={id} {...props} className={clsx('w-full h-full', props.className)} />;
-    } else {
-      if (!widgets[name]) {
-        throw new Error(`Unknown widget ${name}`);
-      }
+  if (name.startsWith('internal:')) {
+    let Component: ResolvedComponentType;
+    const componentName = name.split(':')[1];
 
-      el = <WidgetCoordinator name={name} _id={id} editMode={editMode} draggable={draggable} props={{ ...props, className: clsx('w-full h-full', props.className) }} ref={ref} />;
+    Component = internalCache[componentName];
+    if (!Component) {
+      Component = internalCache[componentName] = forwardRef((layoutComponents as any)[componentName]);
+    }
+    el = <Component _id={id} {...props} className={clsx('w-full h-full', props.className)} />;
+  } else {
+    if (!widgets[name]) {
+      throw new Error(`Unknown widget ${name}`);
     }
 
-    return (
-      <div className="widget relative rounded-lg shadow bg-white bg-opacity-60 overflow-hidden" {...rest}>
-        <Menu name={`widgets.${id}`}>
-          <WidgetComponentWrapper
-            id={id}
-            editMode={editMode}
-            dragging={dragging}
-            active={active}
-            onActiveChange={onActiveChange}
-          >
-            <Suspense fallback={<div className="w-full h-full flex items-center justify-center text-xl text-gray-400">Loading</div>}>
-              {el}
-            </Suspense>
-          </WidgetComponentWrapper>
-        </Menu>
-      </div>
-    );
-  });
-}
+    el = <WidgetCoordinator name={name} _id={id} editMode={editMode} draggable={draggable} props={{ ...props, className: clsx('w-full h-full', props.className) }} ref={ref} />;
+  }
 
+  return (
+    <div className="widget relative rounded-lg shadow bg-white bg-opacity-60 overflow-hidden" {...rest}>
+      <Menu name={`widgets.${id}`}>
+        <WidgetComponentWrapper
+          id={id}
+          editMode={editMode}
+          dragging={dragging}
+          active={active}
+          onActiveChange={onActiveChange}
+        >
+          <Suspense fallback={<div className="w-full h-full flex items-center justify-center text-xl text-gray-400">Loading</div>}>
+            {el}
+          </Suspense>
+        </WidgetComponentWrapper>
+      </Menu>
+    </div>
+  );
+});
 type WidgetState = {
   id: string
   editMode: boolean

@@ -7,7 +7,7 @@ import { Rect } from '@oss-widgets/layout/src/core/types';
 import { MenuItem, MenuItemSlot } from '@oss-widgets/ui/components/menu';
 import { useLayoutManager } from '../../components/WidgetsManager';
 import { useCollection, useCollectionKeys, useWatchItemField } from '@oss-widgets/ui/hooks/bind';
-import { createWidgetComponent, WidgetStateProps } from './createWidgetComponent';
+import { WidgetComponent, WidgetStateProps } from './createWidgetComponent';
 import { useParams } from 'react-router';
 import PlusIcon from '../../icons/plus.svg';
 import { DashboardContext } from './context';
@@ -60,8 +60,6 @@ function Home () {
       });
   }, [dashboard]);
 
-  const WidgetComponent = useMemo(() => memo(createWidgetComponent(), isPropsEquals(['onActiveChange'])), []);
-
   return (
     <DashboardContext.Provider value={{ dashboardName }}>
       {editMode && (
@@ -101,7 +99,7 @@ function Home () {
               });
             },
           })}
-          Component={WidgetComponent}
+          Component={WidgetComponentMemo}
         />
       </GridLayout>
     </DashboardContext.Provider>
@@ -141,3 +139,5 @@ const isPropsEquals = <T extends Record<string, any>> (ignores: (keyof T)[] = []
     return true;
   };
 };
+
+const WidgetComponentMemo = memo(WidgetComponent, isPropsEquals(['onActiveChange']));
