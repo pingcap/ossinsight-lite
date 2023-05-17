@@ -4,7 +4,7 @@ import layout from 'widgets:layout';
 import useRefCallback from '@oss-widgets/ui/hooks/ref-callback';
 import { ReactBindCollection, ReactBindCollections, useReactBindCollections } from '@oss-widgets/ui/hooks/bind';
 import { Fixup, migrate, Version } from '@oss-widgets/ui/hooks/migration';
-import type { ItemReference, LayoutConfigV0, LayoutConfigV1, LayoutItem } from '../../types/config';
+import type { Dashboard, ItemReference, LayoutConfigV0, LayoutConfigV1, LayoutItem } from '../../types/config';
 import { LibraryItem } from '../../types/config';
 import { AutoSaveLibrary } from './AutoSaveLibrary';
 import { useSignal } from './signal';
@@ -69,6 +69,12 @@ export function useConfig () {
 
 export type { LayoutItem } from '../../types/config';
 
+const defaultLayoutConfig: Dashboard['layout'] = {
+  type: `gird:responsive`,
+  size: [40, 16],
+  gap: 8,
+}
+
 export function toConfigV1 (currentConfig: LayoutConfigV1 | undefined, collections: ReactBindCollections): LayoutConfigV1 {
   const library = collections.getNullable('library')!;
   const dashboards = collections.getByRegexp(DashboardKeyRegExp);
@@ -78,11 +84,7 @@ export function toConfigV1 (currentConfig: LayoutConfigV1 | undefined, collectio
     library: library.values,
     dashboard: dashboards.reduce((record, [key, dashboard]) => {
       record[key] = {
-        layout: {
-          type: 'grid',
-          size: 40,
-          gap: 8,
-        },
+        layout: defaultLayoutConfig,
         items: dashboard.values,
       };
       return record;
@@ -168,11 +170,7 @@ const layoutVersions: Version[] = [
         }),
         dashboard: {
           default: {
-            layout: {
-              type: 'grid',
-              size: 40,
-              gap: 8,
-            },
+            layout: defaultLayoutConfig,
             items: prev.map(({ id, name, rect }) => ({
               id: id ?? name,
               rect,
@@ -186,11 +184,18 @@ const layoutVersions: Version[] = [
 
 const layoutVersionFixup: Record<string | number, Fixup> = {
   [1]: (prev: LayoutConfigV1): LayoutConfigV1 => {
+    Object.values(prev.dashboard).forEach(d => {
+      d.layout = {
+        type: `gird:responsive`,
+        size: [40, 16],
+        gap: 8,
+      };
+    });
     if (!prev.dashboard.default) {
       prev.dashboard.default = {
         layout: {
-          type: 'grid',
-          size: 40,
+          type: `gird:responsive`,
+          size: [40, 16],
           gap: 8,
         },
         items: layout.map(({ id, name, rect }: any) => ({

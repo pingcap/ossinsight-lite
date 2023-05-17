@@ -13,6 +13,7 @@ export interface ViewportProps {
   children?: ReactNode;
   className?: string;
   onResize?: (size: Size) => void;
+  onGridResize?: (size: Size) => void;
   onDrag?: (id: string, rect: Rect) => void;
 }
 

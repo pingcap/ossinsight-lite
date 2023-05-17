@@ -1,5 +1,5 @@
 import { CSSProperties, FC } from 'react';
-import { GridLayoutOptions } from '../../core/layout/grid.ts';
+import { GridLayoutOptions, GridLayoutType } from '../../core/layout/grid.ts';
 import { Point, Size } from '../../core/types.ts';
 
 interface BackdropProps extends GridLayoutOptions {
@@ -7,7 +7,16 @@ interface BackdropProps extends GridLayoutOptions {
   gap: number;
 }
 
-const Backdrop: FC<BackdropProps> = function Backdrop ({ gridSize, gap, size }) {
+const Backdrop: FC<Required<BackdropProps>> = function Backdrop ({ type, columns, gridSize, gap, size: viewportSize }) {
+  let size: Size
+  switch (type) {
+    case GridLayoutType.FIX_SIZE:
+      size = columns;
+      break;
+    case GridLayoutType.RESPONSIVE:
+      size = viewportSize;
+      break;
+  }
 
   return (
     <div className='absolute left-1 top-1'>
@@ -61,15 +70,15 @@ function array2<T> (size: Size, map: (point: Point) => T): Iterable<T> {
   };
 }
 
-function getGuildPointStyle (point: Point, gridSize: number, gap: number): CSSProperties {
+function getGuildPointStyle (point: Point, gridSize: Size, gap: number): CSSProperties {
   return {
     position: 'absolute',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    left: point[0] * (gridSize + gap),
-    top: point[1] * (gridSize + gap),
-    width: gridSize,
-    height: gridSize,
+    left: point[0] * (gridSize[0] + gap),
+    top: point[1] * (gridSize[1] + gap),
+    width: gridSize[0],
+    height: gridSize[1],
   };
 }

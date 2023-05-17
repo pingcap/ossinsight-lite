@@ -1,4 +1,5 @@
-import { Rect } from '@oss-widgets/layout/src/core/types';
+import { Rect, Size } from '@oss-widgets/layout/src/core/types';
+import { GridLayoutType } from '@oss-widgets/layout/src/core/layout/grid';
 
 export type LayoutItem = LibraryItem & {
   rect: Rect
@@ -18,8 +19,8 @@ export type ItemReference = {
 
 export type Dashboard = {
   layout: {
-    type: 'grid'
-    size: number
+    type: `gird:${GridLayoutType}`
+    size: Size
     gap: number
   }
   items: ItemReference[]
