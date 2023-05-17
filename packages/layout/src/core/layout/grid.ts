@@ -37,7 +37,7 @@ export class GridLayout extends Layout<Rect, Point> {
           floorEven(Math.floor((size[1] - this.gridSize[0]) / (this.gap + this.gridSize[1])) + 1),
         ];
       case GridLayoutType.RESPONSIVE:
-        this.gridSize = [(size[0] - this.gap * this.columns[0] + 1) / this.columns[0], (size[1] - this.gap * this.columns[1] + 1) / this.columns[1]];
+        this.gridSize = [(size[0] - this.gap * (this.columns[0] + 1)) / this.columns[0], (size[1] - this.gap * (this.columns[1] + 1)) / this.columns[1]];
         return this._viewportSize = this.columns;
     }
   }
