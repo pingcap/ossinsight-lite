@@ -1,10 +1,10 @@
-import React from 'react';
+import { use } from 'react';
 import Create from '@/src/_pages/Dashboards/Create';
 import List from '@/src/_pages/Dashboards/List';
 import { getAllDashboards } from '@/app/api/layout/operations';
 
-export default async function () {
-  const [store, dashboardsObject] = await getAllDashboards()
+export default function () {
+  const [store, dashboardsObject] = use(getAllDashboards())
   const dashboards = Object.keys(dashboardsObject);
 
   return (
