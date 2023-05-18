@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import kv from '@vercel/kv';
+import kv from '@/app/api/kv';
 import { Dashboard } from '@/src/types/config';
 
 export async function GET (req: NextRequest) {

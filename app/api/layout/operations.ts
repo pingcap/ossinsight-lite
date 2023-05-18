@@ -1,4 +1,4 @@
-import kv from '@vercel/kv';
+import kv from '@/app/api/kv';
 import { Dashboard, LayoutConfigV1, LibraryItem, Store } from '@/src/types/config';
 import layout from '@ossinsight-lite/widgets/layout.json';
 import { isKvConfigured } from '@/src/utils/runtime';
@@ -65,7 +65,7 @@ export async function saveLayout (config: LayoutConfigV1) {
   let flags: any = {};
   if (typeof localStorage !== 'undefined') {
     localStorage.setItem('widgets:library', JSON.stringify(config.library));
-    localStorage.setItem('widgets:dashboard', JSON.stringify(config.dashboard));
+    localStorage.setItem('widgets:dashboards', JSON.stringify(config.dashboard));
     flags.localStorage = true;
   }
   if (isKvConfigured) {

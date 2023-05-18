@@ -1,1 +1,1 @@
-export const isKvConfigured = !!process.env.KV_URL
+export const isKvConfigured = !!process.env.OSSL_KV_REST_API_URL
