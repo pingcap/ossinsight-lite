@@ -7,10 +7,11 @@ import AppMenu from '@/src/AppMenu';
 import DashboardsRegistry from '@/src/bind/DashboardsRegistry';
 import LibraryRegistry from '@/src/bind/LibraryRegistry';
 import AutoSaveLibrary from '@/src/components/WidgetsManager/AutoSaveLibrary';
+import { LayoutConfigV1 } from '@/src/types/config';
 
-export default function App ({ children }: PropsWithChildren) {
+export default function App ({ children, config }: PropsWithChildren<{ config: LayoutConfigV1 }>) {
   return (
-    <WidgetsManager>
+    <WidgetsManager config={config}>
       <NavMenu name="nav" className="h-[40px] p-[4px] min-w-[250px]">
         <AppMenu />
         {children}

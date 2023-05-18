@@ -1,7 +1,7 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import { Connection, createConnection } from 'mysql2/promise';
 import * as process from 'process';
-import kv from '@vercel/kv';
+import kv from '@/app/api/kv';
 
 // TODO: use config
 const db = [

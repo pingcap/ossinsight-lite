@@ -1,6 +1,6 @@
 import { Connection, createConnection } from 'mysql2/promise';
 import * as process from 'process';
-import kv from '@vercel/kv';
+import kv from '@/app/api/kv';
 import { NextRequest, NextResponse } from 'next/server';
 import config from '@/.osswrc.json';
 

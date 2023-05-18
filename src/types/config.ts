@@ -28,8 +28,12 @@ export type Dashboard = {
 
 export type LayoutConfigV0 = LayoutItem[];
 
+export type Store = 'kv' | 'localStorage' | 'localStorageLegacy' | 'new';
+
 export type LayoutConfigV1 = {
   version: 1
   library: LibraryItem[]
   dashboard: Record<string, Dashboard>
+  libraryStore?: Store
+  dashboardsStore?: Store
 }
