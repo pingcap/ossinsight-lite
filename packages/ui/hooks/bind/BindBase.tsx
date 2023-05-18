@@ -1,17 +1,39 @@
 import { filter, firstValueFrom, map, Observable, Subject, Subscription, Unsubscribable } from 'rxjs';
 import { BindingTypeEvent, Consume, Disposable, KeyType, PureCallback } from './types';
 import { BindKeyDuplicatedError, BindKeyNotExistsError } from './error';
-import { ReactiveValueSubject } from './ReactiveValueSubject.ts';
-import { isDev } from '../../utils/dev.ts';
+import { ReactiveValueSubject } from './ReactiveValueSubject';
+import { isDev } from '../../utils/dev';
 
-export abstract class BindBase<Key extends KeyType, Value, InitialArgs extends any[] = []> {
-  protected readonly _store = new Map<Key, Value>();
-  protected readonly _pendingStore = new Map<Key, Promise<Value>>();
-  protected readonly _eventBus = new Subject<GeneralEvent<Key, Value>>();
+type TypedEntry<MapType, K extends keyof MapType> = [K, MapType[K]];
+
+interface TypedMap<MapType> extends Map<keyof MapType, MapType[keyof MapType]> {
+  readonly size: number;
+
+  get<K extends keyof MapType> (key: K): MapType[K] | undefined;
+
+  set<K extends keyof MapType> (key: K, value: MapType[K]): this;
+
+  has (key: keyof MapType): boolean;
+
+  delete (key: keyof MapType): boolean;
+
+  clear (): void;
+
+  entries (): IterableIterator<TypedEntry<MapType, keyof MapType>>;
+
+  keys (): IterableIterator<keyof MapType>;
+
+  values (): IterableIterator<MapType[keyof MapType]>;
+}
+
+export abstract class BindBase<BindMap, InitialArgs extends any[] = []> {
+  protected readonly _store: TypedMap<BindMap> = new Map();
+  protected readonly _pendingStore: TypedMap<{ [P in keyof BindMap]: Promise<BindMap[P]> }> = new Map();
+  protected readonly _eventBus = new Subject<GeneralEvent<keyof BindMap, BindMap[keyof BindMap]>>();
   protected readonly _loaded = new ReactiveValueSubject<boolean>(true);
 
-  _parent: BindBase<any, any, any> | undefined;
-  _key: Key | undefined;
+  _parent: BindBase<any, any> | undefined;
+  _key: KeyType | undefined;
 
   protected constructor () {
   }
@@ -24,44 +46,44 @@ export abstract class BindBase<Key extends KeyType, Value, InitialArgs extends a
     return [...this._store.keys()];
   }
 
-  getNullable (type: Key): Value | null {
+  getNullable<K extends keyof BindMap> (type: K): BindMap[K] | null {
     return this._store.get(type) ?? null;
   }
 
-  get (type: Key): Value | Promise<Value> {
+  get<K extends keyof BindMap> (type: K): BindMap[K] | Promise<BindMap[K]> {
     let rb = this._store.get(type);
     if (rb != null) {
       return rb;
     }
     let ab = this._pendingStore.get(type);
     if (ab == null) {
+      let h: any;
+      if (isDev) {
+        const err = new Error(`key ${String(this._key ?? '?')}#${String(type)} Not resolved after 5 seconds. Check it.`);
+
+        h = setTimeout(() => {
+          console.error(err);
+        }, 5000);
+      }
+
       this._pendingStore.set(type, ab = firstValueFrom(this._eventBus
         .pipe(filter(([_, thisType, event]) => {
+          if (isDev) {
+            clearTimeout(h);
+          }
           return event === BindingTypeEvent.CREATED && type === thisType;
         }))
-        .pipe(map(([bind]) => bind)),
+        .pipe(map(([bind]) => bind as BindMap[K])),
       ));
     }
     return ab;
   }
 
-  getByRegexp (reg: RegExp): [string, Value][] {
-    return [...this.entries()].flatMap(([key, value]) => {
-      if (typeof key === 'string') {
-        const res = reg.exec(key);
-        if (res) {
-          return [[res[1], value]];
-        }
-      }
-      return [];
-    });
-  }
-
-  add (key: Key, ...args: InitialArgs) {
+  add<K extends keyof BindMap> (key: K, ...args: InitialArgs): BindMap[K] {
     if (this._store.has(key)) {
       throw new BindKeyDuplicatedError(key);
     }
-    const value = this.initialize(...args);
+    const value = this.initialize<K>(...args);
     if (value instanceof BindBase) {
       value._parent = this;
       value._key = key;
@@ -72,17 +94,11 @@ export abstract class BindBase<Key extends KeyType, Value, InitialArgs extends a
     return value;
   }
 
-  has (key: Key) {
+  has (key: keyof BindMap) {
     return this._store.has(key);
   }
 
-  delIfExists (key: Key) {
-    if (this.has(key)) {
-      this.del(key);
-    }
-  }
-
-  del (key: Key) {
+  del (key: keyof BindMap) {
     const value = this._store.get(key);
     if (!value) {
       throw new BindKeyNotExistsError(key, this._key);
@@ -105,13 +121,19 @@ export abstract class BindBase<Key extends KeyType, Value, InitialArgs extends a
     }
   }
 
+  delAll () {
+    this._store.forEach((_, k) => {
+      this.del(k);
+    })
+  }
+
   get events () {
     return this._eventBus;
   }
 
-  subscribeKeys (): Observable<Key[]>
-  subscribeKeys (cb: Consume<Key[]>): Subscription
-  subscribeKeys (cb?: Consume<Key[]>): Subscription | Observable<Key[]> {
+  subscribeKeys (): Observable<(keyof BindMap)[]>
+  subscribeKeys (cb: Consume<(keyof BindMap)[]>): Subscription
+  subscribeKeys (cb?: Consume<(keyof BindMap)[]>): Subscription | Observable<(keyof BindMap)[]> {
     if (cb) {
       return this._eventBus
         .pipe(filter(isKeyMutateEvent))
@@ -162,10 +184,10 @@ export abstract class BindBase<Key extends KeyType, Value, InitialArgs extends a
     }
   }
 
-  protected abstract initialize (...args: InitialArgs): Value;
+  protected abstract initialize<K extends keyof BindMap> (...args: InitialArgs): BindMap[K];
 }
 
-type GeneralEvent<Key, Value> = [Value, Key, BindingTypeEvent];
+export type GeneralEvent<Key, Value> = [Value, Key, BindingTypeEvent];
 
 const keyMutateEvents = [BindingTypeEvent.CREATED, BindingTypeEvent.DELETED];
 

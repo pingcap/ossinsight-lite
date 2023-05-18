@@ -1,11 +1,11 @@
 import { forwardRef, ReactNode, useEffect, useState } from 'react';
-import { Layout } from '../../core/layout/base.ts';
-import { DraggableContextProvider } from '../../context/draggable.ts';
+import { Layout } from '../../core/layout/base';
+import { DraggableContextProvider } from '../../context/draggable';
 import './style.scss';
-import { useSize } from '../../hooks/size.ts';
-import { Rect, Size, toSizeStyle } from '../../core/types.ts';
-import mergeRefs from '@oss-widgets/ui/utils/merge-refs.ts';
-import useRefCallback from '@oss-widgets/ui/hooks/ref-callback.ts';
+import { useSize } from '../../hooks/size';
+import { Rect, Size, toSizeStyle } from '../../core/types';
+import mergeRefs from '@oss-widgets/ui/utils/merge-refs';
+import useRefCallback from '@oss-widgets/ui/hooks/ref-callback';
 import clsx from 'clsx';
 
 export interface ViewportProps {

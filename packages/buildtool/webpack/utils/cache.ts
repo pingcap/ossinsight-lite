@@ -1,6 +1,5 @@
 import * as fsp from 'fs/promises';
 import * as path from 'node:path';
-import chalk from 'chalk';
 
 export default class Cache {
   private readonly caches = new Map<string, any>();

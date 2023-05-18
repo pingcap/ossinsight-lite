@@ -5,22 +5,42 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "run-s devtool:build all:dev",
-    "build": "run-s devtool:build vercel:build",
-    "all:dev": "run-p devtool:dev vercel:dev",
     "devtool:build": "pnpm --filter @oss-widgets/buildtool run build",
-    "devtool:dev": "pnpm --filter @oss-widgets/buildtool run dev",
-    "vercel:dev": "vercel dev",
-    "vercel:build": "vercel build",
-    "postinstall": "npm run devtool:build"
+    "dev": "npm run devtool:build && next dev",
+    "build": "npm run devtool:build && next build",
+    "start": "next start",
+    "lint": "next lint"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@8.4.0",
   "devDependencies": {
+    "@types/react-transition-group": "^4.4.6",
     "npm-run-all": "^4.1.5",
+    "sass": "^1.62.1",
     "typescript": "^5.0.4",
     "vercel": "^28.20.0"
+  },
+  "dependencies": {
+    "@radix-ui/react-switch": "^1.0.2",
+    "@types/node": "^18.16.12",
+    "@types/react": "^18.2.6",
+    "@types/react-dom": "^18.2.4",
+    "@vercel/kv": "^0.1.2",
+    "autoprefixer": "^10.4.14",
+    "clsx": "^1.2.1",
+    "eslint": "8.40.0",
+    "eslint-config-next": "13.4.2",
+    "glob": "^10.2.5",
+    "mysql2": "^3.3.1",
+    "next": "13.4.2",
+    "next-plugin-svgr": "^1.1.4",
+    "postcss": "8.4.23",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-transition-group": "^4.4.5",
+    "rxjs": "^7.8.1",
+    "tailwindcss": "^3.3.2"
   }
 }

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { Ref, useEffect, useRef, useState } from 'react';
 
 export type ElementSize = {
   width: number
@@ -38,6 +38,6 @@ export function useSize<Element extends HTMLElement | SVGElement> ({ defaultSize
   }, [parent]);
 
   return {
-    size, ref,
+    size, ref: ref as Ref<Element>,
   };
 }

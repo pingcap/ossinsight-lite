@@ -1,13 +1,30 @@
 import * as Toolbar from '@radix-ui/react-toolbar';
 import * as Select from '@radix-ui/react-select';
 import { SelectItemProps } from '@radix-ui/react-select';
-import config from 'widgets:config';
 import { forwardRef } from 'react';
 import clsx from 'clsx';
 import PlayIcon from '../../../icons/twbs/play-fill.svg';
 import RoughSvg from '@oss-widgets/roughness/components/RoughSvg';
 import RoughBox from '@oss-widgets/ui/components/roughness/shape/box';
 import colors from 'tailwindcss/colors';
+
+// TODO
+const config = {
+  "db": [
+    {
+      "name": "oh-my-github",
+      "display": "github-personal",
+      "type": "mysql",
+      "env": "OH_MY_GITHUB_DATABASE_URL"
+    },
+    {
+      "name": "repo-track",
+      "display": "github-repo",
+      "type": "mysql",
+      "env": "REPO_TRACK_DATABASE_URL"
+    }
+  ]
+}
 
 export interface SQLEditorHeaderProps {
   onRun?: () => void;

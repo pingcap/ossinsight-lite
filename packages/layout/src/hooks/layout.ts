@@ -1,4 +1,4 @@
-import type { Layout } from '../core/layout/base.ts';
+import type { Layout } from '../core/layout/base';
 import { useEffect, useState } from 'react';
 
 export function useLayout<

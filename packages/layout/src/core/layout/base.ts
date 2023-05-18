@@ -1,4 +1,4 @@
-import { Rect, Size } from '../types.ts';
+import { Rect, Size } from '../types';
 
 enum Action {
   DRAG,

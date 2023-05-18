@@ -97,12 +97,12 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
 
 @font-face {
   font-family: CabinSketch;
-  src: url(@oss-widgets/roughness/fonts/CabinSketch-Regular.ttf);
+  src: url(./CabinSketch-Regular.ttf);
   font-weight: normal;
 }
 
 @font-face {
   font-family: CabinSketch;
-  src: url(@oss-widgets/roughness/fonts/CabinSketch-Bold.ttf);
+  src: url(./CabinSketch-Bold.ttf);
   font-weight: bold;
 }

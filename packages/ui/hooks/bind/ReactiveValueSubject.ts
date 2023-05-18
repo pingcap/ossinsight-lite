@@ -2,11 +2,12 @@ import { Subject } from 'rxjs';
 
 export interface ReactiveValue<T> extends Subject<T> {
   current: T;
+  _debugLastChanged?: string[]
 }
 
 export class ReactiveValueSubject<T> extends Subject<T> implements ReactiveValue<T> {
   current: T;
-  _readonly: boolean;
+  _readonly: boolean = false;
 
   constructor (current: T) {
     super();

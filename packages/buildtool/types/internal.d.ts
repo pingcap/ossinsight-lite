@@ -5,10 +5,3 @@ declare module 'widgets:config' {
   const config: Config;
   export default config;
 }
-
-declare module 'widgets:layout' {
-  const layout: any;
-  export default layout;
-
-  export function save (layout: any): any;
-}

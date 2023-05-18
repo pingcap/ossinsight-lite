@@ -1,10 +1,10 @@
 import * as RuiContextMenu from '@radix-ui/react-context-menu';
 import { FC, PropsWithChildren, ReactElement, Suspense } from 'react';
-import { stopPropagation } from './common.ts';
-import { Menu, MenuProps } from '../menu/Menu.tsx';
-import * as renderers from './content.tsx';
+import { stopPropagation } from './common';
+import { Menu, MenuProps } from '../menu/Menu';
+import * as renderers from './content';
 import { MenuContent } from '../menu';
-import { Consume } from '../../hooks/bind/types.ts';
+import { Consume } from '../../hooks/bind/types';
 
 export interface ContextMenuProps extends MenuProps {
   trigger: ReactElement;

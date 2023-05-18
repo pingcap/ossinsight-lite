@@ -1,8 +1,8 @@
 import clsx from 'clsx';
 import HorizontalIcon from './grip-horizontal.svg';
 import VerticalIcon from './grip-vertical.svg';
-import { useDraggable } from '../../hooks/draggable.ts';
-import { Rect } from '../../core/types.ts';
+import { useDraggable } from '../../hooks/draggable';
+import { Rect } from '../../core/types';
 import { useState } from 'react';
 
 const icons = {

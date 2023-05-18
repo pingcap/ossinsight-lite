@@ -1,6 +1,6 @@
 import { CSSProperties, FC } from 'react';
-import { GridLayoutOptions, GridLayoutType } from '../../core/layout/grid.ts';
-import { Point, Size } from '../../core/types.ts';
+import { GridLayoutOptions, GridLayoutType } from '../../core/layout/grid';
+import { Point, Size } from '../../core/types';
 
 interface BackdropProps extends GridLayoutOptions {
   size: Size;

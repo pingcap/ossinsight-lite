@@ -1,8 +1,9 @@
-import { isActionItem, isCustomItem, isParentItem, MenuItemProps } from './types.ts';
+import { isActionItem, isCustomItem, isParentItem, MenuItemProps } from './types';
 import { useContext, useEffect } from 'react';
-import { MenuContext, MenuKey } from './Menu.tsx';
-import { withSuspense } from '../../utils/suspense.tsx';
+import { MenuContext, MenuKey } from './Menu';
+import { withSuspense } from '../../utils/suspense';
 import { useCollection, useReactBindCollections, useUpdater } from '../../hooks/bind';
+import clientOnly from '../../../../src/utils/clientOnly';
 
 function computeCollectionKey (name: string, parentId: string | undefined): MenuKey<string> {
   if (parentId) {
@@ -20,7 +21,7 @@ function computeParentId (id: string, parentId: string | undefined): string {
   }
 }
 
-export const MenuItem = withSuspense(function MenuItem (props: MenuItemProps) {
+export const MenuItem = clientOnly(withSuspense(function MenuItem (props: MenuItemProps) {
   const { name, parentId } = useContext(MenuContext);
   const collectionKey = computeCollectionKey(name, parentId);
   const collection = useCollection(collectionKey);
@@ -57,7 +58,7 @@ export const MenuItem = withSuspense(function MenuItem (props: MenuItemProps) {
   } else {
     return null;
   }
-});
+}))
 
 const specialKey = (item: MenuItemProps) => {
   if (isCustomItem(item)) {

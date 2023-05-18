@@ -1,7 +1,0 @@
-{
-  "version": 2,
-  "devCommand": "npm run dev",
-  "buildCommand": "npm run build:site",
-  "installCommand": "pnpm install",
-  "outputDirectory": "page-dist"
-}

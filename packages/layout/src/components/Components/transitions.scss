@@ -1,0 +1,33 @@
+.fade-enter {
+  transform: scale(0.8);
+  opacity: 0;
+}
+
+.fade-enter-active {
+  transition: transform .4s ease, opacity .4s;
+  transform: none;
+  transform-origin: center center;
+  opacity: 1;
+}
+
+.fade-enter-done {
+  transform: none;
+  opacity: 1;
+}
+
+.fade-exit {
+  transform: none;
+  opacity: 1;
+}
+
+.fade-exit-active {
+  transition: transform .4s ease, opacity .4s;
+  transform: scale(0.8);
+  transform-origin: center center;
+  opacity: 0;
+}
+
+.fade-exit-done {
+  transform: scale(0.8);
+  opacity: 0;
+}

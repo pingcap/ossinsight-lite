@@ -1,6 +1,6 @@
 import { DeepPartial, EventType, FieldPath, FieldValues, FormProvider, useForm } from 'react-hook-form';
 import { HTMLProps, ReactNode, useEffect } from 'react';
-import useRefCallback from '../../hooks/ref-callback.ts';
+import useRefCallback from '../../hooks/ref-callback';
 
 export type FormValuesChangeHandler<TFieldValues extends FieldValues> = (value: DeepPartial<TFieldValues>, info: { name?: FieldPath<TFieldValues>, type?: EventType }) => void
 
