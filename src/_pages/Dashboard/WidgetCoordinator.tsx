@@ -1,8 +1,8 @@
 import { WidgetModule } from '../../widgets-manifest';
 import { forwardRef, Suspense, useCallback, useState } from 'react';
 import WidgetInstance from '../../components/WidgetInstance';
-import { useUpdater, useWatchItemFields } from '@oss-widgets/ui/hooks/bind';
-import useRefCallback from '@oss-widgets/ui/hooks/ref-callback';
+import { useUpdater, useWatchItemFields } from '@ossinsight-lite/ui/hooks/bind';
+import useRefCallback from '@ossinsight-lite/ui/hooks/ref-callback';
 import { WidgetContextProvider } from '../../components/WidgetContext';
 import { useRouter } from 'next/navigation';
 

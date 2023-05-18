@@ -1,5 +1,5 @@
-import { Rect, Size } from '@oss-widgets/layout/src/core/types';
-import { GridLayoutType } from '@oss-widgets/layout/src/core/layout/grid';
+import { Rect, Size } from '@ossinsight-lite/layout/src/core/types';
+import { GridLayoutType } from '@ossinsight-lite/layout/src/core/layout/grid';
 
 export type LayoutItem = LibraryItem & {
   rect: Rect

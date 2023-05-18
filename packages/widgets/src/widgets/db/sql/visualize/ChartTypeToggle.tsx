@@ -3,7 +3,7 @@ import * as ToggleGroup from '@radix-ui/react-toggle-group';
 import TableIcon from '../../../../icons/twbs/table.svg';
 import GraphUpIcon from '../../../../icons/twbs/graph-up.svg';
 import { BarChartIcon } from '@radix-ui/react-icons';
-import RoughSvg from '@oss-widgets/roughness/components/RoughSvg';
+import RoughSvg from '@ossinsight-lite/roughness/components/RoughSvg';
 import clsx from 'clsx';
 
 interface ChartTypeToggleProps<T> {

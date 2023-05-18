@@ -21,7 +21,7 @@
     ],
     "paths": {
       "@/*": ["./*"],
-      "@oss-widgets/*": ["./packages/*"]
+      "@ossinsight-lite/*": ["./packages/*"]
     }
   },
   "include": ["next-env.d.ts", "src/**/*.ts", "app/**/*.ts", "src/**/*.tsx", "app/**/*.tsx", ".next/types/**/*.ts"],

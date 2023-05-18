@@ -2,9 +2,9 @@
 import { forwardRef, lazy, Suspense, useMemo } from 'react';
 import widgetsManifest from '../widgets-manifest';
 import clsx from 'clsx';
-import useRefCallback from '@oss-widgets/ui/hooks/ref-callback';
-import { useCollection, useWatchItemFields } from '@oss-widgets/ui/hooks/bind';
-import WidgetContext from '@oss-widgets/ui/context/widget';
+import useRefCallback from '@ossinsight-lite/ui/hooks/ref-callback';
+import { useCollection, useWatchItemFields } from '@ossinsight-lite/ui/hooks/bind';
+import WidgetContext from '@ossinsight-lite/ui/context/widget';
 import { getConfigurable } from '../utils/widgets';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';

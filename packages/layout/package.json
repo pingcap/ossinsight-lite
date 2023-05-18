@@ -1,12 +1,12 @@
 {
-  "name": "@oss-widgets/layout",
+  "name": "@ossinsight-lite/layout",
   "description": "",
   "scripts": {},
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@oss-widgets/ui": "workspace:^",
+    "@ossinsight-lite/ui": "workspace:^",
     "@types/react": "^18.2.6",
     "@types/react-dom": "^18.2.4",
     "clsx": "^1.2.1",

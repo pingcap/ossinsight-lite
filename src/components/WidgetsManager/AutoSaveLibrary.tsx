@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useId } from 'react';
-import { useCollection } from '@oss-widgets/ui/hooks/bind';
+import { useCollection } from '@ossinsight-lite/ui/hooks/bind';
 import { useConfig } from './WidgetsManager';
 import clientOnly from '@/src/utils/clientOnly';
 

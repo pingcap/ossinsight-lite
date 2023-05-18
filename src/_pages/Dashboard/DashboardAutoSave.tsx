@@ -1,5 +1,5 @@
 import { useConfig } from '../../components/WidgetsManager';
-import { readItem, useCollection } from '@oss-widgets/ui/hooks/bind';
+import { readItem, useCollection } from '@ossinsight-lite/ui/hooks/bind';
 import { useEffect } from 'react';
 import { BindingTypeEvent } from '@/packages/ui/hooks/bind/types';
 import clientOnly from '@/src/utils/clientOnly';

@@ -6,9 +6,9 @@ import './draggable.scss';
 import './transitions.scss';
 import { DraggableItemContextProvider } from '../../context/draggable-item';
 import { Resizer } from './resizer';
-import useRefCallback from '@oss-widgets/ui/hooks/ref-callback';
+import useRefCallback from '@ossinsight-lite/ui/hooks/ref-callback';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import mergeRefs from '@oss-widgets/ui/utils/merge-refs';
+import mergeRefs from '@ossinsight-lite/ui/utils/merge-refs';
 
 export type Item = {
   id?: string

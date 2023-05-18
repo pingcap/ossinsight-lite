@@ -2,7 +2,7 @@
 import React, { PropsWithChildren } from 'react';
 
 import WidgetsManager from './components/WidgetsManager';
-import { NavMenu } from '@oss-widgets/ui/components/nav-menu';
+import { NavMenu } from '@ossinsight-lite/ui/components/nav-menu';
 import AppMenu from '@/src/AppMenu';
 import DashboardsRegistry from '@/src/bind/DashboardsRegistry';
 import LibraryRegistry from '@/src/bind/LibraryRegistry';

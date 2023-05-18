@@ -1,8 +1,8 @@
 import { forwardRef, SelectHTMLAttributes, useContext } from 'react';
 import * as Select from '@radix-ui/react-select';
 import { VisualizeContext } from './context';
-import useRefCallback from '@oss-widgets/ui/hooks/ref-callback';
-import RoughSvg from '@oss-widgets/roughness/components/RoughSvg';
+import useRefCallback from '@ossinsight-lite/ui/hooks/ref-callback';
+import RoughSvg from '@ossinsight-lite/roughness/components/RoughSvg';
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from '@radix-ui/react-icons';
 
 export interface ColumnSelectProps extends SelectHTMLAttributes<HTMLSelectElement> {

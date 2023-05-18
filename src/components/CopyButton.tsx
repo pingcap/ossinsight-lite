@@ -1,6 +1,6 @@
 import CopyIcon from '../icons/copy.svg';
 import { useCallback, useEffect, useState } from 'react';
-import RoughSvg from '@oss-widgets/roughness/components/RoughSvg';
+import RoughSvg from '@ossinsight-lite/roughness/components/RoughSvg';
 
 export default function CopyButton ({ content }: { content: string }) {
   const [copied, setCopied] = useState(false);

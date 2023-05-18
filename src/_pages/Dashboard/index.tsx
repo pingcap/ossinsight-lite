@@ -1,13 +1,13 @@
 'use client';
 
-import Components from '@oss-widgets/layout/src/components/Components';
-import GridLayout from '@oss-widgets/layout/src/components/GridLayout';
+import Components from '@ossinsight-lite/layout/src/components/Components';
+import GridLayout from '@ossinsight-lite/layout/src/components/GridLayout';
 import { memo, Suspense, useCallback, useEffect, useRef, useState } from 'react';
-import { equals, Rect } from '@oss-widgets/layout/src/core/types';
-import { readItem, useCollectionKeys } from '@oss-widgets/ui/hooks/bind';
+import { equals, Rect } from '@ossinsight-lite/layout/src/core/types';
+import { readItem, useCollectionKeys } from '@ossinsight-lite/ui/hooks/bind';
 import { WidgetComponent, WidgetStateProps } from './createWidgetComponent';
 import { DashboardContext } from './context';
-import { useOptionalSingleton, useWatchReactiveValueField } from '@oss-widgets/ui/hooks/bind/hooks';
+import { useOptionalSingleton, useWatchReactiveValueField } from '@ossinsight-lite/ui/hooks/bind/hooks';
 import dynamic from 'next/dynamic';
 import { withSuspense } from '@/packages/ui/utils/suspense';
 

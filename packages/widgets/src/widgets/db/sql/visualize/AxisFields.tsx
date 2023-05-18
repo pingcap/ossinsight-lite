@@ -1,4 +1,4 @@
-import { Field } from '@oss-widgets/ui/components/form';
+import { Field } from '@ossinsight-lite/ui/components/form';
 import ColumnSelect from './ColumnSelect';
 
 export type BaseAxis = 'x' | 'y';

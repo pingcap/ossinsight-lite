@@ -2,8 +2,8 @@ import * as Switch from '@radix-ui/react-switch';
 import { SwitchProps } from '@radix-ui/react-switch';
 
 import clsx from 'clsx';
-import RoughCircle from '@oss-widgets/ui/components/roughness/shape/circle';
-import RoughRoundedRect from '@oss-widgets/ui/components/roughness/shape/rounded-rect';
+import RoughCircle from '@ossinsight-lite/ui/components/roughness/shape/circle';
+import RoughRoundedRect from '@ossinsight-lite/ui/components/roughness/shape/rounded-rect';
 
 export type EditModeSwitchProps = Pick<SwitchProps, 'checked' | 'onCheckedChange' | 'className'>
 

@@ -12,7 +12,7 @@ import RepoIcon from '../../../icons/repo.svg';
 import DiffAddedIcon from '../../../icons/diff-added.svg';
 import DiffRemovedIcon from '../../../icons/diff-removed.svg';
 import clsx from 'clsx';
-import RoughSvg from '@oss-widgets/roughness/components/RoughSvg';
+import RoughSvg from '@ossinsight-lite/roughness/components/RoughSvg';
 import * as Tooltip from '@radix-ui/react-tooltip';
 
 export default function Widget (props: HTMLProps<HTMLDivElement>, ref: ForwardedRef<HTMLDivElement>) {

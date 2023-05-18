@@ -4,7 +4,7 @@ import { useLayout } from '../../hooks/layout';
 import { GridLayout as LayoutManager, GridLayoutOptions } from '../../core/layout/grid';
 import Backdrop from './Backdrop';
 import { Size } from '../../core/types';
-import useRefCallback from '@oss-widgets/ui/hooks/ref-callback';
+import useRefCallback from '@ossinsight-lite/ui/hooks/ref-callback';
 
 const INITIAL_SIZE: Size = [0, 0];
 

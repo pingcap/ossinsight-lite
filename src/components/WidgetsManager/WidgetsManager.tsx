@@ -1,20 +1,20 @@
 'use client';
 
-import { Rect } from '@oss-widgets/layout/src/core/types';
+import { Rect } from '@ossinsight-lite/layout/src/core/types';
 import { createContext, PropsWithChildren, useCallback, useContext, useRef } from 'react';
-import layout from '@oss-widgets/widgets/layout.json';
-import useRefCallback from '@oss-widgets/ui/hooks/ref-callback';
-import { ReactBindCollection, ReactBindCollections, useCollection, useReactBindCollections } from '@oss-widgets/ui/hooks/bind';
-import { Fixup, migrate, Version } from '@oss-widgets/ui/hooks/migration';
+import layout from '@ossinsight-lite/widgets/layout.json';
+import useRefCallback from '@ossinsight-lite/ui/hooks/ref-callback';
+import { ReactBindCollection, ReactBindCollections, useCollection, useReactBindCollections } from '@ossinsight-lite/ui/hooks/bind';
+import { Fixup, migrate, Version } from '@ossinsight-lite/ui/hooks/migration';
 import type { LayoutConfigV0, LayoutConfigV1, LayoutItem } from '../../types/config';
 import { LibraryItem } from '../../types/config';
 import { useSignal } from './signal';
-import { useThrottleIdle } from '@oss-widgets/ui/hooks/throttle';
+import { useThrottleIdle } from '@ossinsight-lite/ui/hooks/throttle';
 import { DashboardInstance, useNullableDashboardItems } from '../../core/dashboard';
 import { isDev } from '@/packages/ui/utils/dev';
 import { defaultLayoutConfig } from '@/src/components/WidgetsManager/defaults';
 
-declare module '@oss-widgets/ui/hooks/bind' {
+declare module '@ossinsight-lite/ui/hooks/bind' {
   interface CollectionsBindMap {
     'library': LibraryItem;
   }

@@ -1,4 +1,4 @@
-import { ReactBindCollection, useCollection, useCollectionKeys, useReactBindCollections, readItem, useWatchReactiveValue } from '@oss-widgets/ui/hooks/bind';
+import { ReactBindCollection, useCollection, useCollectionKeys, useReactBindCollections, readItem, useWatchReactiveValue } from '@ossinsight-lite/ui/hooks/bind';
 import { ReactiveValue } from '@/packages/ui/hooks/bind/ReactiveValueSubject';
 import { DashboardInstance } from '@/src/core/dashboard/dashboard-instance';
 import { useEffect, useRef } from 'react';

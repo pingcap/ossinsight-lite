@@ -105,7 +105,7 @@ importers:
 
   packages/layout:
     devDependencies:
-      '@oss-widgets/ui':
+      '@ossinsight-lite/ui':
         specifier: workspace:^
         version: link:../ui
       '@types/react':
@@ -208,13 +208,13 @@ importers:
       '@octokit/types':
         specifier: ^9.2.2
         version: 9.2.2
-      '@oss-widgets/buildtool':
+      '@ossinsight-lite/buildtool':
         specifier: workspace:*
         version: link:../buildtool
-      '@oss-widgets/roughness':
+      '@ossinsight-lite/roughness':
         specifier: workspace:*
         version: link:../roughness
-      '@oss-widgets/ui':
+      '@ossinsight-lite/ui':
         specifier: workspace:^
         version: link:../ui
       '@radix-ui/react-dialog':

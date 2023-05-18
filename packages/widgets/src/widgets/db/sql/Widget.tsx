@@ -6,16 +6,16 @@ import { useSize } from '../../../utils/size';
 import { useOperation } from '../../../utils/operation';
 import ResultDisplay from './ResultDisplay';
 import { VisualizeType } from './visualize/common';
-import useRefCallback from '@oss-widgets/ui/hooks/ref-callback';
-import updatePartial from '@oss-widgets/ui/utils/update-partial';
+import useRefCallback from '@ossinsight-lite/ui/hooks/ref-callback';
+import updatePartial from '@ossinsight-lite/ui/utils/update-partial';
 import * as Dialog from '@radix-ui/react-dialog';
 import { VisualizeContext } from './visualize/context';
-import { Form } from '@oss-widgets/ui/components/form';
+import { Form } from '@ossinsight-lite/ui/components/form';
 import VisualizeConfig from './visualize/VisualizeConfig';
 import { migrate } from './visualize/guess';
-import { MenuItem } from '@oss-widgets/ui/components/menu';
-import WidgetContext from '@oss-widgets/ui/context/widget';
-import mergeRefs from '@oss-widgets/ui/utils/merge-refs';
+import { MenuItem } from '@ossinsight-lite/ui/components/menu';
+import WidgetContext from '@ossinsight-lite/ui/context/widget';
+import mergeRefs from '@ossinsight-lite/ui/utils/merge-refs';
 import { getCache, setCache } from './cache';
 
 export enum WidgetMode {

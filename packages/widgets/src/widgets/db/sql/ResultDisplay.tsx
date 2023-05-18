@@ -4,9 +4,9 @@ import { Suspense } from 'react';
 import { Alert } from '../../../components/alert';
 import ChartTypeToggle from './visualize/ChartTypeToggle';
 import clsx from 'clsx';
-import RoughSvg from '@oss-widgets/roughness/components/RoughSvg';
+import RoughSvg from '@ossinsight-lite/roughness/components/RoughSvg';
 import SlidersIcon from '../../../icons/twbs/sliders.svg';
-import RoughBox from '@oss-widgets/ui/components/roughness/shape/box';
+import RoughBox from '@ossinsight-lite/ui/components/roughness/shape/box';
 import colors from 'tailwindcss/colors';
 
 export interface ResultDisplayProps {

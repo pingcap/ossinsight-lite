@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import useRefCallback from '@oss-widgets/ui/hooks/ref-callback';
+import useRefCallback from '@ossinsight-lite/ui/hooks/ref-callback';
 
 export type OperationOptions<P, T> = {
   (props: P, signal: AbortSignal): Promise<T>

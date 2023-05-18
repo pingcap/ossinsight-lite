@@ -4,8 +4,8 @@ import { DraggableContextProvider } from '../../context/draggable';
 import './style.scss';
 import { useSize } from '../../hooks/size';
 import { Rect, Size, toSizeStyle } from '../../core/types';
-import mergeRefs from '@oss-widgets/ui/utils/merge-refs';
-import useRefCallback from '@oss-widgets/ui/hooks/ref-callback';
+import mergeRefs from '@ossinsight-lite/ui/utils/merge-refs';
+import useRefCallback from '@ossinsight-lite/ui/hooks/ref-callback';
 import clsx from 'clsx';
 
 export interface ViewportProps {

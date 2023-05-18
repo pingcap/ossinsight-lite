@@ -3,6 +3,7 @@ import { useCallback } from 'react';
 import { useDashboards } from '@/src/_pages/Dashboards/List';
 import { MenuItem } from '@/packages/ui/components/menu';
 import ThreeDotsIcon from '@/src/icons/three-dots.svg';
+import Link from 'next/link';
 
 const AppMenu = () => {
   const router = useRouter();
@@ -15,9 +16,9 @@ const AppMenu = () => {
   return (
     <>
       <MenuItem id="Logo" order={0} text="Home" disabled={false} custom>
-        <span>
+        <Link href='/'>
           OSSInsight Lite
-        </span>
+        </Link>
       </MenuItem>
       <MenuItem id="sep" order={1} separator />
       <MenuItem id="More" order={100} text={<ThreeDotsIcon />} disabled={false} parent>

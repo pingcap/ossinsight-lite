@@ -1,7 +1,7 @@
 import React, { ForwardedRef, HTMLProps, useEffect, useLayoutEffect } from 'react';
 import { useEventsTotal } from './hook';
 import AnimatedNumbers from 'react-awesome-animated-number';
-import { prerenderMode, usePrerenderCallback } from '@oss-widgets/runtime';
+import { prerenderMode, usePrerenderCallback } from '@ossinsight-lite/runtime';
 import clsx from 'clsx';
 
 export default function Widget ({ ...props }: HTMLProps<HTMLDivElement>, ref: ForwardedRef<HTMLDivElement>) {

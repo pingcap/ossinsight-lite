@@ -1,7 +1,7 @@
-import { Consume } from '@oss-widgets/ui/hooks/bind/types';
+import { Consume } from '@ossinsight-lite/ui/hooks/bind/types';
 import { useCallback, useEffect, useMemo } from 'react';
 import { Subject } from 'rxjs';
-import useRefCallback from '@oss-widgets/ui/hooks/ref-callback';
+import useRefCallback from '@ossinsight-lite/ui/hooks/ref-callback';
 
 export function useSignal<T> (cb: Consume<T>): Consume<T> {
   const subject = useMemo(() => new Subject<T>(), []);

@@ -1,5 +1,5 @@
 import { VisualizeConfigProps, VisualizeGauge } from './common';
-import { Field } from '@oss-widgets/ui/components/form';
+import { Field } from '@ossinsight-lite/ui/components/form';
 
 export default function GaugeVisualizeConfig ({}: VisualizeGauge) {
 

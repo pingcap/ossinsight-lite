@@ -1,1 +1,1 @@
-/// <reference types="@oss-widgets/buildtool/env" />
+/// <reference types="@ossinsight-lite/buildtool/env" />

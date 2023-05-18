@@ -1,11 +1,11 @@
 {
-  "name": "oss-widgets",
+  "name": "ossinsight-lite",
   "private": true,
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "devtool:build": "pnpm --filter @oss-widgets/buildtool run build",
+    "devtool:build": "pnpm --filter @ossinsight-lite/buildtool run build",
     "dev": "npm run devtool:build && next dev",
     "build": "npm run devtool:build && next build --no-lint",
     "start": "next start",

@@ -5,9 +5,9 @@ import React, { ForwardedRef, HTMLProps } from 'react';
 import clsx from 'clsx';
 import 'chartjs-adapter-luxon';
 import * as colors from 'tailwindcss/colors';
-import { prerenderMode } from '@oss-widgets/runtime';
+import { prerenderMode } from '@ossinsight-lite/runtime';
 
-import '@oss-widgets/roughness/chartjs';
+import '@ossinsight-lite/roughness/chartjs';
 
 const { cyan, green, red, yellow } = colors;
 

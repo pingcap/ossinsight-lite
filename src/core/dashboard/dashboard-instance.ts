@@ -1,6 +1,6 @@
-import { ReactBindCollection } from '@oss-widgets/ui/hooks/bind/ReactBindCollection';
+import { ReactBindCollection } from '@ossinsight-lite/ui/hooks/bind/ReactBindCollection';
 import { Dashboard, ItemReference } from '../../types/config';
-import { BindingTypeEvent, Disposable, KeyType } from '@oss-widgets/ui/hooks/bind';
+import { BindingTypeEvent, Disposable, KeyType } from '@ossinsight-lite/ui/hooks/bind';
 import { Subscription } from 'rxjs';
 import { ReactiveValue } from '@/packages/ui/hooks/bind/ReactiveValueSubject';
 import { GeneralEvent } from '@/packages/ui/hooks/bind';

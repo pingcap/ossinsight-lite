@@ -1,4 +1,4 @@
-@import '@oss-widgets/roughness/fonts/index.css';
+@import '@ossinsight-lite/roughness/fonts/index.css';
 
 @config "../../tailwind.config.js";
 @tailwind components;
