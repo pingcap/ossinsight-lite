@@ -3,10 +3,9 @@ import { useConfig } from '../../components/WidgetsManager';
 import { useEffect } from 'react';
 import { useCollection, whenReady } from '@oss-widgets/ui/hooks/bind';
 import { DashboardInstance } from './dashboard-instance';
-import { Dashboard, ItemReference } from '../../types/config';
+import { Dashboard } from '../../types/config';
 import clientOnly from '@/src/utils/clientOnly';
 import { useReactBindSingletons } from '@/packages/ui/hooks/bind/context';
-import { BindingTypeEvent } from '@/packages/ui/hooks/bind/types';
 
 declare module '@oss-widgets/ui/hooks/bind' {
   interface CollectionsBindMap {

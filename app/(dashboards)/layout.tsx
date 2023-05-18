@@ -4,7 +4,6 @@ import { Dashboard as DashboardConfig } from '@/src/types/config';
 import React from 'react';
 import Dashboard from '@/src/_pages/Dashboard';
 import DashboardRegistry from '@/src/core/dashboard/Registry';
-import AutoSaveLibrary from '@/src/components/WidgetsManager/AutoSaveLibrary';
 import DashboardAutoSave from '@/src/_pages/Dashboard/DashboardAutoSave';
 import { defaultLayoutConfig } from '@/src/components/WidgetsManager/defaults';
 
