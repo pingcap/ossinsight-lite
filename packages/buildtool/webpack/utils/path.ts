@@ -1,9 +1,6 @@
 import * as path from 'path';
 import * as process from 'process';
 
-import { fileURLToPath } from 'url';
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
 const BUILDTOOL_ROOT = path.resolve(__dirname, '../../..');
 
 export function dep (src: string) {

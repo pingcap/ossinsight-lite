@@ -1,18 +1,24 @@
 import { useRef } from 'react';
-import useRefCallback from './ref-callback.ts';
+import useRefCallback from './ref-callback';
 
-export function useThrottleIdle (cb: () => void): () => void {
+export function useThrottleIdle<T> (cb: (arg: T[]) => void): (arg: T) => void {
+  const args = useRef<T[]>([])
+
   const handleRef = useRef<{
     idle?: ReturnType<typeof requestIdleCallback>
     timeout?: ReturnType<typeof setTimeout>
   }>({});
 
-  return useRefCallback(() => {
+  return useRefCallback((arg: T) => {
+    args.current.push(arg);
     clearTimeout(handleRef.current.timeout);
-    cancelIdleCallback(handleRef.current.idle);
+    if (typeof handleRef.current.idle === 'number') {
+      cancelIdleCallback(handleRef.current.idle);
+    }
     handleRef.current.timeout = setTimeout(() => {
       handleRef.current.idle = requestIdleCallback(() => {
-        cb();
+        cb(args.current);
+        args.current = [];
       }, { timeout: 1000 });
     }, 500);
   });

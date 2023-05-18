@@ -1,0 +1,16 @@
+{
+  "db": [
+    {
+      "name": "oh-my-github",
+      "display": "github-personal",
+      "type": "mysql",
+      "env": "OH_MY_GITHUB_DATABASE_URL"
+    },
+    {
+      "name": "repo-track",
+      "display": "github-repo",
+      "type": "mysql",
+      "env": "REPO_TRACK_DATABASE_URL"
+    }
+  ]
+}

@@ -1,44 +1,104 @@
-import { BindKey, BindValue, Compare, ComparePath, Consume, KeyType, ValueOrGetter } from './types';
-import { SetStateAction, useCallback, useEffect, useState } from 'react';
+import { BindingTypeEvent, CollectionBindKey, CollectionBindValue, Compare, ComparePath, Consume, KeyType, SingletonBindKey, ValueOrGetter } from './types';
+import { SetStateAction, use, useCallback, useEffect, useState } from 'react';
 import { getValue, isPromiseLike, pick } from './utils';
-import { useReactBindCollections } from './ReactBindCollections';
+import { useReactBindCollections, useReactBindSingletons } from './context';
 import { BindBase } from './BindBase';
-import { ReactBindCollection } from './ReactBindCollection.ts';
+import { ReactBindCollection } from './ReactBindCollection';
 import { BindKeyDuplicatedError } from './error';
-import { Unsubscribable } from 'rxjs';
-import { ReactiveValue } from './ReactiveValueSubject.ts';
+import { filter, map, Subscription, Unsubscribable } from 'rxjs';
+import { ReactiveValue } from './ReactiveValueSubject';
 
 export function useAsync<T> (input: T | Promise<T>): T {
   if (isPromiseLike(input)) {
-    throw input;
+    return use(input);
   } else {
     return input;
   }
 }
 
-function useBind<K extends KeyType, V, A extends any[]> (bindBase: BindBase<K, V, A>, key: K) {
+function readBind<BindMap, K extends keyof BindMap, A extends any[]> (bindBase: BindBase<BindMap, A>, key: K): BindMap[K] {
   return useAsync(bindBase.get(key));
 }
 
-export function useCollection<K extends BindKey> (type: K): ReactBindCollection<BindValue<K>> {
-  return useBind(useReactBindCollections(), type);
+export function whenReady<BindMap, K extends keyof BindMap, A extends any[]> (bindBase: BindBase<BindMap, A>, key: K, cb: Consume<BindMap[K]>): Subscription | undefined {
+  const item = bindBase.getNullable(key);
+  if (item) {
+    cb(item);
+    return;
+  }
+
+  return bindBase.events
+    .pipe(filter(([_, type, ev]) => {
+      return type === key && ev === BindingTypeEvent.CREATED;
+    }))
+    .pipe(map(([bind]) => bind))
+    .subscribe(value => {
+      cb(value as any);
+    });
 }
 
-export function useReadItem<Data> (collection: ReactBindCollection<Data>, id: KeyType) {
-  return useBind(collection, id);
+function useOptionalBind<BindMap, K extends keyof BindMap, A extends any[]> (bindBase: BindBase<BindMap, A>, type: K): BindMap[K] | null {
+  const [resolved, setResolved] = useState(() => bindBase.getNullable(type));
+
+  useEffect(() => {
+    setResolved(bindBase.getNullable(type));
+    const sub = bindBase.events.subscribe(([bind, key, ev]) => {
+      if (key !== type) {
+        return;
+      }
+      switch (ev) {
+        case BindingTypeEvent.DELETED:
+          setResolved(null);
+          break;
+        case BindingTypeEvent.CREATED:
+          setResolved(bind as any);
+          break;
+      }
+    });
+
+    return () => {
+      sub.unsubscribe();
+    };
+  }, []);
+
+  return resolved;
 }
 
-export function useAsyncCollection<K extends BindKey> (type: K): Promise<ReactBindCollection<BindValue<K>>> {
+export function useCollection<K extends CollectionBindKey> (type: K): ReactBindCollection<CollectionBindValue<K>> {
+  return readBind(useReactBindCollections(), type);
+}
+
+export function useSingleton<K extends SingletonBindKey> (type: K) {
+  return readBind(useReactBindSingletons(), type);
+}
+
+export function useOptionalSingleton<K extends SingletonBindKey> (type: K) {
+  return useOptionalBind(useReactBindSingletons(), type);
+}
+
+export function useOptionalCollection<K extends CollectionBindKey> (type: K): ReactBindCollection<CollectionBindValue<K>> | null {
+  return useOptionalBind(useReactBindCollections(), type);
+}
+
+export function readItem<Data> (collection: ReactBindCollection<Data>, id: KeyType) {
+  return readBind(collection, id);
+}
+
+export function useAsyncCollection<K extends CollectionBindKey> (type: K): Promise<ReactBindCollection<CollectionBindValue<K>>> {
   const collectionOrPromise = useReactBindCollections();
   return Promise.resolve(collectionOrPromise.get(type));
 }
 
-export function useCollectionKeys<Key extends KeyType, Data> (collection: BindBase<Key, Data, any>, watchAll = false) {
-  const [keys, setKeys] = useState<Key[]>(() => {
-    return collection.keys;
+export function useCollectionKeys<BindMap> (collection: BindBase<BindMap, any> | null | undefined, watchAll = false) {
+  const [keys, setKeys] = useState<(keyof BindMap)[]>(() => {
+    return collection?.keys ?? [];
   });
 
   useEffect(() => {
+    if (collection == null) {
+      setKeys([]);
+      return;
+    }
     let onceLoadSub: Unsubscribable | undefined;
     setKeys(collection.keys);
     if (collection.isNeedLoaded) {
@@ -70,7 +130,7 @@ export function useCollectionValues<Data> (collection: ReactBindCollection<Data>
   return values;
 }
 
-export function useItem<K extends BindKey> (type: K, id: KeyType, initialValue: ValueOrGetter<BindValue<K>>): [BindValue<K>, Consume<SetStateAction<BindValue<K>>>] {
+export function useItem<K extends CollectionBindKey> (type: K, id: KeyType, initialValue: ValueOrGetter<CollectionBindValue<K>>): [CollectionBindValue<K>, Consume<SetStateAction<CollectionBindValue<K>>>] {
   const bind = useCollection(type);
   const [state, setState] = useState(initialValue);
   useEffect(() => {
@@ -85,7 +145,7 @@ export function useItem<K extends BindKey> (type: K, id: KeyType, initialValue: 
     };
   }, [bind, id]);
 
-  const update = useCallback((value: SetStateAction<BindValue<K>>) => {
+  const update = useCallback((value: SetStateAction<CollectionBindValue<K>>) => {
     bind.update(id, value);
   }, [type, id]);
 
@@ -127,19 +187,15 @@ export function useWatchReactiveValueField<V, Path extends keyof V> (item: React
   return value;
 }
 
-export function useWatchItem<K extends BindKey> (type: K, id: KeyType): BindValue<K> {
+export function useWatchItem<K extends CollectionBindKey> (type: K, id: KeyType): CollectionBindValue<K> {
   const bind = useCollection(type);
-  const reactiveValue = useBind(bind, id);
+  const reactiveValue = readBind(bind, id);
   return useWatchReactiveValue(reactiveValue);
 }
 
-function isBind<T> (value: any): value is ReactBindCollection<T> {
-  return value instanceof ReactBindCollection;
-}
-
-export function useWatchItemField<K extends BindKey, Path extends keyof BindValue<K>> (type: K, id: KeyType, path: Path, compareFn: Compare<BindValue<K>[Path]> = Object.is): BindValue<K>[Path] {
+export function useWatchItemField<K extends CollectionBindKey, Path extends keyof CollectionBindValue<K>> (type: K, id: KeyType, path: Path, compareFn: Compare<CollectionBindValue<K>[Path]> = Object.is): CollectionBindValue<K>[Path] {
   const bind = useCollection(type);
-  const reactiveValue = useBind(bind, id);
+  const reactiveValue = readBind(bind, id);
 
   return useWatchReactiveValueField(reactiveValue, path, compareFn);
 }
@@ -148,13 +204,13 @@ function defaultCompare (l: any, r: any, k: any): boolean {
   return Object.is(l[k], r[k]);
 }
 
-export function useWatchItemFields<K extends BindKey, Path extends keyof BindValue<K>> (target: K | ReactBindCollection<BindValue<K>>, id: KeyType, paths: Path[], compareFn: ComparePath<Pick<BindValue<K>, Path>, Path> = defaultCompare): Pick<BindValue<K>, Path> {
-  const bind = isBind(target) ? target : useCollection(target);
-  const reactiveValue = useBind(bind, id);
+export function useWatchItemFields<K extends CollectionBindKey, Path extends keyof CollectionBindValue<K>> (target: K, id: KeyType, paths: Path[], compareFn: ComparePath<Pick<CollectionBindValue<K>, Path>, Path> = defaultCompare): Pick<CollectionBindValue<K>, Path> {
+  const bind = useCollection(target as K);
+  const reactiveValue = readBind(bind, id);
   const [fields, setFields] = useState(pick(reactiveValue.current, paths));
 
   useEffect(() => {
-    let staledItem: Pick<BindValue<K>, Path> = pick(reactiveValue.current, paths);
+    let staledItem: Pick<CollectionBindValue<K>, Path> = pick(reactiveValue.current, paths);
 
     const unsubscribe = bind.subscribe(id, newItem => {
       let updated = false;
@@ -174,10 +230,10 @@ export function useWatchItemFields<K extends BindKey, Path extends keyof BindVal
   return fields;
 }
 
-export function useUpdater<K extends BindKey> (type: K, id: KeyType) {
+export function useUpdater<K extends CollectionBindKey> (type: K, id: KeyType) {
   const bind = useCollection(type);
 
-  return useCallback((value: SetStateAction<BindValue<K>>) => {
+  return useCallback((value: SetStateAction<CollectionBindValue<K>>) => {
     bind.update(id, value);
   }, [bind, id]);
 }

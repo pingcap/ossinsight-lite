@@ -1,25 +1,20 @@
-import { ReactBindCollection } from './ReactBindCollection.ts';
-import { BindKey } from './types';
-import { createContext, useContext } from 'react';
+import { ReactBindCollection } from './ReactBindCollection';
+import { CollectionsBindMap } from './types';
 import { BindBase } from './BindBase';
-import { isDev } from '../../utils/dev.ts';
+import { isDev } from '../../utils/dev';
 
-export class ReactBindCollections extends BindBase<BindKey, ReactBindCollection<any>> {
+export class ReactBindCollections extends BindBase<{ [p in keyof CollectionsBindMap]: ReactBindCollection<CollectionsBindMap[p]> }> {
   constructor () {
     super();
   }
 
-  protected initialize (): ReactBindCollection<any> {
-    return new ReactBindCollection<any>();
+  readonly _key = 'collections';
+
+  protected initialize (): any {
+    return new ReactBindCollection();
   }
 
   static readonly default = new ReactBindCollections();
-}
-
-const Context = createContext<ReactBindCollections>(ReactBindCollections.default);
-
-export function useReactBindCollections () {
-  return useContext(Context);
 }
 
 declare global {
@@ -29,28 +24,30 @@ declare global {
   }
 }
 
-window.sc = ReactBindCollections.default;
-window.detectScErrors = () => {
-  const collections = ReactBindCollections.default;
-  setInterval(() => {
-    requestIdleCallback(() => {
-      // @ts-ignore
-      if (collections._pendingStore.size > 0) {
+if (typeof window !== 'undefined') {
+  window.sc = ReactBindCollections.default;
+  window.detectScErrors = () => {
+    const collections = ReactBindCollections.default;
+    setInterval(() => {
+      requestIdleCallback(() => {
         // @ts-ignore
-        console.warn(`[error:detection]`, [...collections._pendingStore.keys()], 'are not initialized, make sure these keys are registered somewhere outside <Suspense />');
-      }
-      // @ts-ignore
-      for (let [name, bind] of collections._store.entries()) {
-        // @ts-ignore
-        if (bind._pendingStore.size > 0) {
+        if (collections._pendingStore.size > 0) {
           // @ts-ignore
-          console.warn(`[error:detection]`, [...bind._pendingStore.keys()].map(key => `${name}#${key}`), 'are not initialized, make sure these keys are registered somewhere outside <Suspense />');
+          console.warn(`[error:detection]`, [...collections._pendingStore.keys()], 'are not initialized, make sure these keys are registered somewhere outside <Suspense />');
         }
-      }
-    });
-  }, 1000);
-};
+        // @ts-ignore
+        for (let [name, bind] of collections._store.entries()) {
+          // @ts-ignore
+          if (bind._pendingStore.size > 0) {
+            // @ts-ignore
+            console.warn(`[error:detection]`, [...bind._pendingStore.keys()].map(key => `${name}#${key}`), 'are not initialized, make sure these keys are registered somewhere outside <Suspense />');
+          }
+        }
+      });
+    }, 1000);
+  };
 
-if (isDev) {
-  window.detectScErrors();
+  if (isDev) {
+    window.detectScErrors();
+  }
 }

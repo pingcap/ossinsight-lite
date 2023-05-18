@@ -2,7 +2,6 @@ import { cosmiconfig } from 'cosmiconfig';
 import * as yup from 'yup';
 
 const configSchema = yup.object({
-  siteDomain: yup.string().required(),
   db: yup.array(yup.object({
     name: yup.string().required(),
     display: yup.string().required(),

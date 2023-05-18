@@ -1,5 +1,5 @@
 import { ReactNode, useContext } from 'react';
-import { MenuContext } from './Menu.tsx';
+import { MenuContext } from './Menu';
 
 export interface MenuItemSlotProps {
   id: string;

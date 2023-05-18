@@ -1,8 +1,10 @@
+'use client';
 import { useCollection, useCollectionKeys, useWatchItem } from '../../hooks/bind';
 import { ReactElement, ReactNode } from 'react';
-import { isActionItem, isCustomItem, isSeparatorItem, MenuActionItemProps, MenuCustomItemProps, MenuParentItemProps, MenuSeparatorItemProps } from './types.ts';
-import { KeyType } from '../../hooks/bind/types.ts';
-import { MenuKey } from './Menu.tsx';
+import { isActionItem, isCustomItem, isSeparatorItem, MenuActionItemProps, MenuCustomItemProps, MenuParentItemProps, MenuSeparatorItemProps } from './types';
+import { KeyType } from '../../hooks/bind/types';
+import { MenuKey } from './Menu';
+import clientOnly from '../../../../src/utils/clientOnly';
 
 export interface MenuContentProps {
 
@@ -17,7 +19,7 @@ export interface MenuContentProps {
   renderItem (item: MenuActionItemProps): ReactElement;
 }
 
-export function MenuContent (menu: MenuContentProps) {
+export const MenuContent = clientOnly(function (menu: MenuContentProps) {
   const collection = useCollection(`menu.${menu.name}`);
   const ids = useCollectionKeys(collection);
 
@@ -26,7 +28,7 @@ export function MenuContent (menu: MenuContentProps) {
       {ids.map((id) => <RenderAny key={String(id)} id={id} menuKey={`menu.${menu.name}`} isRoot menu={menu} />)}
     </>
   );
-}
+})
 
 interface RenderProps {
   id: KeyType,
@@ -35,7 +37,7 @@ interface RenderProps {
   isRoot?: boolean
 }
 
-function RenderAny ({ id, menuKey, menu, isRoot = false }: RenderProps) {
+export function RenderAny ({ id, menuKey, menu, isRoot = false }: RenderProps) {
   const item = useWatchItem(menuKey, id);
 
   if (isCustomItem(item)) {

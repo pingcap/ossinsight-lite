@@ -1,2 +1,2 @@
-export { default } from './Components.tsx';
-export * from './Components.tsx';
+export { default } from './Components';
+export * from './Components';

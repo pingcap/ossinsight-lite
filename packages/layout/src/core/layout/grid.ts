@@ -1,5 +1,5 @@
-import { Layout } from './base.ts';
-import { move, Point, Rect, resize, Size } from '../types.ts';
+import { Layout } from './base';
+import { move, Point, Rect, resize, Size } from '../types';
 
 export const enum GridLayoutType {
   RESPONSIVE = 'responsive',

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import type { Size } from '../core/types.ts';
+import type { Size } from '../core/types';
 
 const INITIAL_SIZE: Size = [0, 0];
 

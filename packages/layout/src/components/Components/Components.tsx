@@ -1,11 +1,14 @@
-import { ComponentType, ReactElement, useEffect, useMemo, useState } from 'react';
-import { Rect, toShapeStyle } from '../../core/types.ts';
-import { useDraggable } from '../../hooks/draggable.ts';
+import { ComponentType, createRef, forwardRef, ReactElement, useEffect, useMemo, useState } from 'react';
+import { Rect, toShapeStyle } from '../../core/types';
+import { useDraggable } from '../../hooks/draggable';
 import clsx from 'clsx';
 import './draggable.scss';
-import { DraggableItemContextProvider } from '../../context/draggable-item.ts';
-import { Resizer } from './resizer.tsx';
-import useRefCallback from '@oss-widgets/ui/hooks/ref-callback.ts';
+import './transitions.scss';
+import { DraggableItemContextProvider } from '../../context/draggable-item';
+import { Resizer } from './resizer';
+import useRefCallback from '@oss-widgets/ui/hooks/ref-callback';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import mergeRefs from '@oss-widgets/ui/utils/merge-refs';
 
 export type Item = {
   id?: string
@@ -34,16 +37,22 @@ export interface ComponentsProps<Props> {
   useRect: (externalId: string) => Rect;
   updateRect: (externalId: string, rect: Rect) => void;
 
-  wrap?: (children: ReactElement) => ReactElement;
-
   commonProps: (externalId: string) => Props & { wrapperClassName?: string | undefined };
 }
 
-function Components<Props extends Record<string, any>> ({ draggable = false, itemIds, idMap, onRegister, onUnregister, useRect, updateRect, Component, wrap = el => el, commonProps }: ComponentsProps<Props>) {
+function Components<Props extends Record<string, any>> ({ draggable = false, itemIds, idMap, onRegister, onUnregister, useRect, updateRect, Component, commonProps }: ComponentsProps<Props>) {
   const register = useRefCallback((id: string, externalId: string) => {
     idMap?.set(id, externalId);
     onRegister?.(externalId);
   });
+
+  useEffect(() => {
+    console.log('remount');
+  }, []);
+
+  const refs = useMemo(() => {
+    return itemIds.map(() => createRef<HTMLDivElement>());
+  }, [itemIds.length]);
 
   const unregister = useRefCallback((id: string) => {
     const externalId = idMap?.get(id);
@@ -54,17 +63,28 @@ function Components<Props extends Record<string, any>> ({ draggable = false, ite
   });
 
   return (
-    <>
-      {itemIds.map(id => {
+    <TransitionGroup appear enter exit>
+      {itemIds.map((id, index, array) => {
         const { wrapperClassName, ...rest } = commonProps(id);
 
-        return wrap(
-          <ComponentWrapper key={id} className={wrapperClassName} externalId={id} draggable={draggable} register={register} unregister={unregister} useRect={useRect} updateRect={updateRect}>
-            {dragging => <Component id={id} draggable={draggable} dragging={dragging} {...rest as Props} />}
-          </ComponentWrapper>,
+        return (
+          <CSSTransition
+            key={id}
+            classNames="fade"
+            timeout={3000}
+            nodeRef={refs[index]}
+          >
+            <ComponentWrapper className={wrapperClassName} externalId={id} draggable={draggable} register={register} unregister={unregister} useRect={useRect} updateRect={updateRect}>
+              {dragging => (
+                <div className="relative w-full h-full" ref={refs[index]} style={{ transitionDelay: `${Math.random() * array.length * 50}ms` }}>
+                  <Component id={id} className="w-full h-full" draggable={draggable} dragging={dragging} {...rest as Props} />
+                </div>
+              )}
+            </ComponentWrapper>
+          </CSSTransition>
         );
       })}
-    </>
+    </TransitionGroup>
   );
 };
 
@@ -81,7 +101,7 @@ interface ComponentWrapperProps {
 
 const DRAGGING_STYLE = 'translate3d(0,0,0) translateY(-2px) scale(1.02)';
 
-function ComponentWrapper ({ className, externalId, draggable, register, unregister, useRect, updateRect, children }: ComponentWrapperProps) {
+const ComponentWrapper = forwardRef<HTMLDivElement, ComponentWrapperProps>(({ className, externalId, draggable, register, unregister, useRect, updateRect, children }, forwardedRef) => {
   const [, setVersion] = useState(0);
   const rect = useRect(externalId);
   const onShapeChange = useMemo(() => (rect: Rect) => updateRect(externalId, rect), [externalId, updateRect]);
@@ -110,7 +130,7 @@ function ComponentWrapper ({ className, externalId, draggable, register, unregis
 
   return (
     <div
-      ref={ref}
+      ref={mergeRefs(ref, forwardedRef)}
       className={clsx({
         'draggable-target': true,
         draggable,
@@ -136,6 +156,6 @@ function ComponentWrapper ({ className, externalId, draggable, register, unregis
       </DraggableItemContextProvider>
     </div>
   );
-}
+});
 
 export default Components;

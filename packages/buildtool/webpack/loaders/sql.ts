@@ -1,7 +1,7 @@
 import { LoaderDefinitionFunction } from 'webpack';
-import { dbInstances } from '../plugins/db/SQLPlugin.js';
 import * as path from 'node:path';
 import { DbInstance } from '../plugins/db/DbInstance.js';
+const { dbInstances } = require('../plugins/db/SQLPlugin.js');
 
 const loader: LoaderDefinitionFunction = function (content, sourceMap, additionalData) {
   const cb = this.async();
@@ -57,4 +57,4 @@ async function sqlQuery (dbInstance: DbInstance<any>, id: string, content: strin
   return raw;
 }
 
-export default loader;
+export = loader;

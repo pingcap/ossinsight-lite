@@ -25,7 +25,7 @@ export interface EventsTotalState {
   abort (): void;
 }
 
-const API_BASE = `${process.env.OSSW_SITE_DOMAIN}/api/ossinsight`;
+const API_BASE = `/api/ossinsight`;
 
 export const useEventsTotal = create<EventsTotalState>((set, get) => ({
   subscribers: 0,

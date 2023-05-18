@@ -1,7 +1,7 @@
 import * as RuiContextMenu from '@radix-ui/react-context-menu';
 import { ChevronRightIcon } from '@radix-ui/react-icons';
 import { MenuContentProps } from '../menu';
-import { stopPropagation } from './common.ts';
+import { stopPropagation } from './common';
 
 const separatorClasses = 'border-b';
 

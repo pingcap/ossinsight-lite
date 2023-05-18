@@ -2,8 +2,8 @@ import * as RuiToolbar from '@radix-ui/react-toolbar';
 import { ToolbarProps } from '@radix-ui/react-toolbar';
 import { MenuContent } from '../menu';
 import { Suspense } from 'react';
-import { Menu, MenuProps } from '../menu/Menu.tsx';
-import * as renderers from './content.tsx';
+import { Menu, MenuProps } from '../menu/Menu';
+import * as renderers from './content';
 import clsx from 'clsx';
 
 export interface ToolbarMenuProps extends MenuProps, ToolbarProps {

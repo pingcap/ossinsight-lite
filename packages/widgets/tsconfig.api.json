@@ -13,7 +13,6 @@
     ]
   },
   "include": [
-    "api",
-    ".osswrc.json"
+    "api"
   ]
 }

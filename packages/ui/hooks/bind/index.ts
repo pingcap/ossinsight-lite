@@ -1,4 +1,7 @@
-export { useAsync, useReadItem, useItem, useWatchItemField, useCollection, useUpdater, useWatchReactiveValue, useWatchItem, useWatchItemFields, useCollectionKeys, useCollectionValues, useAsyncCollection } from './hooks';
-export { useReactBindCollections, ReactBindCollections } from './ReactBindCollections'
+export { useAsync, readItem, whenReady, useItem, useWatchItemField, useCollection, useOptionalCollection, useUpdater, useWatchReactiveValue, useWatchItem, useWatchItemFields, useCollectionKeys, useCollectionValues, useAsyncCollection } from './hooks';
+export { ReactBindCollections } from './ReactBindCollections';
 export { ReactBindCollection } from './ReactBindCollection';
-export type { BindMap } from './types';
+export { useReactBindCollections } from './context';
+export type { CollectionsBindMap, SingletonsBindMap, KeyType, Disposable } from './types';
+export { BindingTypeEvent } from './types';
+export type { GeneralEvent } from './BindBase'

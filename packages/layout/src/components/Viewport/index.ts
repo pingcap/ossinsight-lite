@@ -1,2 +1,2 @@
-export { default } from './Viewport.tsx';
-export * from './Viewport.tsx';
+export { default } from './Viewport';
+export * from './Viewport';

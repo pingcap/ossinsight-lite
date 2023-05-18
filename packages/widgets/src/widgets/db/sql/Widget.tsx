@@ -136,7 +136,7 @@ async function doQuery (prop: { sql: string, db: string, force: boolean }, signa
     invalidCache = data;
   }
 
-  const res = await fetch(`${process.env.OSSW_SITE_DOMAIN}/api/db/${prop.db}?force=${prop.force}`, {
+  const res = await fetch(`/api/db/${prop.db}?force=${prop.force}`, {
     method: 'post',
     body: prop.sql,
     signal,

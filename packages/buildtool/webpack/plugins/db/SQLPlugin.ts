@@ -4,6 +4,7 @@ import { DbInstance } from './DbInstance.js';
 import { MysqlInstance } from './mysql.js';
 
 const PLUGIN_NAME = 'SQLPlugin';
+const dbInstances: Record<string, DbInstance<any>> = {};
 
 class SQLPlugin implements WebpackPluginInstance {
   apply (compiler: Compiler) {
@@ -18,6 +19,8 @@ class SQLPlugin implements WebpackPluginInstance {
       await Promise.all(Object.values(dbInstances).map((db) => db.close()));
     });
   }
+
+  static dbInstances = dbInstances;
 }
 
 async function initialize () {
@@ -34,6 +37,4 @@ async function initialize () {
 
 let connected = false;
 
-export const dbInstances: Record<string, DbInstance<any>> = {};
-
-export default SQLPlugin;
+export = SQLPlugin;

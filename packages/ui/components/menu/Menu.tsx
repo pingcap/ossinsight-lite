@@ -1,5 +1,6 @@
+'use client';
 import { createContext, ReactNode, useContext, useEffect } from 'react';
-import { MenuItemProps } from './types.ts';
+import { MenuItemProps } from './types';
 import { useReactBindCollections } from '../../hooks/bind';
 
 export interface MenuProps {
@@ -11,14 +12,14 @@ export interface MenuProps {
 export type MenuKey<K extends string> = `menu.${K}`;
 
 declare module '../../hooks/bind' {
-  interface BindMap extends Record<MenuKey<string>, MenuItemProps> {
+  interface CollectionsBindMap extends Record<MenuKey<string>, MenuItemProps> {
   }
 }
 
 export function Menu ({ name, auto = true, children }: MenuProps) {
-  const parentContext = useContext(MenuContext)
+  const parentContext = useContext(MenuContext);
   if (!name) {
-    throw new Error('Menu name is nullish')
+    throw new Error('Menu name is nullish');
   }
   if (auto) {
     return (
@@ -29,7 +30,7 @@ export function Menu ({ name, auto = true, children }: MenuProps) {
     );
   }
   if (parentContext.name === '') {
-    throw new Error('Auto <Menu /> must has non-auto <Menu /> ancestor')
+    throw new Error('Auto <Menu /> must has non-auto <Menu /> ancestor');
   }
   return <>{children}</>;
 }

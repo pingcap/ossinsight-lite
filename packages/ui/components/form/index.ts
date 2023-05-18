@@ -1,2 +1,2 @@
-export * from './form.tsx';
-export * from './field.tsx';
+export * from './form';
+export * from './field';

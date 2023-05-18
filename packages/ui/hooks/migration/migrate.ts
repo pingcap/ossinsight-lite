@@ -1,4 +1,4 @@
-import { Fixup, Version } from './type.ts';
+import { Fixup, Version } from './type';
 
 export interface VersionedDataOptions {
   versions: Version[];
@@ -9,7 +9,7 @@ export function migrate<T> (data: any, { versions, fixup = {} }: VersionedDataOp
   let i = -1;
   if (!data?.version) {
     i = 0;
-    console.debug('no version found, try to migrate config to version 0');
+    console.debug('[config] no version found, try to migrate config to version 0');
     data = versions[0].migrate(data);
     if (fixup[0]) {
       data = fixup[0](data);
@@ -30,7 +30,7 @@ export function migrate<T> (data: any, { versions, fixup = {} }: VersionedDataOp
   }
 
   return versions.slice(i + 1).reduce((prev, curr) => {
-    console.debug('migrate config to', curr.version);
+    console.debug('[config] migrate config to', curr.version);
     let res = curr.migrate(prev);
     if (fixup[curr.version]) {
       res = fixup[curr.version](res);

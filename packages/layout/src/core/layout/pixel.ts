@@ -1,5 +1,5 @@
-import { Layout } from './base.ts';
-import { move, Point, Rect, resize } from '../types.ts';
+import { Layout } from './base';
+import { move, Point, Rect, resize } from '../types';
 
 export class PixelLayout extends Layout<Rect, Point> {
   cloneShape (shape: Rect): Rect {

@@ -2,25 +2,28 @@ import { BindingTypeEvent, Consume, KeyType } from './types';
 import { BindBase } from './BindBase';
 import { filter, Observable, Subscription } from 'rxjs';
 import { BindKeyNotExistsError } from './error';
-import { SetStateAction } from 'react';
-import { nextValue } from './utils';
-import { ReactiveValue, ReactiveValueSubject } from './ReactiveValueSubject.ts';
+import { nextValue, UpdateAction, UpdateContext } from './utils';
+import { ReactiveValue, ReactiveValueSubject } from './ReactiveValueSubject';
 
-export class ReactBindCollection<Data> extends BindBase<KeyType, ReactiveValue<Data>, [Data]> {
+export class ReactBindCollection<Data> extends BindBase<{ [key: KeyType]: ReactiveValue<Data> }, [Data]> {
   constructor () {super();}
 
   protected initialize (value: Data) {
     return new ReactiveValueSubject(value);
   }
 
-  update (key: KeyType, value: SetStateAction<Data>) {
+  update (key: KeyType, value: UpdateAction<Data>) {
     const rv = this._store.get(key);
     if (!rv) {
       throw new BindKeyNotExistsError(key, this._key);
     }
-    rv.current = nextValue(rv.current, value);
-    rv.next(rv.current);
-    this._eventBus.next([rv, key, BindingTypeEvent.UPDATED]);
+    const ctx: UpdateContext<Data> = { changed: true };
+    rv.current = nextValue(rv.current, value, ctx);
+    if (ctx.changed) {
+      rv._debugLastChanged = ctx.changedKeys;
+      rv.next(rv.current);
+      this._eventBus.next([rv, key, BindingTypeEvent.UPDATED]);
+    }
   }
 
   subscribeAll (): Observable<[ReactiveValue<Data>, KeyType, BindingTypeEvent]>

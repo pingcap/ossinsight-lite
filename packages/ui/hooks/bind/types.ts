@@ -1,10 +1,16 @@
-export interface BindMap {
+export interface CollectionsBindMap {
+}
+
+export interface SingletonsBindMap {
 }
 
 export type KeyType = string | number | symbol;
 
-export type BindKey = keyof BindMap;
-export type BindValue<K extends BindKey> = BindMap[K];
+export type CollectionBindKey = keyof CollectionsBindMap;
+export type CollectionBindValue<K extends CollectionBindKey> = CollectionsBindMap[K];
+
+export type SingletonBindKey = keyof SingletonsBindMap;
+export type SingletonBindValue<K extends SingletonBindKey> = SingletonsBindMap[K];
 
 export type PureCallback = () => void;
 export type Consume<T> = (value: T) => void;
@@ -21,7 +27,7 @@ export enum BindingTypeEvent {
 
 // BindBase will auto call Disposable.dispose when delete an item.
 export interface Disposable {
-  dispose ();
+  dispose (): void;
 }
 
 export {};

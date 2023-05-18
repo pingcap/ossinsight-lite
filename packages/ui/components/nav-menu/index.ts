@@ -1,1 +1,1 @@
-export * from './NavMenu.tsx';
+export * from './NavMenu';

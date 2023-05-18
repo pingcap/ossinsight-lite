@@ -1,6 +1,6 @@
 import { createContext, createElement, PropsWithChildren, useContext } from 'react';
-import type { Layout } from '../core/layout/base.ts';
-import { PixelLayout } from '../core/layout/pixel.ts';
+import type { Layout } from '../core/layout/base';
+import { PixelLayout } from '../core/layout/pixel';
 
 export interface DraggableItemValues<Shape, Offset> {
   layout: Layout<Shape, Offset>;
