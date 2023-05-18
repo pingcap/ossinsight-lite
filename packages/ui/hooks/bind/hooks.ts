@@ -10,7 +10,7 @@ import { ReactiveValue } from './ReactiveValueSubject';
 
 export function useAsync<T> (input: T | Promise<T>): T {
   if (isPromiseLike(input)) {
-    return use(input);
+    throw input;
   } else {
     return input;
   }

@@ -18,9 +18,7 @@ export function useDashboards () {
   }, [config, dashboards, keys]);
 }
 
-function List () {
-  const dashboards = useDashboards();
-
+function List ({ dashboards }: { dashboards: string[] }) {
   return (
     <>
       {dashboards.map(dashboard => {

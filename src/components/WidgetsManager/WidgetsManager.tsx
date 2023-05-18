@@ -13,6 +13,7 @@ import { useThrottleIdle } from '@ossinsight-lite/ui/hooks/throttle';
 import { DashboardInstance, useNullableDashboardItems } from '../../core/dashboard';
 import { isDev } from '@/packages/ui/utils/dev';
 import { defaultLayoutConfig } from '@/src/components/WidgetsManager/defaults';
+import { saveLayout } from '@/app/api/layout/operations';
 
 declare module '@ossinsight-lite/ui/hooks/bind' {
   interface CollectionsBindMap {
@@ -20,10 +21,10 @@ declare module '@ossinsight-lite/ui/hooks/bind' {
   }
 }
 
-export default function WidgetsManager ({ children }: PropsWithChildren) {
+export default function WidgetsManager ({ config, children }: PropsWithChildren<{ config: LayoutConfigV1 }>) {
   const collections = useReactBindCollections();
 
-  const configRef = useRef<LayoutConfigV1>();
+  const configRef = useRef<LayoutConfigV1>(config);
   if (!configRef.current) {
     configRef.current = (() => {
       if (typeof window === 'undefined') {
@@ -37,27 +38,35 @@ export default function WidgetsManager ({ children }: PropsWithChildren) {
       if (browserCached) {
         browserCached = JSON.parse(browserCached);
       }
-      return migrate<LayoutConfigV1>(browserCached, { versions: layoutVersions, fixup: layoutVersionFixup });
+      const config = migrate<LayoutConfigV1>(browserCached, { versions: layoutVersions, fixup: layoutVersionFixup });
+      config.libraryStore = 'localStorageLegacy';
+      config.dashboardsStore = 'localStorageLegacy';
+      return config;
     })();
   }
 
   const save = useSignal(useThrottleIdle((debugLabels: (string | void)[]) => {
     const newConfig = toConfigV1(configRef.current, collections);
     configRef.current = newConfig;
-    localStorage.setItem('widgets:layout', JSON.stringify(newConfig));
-    console.debug(`[config:v${newConfig.version}] saved to localStorage`);
-    if (isDev) {
-      const map = new Map<string, number>();
-      debugLabels.forEach((label) => {
-        if (!label) {
-          return;
-        }
-        map.set(label, (map.get(label) ?? 0) + 1);
-      });
-      console.debug(`[config:v${newConfig.version}] triggered by`, Array.from(map.entries()).map(([value, n]) => {
-        return `${n}x ${value}`;
-      }));
-    }
+    /// Legacy
+    // localStorage.setItem('widgets:layout', JSON.stringify(newConfig));
+
+    saveLayout(newConfig).then((flags) => {
+      console.debug(`[config:v${newConfig.version}] saved`, flags);
+
+      if (isDev) {
+        const map = new Map<string, number>();
+        debugLabels.forEach((label) => {
+          if (!label) {
+            return;
+          }
+          map.set(label, (map.get(label) ?? 0) + 1);
+        });
+        console.debug(`[config:v${newConfig.version}] triggered by`, Array.from(map.entries()).map(([value, n]) => {
+          return `${n}x ${value}`;
+        }));
+      }
+    }).catch(console.error);
   }));
 
   return (
@@ -214,17 +223,7 @@ const layoutVersionFixup: Record<string | number, Fixup> = {
       };
     });
     if (!prev.dashboard.default) {
-      prev.dashboard.default = {
-        layout: {
-          type: `gird:responsive`,
-          size: [40, 16],
-          gap: 8,
-        },
-        items: layout.map(({ id, name, rect }: any) => ({
-          id: id ?? name,
-          rect,
-        })),
-      };
+      prev.dashboard = layout.dashboard.default as any;
     }
     return prev;
   },
