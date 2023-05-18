@@ -76,7 +76,11 @@ export default function EditWidgetInstance () {
     <div className="h-[calc(100vh-40px)]">
       <div className="w-full h-full">
         <Suspense
-          fallback="loading..."
+          fallback={
+            <div className="w-full h-full flex items-center justify-center text-gray-400 text-lg">
+              Widget loading...
+            </div>
+          }
         >
           <Component {...props} />
         </Suspense>

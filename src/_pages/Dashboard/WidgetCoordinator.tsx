@@ -53,7 +53,11 @@ export const WidgetCoordinator = forwardRef<HTMLDivElement, WidgetCoordinator>((
         configure: configureAction,
       }}
     >
-      <Suspense fallback="Loading...">
+      <Suspense fallback={
+        <div className="w-full h-full flex items-center justify-center text-gray-400">
+          Loading...
+        </div>
+      }>
         <WidgetInstance name={name} ref={ref} props={props} />
       </Suspense>
     </WidgetContextProvider>

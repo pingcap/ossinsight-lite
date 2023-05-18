@@ -7,7 +7,7 @@
   "scripts": {
     "devtool:build": "pnpm --filter @oss-widgets/buildtool run build",
     "dev": "npm run devtool:build && next dev",
-    "build": "npm run devtool:build && next build",
+    "build": "npm run devtool:build && next build --no-lint",
     "start": "next start",
     "lint": "next lint"
   },
