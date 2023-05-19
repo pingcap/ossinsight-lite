@@ -1,7 +1,7 @@
 'use client';
 import { createContext, ReactNode, useContext, useEffect } from 'react';
 import { MenuItemProps } from './types';
-import { useReactBindCollections } from '../../hooks/bind';
+import { collections } from '../../hooks/bind';
 
 export interface MenuProps {
   name: string;
@@ -36,8 +36,6 @@ export function Menu ({ name, auto = true, children }: MenuProps) {
 }
 
 function Registry ({ name }: { name: string }) {
-  const collections = useReactBindCollections();
-
   useEffect(() => {
     collections.add(`menu.${name}`);
     return () => {

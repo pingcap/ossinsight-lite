@@ -1,11 +1,12 @@
 import { ReactBindCollection } from '@ossinsight-lite/ui/hooks/bind/ReactBindCollection';
 import { Dashboard, ItemReference } from '../../types/config';
-import { BindingTypeEvent, Disposable, KeyType } from '@ossinsight-lite/ui/hooks/bind';
+import { BindingTypeEvent, KeyType } from '@ossinsight-lite/ui/hooks/bind/types';
+import { GeneralEvent } from '@ossinsight-lite/ui/hooks/bind/BindBase';
 import { Subscription } from 'rxjs';
 import { ReactiveValue } from '@/packages/ui/hooks/bind/ReactiveValueSubject';
-import { GeneralEvent } from '@/packages/ui/hooks/bind';
+import { DashboardInstance } from '@/src/core/dashboard/type';
 
-export class DashboardInstance implements Disposable {
+export class ReactiveDashboardInstance implements DashboardInstance {
   layout: Dashboard['layout'];
   readonly items: ReactBindCollection<ItemReference>;
   private _subscription: Subscription | undefined;
@@ -18,14 +19,18 @@ export class DashboardInstance implements Disposable {
     }
   }
 
-  constructor (readonly _key: string, config: Dashboard) {
+  constructor (readonly name: string, config: Dashboard) {
     this.layout = config.layout;
     const items = this.items = new ReactBindCollection<ItemReference>();
-    items._key = `${_key}.items`;
+    items._key = `${name}.items`;
 
     config.items.forEach(item => {
       items.add(item.id, item);
     });
+  }
+
+  currentItems (): ItemReference[] {
+    return this.items.values;
   }
 
   dispose () {
@@ -34,11 +39,15 @@ export class DashboardInstance implements Disposable {
   }
 
   syncWith (source: DashboardInstance) {
-    console.debug(`[layout:${this._key}] start syncing with`, source._key, source.items.values.length);
+    console.debug(`[layout:${this.name}] switch to`, source.name, source.items.values.length);
     const items = this.items;
 
     source.items.values.forEach((item) => {
-      items.add(item.id, clone(item));
+      if (items.has(item.id)) {
+        items.update(item.id, clone(item));
+      } else {
+        items.add(item.id, clone(item));
+      }
     });
 
     let submitting = false;
@@ -65,6 +74,10 @@ export class DashboardInstance implements Disposable {
       sync(source.items, ev);
       submitting = false;
     }));
+
+    this.addDisposeDependency(new Subscription(() => {
+      console.debug(`[layout:${this.name}] exit`, source.name);
+    }))
   }
 }
 

@@ -5,7 +5,7 @@ import { BindKeyNotExistsError } from './error';
 import { nextValue, UpdateAction, UpdateContext } from './utils';
 import { ReactiveValue, ReactiveValueSubject } from './ReactiveValueSubject';
 
-export class ReactBindCollection<Data> extends BindBase<{ [key: KeyType]: ReactiveValue<Data> }, [Data]> {
+export class ReactBindCollection<Data> extends BindBase<Record<KeyType, ReactiveValue<Data>>, [Data]> {
   constructor () {super();}
 
   protected initialize (value: Data) {

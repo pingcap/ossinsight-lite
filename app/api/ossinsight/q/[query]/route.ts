@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import kv from '@/app/api/kv';
 
 export async function GET (req: NextRequest, { params }: any) {
   const { query } = params;
@@ -8,20 +7,8 @@ export async function GET (req: NextRequest, { params }: any) {
 
   const key = `ossinsight:q/${query}${req.nextUrl.search}`;
 
-  try {
-    const cached = await kv.get(key);
-    if (cached) {
-      return NextResponse.json(cached);
-    }
-  } catch {
-  }
-
   const response = await fetch(uri.toString());
   const data = await response.json();
-  try {
-    await kv.setex(key, 60000, data);
-  } catch {
-  }
 
   return NextResponse.json(data);
 }

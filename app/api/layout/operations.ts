@@ -1,13 +1,103 @@
 import kv from '@/app/api/kv';
-import { Dashboard, LayoutConfigV1, LibraryItem, Store } from '@/src/types/config';
+import { Dashboard as DashboardConfig, Dashboard, ItemReference, LibraryItem, Store } from '@/src/types/config';
 import layout from '@ossinsight-lite/widgets/layout.json';
-import { isKvConfigured } from '@/src/utils/runtime';
+import { defaultLayoutConfig } from '@/src/components/WidgetsManager/defaults';
+
+export async function getDashboard (name: string) {
+  console.debug('get', name);
+  let store: Store | undefined;
+  let resolved: Dashboard | undefined | null;
+  try {
+    const [exists, items] = await kv.multi()
+      .exists(`dashboard:${name}`)
+      .hgetall(`dashboard:${name}`)
+      .exec<[number, Record<string, ItemReference>]>();
+    if (exists) {
+      resolved = {
+        layout: defaultLayoutConfig,
+        items: Object.values(items),
+      };
+      store = 'kv';
+    }
+  } catch {
+  }
+
+  if (!resolved) {
+    if (typeof localStorage !== 'undefined') {
+      const dashboards = localStorage.getItem('widgets:dashboards');
+      if (dashboards) {
+        resolved = JSON.parse(dashboards)[name] as Dashboard;
+        if (resolved) {
+          store = 'localStorage';
+        }
+      }
+    }
+  }
+  if (!resolved) {
+    resolved = layout.dashboard[name as never] as Dashboard;
+    if (resolved) {
+      try {
+        const items = resolved.items.reduce((all, item) => {
+          all[item.id] = item;
+          return all;
+        }, {} as Record<string, ItemReference>);
+        await kv.hset(`dashboard:${name}`, items);
+      } catch {
+      }
+      store = 'new';
+    }
+  }
+  if (!resolved) {
+    resolved = defaultDashboard();
+    store = 'new';
+  }
+  return [store!, resolved] as const;
+}
+
+export async function getAllDashboardNames () {
+  let store: Store | undefined;
+  let resolved: string[] | undefined | null;
+
+  try {
+    resolved = await kv.hkeys('dashboards');
+    store = 'kv';
+  } catch {
+  }
+
+  if (!resolved) {
+    if (typeof localStorage !== 'undefined') {
+      const dashboards = localStorage.getItem('widgets:dashboards');
+      if (dashboards) {
+        resolved = Object.keys(JSON.parse(dashboards));
+        store = 'localStorage';
+      }
+    }
+  }
+  if (!resolved) {
+    resolved = Object.keys(layout.dashboard);
+    store = 'new';
+  }
+  return [store!, resolved] as const;
+}
 
 export async function getAllDashboards () {
   let store: Store | undefined;
   let resolved: Record<string, Dashboard> | undefined | null;
   try {
-    resolved = await kv.hgetall<Record<string, Dashboard>>('dashboards');
+    const dashboardKeys = await kv.keys('dashboard:*');
+    if (dashboardKeys.length > 0) {
+      const itemLists = await dashboardKeys.reduce((pipeline, name) => {
+        return pipeline.hgetall(name);
+      }, kv.multi()).exec<Record<string, ItemReference>[]>();
+
+      resolved = dashboardKeys.reduce((all, name, index) => {
+        all[name] = {
+          layout: defaultLayoutConfig,
+          items: Object.values(itemLists[index]),
+        };
+        return all;
+      }, {} as Record<string, Dashboard>);
+    }
     store = 'kv';
   } catch {
   }
@@ -24,6 +114,15 @@ export async function getAllDashboards () {
   if (!resolved) {
     resolved = layout.dashboard as never as Record<string, Dashboard>;
     store = 'new';
+    try {
+      await Object.entries(layout.dashboard as never as Record<string, Dashboard>).reduce((pipeline, [name, dashboard]) => {
+        return pipeline.hset(`dashboard:${name}`, dashboard.items.reduce((all, item) => {
+          all[item.id] = item;
+          return all;
+        }, {} as Record<string, ItemReference>));
+      }, kv.pipeline()).exec();
+    } catch {
+    }
   }
   return [store!, resolved] as const;
 }
@@ -58,44 +157,9 @@ export async function getLibrary () {
   return [store!, resolved] as const;
 }
 
-/**
- * @deprecated
- */
-export async function saveLayout (config: LayoutConfigV1) {
-  let flags: any = {};
-  if (typeof localStorage !== 'undefined') {
-    localStorage.setItem('widgets:library', JSON.stringify(config.library));
-    localStorage.setItem('widgets:dashboards', JSON.stringify(config.dashboard));
-    flags.localStorage = true;
-  }
-  if (isKvConfigured) {
-    try {
-      const library = config.library;
-      await kv.multi()
-        .del('library')
-        .hset('library', library.reduce((rec, item) => {
-          rec[item.id ?? item.name] = item;
-          return rec;
-        }, {} as Record<string, LibraryItem>))
-        .del('dashboards')
-        .hset('dashboards', config.dashboard)
-        .exec()
-      ;
-      flags.kv = true;
-    } catch {
-    }
-  } else {
-    const res = await fetch('/api/layout', {
-      method: 'POST',
-      body: JSON.stringify(config),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    if (!res.ok) {
-      throw new Error(`${res.status} ${res.statusText}`);
-    }
-    Object.assign(flags, await res.json());
-  }
-  return flags;
-}
+const defaultDashboard = (): DashboardConfig => {
+  return {
+    layout: { ...defaultLayoutConfig },
+    items: [],
+  };
+};

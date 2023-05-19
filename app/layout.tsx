@@ -1,20 +1,19 @@
 import './globals.css';
-import React from 'react';
+import React, { ReactNode } from 'react';
 import App from '@/src/App';
-import { getAllDashboards, getLibrary } from '@/app/api/layout/operations';
-import { LayoutConfigV1 } from '@/src/types/config';
+import { serverDashboardNames } from '@/app/api/layout/operations.server';
 
 export default async function RootLayout ({
   children,
 }: {
-  children: React.ReactNode
+  children: ReactNode
 }) {
-  const [[dashboardsStore, dashboards], [libraryStore, library]] = await Promise.all([getAllDashboards(), getLibrary()]);
+  const [_, dashboardNames] = await serverDashboardNames();
 
   return (
     <html lang="en">
     <body>
-    <App config={{ version: 1, dashboard: dashboards, library, dashboardsStore, libraryStore } as LayoutConfigV1}>
+    <App dashboardNames={dashboardNames}>
       {children}
     </App>
     </body>

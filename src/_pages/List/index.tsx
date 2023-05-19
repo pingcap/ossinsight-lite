@@ -2,7 +2,6 @@ import React, { Suspense } from 'react';
 import dynamic from 'next/dynamic';
 import { globSync } from 'glob';
 import path from 'path';
-import AutoSaveLibrary from '@/src/components/WidgetsManager/AutoSaveLibrary';
 
 const Section = dynamic(() => import('@/src/_pages/List/Section'), { ssr: false });
 
@@ -24,10 +23,6 @@ export default function List () {
           </Suspense>
         </section>
       ))}
-
-      <Suspense>
-        <AutoSaveLibrary />
-      </Suspense>
     </div>
   );
 }

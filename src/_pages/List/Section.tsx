@@ -1,5 +1,5 @@
 'use client';
-import { ReactBindCollection, useCollection, useWatchReactiveValue } from '@/packages/ui/hooks/bind';
+import { ReactBindCollection, useWatchReactiveValue } from '@/packages/ui/hooks/bind';
 import { ReactiveValue } from '@/packages/ui/hooks/bind/ReactiveValueSubject';
 import { LibraryItem } from '@/src/types/config';
 import { forwardRef, lazy, Suspense, useEffect, useMemo, useState } from 'react';
@@ -12,9 +12,9 @@ import Link from 'next/link';
 import clsx from 'clsx';
 import { filter, Unsubscribable } from 'rxjs';
 import { BindingTypeEvent } from '@/packages/ui/hooks/bind/types';
+import { library } from '@/app/bind';
 
 function Section ({ name }: { name: string }) {
-  const library = useCollection('library');
   const items = useWidgets(library, name);
 
   return (

@@ -46,10 +46,6 @@ function Components<Props extends Record<string, any>> ({ draggable = false, ite
     onRegister?.(externalId);
   });
 
-  useEffect(() => {
-    console.log('remount');
-  }, []);
-
   const refs = useMemo(() => {
     return itemIds.map(() => createRef<HTMLDivElement>());
   }, [itemIds.length]);
@@ -66,17 +62,18 @@ function Components<Props extends Record<string, any>> ({ draggable = false, ite
     <TransitionGroup appear enter exit>
       {itemIds.map((id, index, array) => {
         const { wrapperClassName, ...rest } = commonProps(id);
+        const delay = Math.random() * array.length * 50;
 
         return (
           <CSSTransition
             key={id}
             classNames="fade"
-            timeout={3000}
+            timeout={400 + delay}
             nodeRef={refs[index]}
           >
             <ComponentWrapper className={wrapperClassName} externalId={id} draggable={draggable} register={register} unregister={unregister} useRect={useRect} updateRect={updateRect}>
               {dragging => (
-                <div className="relative w-full h-full" ref={refs[index]} style={{ transitionDelay: `${Math.random() * array.length * 50}ms` }}>
+                <div className="relative w-full h-full" ref={refs[index]} style={{ transitionDelay: `${delay}ms` }}>
                   <Component id={id} className="w-full h-full" draggable={draggable} dragging={dragging} {...rest as Props} />
                 </div>
               )}

@@ -1,19 +1,16 @@
 'use client';
 
 import { Rect } from '@ossinsight-lite/layout/src/core/types';
-import { createContext, PropsWithChildren, useCallback, useContext, useRef } from 'react';
+import { createContext, PropsWithChildren, useCallback, useContext, useState } from 'react';
 import layout from '@ossinsight-lite/widgets/layout.json';
 import useRefCallback from '@ossinsight-lite/ui/hooks/ref-callback';
-import { ReactBindCollection, ReactBindCollections, useCollection, useReactBindCollections } from '@ossinsight-lite/ui/hooks/bind';
-import { Fixup, migrate, Version } from '@ossinsight-lite/ui/hooks/migration';
-import type { LayoutConfigV0, LayoutConfigV1, LayoutItem } from '../../types/config';
+import { ReactBindCollections } from '@ossinsight-lite/ui/hooks/bind';
+import { Fixup, Version } from '@ossinsight-lite/ui/hooks/migration';
+import type { LayoutConfigV0, LayoutConfigV1, LayoutItem, SavingFlags } from '../../types/config';
 import { LibraryItem } from '../../types/config';
-import { useSignal } from './signal';
-import { useThrottleIdle } from '@ossinsight-lite/ui/hooks/throttle';
-import { DashboardInstance, useNullableDashboardItems } from '../../core/dashboard';
-import { isDev } from '@/packages/ui/utils/dev';
+import { useNullableDashboardItems } from '../../core/dashboard';
 import { defaultLayoutConfig } from '@/src/components/WidgetsManager/defaults';
-import { saveLayout } from '@/app/api/layout/operations';
+import { dashboards, library } from '@/app/bind';
 
 declare module '@ossinsight-lite/ui/hooks/bind' {
   interface CollectionsBindMap {
@@ -21,67 +18,27 @@ declare module '@ossinsight-lite/ui/hooks/bind' {
   }
 }
 
-export default function WidgetsManager ({ config, children }: PropsWithChildren<{ config: LayoutConfigV1 }>) {
-  const collections = useReactBindCollections();
-
-  const configRef = useRef<LayoutConfigV1>(config);
-  if (!configRef.current) {
-    configRef.current = (() => {
-      if (typeof window === 'undefined') {
-        return { version: 1, library: [], dashboard: {} };
-      }
-
-      let browserCached: string | null | undefined;
-      if (typeof localStorage !== 'undefined') {
-        browserCached = localStorage.getItem('widgets:layout');
-      }
-      if (browserCached) {
-        browserCached = JSON.parse(browserCached);
-      }
-      const config = migrate<LayoutConfigV1>(browserCached, { versions: layoutVersions, fixup: layoutVersionFixup });
-      config.libraryStore = 'localStorageLegacy';
-      config.dashboardsStore = 'localStorageLegacy';
-      return config;
-    })();
-  }
-
-  const save = useSignal(useThrottleIdle((debugLabels: (string | void)[]) => {
-    const newConfig = toConfigV1(configRef.current, collections);
-    configRef.current = newConfig;
-    /// Legacy
-    // localStorage.setItem('widgets:layout', JSON.stringify(newConfig));
-
-    saveLayout(newConfig).then((flags) => {
-      console.debug(`[config:v${newConfig.version}] saved`, flags);
-
-      if (isDev) {
-        const map = new Map<string, number>();
-        debugLabels.forEach((label) => {
-          if (!label) {
-            return;
-          }
-          map.set(label, (map.get(label) ?? 0) + 1);
-        });
-        console.debug(`[config:v${newConfig.version}] triggered by`, Array.from(map.entries()).map(([value, n]) => {
-          return `${n}x ${value}`;
-        }));
-      }
-    }).catch(console.error);
-  }));
+export default function WidgetsManager ({ children }: PropsWithChildren<{}>) {
+  const [saving, setSaving] = useState(false);
+  const [savingFlags, setSavingFlags] = useState<SavingFlags>({});
 
   return (
-    <ConfigContext.Provider value={{ config: configRef.current, saveConfig: save }}>
+    <ConfigContext.Provider value={{
+      savingFlags,
+      saving,
+    }}>
       {children}
     </ConfigContext.Provider>
   );
 }
 
 const ConfigContext = createContext<{
-  config: LayoutConfigV1
-  saveConfig: (debugLabel?: string) => void
+
+  saving: boolean
+  savingFlags: SavingFlags
 }>({
-  config: null as never,
-  saveConfig: () => {},
+  saving: false,
+  savingFlags: {},
 });
 
 export function useConfig () {
@@ -97,8 +54,6 @@ export function useWidgetCache () {
 }
 
 export function toConfigV1 (currentConfig: LayoutConfigV1 | undefined, collections: ReactBindCollections): LayoutConfigV1 {
-  const library = collections.getNullable('library')!;
-  const dashboards: ReactBindCollection<DashboardInstance> = collections.getNullable('dashboards')!;
 
   return {
     version: 1,
@@ -114,10 +69,7 @@ export function toConfigV1 (currentConfig: LayoutConfigV1 | undefined, collectio
 }
 
 export function useLayoutManager ({ dashboardName }: { dashboardName: string }) {
-  const collections = useReactBindCollections();
-  const library = useCollection('library');
   const dashboard = useNullableDashboardItems(dashboardName);
-  const { config } = useConfig();
 
   const duplicateItem = useCallback((id: string, rect: (rect: Rect) => Rect, props?: (props: any) => any) => {
     if (!dashboard) {
@@ -158,20 +110,10 @@ export function useLayoutManager ({ dashboardName }: { dashboardName: string }) 
   }, []);
 
   const download = useRefCallback(() => {
-    const content = JSON.stringify(toConfigV1(config, collections), undefined, 2);
-    const file = new File([content], 'layout.json', {
-      type: 'application/json',
-      endings: 'native',
-    });
     const a = document.createElement('a');
-    const url = URL.createObjectURL(file);
-    a.href = url;
+    a.href = '/api/layout.json';
     a.download = 'layout.json';
     a.click();
-
-    requestIdleCallback(() => {
-      URL.revokeObjectURL(url);
-    });
   });
 
   return { download, duplicateItem, newItem };

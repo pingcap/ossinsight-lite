@@ -3,6 +3,7 @@
     "target": "ESNext",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "module": "ESNext",
+    "moduleResolution": "Node",
     "skipLibCheck": true,
     /* Bundler mode */
     "allowImportingTsExtensions": true,

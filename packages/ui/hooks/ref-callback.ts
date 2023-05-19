@@ -1,12 +1,10 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback } from 'react';
+import { useLatestValueRef } from './ref.ts';
 
 export default function useRefCallback<T extends (...args: any[]) => any> (cb: T | undefined): T {
-  const ref = useRef(cb);
-  useEffect(() => {
-    ref.current = cb;
-  })
+  const latestCbRef = useLatestValueRef(cb);
 
   return useCallback((...args: any[]): any => {
-    return ref.current?.(...args);
+    return latestCbRef.current?.(...args);
   }, []) as T;
 }

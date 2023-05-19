@@ -1,5 +1,5 @@
 'use client';
-import { useCollection, useCollectionKeys, useWatchItem } from '../../hooks/bind';
+import { collection, useCollectionKeys, useWatchItem } from '../../hooks/bind';
 import { ReactElement, ReactNode } from 'react';
 import { isActionItem, isCustomItem, isSeparatorItem, MenuActionItemProps, MenuCustomItemProps, MenuParentItemProps, MenuSeparatorItemProps } from './types';
 import { KeyType } from '../../hooks/bind/types';
@@ -20,8 +20,8 @@ export interface MenuContentProps {
 }
 
 export const MenuContent = clientOnly(function (menu: MenuContentProps) {
-  const collection = useCollection(`menu.${menu.name}`);
-  const ids = useCollectionKeys(collection);
+  const menuCollection = collection(`menu.${menu.name}`);
+  const ids = useCollectionKeys(menuCollection);
 
   return (
     <>
@@ -53,7 +53,7 @@ export function RenderAny ({ id, menuKey, menu, isRoot = false }: RenderProps) {
 
 function RenderParent ({ menu, menuKey, props, isRoot }: { menuKey: MenuKey<string>, props: MenuParentItemProps, menu: MenuContentProps, isRoot: boolean }) {
   menuKey = `${String(menuKey)}.${props.id}` as MenuKey<string>;
-  const keys = useCollectionKeys(useCollection(menuKey));
+  const keys = useCollectionKeys(collection(menuKey));
 
   return menu.renderParentItem(props, !isRoot, (
     <>{keys.map(key => <RenderAny id={key} key={String(key)} menuKey={menuKey} menu={menu} />)}</>

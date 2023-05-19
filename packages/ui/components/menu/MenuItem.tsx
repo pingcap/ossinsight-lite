@@ -2,7 +2,7 @@ import { isActionItem, isCustomItem, isParentItem, MenuItemProps } from './types
 import { useContext, useEffect } from 'react';
 import { MenuContext, MenuKey } from './Menu';
 import { withSuspense } from '../../utils/suspense';
-import { useCollection, useReactBindCollections, useUpdater } from '../../hooks/bind';
+import { collection, collections, useUpdater } from '../../hooks/bind';
 import clientOnly from '../../../../src/utils/clientOnly';
 
 function computeCollectionKey (name: string, parentId: string | undefined): MenuKey<string> {
@@ -24,8 +24,7 @@ function computeParentId (id: string, parentId: string | undefined): string {
 export const MenuItem = clientOnly(withSuspense(function MenuItem (props: MenuItemProps) {
   const { name, parentId } = useContext(MenuContext);
   const collectionKey = computeCollectionKey(name, parentId);
-  const collection = useCollection(collectionKey);
-  const collections = useReactBindCollections();
+  const menuCollection = collection(collectionKey);
   const updater = useUpdater(collectionKey, props.id);
 
   const isParent = isParentItem(props);
@@ -35,10 +34,10 @@ export const MenuItem = clientOnly(withSuspense(function MenuItem (props: MenuIt
     if (isParent) {
       collections.add(parentKey);
     }
-    collection.add(props.id, props);
+    menuCollection.add(props.id, props);
 
     return () => {
-      collection.del(props.id);
+      menuCollection.del(props.id);
       if (isParent) {
         collections.del(parentKey);
       }
@@ -58,7 +57,7 @@ export const MenuItem = clientOnly(withSuspense(function MenuItem (props: MenuIt
   } else {
     return null;
   }
-}))
+}));
 
 const specialKey = (item: MenuItemProps) => {
   if (isCustomItem(item)) {

@@ -1,40 +1,41 @@
 import { useRouter } from 'next/navigation';
 import { useCallback } from 'react';
-import { useDashboards } from '@/src/_pages/Dashboards/List';
 import { MenuItem } from '@/packages/ui/components/menu';
 import ThreeDotsIcon from '@/src/icons/three-dots.svg';
 import Link from 'next/link';
 
-const AppMenu = () => {
+const AppMenu = ({ dashboardNames }: { dashboardNames: string[] }) => {
   const router = useRouter();
-  const navigate = useCallback((target: string) => {
-    // todo: typing?
-    router.push(target as any);
+  const navigate = useCallback((dashboard: string) => {
+    router.push(dashboard === 'default' ? '/' : `/dashboards/${dashboard}`);
   }, []);
-  const dashboards = useDashboards();
 
   return (
     <>
       <MenuItem id="Logo" order={0} text="Home" disabled={false} custom>
-        <Link href='/'>
+        <Link href="/">
           OSSInsight Lite
         </Link>
       </MenuItem>
       <MenuItem id="sep" order={1} separator />
       <MenuItem id="More" order={100} text={<ThreeDotsIcon />} disabled={false} parent>
         <MenuItem id="Dashboards" order={2} text="Dashboards" disabled={false} parent>
-          {dashboards.map((dashboard, index) => (
+          {dashboardNames.map((dashboard, index) => (
             <MenuItem
               key={dashboard}
               id={dashboard}
               order={index}
               disabled={false}
               text={dashboard}
-              action={() => navigate(dashboard === 'default' ? '/' : `/dashboards/${dashboard}`)}
+              action={() => navigate(dashboard)}
             />
           ))}
         </MenuItem>
-        <MenuItem id="Widgets" order={1} text="Widgets" disabled={false} action={() => navigate('/browse')} />
+        <MenuItem id="Widgets" order={1} custom>
+          <Link href="/browse">
+            Widgets
+          </Link>
+        </MenuItem>
       </MenuItem>
     </>
   );

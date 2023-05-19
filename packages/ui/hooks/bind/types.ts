@@ -1,3 +1,5 @@
+import { Subscription } from 'rxjs';
+
 export interface CollectionsBindMap {
 }
 
@@ -14,6 +16,7 @@ export type SingletonBindValue<K extends SingletonBindKey> = SingletonsBindMap[K
 
 export type PureCallback = () => void;
 export type Consume<T> = (value: T) => void;
+export type BiConsume<T0, T1> = (first: T0, second: T1) => void;
 export type Getter<T> = () => T;
 export type ValueOrGetter<T> = T | Getter<T>;
 export type Compare<T> = (lhs: T, rhs: T) => boolean;
@@ -28,6 +31,8 @@ export enum BindingTypeEvent {
 // BindBase will auto call Disposable.dispose when delete an item.
 export interface Disposable {
   dispose (): void;
+
+  addDisposeDependency: (disposable: Subscription | undefined) => void;
 }
 
 export {};

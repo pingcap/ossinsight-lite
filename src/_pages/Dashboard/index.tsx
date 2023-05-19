@@ -10,17 +10,34 @@ import { DashboardContext } from './context';
 import { useOptionalSingleton, useWatchReactiveValueField } from '@ossinsight-lite/ui/hooks/bind/hooks';
 import dynamic from 'next/dynamic';
 import { withSuspense } from '@/packages/ui/utils/suspense';
+import { useRouter } from 'next/navigation';
+import useRefCallback from '@/packages/ui/hooks/ref-callback';
 
 const DashboardMenuItems = dynamic(() => import('./DashboardMenus'), { ssr: false });
 
-function Dashboard ({ dashboardName }: { dashboardName: string }) {
+function Dashboard ({ dashboardName, editMode }: { dashboardName: string, editMode: boolean }) {
   /// ========
   /// This component have dirty works.
   /// ========
-  const [editMode, setEditMode] = useState(false);
-  const [active, setActive] = useState<string>();
-  const map = useMap<string, string>();
 
+  const router = useRouter();
+  const setEditMode = useRefCallback((editing: boolean) => {
+    if (editing) {
+      router.replace(`/dashboards/${encodeURIComponent(dashboardName)}/edit`);
+    } else {
+      if (dashboardName === 'default') {
+        router.replace('/');
+      } else {
+        router.replace(`/dashboards/${dashboardName}`);
+      }
+    }
+  });
+
+  // Activated widget id for rendering cards.
+  const [active, setActive] = useState<string>();
+
+  // Mapping layout id (usually react useId()) with widget id.
+  const map = useMap<string, string>();
   const dashboard = useOptionalSingleton('dashboard')?.current;
   const items = dashboard?.items;
   const itemIds = useCollectionKeys(items) as string[];

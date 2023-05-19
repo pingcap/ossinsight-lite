@@ -26,11 +26,25 @@ interface TypedMap<MapType> extends Map<keyof MapType, MapType[keyof MapType]> {
   values (): IterableIterator<MapType[keyof MapType]>;
 }
 
+class BindBaseSubject<T> extends Subject<T> {
+  constructor (readonly active: () => boolean) {
+    super();
+  }
+
+  next (value: T) {
+    if (this.active()) {
+      super.next(value);
+    }
+  }
+}
+
 export abstract class BindBase<BindMap, InitialArgs extends any[] = []> {
   protected readonly _store: TypedMap<BindMap> = new Map();
   protected readonly _pendingStore: TypedMap<{ [P in keyof BindMap]: Promise<BindMap[P]> }> = new Map();
-  protected readonly _eventBus = new Subject<GeneralEvent<keyof BindMap, BindMap[keyof BindMap]>>();
+  protected readonly _eventBus = new BindBaseSubject<GeneralEvent<keyof BindMap, BindMap[keyof BindMap]>>(() => this._active);
   protected readonly _loaded = new ReactiveValueSubject<boolean>(true);
+
+  private _active: boolean = true;
 
   _parent: BindBase<any, any> | undefined;
   _key: KeyType | undefined;
@@ -79,6 +93,14 @@ export abstract class BindBase<BindMap, InitialArgs extends any[] = []> {
     return ab;
   }
 
+  getOrCreate<K extends keyof BindMap> (type: K, getArgs: () => InitialArgs): BindMap[K] {
+    const value = this.getNullable(type);
+    if (value) {
+      return value;
+    }
+    return this.add(type, ...getArgs());
+  }
+
   add<K extends keyof BindMap> (key: K, ...args: InitialArgs): BindMap[K] {
     if (this._store.has(key)) {
       throw new BindKeyDuplicatedError(key);
@@ -124,7 +146,7 @@ export abstract class BindBase<BindMap, InitialArgs extends any[] = []> {
   delAll () {
     this._store.forEach((_, k) => {
       this.del(k);
-    })
+    });
   }
 
   get events () {
@@ -181,6 +203,15 @@ export abstract class BindBase<BindMap, InitialArgs extends any[] = []> {
         }
       });
       return sub;
+    }
+  }
+
+  inactiveScope<T> (cb: () => T): T {
+    try {
+      this._active = false;
+      return cb();
+    } finally {
+      this._active = true;
     }
   }
 

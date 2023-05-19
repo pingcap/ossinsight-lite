@@ -28,7 +28,9 @@ export type Dashboard = {
 
 export type LayoutConfigV0 = LayoutItem[];
 
-export type Store = 'kv' | 'localStorage' | 'localStorageLegacy' | 'new';
+export type Store = 'kv' | 'localStorage' | 'localStorageLegacy' | 'new' | 'default';
+
+export type SavingFlags = { error: unknown } | Partial<Record<Store, boolean>>;
 
 export type LayoutConfigV1 = {
   version: 1

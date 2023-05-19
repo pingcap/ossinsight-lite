@@ -3,16 +3,16 @@ import { forwardRef, lazy, Suspense, useMemo } from 'react';
 import widgetsManifest from '../widgets-manifest';
 import clsx from 'clsx';
 import useRefCallback from '@ossinsight-lite/ui/hooks/ref-callback';
-import { useCollection, useWatchItemFields } from '@ossinsight-lite/ui/hooks/bind';
+import { useWatchItemFields } from '@ossinsight-lite/ui/hooks/bind';
 import WidgetContext from '@ossinsight-lite/ui/context/widget';
 import { getConfigurable } from '../utils/widgets';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
+import { library } from '@/app/bind';
 
 export default function EditWidgetInstance () {
   const id = decodeURIComponent((useParams() as { id: string }).id ?? '__NEVER__');
 
-  const library = useCollection('library');
   const { name, props } = useWatchItemFields('library', id, ['name', 'props']);
 
   const widget = useMemo(() => {

@@ -2,7 +2,8 @@ import { Subject } from 'rxjs';
 
 export interface ReactiveValue<T> extends Subject<T> {
   current: T;
-  _debugLastChanged?: string[]
+  _debugLastChanged?: string[];
+  notify ();
 }
 
 export class ReactiveValueSubject<T> extends Subject<T> implements ReactiveValue<T> {
@@ -27,5 +28,9 @@ export class ReactiveValueSubject<T> extends Subject<T> implements ReactiveValue
       throw new Error('mutating readonly value');
     }
     super.next(value);
+  }
+
+  notify () {
+    this.next(this.current);
   }
 }

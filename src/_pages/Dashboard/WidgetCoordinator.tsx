@@ -1,10 +1,11 @@
 import { WidgetModule } from '../../widgets-manifest';
-import { forwardRef, Suspense, useCallback, useState } from 'react';
+import { forwardRef, Suspense, useCallback, useContext, useState } from 'react';
 import WidgetInstance from '../../components/WidgetInstance';
 import { useUpdater, useWatchItemFields } from '@ossinsight-lite/ui/hooks/bind';
 import useRefCallback from '@ossinsight-lite/ui/hooks/ref-callback';
 import { WidgetContextProvider } from '../../components/WidgetContext';
 import { useRouter } from 'next/navigation';
+import { DashboardContext } from '@/src/_pages/Dashboard/context';
 
 export interface WidgetCoordinator {
   name: string;
@@ -15,6 +16,7 @@ export interface WidgetCoordinator {
 }
 
 export const WidgetCoordinator = forwardRef<HTMLDivElement, WidgetCoordinator>(({ name, _id: id, draggable, editMode, props: passInProps }, ref) => {
+  const { dashboardName } = useContext(DashboardContext);
   const [module, setModule] = useState<WidgetModule>();
 
   // TODO: Configurable
@@ -32,8 +34,13 @@ export const WidgetCoordinator = forwardRef<HTMLDivElement, WidgetCoordinator>((
   const props = { ...passInProps, ...watchingProps };
 
   const configureAction = useCallback(() => {
-    navigate(`/edit/${encodeURIComponent(id)}`);
-  }, []);
+    const escapedId = encodeURIComponent(id);
+    if (dashboardName) {
+      navigate(`/dashboards/${dashboardName}/edit/widgets/${escapedId}`)
+    } else {
+      navigate(`/edit/${escapedId}`);
+    }
+  }, [dashboardName]);
 
   const onPropChange = useRefCallback((key: string, value: any) => {
     updater((item) => {

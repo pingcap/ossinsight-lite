@@ -1,15 +1,26 @@
-import { createContext, useContext } from 'react';
-import { ReactBindCollections } from './ReactBindCollections';
 import { ReactBindSingletons } from './ReactBindSingletons';
+import { ReactBindCollections } from './ReactBindCollections.ts';
+import { CollectionBindKey, CollectionBindValue, SingletonBindKey } from './types.ts';
+import { ReactBindCollection } from './ReactBindCollection.ts';
+import { BindBase } from './BindBase.tsx';
+import { isPromiseLike } from './utils.ts';
 
-const CollectionContext = createContext(ReactBindCollections.default);
+export const collections = ReactBindCollections.default;
+export const singletons = ReactBindSingletons.default;
 
-export function useReactBindCollections () {
-  return useContext(CollectionContext);
+export function readBind<BindMap, K extends keyof BindMap, A extends any[]> (bindBase: BindBase<BindMap, A>, key: K): BindMap[K] {
+  const bind = bindBase.get(key);
+  if (isPromiseLike(bind)) {
+    throw bind;
+  } else {
+    return bind;
+  }
 }
 
-const SingletonContext = createContext(ReactBindSingletons.default);
+export function collection<K extends CollectionBindKey> (type: K): ReactBindCollection<CollectionBindValue<K>> {
+  return readBind(collections, type);
+}
 
-export function useReactBindSingletons () {
-  return useContext(SingletonContext);
+export function singleton<K extends SingletonBindKey> (type: K) {
+  return readBind(singletons, type);
 }

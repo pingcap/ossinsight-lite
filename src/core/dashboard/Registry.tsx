@@ -1,11 +1,9 @@
-'use client';
-import { useConfig } from '../../components/WidgetsManager';
-import { useEffect } from 'react';
-import { useCollection, whenReady } from '@ossinsight-lite/ui/hooks/bind';
-import { DashboardInstance } from './dashboard-instance';
-import { Dashboard } from '../../types/config';
-import clientOnly from '@/src/utils/clientOnly';
-import { useReactBindSingletons } from '@/packages/ui/hooks/bind/context';
+import { singletons } from '@ossinsight-lite/ui/hooks/bind/context';
+import ClientEffect from '@/src/core/dashboard/Registry.client';
+import { DashboardInstance } from '@/src/core/dashboard/type';
+import { ReactiveDashboardInstance } from '@/src/core/dashboard/reactive-dashboard-instance';
+import { dashboards } from '@/app/bind';
+import { Dashboard } from '@/src/types/config';
 
 declare module '@ossinsight-lite/ui/hooks/bind' {
   interface CollectionsBindMap {
@@ -17,44 +15,11 @@ declare module '@ossinsight-lite/ui/hooks/bind' {
   }
 }
 
-function DashboardRegistry ({ name, defaultDashboard }: { name: string, defaultDashboard: () => Dashboard }) {
-  const singletons = useReactBindSingletons();
-  const dashboards = useCollection('dashboards');
-  const { config } = useConfig();
+function DashboardRegistry ({ name, dashboard }: { name: string, dashboard: Dashboard }) {
+  dashboards.getOrCreate(name, () => [new ReactiveDashboardInstance(name, dashboard)]);
+  singletons.getOrCreate('dashboard', () => [new ReactiveDashboardInstance('canvas', dashboard)]);
 
-  let dashboardConfig = config.dashboard[name];
-  if (!dashboardConfig) {
-    dashboardConfig = defaultDashboard();
-  }
-
-  if (!dashboards.has(name)) {
-    setTimeout(() => {
-      dashboards.add(name, new DashboardInstance(name, dashboardConfig));
-    }, 0);
-  }
-
-  if (!singletons.has('dashboard')) {
-    setTimeout(() => {
-      singletons.add('dashboard', new DashboardInstance('canvas', defaultDashboard()));
-    }, 0);
-  }
-
-  useEffect(() => {
-    const sub = whenReady(singletons, 'dashboard', ({ current: dashboard }) => {
-      dashboard.dispose();
-      dashboard.addDisposeDependency(whenReady(dashboards, name, (bind) => {
-        dashboard.syncWith(bind.current);
-      }));
-    });
-
-    return () => {
-      // console.log('del', name)
-      // dashboards.del(name);
-      sub?.unsubscribe();
-    };
-  }, [name]);
-
-  return null;
+  return <ClientEffect name={name} dashboard={dashboard} />;
 }
 
-export default clientOnly(DashboardRegistry);
+export default DashboardRegistry;
