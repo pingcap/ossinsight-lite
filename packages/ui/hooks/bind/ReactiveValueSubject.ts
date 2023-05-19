@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 export interface ReactiveValue<T> extends Subject<T> {
   current: T;
   _debugLastChanged?: string[];
-  notify ();
+  notify (): void;
 }
 
 export class ReactiveValueSubject<T> extends Subject<T> implements ReactiveValue<T> {
