@@ -60,7 +60,7 @@ export async function getAllDashboardNames () {
   try {
     resolved = await kv.keys('dashboard:*');
     if (resolved.length > 0) {
-      resolved = resolved.map(name => name.replaceAll(/^dashboard:/, ''))
+      resolved = resolved.map(name => name.replace(/^dashboard:/, ''))
       store = 'kv';
     }
   } catch {
@@ -93,7 +93,7 @@ export async function getAllDashboards () {
       }, kv.multi()).exec<Record<string, ItemReference>[]>();
 
       resolved = dashboardKeys.reduce((all, name, index) => {
-        all[name] = {
+        all[name.replace(/^dashboard:/, '')] = {
           layout: defaultLayoutConfig,
           items: Object.values(itemLists[index]),
         };
