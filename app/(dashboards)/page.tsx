@@ -6,3 +6,5 @@ export default async function Page () {
     <DashboardServer name="default" />
   );
 }
+
+export const dynamic = 'force-dynamic';

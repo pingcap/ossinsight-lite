@@ -1,10 +1,7 @@
-import dynamic from 'next/dynamic'
-
-const Edit = dynamic(
-  () => import('@/src/_pages/EditWidgetInstance'),
-  { ssr: false }
-)
+import Edit from '@/src/_pages/EditWidgetInstance';
 
 export default function Page () {
-  return <Edit />
+  return <Edit />;
 }
+
+export const dynamic = 'force-dynamic';

@@ -9,8 +9,9 @@ import { getConfigurable } from '../utils/widgets';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { library } from '@/app/bind';
+import clientOnly from '@/src/utils/clientOnly';
 
-export default function EditWidgetInstance () {
+function EditWidgetInstance () {
   const id = decodeURIComponent((useParams() as { id: string }).id ?? '__NEVER__');
 
   const { name, props } = useWatchItemFields('library', id, ['name', 'props']);
@@ -88,3 +89,5 @@ export default function EditWidgetInstance () {
     </div>
   );
 }
+
+export default clientOnly(EditWidgetInstance)
