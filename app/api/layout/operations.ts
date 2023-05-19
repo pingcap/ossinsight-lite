@@ -25,7 +25,7 @@ export async function getDashboard (name: string) {
     if (typeof localStorage !== 'undefined') {
       const dashboards = localStorage.getItem('widgets:dashboards');
       if (dashboards) {
-        resolved = JSON.parse(dashboards)[name] as Dashboard;
+        resolved = JSON.parse(dashboards)[name.replace(/^dashboard:/, '')] as Dashboard;
         if (resolved) {
           store = 'localStorage';
         }
@@ -61,8 +61,8 @@ export async function getAllDashboardNames () {
     resolved = await kv.keys('dashboard:*');
     if (resolved.length > 0) {
       resolved = resolved.map(name => name.replaceAll(/^dashboard:/, ''))
+      store = 'kv';
     }
-    store = 'kv';
   } catch {
   }
 
