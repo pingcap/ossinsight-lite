@@ -15,3 +15,5 @@ export async function GET () {
 
   return NextResponse.json(config);
 }
+
+export const dynamic = 'force-dynamic'

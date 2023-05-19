@@ -4,7 +4,6 @@ import layout from '@ossinsight-lite/widgets/layout.json';
 import { defaultLayoutConfig } from '@/src/components/WidgetsManager/defaults';
 
 export async function getDashboard (name: string) {
-  console.debug('get', name);
   let store: Store | undefined;
   let resolved: Dashboard | undefined | null;
   try {
@@ -59,7 +58,10 @@ export async function getAllDashboardNames () {
   let resolved: string[] | undefined | null;
 
   try {
-    resolved = await kv.hkeys('dashboards');
+    resolved = await kv.keys('dashboard:*');
+    if (resolved.length > 0) {
+      resolved = resolved.map(name => name.replaceAll(/^dashboard:/, ''))
+    }
     store = 'kv';
   } catch {
   }
@@ -97,9 +99,9 @@ export async function getAllDashboards () {
         };
         return all;
       }, {} as Record<string, Dashboard>);
+      store = 'kv';
     }
-    store = 'kv';
-  } catch {
+  } catch (e) {
   }
 
   if (!resolved) {
