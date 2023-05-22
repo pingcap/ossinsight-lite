@@ -88,6 +88,10 @@ export async function getAllDashboardNames () {
     }
   }
 
+  if (!resolved) {
+    throw new Error('No config found')
+  }
+
   return [store!, resolved] as const;
 }
 
