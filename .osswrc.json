@@ -4,13 +4,15 @@
       "name": "oh-my-github",
       "display": "github-personal",
       "type": "mysql",
-      "env": "OH_MY_GITHUB_DATABASE_URL"
+      "database": "github_personal",
+      "env": "GITHUB_PERSONAL_DATABASE"
     },
     {
       "name": "repo-track",
       "display": "github-repo",
       "type": "mysql",
-      "env": "REPO_TRACK_DATABASE_URL"
+      "database": "repo_track",
+      "env": "GITHUB_REPO_DATABASE"
     }
   ]
 }

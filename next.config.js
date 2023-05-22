@@ -36,9 +36,11 @@ const nextConfig = {
   },
   onDemandEntries: {},
   experimental: {
+    appDir: true,
     typedRoutes: true,
-    serverComponentsExternalPackages: ["mysql2"]
-  }
+    serverComponentsExternalPackages: ["mysql2"],
+    serverActions: true,
+  },
 }
 
 module.exports = withSvgr(nextConfig)

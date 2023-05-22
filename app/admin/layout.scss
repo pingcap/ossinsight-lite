@@ -1,0 +1,22 @@
+.ossl-admin {
+  font-family: -apple-system, system, sans-serif;
+}
+
+.data-table {
+  @apply border w-full overflow-x-auto;
+
+  tr:not(:first-of-type) {
+    @apply border-t;
+  }
+
+  tbody > tr:first-of-type {
+    @apply border-t;
+  }
+
+  tr > :not(:first-child) {
+    @apply border-l;
+  }
+
+
+
+}

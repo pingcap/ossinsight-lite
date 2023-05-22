@@ -13,10 +13,3 @@ export function parseDotEnv (dir: string) {
       return Object.assign(curr, obj);
     }, {});
 }
-
-export function getEnv (name: string): string | undefined {
-  if (env == null) {
-    env = parseDotEnv(process.cwd());
-  }
-  return process.env[name] ?? env[name];
-}

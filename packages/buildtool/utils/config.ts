@@ -6,7 +6,8 @@ const configSchema = yup.object({
     name: yup.string().required(),
     display: yup.string().required(),
     type: yup.string().oneOf(['mysql']).required(),
-    env: yup.string().required(),
+    database: yup.string().required(),
+    env: yup.string().required()
   })),
 });
 

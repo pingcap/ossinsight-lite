@@ -1,10 +1,10 @@
 import Cache from '../../utils/cache.js';
 import { cwd } from '../../utils/path.js';
-import { getEnv } from '../../utils/env.js';
 
 type DbInstanceOptions = {
   type: 'mysql'
   name: string
+  database: string
   env: string
 }
 
@@ -19,11 +19,16 @@ export abstract class DbInstance<Pool> {
   async open () {
     await this.cache.prepare();
     await this.cache.open();
-    const env = getEnv(this.options.env);
-    if (!env) {
-      throw new Error(`Environment ${this.options.env} not configured.`);
+    const database = process.env[this.options.env] || this.options.database;
+    if (!database) {
+      throw new Error(`Database ${this.options.name}'s is not configured.`);
     }
-    this.pool = await this.createPool(env);
+    if (!process.env.TIDB_USER || !process.env.TIDB_HOST || !process.env.TIDB_HOST || !process.env.TIDB_PORT) {
+      throw new Error('TiDB integration was not configured. Check your vercel project config.');
+    }
+    const uri = `mysql://${process.env.TIDB_USER}:${process.env.TIDB_PASSWORD}@${process.env.TIDB_HOST}:${process.env.TIDB_PORT}/${database}?timezone=Z&ssl={"rejectUnauthorized":true,"minVersion":"TLSv1.2"}`;
+
+    this.pool = await this.createPool(uri);
   };
 
   async close () {

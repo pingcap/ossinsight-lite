@@ -2,7 +2,7 @@ import { collections, singletons } from '@/packages/ui/hooks/bind/context';
 import { BatchCommands } from '@/src/core/commands';
 import { BindingTypeEvent } from '@/packages/ui/hooks/bind/types';
 import { debounceTime } from 'rxjs';
-import { commit } from '@/app/api/layout/operations.client';
+import { commit } from '@/app/(client)/api/layout/operations.client';
 import { LayoutConfigV1, LibraryItem } from '@/src/types/config';
 import { ReactiveDashboardInstance } from '@/src/core/dashboard/reactive-dashboard-instance';
 
