@@ -140,6 +140,10 @@ export async function getAllDashboards () {
       }
     }
   }
+
+  if (!resolved) {
+    throw new Error('No config found');
+  }
   return [store!, resolved] as const;
 }
 
@@ -173,6 +177,10 @@ export async function getLibrary () {
         store = 'localStorage';
       }
     }
+  }
+
+  if (!resolved) {
+    throw new Error('No library found');
   }
 
   return [store!, resolved] as const;
