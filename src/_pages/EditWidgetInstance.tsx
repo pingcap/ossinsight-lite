@@ -10,11 +10,11 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { library } from '@/app/bind';
 import clientOnly from '@/src/utils/clientOnly';
+import { LibraryItem } from '@/src/types/config';
 
-function EditWidgetInstance () {
-  const id = decodeURIComponent((useParams() as { id: string }).id ?? '__NEVER__');
+function EditWidgetInstance ({ id, item }: { id: string, item: LibraryItem}) {
 
-  const { name, props } = useWatchItemFields('library', id, ['name', 'props']);
+  const { name, props } = item;
 
   const widget = useMemo(() => {
     if (!name) {

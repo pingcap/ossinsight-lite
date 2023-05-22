@@ -1,7 +1,7 @@
 'use client';
 import { collection, useCollectionKeys, useWatchItem } from '../../hooks/bind';
 import { ReactElement, ReactNode } from 'react';
-import { isActionItem, isCustomItem, isSeparatorItem, MenuActionItemProps, MenuCustomItemProps, MenuParentItemProps, MenuSeparatorItemProps } from './types';
+import { isActionItem, isCustomItem, isLinkItem, isSeparatorItem, MenuActionItemProps, MenuCustomItemProps, MenuLinkItemProps, MenuParentItemProps, MenuSeparatorItemProps } from './types';
 import { KeyType } from '../../hooks/bind/types';
 import { MenuKey } from './Menu';
 import clientOnly from '../../../../src/utils/clientOnly';
@@ -16,6 +16,8 @@ export interface MenuContentProps {
 
   renderCustomItem (custom: MenuCustomItemProps): ReactElement;
 
+  renderLinkItem (link: MenuLinkItemProps): ReactElement;
+
   renderItem (item: MenuActionItemProps): ReactElement;
 }
 
@@ -28,7 +30,7 @@ export const MenuContent = clientOnly(function (menu: MenuContentProps) {
       {ids.map((id) => <RenderAny key={String(id)} id={id} menuKey={`menu.${menu.name}`} isRoot menu={menu} />)}
     </>
   );
-})
+});
 
 interface RenderProps {
   id: KeyType,
@@ -41,9 +43,11 @@ export function RenderAny ({ id, menuKey, menu, isRoot = false }: RenderProps) {
   const item = useWatchItem(menuKey, id);
 
   if (isCustomItem(item)) {
-    return renderCustom(item, menu);
+    return menu.renderCustomItem(item);
   } else if (isActionItem(item)) {
-    return renderAction(item, menu);
+    return menu.renderItem(item);
+  } else if (isLinkItem(item)) {
+    return menu.renderLinkItem(item);
   } else if (isSeparatorItem(item)) {
     return menu.renderSeparator(item);
   } else {
@@ -58,12 +62,4 @@ function RenderParent ({ menu, menuKey, props, isRoot }: { menuKey: MenuKey<stri
   return menu.renderParentItem(props, !isRoot, (
     <>{keys.map(key => <RenderAny id={key} key={String(key)} menuKey={menuKey} menu={menu} />)}</>
   ));
-}
-
-function renderCustom (item: MenuCustomItemProps, menu: MenuContentProps) {
-  return menu.renderCustomItem(item);
-}
-
-function renderAction (item: MenuActionItemProps, menu: MenuContentProps) {
-  return menu.renderItem(item);
 }

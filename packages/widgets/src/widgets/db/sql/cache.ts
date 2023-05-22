@@ -7,7 +7,6 @@ function promisify<T> (request: IDBRequest<T>) {
       reject(request.error);
     };
   });
-
 }
 
 const request = indexedDB.open('cache:db/sql');

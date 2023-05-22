@@ -1,7 +1,8 @@
 import { Connection, createConnection, RowDataPacket } from 'mysql2/promise';
+import { ADMIN_DATABASE_NAME } from '@/src/auth';
 
 export async function withConnection<R> (uri: string, run: (conn: Connection & SqlExecutor) => Promise<R>): Promise<R> {
-  const conn = await createConnection( {
+  const conn = await createConnection({
     uri,
   });
   let tx = false;
@@ -24,6 +25,24 @@ export async function withConnection<R> (uri: string, run: (conn: Connection & S
   } finally {
     conn.destroy();
   }
+}
+
+export async function sql<T> (templateStringsArray: TemplateStringsArray, ...args: any[]): Promise<T[]> {
+  return withConnection(getDatabaseUri(ADMIN_DATABASE_NAME), async ({ sql }) => (
+    sql(templateStringsArray, ...args)
+  ));
+}
+
+export namespace sql {
+  export const unique = async <T> (templateStringsArray: TemplateStringsArray, ...args: any[]): Promise<T | null> => {
+    const res = await sql<T>(templateStringsArray, ...args);
+    if (res.length === 0) {
+      return null;
+    } else if (res.length > 1) {
+      throw new Error('More than on rows returned.');
+    }
+    return res[0];
+  };
 }
 
 interface SqlExecutor {

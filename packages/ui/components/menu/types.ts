@@ -8,15 +8,17 @@ type BaseItemProps = {
 }
 
 export type ActionSpecialProps = { action: () => void; };
+export type LinkSpecialProps = { href: string };
 export type ParentSpecialProps = { parent: true, children: ReactNode };
 export type CustomSpecialProps = { custom: true, children: ReactNode };
 export type SeparatorSpecialProps = { separator: true };
 
 export type MenuActionItemProps = BaseItemProps & ActionSpecialProps;
+export type MenuLinkItemProps = BaseItemProps & LinkSpecialProps;
 export type MenuCustomItemProps = BaseItemProps & CustomSpecialProps;
 export type MenuParentItemProps = BaseItemProps & ParentSpecialProps;
 export type MenuSeparatorItemProps = BaseItemProps & SeparatorSpecialProps;
-export type MenuItemProps = MenuActionItemProps | MenuParentItemProps | MenuCustomItemProps | MenuSeparatorItemProps;
+export type MenuItemProps = MenuActionItemProps | MenuLinkItemProps | MenuParentItemProps | MenuCustomItemProps | MenuSeparatorItemProps;
 
 export function isCustomItem (v: MenuItemProps): v is MenuCustomItemProps {
   return 'custom' in v && v.custom;
@@ -24,6 +26,10 @@ export function isCustomItem (v: MenuItemProps): v is MenuCustomItemProps {
 
 export function isActionItem (v: MenuItemProps): v is MenuActionItemProps {
   return 'action' in v;
+}
+
+export function isLinkItem (v: MenuItemProps): v is MenuLinkItemProps {
+  return 'href' in v;
 }
 
 export function isSeparatorItem (v: MenuItemProps): v is MenuSeparatorItemProps {

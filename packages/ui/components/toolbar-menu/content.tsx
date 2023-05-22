@@ -24,3 +24,7 @@ export const renderItem: MenuContentProps['renderItem'] = (item) => {
 export const renderCustomItem: MenuContentProps['renderCustomItem'] = () => {
   throw new Error('ToolbarMenu does not support custom item.');
 }
+
+export const renderLinkItem: MenuContentProps['renderLinkItem'] = () => {
+  throw new Error('ToolbarMenu does not support link item.');
+}

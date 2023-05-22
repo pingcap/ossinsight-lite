@@ -1,5 +1,15 @@
 .ossl-admin {
   font-family: -apple-system, system, sans-serif;
+
+  .nav-menu {
+    li {
+      @apply flex items-center;
+    }
+
+    a {
+      @apply inline-block w-full p-2 transition-colors font-bold text-gray-400 border-gray-400 data-[active]:text-gray-900 data-[active]:border-r-2 data-[active]:bg-gray-200;
+    }
+  }
 }
 
 .data-table {
@@ -17,6 +27,11 @@
     @apply border-l;
   }
 
+  th, td {
+    @apply px-2 py-0.5;
+  }
 
-
+  tr:nth-of-type(2n) {
+    @apply bg-gray-100;
+  }
 }

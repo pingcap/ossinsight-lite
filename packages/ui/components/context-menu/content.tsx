@@ -2,6 +2,7 @@ import * as RuiContextMenu from '@radix-ui/react-context-menu';
 import { ChevronRightIcon } from '@radix-ui/react-icons';
 import { MenuContentProps } from '../menu';
 import { stopPropagation } from './common';
+import { useRouter } from 'next/router';
 
 const separatorClasses = 'border-b';
 
@@ -45,4 +46,19 @@ export const renderItem: MenuContentProps['renderItem'] = (item) => {
 
 export const renderCustomItem: MenuContentProps['renderCustomItem'] = () => {
   throw new Error('ContextMenu does not support custom item.');
-}
+};
+
+export const renderLinkItem: MenuContentProps['renderLinkItem'] = (item) => {
+  const router = useRouter();
+
+  return (
+    <RuiContextMenu.Item
+      className="min-w-[112px] outline-none bg-transparent hover:bg-gray-50 transition:colors p-1 cursor-pointer flex justify-between items-center"
+      onClick={() => router.push(item.href)}
+      disabled={item.disabled}
+      key={item.id}
+    >
+      {item.text}
+    </RuiContextMenu.Item>
+  );
+};

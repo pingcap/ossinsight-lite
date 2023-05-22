@@ -1,8 +1,6 @@
 'use client';
-import { ReactBindCollection, useWatchReactiveValue } from '@/packages/ui/hooks/bind';
-import { ReactiveValue } from '@/packages/ui/hooks/bind/ReactiveValueSubject';
 import { LibraryItem } from '@/src/types/config';
-import { forwardRef, lazy, Suspense, useEffect, useMemo, useState } from 'react';
+import { forwardRef, lazy, Suspense, useEffect, useMemo, useState, useTransition } from 'react';
 import widgetsManifest from '@/src/widgets-manifest';
 import { getConfigurable } from '@/src/utils/widgets';
 import useRefCallback from '@/packages/ui/hooks/ref-callback';
@@ -10,67 +8,34 @@ import PlusIcon from '@/src/icons/plus.svg';
 import { WidgetContextProvider } from '@/src/components/WidgetContext';
 import Link from 'next/link';
 import clsx from 'clsx';
-import { filter, Unsubscribable } from 'rxjs';
-import { BindingTypeEvent } from '@/packages/ui/hooks/bind/types';
-import { library } from '@/app/bind';
 
-function Section ({ name }: { name: string }) {
-  const items = useWidgets(library, name);
-
+function Section ({ name, items, onAdd }: { name: string, items: LibraryItem[], onAdd: (item: LibraryItem) => Promise<any> }) {
   return (
     <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       {items.map((item) => (
-        <Item key={item.current.id ?? item.current.name} item={item} />
+        <Item key={item.id ?? item.name} item={item} />
       ))}
       {items.length === 0 && (
         <li className="text-gray-400 text-xl">No widgets</li>
       )}
-      <Add name={name} library={library} />
+      <Add name={name} onAdd={onAdd} />
     </ul>
   );
 }
 
-function useWidgets (library: ReactBindCollection<LibraryItem>, name: string) {
-  const filterFn = (item: ReactiveValue<LibraryItem>) => item.current.name === name;
-  const [items, setItems] = useState(() => library.rawValues.filter(filterFn));
-
-  useEffect(() => {
-    let onceLoadSub: Unsubscribable | undefined;
-    if (library.isNeedLoaded) {
-      onceLoadSub = library.onceLoaded(() => setItems(library.rawValues.filter(filterFn)));
-    } else {
-      setItems(library.rawValues.filter(filterFn));
-    }
-
-    const sub = library.subscribeAll()
-      .pipe(filter(([item, _, ev]) => ev !== BindingTypeEvent.UPDATED && filterFn(item)))
-      .subscribe(() => {
-        setItems(library.rawValues.filter(filterFn));
-      });
-
-    return () => {
-      onceLoadSub?.unsubscribe();
-      sub.unsubscribe();
-    };
-  }, []);
-
-  return items;
-}
-
-function Item ({ item: reactiveItem }: { item: ReactiveValue<LibraryItem> }) {
-  const { name, id, props } = useWatchReactiveValue(reactiveItem);
-
+function Item ({ item: { name, id, props } }: { item: LibraryItem }) {
   return (
     <li className="border border-gray bg-white rounded text-gray-700 flex flex-col gap-4 p-2" key={name}>
       <h3 className="text-gray-400 text-sm">{id ?? name}</h3>
       <div className="h-[209px] flex justify-center items-center">
-        <Widget id={id} name={name} props={props} />
+        <Widget className='font-sketch' id={id} name={name} props={props} />
       </div>
     </li>
   );
 }
 
-function Add ({ name, library }: { library: ReactBindCollection<LibraryItem>, name: string }) {
+function Add ({ name, onAdd }: { name: string, onAdd: (item: LibraryItem) => Promise<void> }) {
+  let [isPending, startTransition] = useTransition();
   const [configurable, setConfigurable] = useState(false);
   const [defaultProps, setDefaultProps] = useState<any>();
   useEffect(() => {
@@ -81,17 +46,19 @@ function Add ({ name, library }: { library: ReactBindCollection<LibraryItem>, na
   }, [name]);
 
   const handleAdd = useRefCallback(() => {
-    const id = `${name}-${Math.round(Date.now())}`;
-    library.add(id, {
-      id,
-      name,
-      props: defaultProps,
+    startTransition(() => {
+      const id = `${name}-${Math.round(Date.now())}`;
+      void onAdd({
+        id,
+        name,
+        props: defaultProps,
+      });
     });
   });
 
   if (configurable) {
     return (
-      <li className="border-4 border-dashed border-white rounded text-white p-2">
+      <li className="border-4 border-dashed rounded text-gray-400 p-2 transition-colors hover:text-gray-700 hover:border-gray-500">
         <button className="flex w-full justify-center items-center h-[263px]" onClick={handleAdd}>
           <PlusIcon width={56} height={56} />
         </button>
@@ -102,7 +69,7 @@ function Add ({ name, library }: { library: ReactBindCollection<LibraryItem>, na
   return null;
 }
 
-function Widget ({ id, name, props }: { id: string | undefined, name: string, props: any }) {
+function Widget ({ id, name, className, props }: { id: string | undefined, name: string, className: string, props: any }) {
   const Component = useMemo(() => {
     return lazy(() => widgetsManifest[name].module().then(module => {
       const Component = forwardRef(module.default);
@@ -119,12 +86,12 @@ function Widget ({ id, name, props }: { id: string | undefined, name: string, pr
                   onPropChange: () => {},
                   configure () { },
                 }}>
-                  <Component {...props} {...module.widgetListItemPropsOverwrite} ref={ref} />
+                  <Component {...props} {...module.widgetListItemPropsOverwrite} className={clsx(props.className, module.widgetListItemPropsOverwrite?.className, className)} ref={ref} />
                 </WidgetContextProvider>
               );
             if (getConfigurable(module, props)) {
               return (
-                <Link className="w-full h-full flex justify-center items-center" href={`/edit/${encodeURIComponent(id ?? name)}`}>
+                <Link className="w-full h-full flex justify-center items-center" href={`/widgets/${encodeURIComponent(id ?? name)}/edit`}>
                   {el}
                 </Link>
               );
