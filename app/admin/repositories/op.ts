@@ -30,7 +30,7 @@ export async function addTrackingRepo (repoName: string) {
 }
 
 export async function deleteTrackingRepo (repoName: string) {
-  const [ok] = await withConnection(URI, conn => (
+  const [ok] = await withConnection(getDatabaseUri(dbName), conn => (
     conn.execute<OkPacket>('DELETE FROM repo_full_name_configs WHERE full_name = ?', [repoName])
   ));
 
