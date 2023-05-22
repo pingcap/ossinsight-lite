@@ -27,13 +27,13 @@ export const NewTrackingRepoForm = withFormErrorBoundary(function NewTrackingRep
   );
 }, FormError);
 
-export const DeleteActionButton = withFormErrorBoundary<{ repoName: string }>(function ({ name, errorChildren }) {
+export const DeleteActionButton = withFormErrorBoundary<{ repoName: string }>(function ({ repoName, errorChildren }) {
   let [isPending, startTransition] = useTransition();
 
   return (
     <button
       className='inline-flex text-red-600'
-      onClick={() => startTransition(() => deleteTrackingRepoAction(name))}
+      onClick={() => startTransition(() => deleteTrackingRepoAction(repoName))}
       disabled={isPending}
     >
       {isPending ? 'Deleting...' : 'Delete'}
