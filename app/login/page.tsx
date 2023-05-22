@@ -3,7 +3,6 @@ import { cookies, headers } from 'next/headers';
 import { ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies';
 import { isDev } from '@/packages/ui/utils/dev';
 import { redirect } from 'next/navigation';
-import { RedirectType } from 'next/dist/client/components/redirect';
 import LoginForm from '@/app/login/form';
 
 export default function Page ({ searchParams }: any) {

@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { LinkProps } from 'next/link';
 
 type BaseItemProps = {
   id: string
@@ -8,7 +9,7 @@ type BaseItemProps = {
 }
 
 export type ActionSpecialProps = { action: () => void; };
-export type LinkSpecialProps = { href: string };
+export type LinkSpecialProps = Pick<LinkProps, 'href'>;
 export type ParentSpecialProps = { parent: true, children: ReactNode };
 export type CustomSpecialProps = { custom: true, children: ReactNode };
 export type SeparatorSpecialProps = { separator: true };

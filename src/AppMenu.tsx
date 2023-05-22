@@ -20,11 +20,7 @@ const AppMenu = ({ dashboardNames }: { dashboardNames: string[] }) => {
       </MenuItem>
       <MenuItem id="sep" order={1} separator />
       <MenuItem id="More" order={100} text={<ThreeDotsIcon />} disabled={false} parent>
-        <MenuItem id="Admin" order={2} disabled={false} custom>
-          <Link href='/admin/dashboards'>
-            Admin
-          </Link>
-        </MenuItem>
+        <MenuItem id="Admin" order={2} disabled={false} href='/admin/dashboards' text='Admin' />
         <MenuItem id="Dashboards" order={3} text="Dashboards" disabled={false} parent>
           {dashboardNames.map((dashboard, index) => (
             <MenuItem
