@@ -62,7 +62,6 @@ export async function POST (req: NextRequest, { params: { name } }: any) {
   try {
     conn = await createConnection(uri);
   } catch (e) {
-    console.error(`${target.database} =`, target.database);
     return NextResponse.json({
       code: 'ERR_CONN',
       message: `Connecting to database failed: ${String((e as any)?.message ?? e)}`,
