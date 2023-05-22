@@ -20,7 +20,7 @@ export async function addTrackingRepo (repoName: string) {
     throw new Error(`${repoName} not exists`);
   }
 
-  const [ok] = await withConnection(URI, conn =>
+  const [ok] = await withConnection(getDatabaseUri(dbName), conn =>
     conn.execute<OkPacket>('INSERT INTO repo_full_name_configs (full_name) VALUES (?)', [repoName]),
   );
 
