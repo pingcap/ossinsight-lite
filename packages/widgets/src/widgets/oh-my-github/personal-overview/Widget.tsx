@@ -5,7 +5,6 @@ import React, { ForwardedRef, HTMLProps } from 'react';
 import clsx from 'clsx';
 import 'chartjs-adapter-luxon';
 import * as colors from 'tailwindcss/colors';
-import { prerenderMode } from '@ossinsight-lite/runtime';
 
 import '@ossinsight-lite/roughness/chartjs';
 
@@ -63,7 +62,6 @@ export default function Widget (props: HTMLProps<HTMLDivElement>, ref: Forwarded
             })),
           }}
           options={{
-            animation: prerenderMode ? false : undefined,
             maintainAspectRatio: false,
             scales: {
               x: {

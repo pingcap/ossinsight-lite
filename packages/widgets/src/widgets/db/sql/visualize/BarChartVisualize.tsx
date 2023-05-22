@@ -1,12 +1,11 @@
-import { VisualizeBarChart, VisualizeLineChart, VisualizeRuntimeProps } from './common';
-import { Bar, Line } from 'react-chartjs-2';
+import { VisualizeBarChart, VisualizeRuntimeProps } from './common';
+import { Bar } from 'react-chartjs-2';
 import React, { useMemo } from 'react';
-import { prerenderMode } from '@ossinsight-lite/runtime';
-import { BarElement, CategoryScale, Chart as ChartJs, Filler, Legend, LinearScale, LineElement, PointElement, TimeScale, TimeSeriesScale, Title, Tooltip as _Tooltip } from 'chart.js';
+import { BarElement, CategoryScale, Chart as ChartJs, Filler, Legend, LinearScale, PointElement, TimeScale, TimeSeriesScale, Title, Tooltip as _Tooltip } from 'chart.js';
 import { getCartesianScaleOption } from './chartjs/getCartesianScaleOption';
 import { titlePlugin } from './chartjs/titlePlugin';
 import { legendsPlugin } from './chartjs/legendsPlugin';
-import { barDataset, lineDataset } from './chartjs/getXYData';
+import { barDataset } from './chartjs/getXYData';
 import '@ossinsight-lite/roughness/chartjs';
 
 ChartJs.register(
@@ -34,7 +33,6 @@ export default function LineChartVisualize ({ result, running, title, x, y }: Vi
         datasets: [barDataset(data, x, y)],
       }}
       options={{
-        animation: prerenderMode ? false : undefined,
         maintainAspectRatio: false,
         indexAxis: (['x', 'y'] as const)[[x, y].findIndex(axis => axis.type !== 'value') ?? 0] ?? 'x',
         scales: {

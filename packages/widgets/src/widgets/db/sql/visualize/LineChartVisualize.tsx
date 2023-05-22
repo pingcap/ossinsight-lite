@@ -1,7 +1,6 @@
 import { VisualizeLineChart, VisualizeRuntimeProps } from './common';
 import { Line } from 'react-chartjs-2';
 import React, { useMemo } from 'react';
-import { prerenderMode } from '@ossinsight-lite/runtime';
 import { CategoryScale, Chart as ChartJs, Filler, Legend, LinearScale, LineElement, PointElement, TimeScale, TimeSeriesScale, Title, Tooltip as _Tooltip } from 'chart.js';
 import { getCartesianScaleOption } from './chartjs/getCartesianScaleOption';
 import { titlePlugin } from './chartjs/titlePlugin';
@@ -34,7 +33,6 @@ export default function LineChartVisualize ({ result, running, title, x, y }: Vi
         datasets: [lineDataset(data, x, y)],
       }}
       options={{
-        animation: prerenderMode ? false : undefined,
         maintainAspectRatio: false,
         scales: {
           x: getCartesianScaleOption(data, x, 'x'),
