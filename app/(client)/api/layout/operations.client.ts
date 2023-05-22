@@ -14,10 +14,10 @@ export async function commit (commands: Command[]) {
         body: JSON.stringify(commands),
       });
       if (res.ok) {
-        store.kv = (await res.json()).kv;
+        store.tidb = (await res.json()).tidb;
       }
     } catch {
-      store.kv = false;
+      store.tidb = false;
     }
   }
 

@@ -1,24 +1,47 @@
-import kv from '@/app/(client)/api/kv';
 import { Dashboard as DashboardConfig, Dashboard, ItemReference, LibraryItem, Store } from '@/src/types/config';
-import layout from '@ossinsight-lite/widgets/layout.json';
 import { defaultLayoutConfig } from '@/src/components/WidgetsManager/defaults';
+import { getDatabaseUri, withConnection } from '@/src/utils/mysql';
+import { ADMIN_DATABASE_NAME } from '@/src/auth';
+
+const uri = getDatabaseUri(ADMIN_DATABASE_NAME);
 
 export async function getDashboard (name: string) {
   let store: Store | undefined;
   let resolved: Dashboard | undefined | null;
   try {
-    const [exists, items] = await kv.multi()
-      .exists(`dashboard:${name}`)
-      .hgetall(`dashboard:${name}`)
-      .exec<[number, Record<string, ItemReference>]>();
-    if (exists) {
-      resolved = {
-        layout: defaultLayoutConfig,
-        items: Object.values(items),
-      };
-      store = 'kv';
+    const dashboard = await withConnection(uri, async ({ sql }) => {
+
+      let dashboard: Dashboard = { layout: defaultLayoutConfig, items: [] };
+      const res = await sql<{ name: string }>`
+          SELECT properties
+          FROM dashboards
+          WHERE name = ${name}
+          LIMIT 1;
+      `;
+      if (!res[0]) {
+        return;
+      }
+      dashboard.layout = res[0].properties.layout;
+      const rows = await sql<{ item_id: string, properties: any }>`
+          SELECT item_id, properties
+          FROM dashboard_items
+          WHERE dashboard_name = ${name};`;
+      dashboard.items = rows.map(row => {
+        return {
+          id: row.item_id,
+          ...row.properties,
+        };
+      });
+
+      return dashboard;
+    });
+
+    if (dashboard) {
+      resolved = dashboard;
+      store = 'tidb';
     }
-  } catch {
+  } catch (e) {
+    console.error(e);
   }
 
   if (!resolved) {
@@ -33,22 +56,7 @@ export async function getDashboard (name: string) {
     }
   }
   if (!resolved) {
-    resolved = layout.dashboard[name as never] as Dashboard;
-    if (resolved) {
-      try {
-        const items = resolved.items.reduce((all, item) => {
-          all[item.id] = item;
-          return all;
-        }, {} as Record<string, ItemReference>);
-        await kv.hset(`dashboard:${name}`, items);
-      } catch {
-      }
-      store = 'new';
-    }
-  }
-  if (!resolved) {
-    resolved = defaultDashboard();
-    store = 'new';
+    throw new Error(`Dashboard ${name} not found`);
   }
   return [store!, resolved] as const;
 }
@@ -58,12 +66,16 @@ export async function getAllDashboardNames () {
   let resolved: string[] | undefined | null;
 
   try {
-    resolved = await kv.keys('dashboard:*');
-    if (resolved.length > 0) {
-      resolved = resolved.map(name => name.replace(/^dashboard:/, ''))
-      store = 'kv';
-    }
-  } catch {
+    const res = await withConnection(uri, ({ sql }) => {
+      return sql<{ name: string }>`
+          SELECT name
+          FROM dashboards;
+      `;
+    });
+    resolved = res.map(item => item.name);
+    store = 'tidb';
+  } catch (e) {
+    console.error(e);
   }
 
   if (!resolved) {
@@ -75,10 +87,7 @@ export async function getAllDashboardNames () {
       }
     }
   }
-  if (!resolved) {
-    resolved = Object.keys(layout.dashboard);
-    store = 'new';
-  }
+
   return [store!, resolved] as const;
 }
 
@@ -86,22 +95,40 @@ export async function getAllDashboards () {
   let store: Store | undefined;
   let resolved: Record<string, Dashboard> | undefined | null;
   try {
-    const dashboardKeys = await kv.keys('dashboard:*');
-    if (dashboardKeys.length > 0) {
-      const itemLists = await dashboardKeys.reduce((pipeline, name) => {
-        return pipeline.hgetall(name);
-      }, kv.multi()).exec<Record<string, ItemReference>[]>();
+    resolved = await withConnection(uri, async ({ sql }) => {
+      const items = await sql<{ dashboard_name: string, item_id: string, properties: any }>`
+          SELECT dashboard_name, item_id, properties
+          FROM dashboard_items;
+      `;
 
-      resolved = dashboardKeys.reduce((all, name, index) => {
-        all[name.replace(/^dashboard:/, '')] = {
-          layout: defaultLayoutConfig,
-          items: Object.values(itemLists[index]),
+      const parsedItems = items.reduce((map, item) => {
+        let items = map[item.dashboard_name];
+        if (!items) {
+          map[item.dashboard_name] = items = [];
+        }
+        items.push({
+          id: item.item_id,
+          ...item.properties,
+        });
+        return map;
+      }, {} as Record<string, ItemReference[]>);
+
+      const dashboards = await sql<{ name: string, properties: any }>`
+          SELECT name, properties
+          FROM dashboards;
+      `;
+
+      return dashboards.reduce((dashboards, dashboard) => {
+        dashboards[dashboard.name] = {
+          ...dashboard.properties,
+          items: parsedItems[dashboard.name] ?? [],
         };
-        return all;
+        return dashboards;
       }, {} as Record<string, Dashboard>);
-      store = 'kv';
-    }
+    });
+    store = 'tidb';
   } catch (e) {
+    console.error(e);
   }
 
   if (!resolved) {
@@ -113,19 +140,6 @@ export async function getAllDashboards () {
       }
     }
   }
-  if (!resolved) {
-    resolved = layout.dashboard as never as Record<string, Dashboard>;
-    store = 'new';
-    try {
-      await Object.entries(layout.dashboard as never as Record<string, Dashboard>).reduce((pipeline, [name, dashboard]) => {
-        return pipeline.hset(`dashboard:${name}`, dashboard.items.reduce((all, item) => {
-          all[item.id] = item;
-          return all;
-        }, {} as Record<string, ItemReference>));
-      }, kv.pipeline()).exec();
-    } catch {
-    }
-  }
   return [store!, resolved] as const;
 }
 
@@ -133,12 +147,22 @@ export async function getLibrary () {
   let resolved: LibraryItem[] | undefined | null;
   let store: Store | undefined;
   try {
-    const all = await kv.hgetall<Record<string, LibraryItem>>('library');
-    if (all) {
-      resolved = [...Object.values(all)];
-      store = 'kv';
-    }
-  } catch {
+    resolved = await withConnection(uri, async ({ sql }) => {
+      const rows = await sql<{ id: string, widget_name: string, properties: object }>`
+          SELECT id, widget_name, properties
+          FROM library_items
+      `;
+      return rows.map(item => {
+        return {
+          id: item.id,
+          name: item.widget_name,
+          props: item.properties,
+        };
+      });
+    });
+    store = 'tidb';
+  } catch (e) {
+    console.error(e);
   }
 
   if (!resolved) {
@@ -149,11 +173,6 @@ export async function getLibrary () {
         store = 'localStorage';
       }
     }
-  }
-
-  if (!resolved) {
-    resolved = layout.library as LibraryItem[];
-    store = 'new';
   }
 
   return [store!, resolved] as const;

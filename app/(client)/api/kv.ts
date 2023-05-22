@@ -17,4 +17,7 @@ if (isKvConfigured) {
   }) as VercelKV;
 }
 
+/**
+ * @deprecated
+ */
 export default kv;

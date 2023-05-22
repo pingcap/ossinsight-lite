@@ -9,7 +9,8 @@ export async function GET (req: NextRequest) {
     return res;
   }
 
-  const [[libraryStore, library], [dashboardsStore, dashboard]] = await Promise.all([getLibrary(), getAllDashboards()]);
+  const [libraryStore, library] = await getLibrary();
+  const [dashboardsStore, dashboard] = await getAllDashboards();
 
   const config: LayoutConfigV1 = {
     version: 1,
@@ -22,4 +23,4 @@ export async function GET (req: NextRequest) {
   return NextResponse.json(config);
 }
 
-export const dynamic = 'force-dynamic'
+export const dynamic = 'force-dynamic';

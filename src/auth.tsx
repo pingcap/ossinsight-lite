@@ -7,7 +7,7 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { NextRequest, NextResponse } from 'next/server';
 
-export const ADMIN_DATABASE_NAME = 'ossinsight-lite-admin';
+export const ADMIN_DATABASE_NAME = 'ossinsight_lite_admin';
 export const INITIAL_PASSWORD = process.env.ADMIN_PASSWORD ?? 'tidbcloud';
 export const SALT_ROUNDS = 6;
 

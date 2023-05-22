@@ -1,0 +1,13 @@
+{
+  "name": "@ossinsight-lite/migration",
+  "private": true,
+  "scripts": {
+    "up": "node src/index.js"
+  },
+  "dependencies": {
+    "bcrypt-ts": "^3.0.1",
+    "dotenv": "^16.0.3",
+    "glob": "^10.2.6",
+    "mysql2": "^3.3.1"
+  }
+}
