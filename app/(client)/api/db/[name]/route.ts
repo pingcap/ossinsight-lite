@@ -29,7 +29,8 @@ export async function POST (req: NextRequest, { params: { name } }: any) {
     }, { status: 404 });
   }
 
-  const uri = `mysql://${process.env.TIDB_USER}:${process.env.TIDB_PASSWORD}@${process.env.TIDB_HOST}:${process.env.TIDB_PORT}/${target.database}?timezone=Z&ssl={"rejectUnauthorized":true,"minVersion":"TLSv1.2"}`;
+  const database = process.env[target.env] || target.database;
+  const uri = `mysql://${process.env.TIDB_USER}:${process.env.TIDB_PASSWORD}@${process.env.TIDB_HOST}:${process.env.TIDB_PORT}/${database}?timezone=Z&ssl={"rejectUnauthorized":true,"minVersion":"TLSv1.2"}`;
 
   const { searchParams } = new URL(req.url);
 
