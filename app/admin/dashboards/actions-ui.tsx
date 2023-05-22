@@ -1,9 +1,9 @@
 'use client';
-import { addTrackingRepoAction, deleteTrackingRepoAction } from '@/app/admin/repositories/actions';
 import { experimental_useFormStatus as useFormStatus } from 'react-dom';
 import { ErrorComponent } from 'next/dist/client/components/error-boundary';
 import { withFormErrorBoundary } from '@/src/utils/form';
 import { ButtonHTMLAttributes, InputHTMLAttributes, useTransition } from 'react';
+import { addDashboardAction, deleteDashboardAction } from '@/app/admin/dashboards/actions';
 
 export const FormError: ErrorComponent = ({ error }) => {
   return (
@@ -13,27 +13,27 @@ export const FormError: ErrorComponent = ({ error }) => {
   );
 };
 
-export const NewTrackingRepoForm = withFormErrorBoundary(function NewTrackingRepoForm ({ errorChildren, reset }) {
+export const AddDashboardForm = withFormErrorBoundary(function NewTrackingRepoForm ({ errorChildren, reset }) {
   return (
     <section>
       <h2>Add new tracking repo</h2>
-      <form action={addTrackingRepoAction} onClick={reset}>
+      <form action={addDashboardAction} onClick={reset}>
         <FormStatus />
         {errorChildren}
-        <Input name="repo_name" placeholder="Input repo name" />
+        <Input name="name" placeholder="Input new dashboard name" />
         <Button type="submit">Add</Button>
       </form>
     </section>
   );
 }, FormError);
 
-export const DeleteActionButton = withFormErrorBoundary<{ repoName: string }>(function ({ name, errorChildren }) {
+export const DeleteDashboardButton = withFormErrorBoundary<{ name: string }>(function ({ name, errorChildren }) {
   let [isPending, startTransition] = useTransition();
 
   return (
     <button
-      className='inline-flex text-red-600'
-      onClick={() => startTransition(() => deleteTrackingRepoAction(name))}
+      className="inline-flex text-red-600"
+      onClick={() => startTransition(() => deleteDashboardAction(name))}
       disabled={isPending}
     >
       {isPending ? 'Deleting...' : 'Delete'}

@@ -11,6 +11,9 @@ export default function ({ children }: any) {
             <li>
               <Link href="/admin/repositories">Tracking Repos</Link>
             </li>
+            <li>
+              <Link href="/admin/dashboards">Dashboards Management</Link>
+            </li>
           </ul>
         </nav>
       </aside>
