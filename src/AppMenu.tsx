@@ -31,11 +31,6 @@ const AppMenu = ({ dashboardNames }: { dashboardNames: string[] }) => {
             />
           ))}
         </MenuItem>
-        <MenuItem id="Widgets" order={1} custom>
-          <Link href="/browse">
-            Widgets
-          </Link>
-        </MenuItem>
       </MenuItem>
     </>
   );

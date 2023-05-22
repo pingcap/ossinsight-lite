@@ -6,7 +6,7 @@ export function Navigator (props: HTMLProps<HTMLDivElement>, ref: ForwardedRef<H
     <nav {...props} ref={ref}>
       <ul className='h-full px-2'>
         <li className='h-full flex'>
-          <Link className='flex justify-center items-center' href="/browse">
+          <Link className='flex justify-center items-center' href="/">
             <span>
               Widgets list
             </span>
