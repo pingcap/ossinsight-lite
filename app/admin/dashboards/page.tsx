@@ -6,7 +6,7 @@ export default async function () {
 
   return (
     <div>
-      <table className="data-table">
+      <table className="data-table table-auto">
         <thead>
         <tr>
           <th>Dashboard name</th>
