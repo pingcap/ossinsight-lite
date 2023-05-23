@@ -39,7 +39,7 @@ config.db.forEach((db) => {
   dbDisplayNames[db.name] = db.display;
 });
 
-export default function SQLEditorHeader ({ portal, currentDb, onCurrentDbChange, onRun, running = false }: SQLEditorHeaderProps) {
+export default function SQLEditorHeader ({ currentDb, onCurrentDbChange, onRun, running = false }: SQLEditorHeaderProps) {
   return (
     <Toolbar.Root
       className="flex w-full min-w-max h-12 p-1 px-4 relative"
@@ -55,7 +55,7 @@ export default function SQLEditorHeader ({ portal, currentDb, onCurrentDbChange,
         >
           {dbDisplayNames[currentDb] ? <CurrentDb db={dbDisplayNames[currentDb]} /> : <Fallback />}
         </Select.Trigger>
-        <Select.Portal container={portal}>
+        <Select.Portal className='z-20'>
           <Select.Content className="overflow-hidden bg-white rounded shadow" position="popper">
             <Select.Viewport>
               {config.db.map(db => (

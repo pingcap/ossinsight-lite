@@ -2,12 +2,9 @@
 import { forwardRef, lazy, Suspense, useMemo } from 'react';
 import widgetsManifest from '../widgets-manifest';
 import clsx from 'clsx';
-import useRefCallback from '@ossinsight-lite/ui/hooks/ref-callback';
 import WidgetContext from '@ossinsight-lite/ui/context/widget';
 import Link from 'next/link';
 import clientOnly from '@/src/utils/clientOnly';
-import { LibraryItem } from '@/src/types/config';
-import { UpdateAction } from '@/packages/ui/hooks/bind/utils';
 
 export interface EditWidgetInstanceProps {
   name: string;
@@ -68,20 +65,22 @@ function EditWidgetInstance ({ name, props, onPropsChange }: EditWidgetInstanceP
   }
 
   return (
-    <div className="h-[calc(100vh-40px)]">
-      <div className="w-full h-full">
-        <Suspense
-          fallback={
-            <div className="w-full h-full flex items-center justify-center text-gray-400 text-lg">
-              Widget loading...
-            </div>
-          }
-        >
-          <Component {...props} />
-        </Suspense>
-      </div>
+    <div className="w-full h-full">
+      <Suspense
+        fallback={
+          <div className="w-full h-full flex items-center justify-center text-gray-400 text-lg">
+            Widget loading...
+          </div>
+        }
+      >
+        <Component {...props} />
+      </Suspense>
     </div>
   );
 }
 
-export default clientOnly(EditWidgetInstance);
+export default clientOnly(EditWidgetInstance, () => (
+  <div className="w-full h-full flex items-center justify-center text-gray-400 text-lg">
+    Widget loading...
+  </div>
+));

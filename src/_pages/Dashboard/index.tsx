@@ -144,4 +144,12 @@ const isPropsEquals = <T extends Record<string, any>> (ignores: (keyof T)[] = []
   };
 };
 
-const WidgetComponentMemo = memo(withSuspense(WidgetComponent, 'Widget Loading...'), isPropsEquals(['onActiveChange']));
+const WidgetComponentMemo = memo(
+  withSuspense(
+    WidgetComponent,
+    <div className="w-full h-full flex items-center justify-center text-gray-400 text-lg">
+      Widget loading...
+    </div>,
+  ),
+  isPropsEquals(['onActiveChange']),
+);
