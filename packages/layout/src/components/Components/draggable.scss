@@ -16,10 +16,9 @@
   position: absolute;
   transition: outline-color 200ms ease, transform 100ms ease, width 100ms ease, height 100ms ease;
 
-  cursor: pointer;
   outline: 2px dashed transparent;
 
-  [data-layer-item] {
+  [data-layer-item="true"] {
     pointer-events: auto !important;
   }
 
@@ -77,8 +76,8 @@
   }
 
   &.vertical {
-    top: 0;
-    height: 100%;
+    top: 50%;
+    transform: translateY(-50%);
 
     &.start {
       left: -8px;
@@ -94,8 +93,8 @@
   }
 
   &.horizontal {
-    left: 0;
-    width: 100%;
+    left: 50%;
+    transform: translateX(-50%);
 
     &.start {
       top: -8px;

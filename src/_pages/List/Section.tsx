@@ -84,7 +84,8 @@ function Widget ({ id, name, className, props }: { id: string | undefined, name:
                   editingLayout: true,
                   configurable: false,
                   onPropChange: () => {},
-                  configure () { },
+                  configure: '',
+                  configuring: false,
                 }}>
                   <Component {...props} {...module.widgetListItemPropsOverwrite} className={clsx(props.className, module.widgetListItemPropsOverwrite?.className, className)} ref={ref} />
                 </WidgetContextProvider>

@@ -12,7 +12,10 @@ export interface ToolbarMenuProps extends MenuProps, ToolbarProps {
 export function ToolbarMenu ({ name, auto, children, ...props }: ToolbarMenuProps) {
   return (
     <Menu name={name} auto={auto}>
-      <RuiToolbar.Root {...props} className={clsx('z-[1]', props.className)}>
+      <RuiToolbar.Root
+        {...props}
+        className={clsx('z-[1]', props.className)}
+      >
         <Suspense fallback="menu loading">
           <MenuContent name={name} {...renderers} />
         </Suspense>

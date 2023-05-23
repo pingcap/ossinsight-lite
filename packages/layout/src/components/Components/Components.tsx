@@ -1,6 +1,6 @@
 import { ComponentType, createRef, forwardRef, ReactElement, useEffect, useMemo, useState } from 'react';
 import { Rect, toShapeStyle } from '../../core/types';
-import { useDraggable } from '../../hooks/draggable';
+import { DraggableState, useDraggable } from '../../hooks/draggable';
 import clsx from 'clsx';
 import './draggable.scss';
 import './transitions.scss';
@@ -21,6 +21,7 @@ export interface ComponentProps {
   id: string,
   draggable: boolean
   dragging: boolean
+  draggableProps?: DraggableState<HTMLDivElement>['domProps']
 }
 
 export interface ComponentsProps<Props> {
@@ -72,9 +73,9 @@ function Components<Props extends Record<string, any>> ({ draggable = false, ite
             nodeRef={refs[index]}
           >
             <ComponentWrapper className={wrapperClassName} externalId={id} draggable={draggable} register={register} unregister={unregister} useRect={useRect} updateRect={updateRect}>
-              {dragging => (
+              {(dragging, draggableProps) => (
                 <div className="relative w-full h-full" ref={refs[index]} style={{ transitionDelay: `${delay}ms` }}>
-                  <Component id={id} className="w-full h-full" draggable={draggable} dragging={dragging} {...rest as Props} />
+                  <Component id={id} className="w-full h-full" draggable={draggable} dragging={dragging} draggableProps={draggableProps} {...rest as Props} />
                 </div>
               )}
             </ComponentWrapper>
@@ -89,7 +90,7 @@ interface ComponentWrapperProps {
   className?: string;
   externalId: string;
   draggable: boolean;
-  children: (dragging: boolean) => ReactElement;
+  children: (dragging: boolean, draggableProps?: DraggableState<HTMLDivElement>['domProps']) => ReactElement;
   register: (id: string, externalId: string) => void;
   unregister: (id: string) => void;
   useRect: (externalId: string) => Rect;
@@ -138,10 +139,9 @@ const ComponentWrapper = forwardRef<HTMLDivElement, ComponentWrapperProps>(({ cl
         transform: `${shapeStyle.transform}${dragging ? ' ' + DRAGGING_STYLE : ''}`,
         position: draggable ? undefined : 'absolute',
       }}
-      {...(draggable ? domProps : undefined)}
     >
       <DraggableItemContextProvider shape={shape} layout={layout}>
-        {children(dragging)}
+        {children(dragging, draggable ? domProps : undefined)}
         {draggable && (
           <div className="resize-handles">
             <Resizer id={id} shape={shape} position="end" type="vertical" />

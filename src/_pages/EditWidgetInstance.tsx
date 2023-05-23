@@ -3,19 +3,19 @@ import { forwardRef, lazy, Suspense, useMemo } from 'react';
 import widgetsManifest from '../widgets-manifest';
 import clsx from 'clsx';
 import useRefCallback from '@ossinsight-lite/ui/hooks/ref-callback';
-import { useWatchItemFields } from '@ossinsight-lite/ui/hooks/bind';
 import WidgetContext from '@ossinsight-lite/ui/context/widget';
-import { getConfigurable } from '../utils/widgets';
-import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { library } from '@/app/bind';
 import clientOnly from '@/src/utils/clientOnly';
 import { LibraryItem } from '@/src/types/config';
+import { UpdateAction } from '@/packages/ui/hooks/bind/utils';
 
-function EditWidgetInstance ({ id, item }: { id: string, item: LibraryItem}) {
+export interface EditWidgetInstanceProps {
+  name: string;
+  props: any;
+  onPropsChange: (key: string, value: any) => void;
+}
 
-  const { name, props } = item;
-
+function EditWidgetInstance ({ name, props, onPropsChange }: EditWidgetInstanceProps) {
   const widget = useMemo(() => {
     if (!name) {
       return undefined;
@@ -29,22 +29,16 @@ function EditWidgetInstance ({ id, item }: { id: string, item: LibraryItem}) {
         const Component = forwardRef(module.default);
         return {
           default: (props: any) => {
-            const handlePropChange = useRefCallback((key: string, value: string) => {
-              library.update(id, (item) => {
-                item.props = { ...props, [key]: value };
-                return item;
-              });
-            });
-
             return (
               <WidgetContext.Provider
                 value={{
-                  configurable: getConfigurable(module, props) ?? false,
+                  configurable: false,
+                  configuring: false,
                   enabled: false,
                   editingLayout: false,
-                  onPropChange: handlePropChange,
+                  onPropChange: onPropsChange,
                   props: { ...props, ...module.configurablePropsOverwrite },
-                  configure () {},
+                  configure: '',
                 }}
               >
                 <Component
@@ -90,4 +84,4 @@ function EditWidgetInstance ({ id, item }: { id: string, item: LibraryItem}) {
   );
 }
 
-export default clientOnly(EditWidgetInstance)
+export default clientOnly(EditWidgetInstance);

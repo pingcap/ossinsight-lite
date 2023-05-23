@@ -17,6 +17,7 @@ import { MenuItem } from '@ossinsight-lite/ui/components/menu';
 import WidgetContext from '@ossinsight-lite/ui/context/widget';
 import mergeRefs from '@ossinsight-lite/ui/utils/merge-refs';
 import { getCache, setCache } from './cache';
+import PencilIcon from '../../../icons/twbs/pencil.svg';
 
 export enum WidgetMode {
   EDITOR = 'editor',
@@ -72,7 +73,7 @@ export default function Widget ({ defaultSql, defaultDb, sql, currentDb, mode = 
       <div {...props} ref={forwardedRef}>
         {enabled && (
           <Suspense fallback={<></>}>
-            <MenuItem id="configure" text="Configure" action={configure} order={1} disabled={!configurable} />
+            <MenuItem id="configure" text={<PencilIcon fill='currentColor' />} href={configure} order={1} disabled={!configurable} />
           </Suspense>
         )}
         <ResultDisplay visualize={visualize} running={running} error={error} result={result} />

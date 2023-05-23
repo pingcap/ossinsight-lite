@@ -9,11 +9,14 @@ import { ComponentProps } from '@ossinsight-lite/layout/src/components/Component
 import { move } from '@ossinsight-lite/layout/src/core/types';
 import clsx from 'clsx';
 import { Menu } from '@ossinsight-lite/ui/components/menu/Menu';
-import { ContextMenu } from '@ossinsight-lite/ui/components/context-menu';
 import { Consume } from '@ossinsight-lite/ui/hooks/bind/types';
 import { DashboardContext } from './context';
 import { WidgetCoordinator } from './WidgetCoordinator';
 import { useNullableDashboardItems } from '../../core/dashboard';
+import { ToolbarMenu } from '@/packages/ui/components/toolbar-menu';
+import DuplicateIcon from '@/src/icons/copy.svg';
+import TrashIcon from '@/src/icons/trash.svg';
+import { DraggableState } from '@/packages/layout/src/hooks/draggable';
 
 export interface WidgetComponentProps extends ComponentProps, WidgetStateProps {
   className?: string;
@@ -32,7 +35,7 @@ const internalCache: Record<string, ResolvedComponentType> = {};
 export const WidgetComponent = forwardRef<HTMLDivElement, WidgetComponentProps>(({ ...componentProps }, ref) => {
   let el: ReactElement;
 
-  const { id, draggable, dragging, editMode, active, onActiveChange, className, ...rest } = componentProps;
+  const { id, draggable, dragging, draggableProps, editMode, active, onActiveChange, className, ...rest } = componentProps;
 
   const { props: itemProps, name } = useWatchItemFields('library', id, ['name', 'props']);
   const props = { ...rest, ...itemProps };
@@ -63,6 +66,7 @@ export const WidgetComponent = forwardRef<HTMLDivElement, WidgetComponentProps>(
           dragging={dragging}
           active={active}
           onActiveChange={onActiveChange}
+          draggableProps={draggableProps}
         >
           <Suspense fallback={<div className="w-full h-full flex items-center justify-center text-xl text-gray-400">Loading</div>}>
             {el}
@@ -76,6 +80,7 @@ type WidgetState = {
   id: string
   editMode: boolean
   dragging: boolean
+  draggableProps?: DraggableState<HTMLDivElement>['domProps']
   active: boolean
   onActiveChange: Consume<boolean>;
 }
@@ -95,7 +100,7 @@ function WidgetComponentWrapper ({ children, ...props }: WidgetState & { childre
   }
 }
 
-export function EditingLayer ({ id, editMode, dragging, active, onActiveChange }: WidgetState) {
+export function EditingLayer ({ id, editMode, dragging, draggableProps, active, onActiveChange }: WidgetState) {
   const { dashboardName } = useContext(DashboardContext);
   const items = useNullableDashboardItems(dashboardName);
   const [hover, setHover] = useState(false);
@@ -110,34 +115,38 @@ export function EditingLayer ({ id, editMode, dragging, active, onActiveChange }
   });
 
   return (
-    <ContextMenu
-      name={`widgets.${id}`}
-      auto={false}
-      onOpenChange={onActiveChange}
-      trigger={(
-        <div
-          className={clsx('absolute left-0 top-0 w-full h-full z-10 bg-gray-700 bg-opacity-0 text-white flex transition-colors', editMode && (dragging || hover || active) && '!bg-opacity-[0.7]')}
-          onMouseEnter={() => setHover(true)}
-          onMouseLeave={() => setHover(false)}
-        />
-      )}
+    <div
+      className={clsx('absolute left-0 top-0 w-full h-full z-10 bg-gray-700 bg-opacity-0 text-white flex flex-col transition-colors')}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
     >
-      <MenuItem
-        key="duplicate"
-        id="duplicate"
-        text="Duplicate"
-        action={duplicateAction}
-        order={0}
-        disabled={false}
-      />
-      <MenuItem
-        key="delete"
-        id="delete"
-        text={<span className="text-red-400">Delete</span>}
-        action={deleteAction}
-        order={1}
-        disabled={false}
-      />
-    </ContextMenu>
+      <div className="text-black bg-black bg-opacity-0 opacity-20 hover:bg-opacity-30 hover:opacity-100 hover:text-white transition-all">
+        <ToolbarMenu
+          className="flex justify-end items-center"
+          onMouseDown={e => console.log(e)}
+          name={`widgets.${id}`}
+          auto={false}
+          data-layer-item
+        >
+          <MenuItem
+            key="duplicate"
+            id="duplicate"
+            text={<DuplicateIcon fill="currentColor" />}
+            action={duplicateAction}
+            order={0}
+            disabled={false}
+          />
+          <MenuItem
+            key="delete"
+            id="delete"
+            text={<TrashIcon className="text-red-500" />}
+            action={deleteAction}
+            order={100}
+            disabled={false}
+          />
+        </ToolbarMenu>
+      </div>
+      <div className="flex-1 justify-stretch cursor-pointer" {...draggableProps} />
+    </div>
   );
 }
