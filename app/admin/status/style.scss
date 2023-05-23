@@ -1,0 +1,13 @@
+.status-page {
+  section {
+    @apply mb-4;
+  }
+
+  h2 {
+    @apply font-bold text-3xl;
+  }
+
+  h3 {
+    @apply font-bold text-xl;
+  }
+}

@@ -19,6 +19,11 @@ const navs = [
     title: 'Widgets Management',
     href: '/admin/widgets',
   },
+  {
+    key: 'status',
+    title: 'Status',
+    href: '/admin/status',
+  }
 ] as const;
 
 export default function Nav () {
