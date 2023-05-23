@@ -13,7 +13,7 @@ export interface NavMenuProps extends NavigationMenuProps, MenuProps {
 export function NavMenu ({ name, auto, children, className, ...props }: NavMenuProps) {
   return (
     <Menu name={name} auto={auto}>
-      <NavigationMenu.Root {...props} className="relative z-50 bg-white bg-opacity-20 backdrop-blur">
+      <NavigationMenu.Root {...props} className="relative z-50 bg-cyan-500 bg-opacity-20">
         <NavigationMenu.List className={clsx('flex gap-2 items-center relative z-[1]', className)}>
           <MenuContent name={name} {...renderers} />
         </NavigationMenu.List>

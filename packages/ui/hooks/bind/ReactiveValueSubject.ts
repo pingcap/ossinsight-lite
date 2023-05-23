@@ -33,4 +33,9 @@ export class ReactiveValueSubject<T> extends Subject<T> implements ReactiveValue
   notify () {
     this.next(this.current);
   }
+
+  update (newValue: T) {
+    this.current = newValue;
+    this.next(newValue);
+  }
 }

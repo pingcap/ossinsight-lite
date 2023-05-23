@@ -1,0 +1,23 @@
+.toggle-group {
+  @apply flex;
+
+  &-divider {
+    @apply border-l border-white;
+  }
+
+  &-item {
+    @apply bg-gray-200 text-gray-400 p-2 flex items-center;
+
+    &[data-state=on] {
+      @apply bg-gray-500 text-white;
+    }
+
+    &:first-of-type {
+      @apply rounded-l;
+    }
+
+    &:last-of-type {
+      @apply rounded-r;
+    }
+  }
+}

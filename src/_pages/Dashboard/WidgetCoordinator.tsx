@@ -1,11 +1,10 @@
 import { ResolvedWidgetModule } from '../../widgets-manifest';
-import { forwardRef, useContext, useMemo, useState } from 'react';
+import { forwardRef, useMemo, useState } from 'react';
 import WidgetInstance from '../../components/WidgetInstance';
 import { useUpdater, useWatchItemFields } from '@ossinsight-lite/ui/hooks/bind';
 import useRefCallback from '@ossinsight-lite/ui/hooks/ref-callback';
 import { WidgetContextProvider } from '../../components/WidgetContext';
 import { usePathname } from 'next/navigation';
-import { DashboardContext } from '@/src/_pages/Dashboard/context';
 import { getConfigurable } from '@/src/utils/widgets';
 
 export interface WidgetCoordinator {
@@ -17,8 +16,6 @@ export interface WidgetCoordinator {
 }
 
 export const WidgetCoordinator = forwardRef<HTMLDivElement, WidgetCoordinator>(({ name, _id: id, draggable, editMode, props: passInProps }, ref) => {
-  const { dashboardName } = useContext(DashboardContext);
-
   // TODO: Configurable
   const [configurable, setConfigurable] = useState(false);
 

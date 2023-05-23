@@ -5,8 +5,8 @@ import { library } from '@/app/bind';
 import { useCallback } from 'react';
 import { useWatchItemFields } from '@/packages/ui/hooks/bind/hooks';
 
-export default function Page () {
-  const id = decodeURIComponent(useParams()!.id as string);
+export default function Page ({ params }: any) {
+  const id = decodeURIComponent(params.id);
   const { name, props } = useWatchItemFields('library', id, ['name', 'props']);
 
   return (

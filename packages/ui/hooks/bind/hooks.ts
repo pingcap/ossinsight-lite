@@ -162,12 +162,12 @@ export function useWatchReactiveValueField<V, Path extends keyof V> (item: React
         oldValue = newPathValue;
       }
     });
-return () => {
-  unsubscribe.unsubscribe();
-};
-}, [item]);
+    return () => {
+      unsubscribe.unsubscribe();
+    };
+  }, [item]);
 
-return value;
+  return value;
 }
 
 export function useWatchItem<K extends CollectionBindKey> (type: K, id: KeyType): CollectionBindValue<K> {
@@ -185,6 +185,30 @@ export function useWatchItemField<K extends CollectionBindKey, Path extends keyo
 
 function defaultCompare (l: any, r: any, k: any): boolean {
   return Object.is(l[k], r[k]);
+}
+
+export function useWatchReactiveItemFields<T, Path extends keyof T> (reactiveValue: ReactiveValue<T>, paths: Path[], compareFn: ComparePath<Pick<T, Path>, Path> = defaultCompare): Pick<T, Path> {
+  const [fields, setFields] = useState(pick(reactiveValue.current, paths));
+
+  useEffect(() => {
+    let staledItem: Pick<T, Path> = pick(reactiveValue.current, paths);
+
+    const unsubscribe = reactiveValue.subscribe(newItem => {
+      let updated = false;
+      for (let i = 0; i < paths.length; i++) {
+        if (!compareFn(staledItem, newItem, paths[i])) {
+          updated = true;
+        }
+      }
+      if (updated) {
+        staledItem = pick(newItem, paths);
+        setFields(staledItem);
+      }
+    });
+    return () => unsubscribe.unsubscribe();
+  }, [reactiveValue]);
+
+  return fields;
 }
 
 export function useWatchItemFields<K extends CollectionBindKey, Path extends keyof CollectionBindValue<K>> (target: K, id: KeyType, paths: Path[], compareFn: ComparePath<Pick<CollectionBindValue<K>, Path>, Path> = defaultCompare): Pick<CollectionBindValue<K>, Path> {

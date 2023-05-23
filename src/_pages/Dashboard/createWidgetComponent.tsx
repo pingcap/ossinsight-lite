@@ -16,6 +16,7 @@ import { useNullableDashboardItems } from '../../core/dashboard';
 import { ToolbarMenu } from '@/packages/ui/components/toolbar-menu';
 import DuplicateIcon from '@/src/icons/copy.svg';
 import TrashIcon from '@/src/icons/trash.svg';
+import PaletteIcon from '@/src/icons/palette.svg';
 import { DraggableState } from '@/packages/layout/src/hooks/draggable';
 
 export interface WidgetComponentProps extends ComponentProps, WidgetStateProps {
@@ -58,7 +59,7 @@ export const WidgetComponent = forwardRef<HTMLDivElement, WidgetComponentProps>(
   }
 
   return (
-    <div className={clsx('widget relative rounded-lg shadow bg-white bg-opacity-60 overflow-hidden', className)} {...rest}>
+    <div className={clsx('widget relative rounded-lg bg-white bg-opacity-60 overflow-hidden', className)} {...rest}>
       <Menu name={`widgets.${id}`}>
         <WidgetComponentWrapper
           id={id}
@@ -134,7 +135,12 @@ export function EditingLayer ({ id, editMode, dragging, draggableProps, active, 
             text={<DuplicateIcon fill="currentColor" />}
             action={duplicateAction}
             order={0}
-            disabled={false}
+          />
+          <MenuItem
+            id="styles"
+            text={<PaletteIcon />}
+            href={`/widgets/${encodeURIComponent(id)}/styles`}
+            order={99}
           />
           <MenuItem
             key="delete"
@@ -142,7 +148,6 @@ export function EditingLayer ({ id, editMode, dragging, draggableProps, active, 
             text={<TrashIcon className="text-red-500" />}
             action={deleteAction}
             order={100}
-            disabled={false}
           />
         </ToolbarMenu>
       </div>
