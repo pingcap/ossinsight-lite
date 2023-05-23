@@ -1,9 +1,10 @@
 'use client';
 import { addTrackingRepoAction, deleteTrackingRepoAction } from '@/app/admin/repositories/actions';
-import { experimental_useFormStatus as useFormStatus } from 'react-dom';
 import { ErrorComponent } from 'next/dist/client/components/error-boundary';
 import { withFormErrorBoundary } from '@/src/utils/form';
-import { ButtonHTMLAttributes, InputHTMLAttributes, useTransition } from 'react';
+import { useTransition } from 'react';
+import { ActionError, ActionPending, ActionSucceed, Button, FormControl, Input, ServerActionForm } from '@/src/components/ServerActionForm';
+import { Alert } from '@/src/components/Alert';
 
 export const FormError: ErrorComponent = ({ error }) => {
   return (
@@ -15,55 +16,37 @@ export const FormError: ErrorComponent = ({ error }) => {
 
 export const NewTrackingRepoForm = withFormErrorBoundary(function NewTrackingRepoForm ({ errorChildren, reset }) {
   return (
-    <section>
+    <section className="mt-4">
       <h2>Add new tracking repo</h2>
-      <form action={addTrackingRepoAction} onClick={reset}>
-        <FormStatus />
-        {errorChildren}
-        <Input name="repo_name" placeholder="Input repo name" />
-        <Button type="submit">Add</Button>
-      </form>
+      <ServerActionForm action={addTrackingRepoAction}>
+        <ActionError />
+        <ActionSucceed>
+          <Alert type="success" title="New repo added." />
+        </ActionSucceed>
+        <ActionPending>
+          <Alert type="warning" title="Adding repo..." message="Please do not leave this page." />
+        </ActionPending>
+        <FormControl label="Repo name" name="repo_name">
+          <Input />
+        </FormControl>
+        <div className="form-control">
+          <Button type="submit">Add repo</Button>
+        </div>
+      </ServerActionForm>
     </section>
   );
 }, FormError);
 
-export const DeleteActionButton = withFormErrorBoundary<{ repoName: string }>(function ({ repoName, errorChildren }) {
+export const DeleteActionButton = function ({ repoName }: { repoName: string }) {
   let [isPending, startTransition] = useTransition();
 
   return (
     <button
-      className='inline-flex text-red-600'
+      className="inline-flex text-red-600"
       onClick={() => startTransition(() => deleteTrackingRepoAction(repoName))}
       disabled={isPending}
     >
       {isPending ? 'Deleting...' : 'Delete'}
-      {errorChildren}
     </button>
   );
-}, FormError);
-
-function FormStatus () {
-  const { pending } = useFormStatus();
-
-  return (
-    <>
-      {pending && <div className="bg-blue-200 text-blue-600">Adding...</div>}
-    </>
-  );
-}
-
-function Input (props: InputHTMLAttributes<HTMLInputElement>) {
-  const { pending, data } = useFormStatus();
-
-  return (
-    <input {...props} disabled={props.disabled || pending} />
-  );
-}
-
-function Button (props: ButtonHTMLAttributes<HTMLButtonElement>) {
-  const { pending } = useFormStatus();
-
-  return (
-    <button {...props} disabled={props.disabled || pending} />
-  );
-}
+};

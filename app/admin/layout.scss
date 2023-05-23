@@ -1,6 +1,16 @@
 .ossl-admin {
   font-family: -apple-system, system, sans-serif;
 
+  @apply text-gray-900;
+
+  h2 {
+    @apply font-bold text-3xl mb-4;
+  }
+
+  h3 {
+    @apply font-bold text-xl mb-2;
+  }
+
   .nav-menu {
     li {
       @apply flex items-center;
@@ -39,5 +49,25 @@
 .kv-table {
   tr > *:first-child {
     width: 160px;
+  }
+}
+
+.server-form {
+  @apply flex flex-col gap-4 w-max;
+
+  .form-control {
+    @apply flex flex-col items-start gap-2;
+
+    label {
+      @apply text-sm text-gray-700;
+    }
+
+    input, textarea, select {
+      @apply border px-2 py-0.5 rounded outline-none focus:border-gray-400 transition-colors;
+    }
+
+    button {
+      @apply py-1 px-2 rounded bg-gray-200 text-gray-400 focus:bg-gray-400 focus:text-gray-700  hover:bg-gray-400 hover:text-gray-700 outline-none transition-all;
+    }
   }
 }

@@ -25,6 +25,11 @@ const navs = [
     href: '/admin/import',
   },
   {
+    key: 'account',
+    title: 'Account',
+    href: '/admin/account',
+  },
+  {
     key: 'status',
     title: 'Status',
     href: '/admin/status',

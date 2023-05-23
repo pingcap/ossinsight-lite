@@ -1,0 +1,31 @@
+.alert {
+  @apply p-2 w-full rounded;
+
+  &-info {
+    @apply bg-blue-200 text-blue-600;
+  }
+
+  &-success {
+    @apply bg-green-200 text-green-600;
+  }
+
+  &-warning {
+    @apply bg-yellow-50 text-yellow-600;
+  }
+
+  &-error {
+    @apply bg-red-200 text-red-600;
+  }
+
+  &-title {
+    @apply font-bold;
+
+    &:not(:last-child) {
+      @apply mb-2
+    }
+  }
+
+  &-message {
+    @apply text-sm;
+  }
+}

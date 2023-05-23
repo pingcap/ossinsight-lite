@@ -1,9 +1,9 @@
 'use client';
-import { experimental_useFormStatus as useFormStatus } from 'react-dom';
 import { ErrorComponent } from 'next/dist/client/components/error-boundary';
-import { withFormErrorBoundary } from '@/src/utils/form';
-import { ButtonHTMLAttributes, InputHTMLAttributes, useTransition } from 'react';
+import { useTransition } from 'react';
 import { addDashboardAction, deleteDashboardAction } from '@/app/admin/dashboards/actions';
+import { ActionError, ActionPending, ActionSucceed, Button, FormControl, Input, ServerActionForm } from '@/src/components/ServerActionForm';
+import { Alert } from '@/src/components/Alert';
 
 export const FormError: ErrorComponent = ({ error }) => {
   return (
@@ -13,21 +13,30 @@ export const FormError: ErrorComponent = ({ error }) => {
   );
 };
 
-export const AddDashboardForm = withFormErrorBoundary(function NewTrackingRepoForm ({ errorChildren, reset }) {
+export const AddDashboardForm = function NewTrackingRepoForm () {
   return (
-    <section>
-      <h2>Add new tracking repo</h2>
-      <form action={addDashboardAction} onClick={reset}>
-        <FormStatus />
-        {errorChildren}
-        <Input name="name" placeholder="Input new dashboard name" />
-        <Button type="submit">Add</Button>
-      </form>
+    <section className="mt-4">
+      <h2>Create new dashboard</h2>
+      <ServerActionForm action={addDashboardAction}>
+        <ActionError />
+        <ActionSucceed>
+          <Alert type="success" title="New dashboard added." />
+        </ActionSucceed>
+        <ActionPending>
+          <Alert type="warning" title="Creating dashboard..." message="Please do not leave this page." />
+        </ActionPending>
+        <FormControl label="Dashboard name" name="name">
+          <Input name="name" />
+        </FormControl>
+        <div className="form-control">
+          <Button type="submit">Create Dashboard</Button>
+        </div>
+      </ServerActionForm>
     </section>
   );
-}, FormError);
+};
 
-export const DeleteDashboardButton = withFormErrorBoundary<{ name: string }>(function ({ name, errorChildren }) {
+export const DeleteDashboardButton = function ({ name }: { name: string }) {
   let [isPending, startTransition] = useTransition();
 
   return (
@@ -37,33 +46,6 @@ export const DeleteDashboardButton = withFormErrorBoundary<{ name: string }>(fun
       disabled={isPending}
     >
       {isPending ? 'Deleting...' : 'Delete'}
-      {errorChildren}
     </button>
   );
-}, FormError);
-
-function FormStatus () {
-  const { pending } = useFormStatus();
-
-  return (
-    <>
-      {pending && <div className="bg-blue-200 text-blue-600">Adding...</div>}
-    </>
-  );
-}
-
-function Input (props: InputHTMLAttributes<HTMLInputElement>) {
-  const { pending, data } = useFormStatus();
-
-  return (
-    <input {...props} disabled={props.disabled || pending} />
-  );
-}
-
-function Button (props: ButtonHTMLAttributes<HTMLButtonElement>) {
-  const { pending } = useFormStatus();
-
-  return (
-    <button {...props} disabled={props.disabled || pending} />
-  );
-}
+};
