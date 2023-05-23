@@ -1,9 +1,8 @@
 import './globals.css';
-import React, { ReactNode } from 'react';
 
 export default function RootLayout ({
   children,
-  modal
+  modal,
 }: any) {
 
   return (

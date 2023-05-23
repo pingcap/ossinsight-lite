@@ -40,7 +40,7 @@ ChartJs.register(
 export default function Widget (props: HTMLProps<HTMLDivElement>, ref: ForwardedRef<HTMLDivElement>) {
   return (
     <div {...props} ref={ref} className={clsx(props.className, 'flex flex-col p-4 gap-4 relative font-sketch')}>
-      <div className="flex-1">
+      <div className="flex-1 overflow-hidden">
         <Line
           width="100%"
           height="100%"

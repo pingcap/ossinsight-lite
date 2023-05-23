@@ -51,7 +51,7 @@ export default function ResultDisplay ({ editing = false, portal, visualize, onV
           </button>
         </div>
       )}
-      <div className="flex-1 flex items-center justify-center">
+      <div className="flex-1 flex items-center justify-center overflow-hidden">
         <Suspense fallback="Loading...">
           <Visualize {...visualize} result={result} running={running} />
         </Suspense>
