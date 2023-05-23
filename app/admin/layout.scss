@@ -35,3 +35,9 @@
     @apply bg-gray-100;
   }
 }
+
+.kv-table {
+  tr > *:first-child {
+    width: 160px;
+  }
+}
