@@ -1,14 +1,14 @@
 import { VisualizeType } from './common';
-import { lazy } from 'react';
+import dynamic from 'next/dynamic';
 
-const GaugeVisualizeConfig = lazy(() => import('./GaugeVisualizeConfig'));
-const LineChartVisualizeConfig = lazy(() => import('./LineChartVisualizeConfig'));
-const BarChartVisualizeConfig = lazy(() => import('./BarChartVisualizeConfig'));
+const GaugeVisualizeConfig = dynamic(() => import('./GaugeVisualizeConfig'));
+const LineChartVisualizeConfig = dynamic(() => import('./LineChartVisualizeConfig'));
+const BarChartVisualizeConfig = dynamic(() => import('./BarChartVisualizeConfig'));
 
 export default function VisualizeConfig (props: VisualizeType) {
   switch (props.type) {
     case 'table':
-      return <></>
+      return <></>;
     case 'gauge':
       return <GaugeVisualizeConfig {...props} />;
     case 'chart:line':
