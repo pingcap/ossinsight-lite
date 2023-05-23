@@ -5,7 +5,7 @@ import PlusIcon from '@/src/icons/plus.svg';
 import widgets, { Widget } from '@/src/widgets-manifest';
 import { useLayoutManager } from '@/src/components/WidgetsManager';
 import { useCallback } from 'react';
-import { useDashboardItems, useNullableDashboardItems } from '@/src/core/dashboard';
+import { useNullableDashboardItems } from '@/src/core/dashboard';
 
 export default function DashboardMenuItems ({ dashboardName, editMode, onEditModeUpdate }: { dashboardName: string, editMode: boolean, onEditModeUpdate: Consume<boolean> }) {
   const items = useNullableDashboardItems(dashboardName);

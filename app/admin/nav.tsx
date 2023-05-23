@@ -20,10 +20,15 @@ const navs = [
     href: '/admin/widgets',
   },
   {
+    key: 'import',
+    title: 'Import layout',
+    href: '/admin/import',
+  },
+  {
     key: 'status',
     title: 'Status',
     href: '/admin/status',
-  }
+  },
 ] as const;
 
 export default function Nav () {
@@ -34,7 +39,7 @@ export default function Nav () {
       <NavigationMenu.List>
         <NavigationMenu.Item>
           <NavigationMenu.Link asChild>
-            <Link href='/'>
+            <Link href="/">
               Home
             </Link>
           </NavigationMenu.Link>
