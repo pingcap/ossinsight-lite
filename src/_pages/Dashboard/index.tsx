@@ -91,7 +91,7 @@ function Dashboard ({ dashboardName, editMode }: { dashboardName: string, editMo
       <Suspense>
         <DashboardMenuItems dashboardName={dashboardName} editMode={editMode} onEditModeUpdate={setEditMode} />
       </Suspense>
-      <GridLayout gridSize={[40, 40]} gap={8} className="relative w-screen overflow-x-hidden h-[calc(100vh-40px)]" guideUi={editMode} onDrag={handleDrag}>
+      <GridLayout gridSize={[40, 40]} gap={8} className="relative w-screen h-screen overflow-x-hidden" guideUi={editMode} onDrag={handleDrag}>
         <Components<WidgetStateProps>
           itemIds={itemIds}
           draggable={editMode}

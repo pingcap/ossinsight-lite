@@ -1,4 +1,4 @@
-import { MenuItem, MenuItemSlot } from '@/packages/ui/components/menu';
+import { MenuItem } from '@/packages/ui/components/menu';
 import EditModeSwitch from '@/src/components/EditModeSwitch';
 import { Consume } from '@/packages/ui/hooks/bind/types';
 import PlusIcon from '@/src/icons/plus.svg';
@@ -6,6 +6,7 @@ import widgets, { Widget } from '@/src/widgets-manifest';
 import { useLayoutManager } from '@/src/components/WidgetsManager';
 import { useCallback } from 'react';
 import { useNullableDashboardItems } from '@/src/core/dashboard';
+import CloudDownloadIcon from '@/src/icons/cloud-download.svg';
 
 export default function DashboardMenuItems ({ dashboardName, editMode, onEditModeUpdate }: { dashboardName: string, editMode: boolean, onEditModeUpdate: Consume<boolean> }) {
   const items = useNullableDashboardItems(dashboardName);
@@ -48,12 +49,10 @@ export default function DashboardMenuItems ({ dashboardName, editMode, onEditMod
           })}
         </MenuItem>
       )}
-      <MenuItemSlot id="More">
-        <MenuItem id="EditModeSwitch" order={-1} disabled={false} custom>
-          <EditModeSwitch className="m-1" checked={editMode} onCheckedChange={onEditModeUpdate} />
-        </MenuItem>
-        <MenuItem id="DownloadLayoutJSON" order={100} action={download} text="Download layout.json" />
-      </MenuItemSlot>
+      <MenuItem id="EditModeSwitch" order={10} disabled={false} custom>
+        <EditModeSwitch className="m-1" checked={editMode} onCheckedChange={onEditModeUpdate} />
+      </MenuItem>
+      <MenuItem id="DownloadLayoutJSON" order={100} action={download} text={<CloudDownloadIcon />} />
     </>
   );
 }
