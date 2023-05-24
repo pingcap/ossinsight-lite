@@ -12,6 +12,7 @@ declare module '@ossinsight-lite/ui/hooks/bind' {
     appState: {
       saving: boolean
       routing: boolean
+      fetchingConfig: boolean
     };
 
     currentDashboard: DashboardInstance | null;
@@ -21,6 +22,7 @@ declare module '@ossinsight-lite/ui/hooks/bind' {
 export const appState = singletons.add('appState', {
   saving: false,
   routing: false,
+  fetchingConfig: false,
 });
 
 export const dashboards = collections.add('dashboards');
@@ -178,4 +180,15 @@ async function syncConfig () {
   }
 }
 
-syncConfig().catch(console.error);
+appState.update({
+  ...appState.current,
+  fetchingConfig: true,
+});
+syncConfig()
+  .catch(console.error)
+  .finally(() => {
+    appState.update({
+      ...appState.current,
+      fetchingConfig: false,
+    });
+  });

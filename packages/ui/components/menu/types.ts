@@ -14,6 +14,7 @@ export type LinkSpecialProps = {
   as?: any
   replace?: boolean
   shallow?: boolean
+  prefetch?: boolean
 };
 export type ParentSpecialProps = { parent: true, children: ReactNode };
 export type CustomSpecialProps = { custom: true, children: ReactNode };

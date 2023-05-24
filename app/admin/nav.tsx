@@ -1,7 +1,7 @@
 'use client';
-import { useSelectedLayoutSegments } from 'next/navigation';
-import Link from 'next/link';
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
+import Link from 'next/link';
+import { useSelectedLayoutSegments } from 'next/navigation';
 
 const navs = [
   {
@@ -42,13 +42,6 @@ export default function Nav () {
   return (
     <NavigationMenu.Root orientation="vertical" className="nav-menu">
       <NavigationMenu.List>
-        <NavigationMenu.Item>
-          <NavigationMenu.Link asChild>
-            <Link href="/">
-              Home
-            </Link>
-          </NavigationMenu.Link>
-        </NavigationMenu.Item>
         {navs.map(nav => (
           <NavigationMenu.Item key={nav.key}>
             <NavigationMenu.Link asChild active={first === nav.key}>

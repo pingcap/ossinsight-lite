@@ -35,17 +35,17 @@ export const renderCustomItem: MenuRenderers['renderCustomItem'] = (item) => {
   );
 };
 
-export const renderLinkItem: MenuRenderers['renderLinkItem'] = (item) => {
+export const renderLinkItem: MenuRenderers['renderLinkItem'] = ({ order, id, text, disabled, ...props }) => {
   return (
     <RuiToolbar.Link
-      style={{ order: item.order }}
-      key={item.id}
+      style={{ order: order }}
+      key={id}
       className="p-1 flex items-center justify-center rounded opacity-60 hover:opacity-100 transition-opacity"
       asChild
     >
-      <Link href={item.href} as={item.as} shallow={item.shallow}>
-        {item.text}
-      </Link>
+      {disabled
+        ? <span className="text-gray-400 cursor-not-allowed">{text}</span>
+        : <Link {...props}>{text}</Link>}
     </RuiToolbar.Link>
   );
 };

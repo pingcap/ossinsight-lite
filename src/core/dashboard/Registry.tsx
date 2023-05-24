@@ -1,13 +1,14 @@
-import { singletons } from '@ossinsight-lite/ui/hooks/bind/context';
+import { dashboards } from '@/app/bind';
+import { ReactiveDashboardInstance } from '@/src/core/dashboard/reactive-dashboard-instance';
 import ClientEffect from '@/src/core/dashboard/Registry.client';
 import { DashboardInstance } from '@/src/core/dashboard/type';
-import { ReactiveDashboardInstance } from '@/src/core/dashboard/reactive-dashboard-instance';
-import { dashboards } from '@/app/bind';
-import { Dashboard } from '@/src/types/config';
+import { Dashboard, LibraryItem } from '@/src/types/config';
+import { singletons } from '@ossinsight-lite/ui/hooks/bind/context';
 
 declare module '@ossinsight-lite/ui/hooks/bind' {
   interface CollectionsBindMap {
     dashboards: DashboardInstance;
+    library: LibraryItem;
   }
 
   interface SingletonsBindMap {

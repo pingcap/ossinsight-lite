@@ -1,37 +1,19 @@
 'use client';
 
+import { withSuspense } from '@/packages/ui/utils/suspense';
 import Components from '@ossinsight-lite/layout/src/components/Components';
 import GridLayout from '@ossinsight-lite/layout/src/components/GridLayout';
-import { memo, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { equals, Rect } from '@ossinsight-lite/layout/src/core/types';
 import { readItem, useCollectionKeys } from '@ossinsight-lite/ui/hooks/bind';
-import { WidgetComponent, WidgetStateProps } from './createWidgetComponent';
-import { DashboardContext } from './context';
 import { useOptionalSingleton, useWatchReactiveValueField } from '@ossinsight-lite/ui/hooks/bind/hooks';
-import dynamic from 'next/dynamic';
-import { withSuspense } from '@/packages/ui/utils/suspense';
-import { useRouter } from 'next/navigation';
-import useRefCallback from '@/packages/ui/hooks/ref-callback';
-
-const DashboardMenuItems = dynamic(() => import('./DashboardMenus'), { ssr: false });
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
+import { DashboardContext } from './context';
+import { WidgetComponent, WidgetStateProps } from './createWidgetComponent';
 
 function Dashboard ({ dashboardName, editMode }: { dashboardName: string, editMode: boolean }) {
   /// ========
   /// This component have dirty works.
   /// ========
-
-  const router = useRouter();
-  const setEditMode = useRefCallback((editing: boolean) => {
-    if (editing) {
-      router.replace(`/dashboards/${encodeURIComponent(dashboardName)}/edit`);
-    } else {
-      if (dashboardName === 'default') {
-        router.replace('/');
-      } else {
-        router.replace(`/dashboards/${dashboardName}`);
-      }
-    }
-  });
 
   // Activated widget id for rendering cards.
   const [active, setActive] = useState<string>();
@@ -88,9 +70,6 @@ function Dashboard ({ dashboardName, editMode }: { dashboardName: string, editMo
 
   return (
     <DashboardContext.Provider value={{ dashboardName }}>
-      <Suspense>
-        <DashboardMenuItems dashboardName={dashboardName} editMode={editMode} onEditModeUpdate={setEditMode} />
-      </Suspense>
       <GridLayout gridSize={[40, 40]} gap={8} className="relative w-screen h-screen overflow-x-hidden" guideUi={editMode} onDrag={handleDrag}>
         <Components<WidgetStateProps>
           itemIds={itemIds}

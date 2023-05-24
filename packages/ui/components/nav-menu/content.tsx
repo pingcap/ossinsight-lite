@@ -45,13 +45,13 @@ export const renderCustomItem: MenuRenderers['renderCustomItem'] = (item) => {
   );
 };
 
-export const renderLinkItem: MenuRenderers['renderLinkItem'] = (item) => {
+export const renderLinkItem: MenuRenderers['renderLinkItem'] = ({ order, id, text, disabled, ...props }) => {
   return (
-    <RuiNavigationMenu.Item key={item.id} style={{ order: item.order }}>
+    <RuiNavigationMenu.Item key={id} style={{ order: order }}>
       <RuiNavigationMenu.Link asChild>
-        <Link href={item.href} className="inline-flex p-1">
-          {item.text}
-        </Link>
+        {disabled
+          ? <span className="inline-flex p-1 text-gray-400 cursor-not-allowed">{text}</span>
+          : <Link className="inline-flex p-1" {...props}>{text}</Link>}
       </RuiNavigationMenu.Link>
     </RuiNavigationMenu.Item>
   );

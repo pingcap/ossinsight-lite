@@ -1,7 +1,7 @@
-import { Dashboard as DashboardConfig, Dashboard, ItemReference, LibraryItem, Store } from '@/src/types/config';
+import { ADMIN_DATABASE_NAME } from '@/src/common';
 import { defaultLayoutConfig } from '@/src/components/WidgetsManager/defaults';
+import { Dashboard as DashboardConfig, Dashboard, ItemReference, LibraryItem, Store } from '@/src/types/config';
 import { getDatabaseUri, withConnection } from '@/src/utils/mysql';
-import { ADMIN_DATABASE_NAME } from '@/src/auth';
 
 const uri = getDatabaseUri(ADMIN_DATABASE_NAME);
 
@@ -89,7 +89,7 @@ export async function getAllDashboardNames () {
   }
 
   if (!resolved) {
-    throw new Error('No config found')
+    throw new Error('No config found');
   }
 
   return [store!, resolved] as const;

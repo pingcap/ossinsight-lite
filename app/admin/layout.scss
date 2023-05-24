@@ -17,7 +17,15 @@
     }
 
     a {
-      @apply inline-block w-full p-2 transition-colors font-bold text-gray-400 border-gray-400 data-[active]:text-gray-900 data-[active]:border-r-2 data-[active]:bg-gray-200;
+      @apply inline-block w-full p-2 transition-colors font-bold text-gray-400 border-gray-400;
+
+      &:focus, &:hover {
+        @apply text-gray-500 bg-gray-200 bg-opacity-70 outline-none;
+      }
+
+      &[data-active] {
+        @apply text-gray-900 border-r-2 bg-gray-200;
+      }
     }
   }
 }
