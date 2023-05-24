@@ -1,22 +1,15 @@
-import { sql } from '@/src/utils/mysql';
 import { LibraryItem } from '@/src/types/config';
-import { arrayToReducedMap } from '@/src/utils/collection';
+import { sql } from '@/src/utils/mysql';
+import { groupItemsByCategory } from '@/src/utils/widgets';
 import { notFound } from 'next/navigation';
 
 export async function getWidgets () {
-  const items = await sql<LibraryItem>`
+  return await sql<LibraryItem>`
       SELECT id, widget_name AS name, properties AS props
       FROM library_items
       WHERE widget_name NOT LIKE 'internal:%'
       ORDER BY widget_name, id
   `;
-
-  return arrayToReducedMap(
-    items,
-    'name',
-    (arr, item) => arr.concat(item),
-    () => [] as LibraryItem[],
-  );
 }
 
 export async function addLibraryItem (item: LibraryItem) {

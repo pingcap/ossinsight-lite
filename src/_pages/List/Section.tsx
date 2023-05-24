@@ -20,9 +20,9 @@ function Section ({ name, items, onAdd }: { name: string, items: LibraryItem[], 
       {items.length === 0 && (
         <li className="text-gray-400 text-xl">No widgets</li>
       )}
-      <Suspense>
-        <Add name={name} onAdd={onAdd} />
-      </Suspense>
+      {/*<Suspense>*/}
+      {/*  <Add name={name} onAdd={onAdd} />*/}
+      {/*</Suspense>*/}
     </ul>
   );
 }
@@ -30,8 +30,7 @@ function Section ({ name, items, onAdd }: { name: string, items: LibraryItem[], 
 function Item ({ item: { name, id, props } }: { item: LibraryItem }) {
   return (
     <li className="border border-gray bg-white rounded text-gray-700 flex flex-col gap-4 p-2" key={name}>
-      <h3 className="text-gray-400 text-sm">{id ?? name}</h3>
-      <div className="h-[209px] flex justify-center items-center">
+      <div className="h-[239px] flex flex-col justify-stretch overflow-hidden">
         <Suspense fallback={<div className="w-full h-full flex justify-center items-center gap-2"><LoadingIndicator /> Loading widget...</div>}>
           <Widget className="font-sketch" id={id} name={name} props={props} />
         </Suspense>
@@ -72,25 +71,32 @@ function Widget ({ id, name, className, props }: { id: string | undefined, name:
   const widget = readItem(widgets, name).current;
   const Widget = widget.default;
 
-  let el = <Widget {...props} {...widget.widgetListItemPropsOverwrite} className={clsx('w-full h-full', props.className, widget.widgetListItemPropsOverwrite?.className, className)} />;
+  let el = <Widget {...props} {...widget.widgetListItemPropsOverwrite} className={clsx('flex-1', props.className, widget.widgetListItemPropsOverwrite?.className, className)} />;
   if (getConfigurable(widget)) {
     el = (
-      <Link className="w-full h-full flex justify-center items-center" href={`/widgets/${encodeURIComponent(id ?? name)}/edit`}>
+      <Link className="flex-1 flex items-stretch overflow-hidden" href={`/widgets/${encodeURIComponent(id ?? name)}/edit`}>
         {el}
       </Link>
     );
+  } else {
+    el = (
+      <div className='flex-1 items-stretch'>{el}</div>
+    )
   }
   return (
-    <WidgetContextProvider value={{
-      props,
-      enabled: false,
-      editingLayout: true,
-      onPropChange: () => {},
-      configuring: false,
-      configurable: false,
-    }}>
-      {el}
-    </WidgetContextProvider>
+    <>
+      <h3 className="text-gray-400 text-sm">{props?.visualize?.title ?? widget.displayName}</h3>
+      <WidgetContextProvider value={{
+        props,
+        enabled: false,
+        editingLayout: true,
+        onPropChange: () => {},
+        configuring: false,
+        configurable: false,
+      }}>
+        {el}
+      </WidgetContextProvider>
+    </>
   );
 }
 

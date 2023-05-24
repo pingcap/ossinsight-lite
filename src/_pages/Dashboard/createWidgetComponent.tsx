@@ -8,9 +8,8 @@ import { useWatchItemField, useWatchItemFields } from '@ossinsight-lite/ui/hooks
 import { Consume } from '@ossinsight-lite/ui/hooks/bind/types';
 import useRefCallback from '@ossinsight-lite/ui/hooks/ref-callback';
 import clsx from 'clsx';
-import { Component, ComponentType, forwardRef, ReactElement, Suspense, useContext, useState } from 'react';
+import { ComponentType, forwardRef, ReactElement, Suspense, useContext, useState } from 'react';
 import { useNullableDashboardItems } from '../../core/dashboard';
-import * as layoutComponents from '../../layout-components';
 import widgets from '../../widgets-manifest';
 import { DashboardContext } from './context';
 import { WidgetCoordinator } from './WidgetCoordinator';
