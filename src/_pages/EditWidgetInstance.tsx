@@ -5,6 +5,7 @@ import clsx from 'clsx';
 import WidgetContext from '@ossinsight-lite/ui/context/widget';
 import Link from 'next/link';
 import clientOnly from '@/src/utils/clientOnly';
+import LoadingIndicator from '@/src/components/LoadingIndicator';
 
 export interface EditWidgetInstanceProps {
   name: string;
@@ -35,7 +36,6 @@ function EditWidgetInstance ({ name, props, onPropsChange }: EditWidgetInstanceP
                   editingLayout: false,
                   onPropChange: onPropsChange,
                   props: { ...props, ...module.configurablePropsOverwrite },
-                  configure: '',
                 }}
               >
                 <Component
@@ -68,7 +68,8 @@ function EditWidgetInstance ({ name, props, onPropsChange }: EditWidgetInstanceP
     <div className="w-full h-full">
       <Suspense
         fallback={
-          <div className="w-full h-full flex items-center justify-center text-gray-400 text-lg">
+          <div className="w-full h-full flex items-center justify-center text-gray-400 text-lg gap-2">
+            <LoadingIndicator />
             Widget loading...
           </div>
         }
@@ -80,7 +81,8 @@ function EditWidgetInstance ({ name, props, onPropsChange }: EditWidgetInstanceP
 }
 
 export default clientOnly(EditWidgetInstance, () => (
-  <div className="w-full h-full flex items-center justify-center text-gray-400 text-lg">
+  <div className="w-full h-full flex items-center justify-center text-gray-400 text-lg gap-2">
+    <LoadingIndicator />
     Widget loading...
   </div>
 ));

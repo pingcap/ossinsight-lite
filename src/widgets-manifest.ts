@@ -8,9 +8,11 @@ type WidgetModuleMeta<P = any> = {
   preferredSize?: CSSProperties,
   defaultProps?: Partial<P>,
   configurable?: boolean | ((props: any) => boolean),
+  styleConfigurable?: boolean | ((props: any) => boolean),
   configurablePropsOverwrite?: Partial<P>,
   widgetListItemPropsOverwrite?: Partial<P>,
 }
+
 type WidgetModule<P = any> = {
   default: (props: P & HTMLProps<HTMLDivElement>, ref: ForwardedRef<HTMLDivElement>) => JSX.Element,
 } & WidgetModuleMeta<P>

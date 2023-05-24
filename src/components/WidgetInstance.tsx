@@ -1,7 +1,8 @@
 import widgetsManifest, { ResolvedWidgetModule } from '../widgets-manifest';
-import { forwardRef, lazy, useMemo } from 'react';
+import { forwardRef, useEffect, useMemo, useRef } from 'react';
 import { useWidgetCache } from './WidgetsManager';
 import dynamic from 'next/dynamic';
+import LoadingIndicator from '@/src/components/LoadingIndicator';
 
 export interface WidgetInstanceProps {
   name: string;
@@ -12,10 +13,19 @@ export interface WidgetInstanceProps {
 
 const WidgetInstance = forwardRef<HTMLDivElement, WidgetInstanceProps>(function ({ name, configuring = false, props, onLoad }, ref) {
   const cache = useWidgetCache();
+  const mounted = useRef(true);
+  useEffect(() => {
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
+
   const WidgetComponent = useMemo(() => {
     if (cache[name]) {
       setTimeout(() => {
-        onLoad?.(cache[name]);
+        if (mounted.current) {
+          onLoad?.(cache[name]);
+        }
       }, 0);
       return cache[name].default;
     }
@@ -30,15 +40,17 @@ const WidgetInstance = forwardRef<HTMLDivElement, WidgetInstanceProps>(function 
           ...others,
         };
         setTimeout(() => {
-          onLoad?.(resolvedModule);
+          if (mounted.current) {
+            onLoad?.(resolvedModule);
+          }
         }, 0);
         return Widget;
       }), {
       loading: () => (
-        <div className="w-full h-full flex items-center justify-center text-gray-400">
-          Loading...
+        <div className="w-full h-full flex items-center justify-center text-gray-400 gap-2">
+          <LoadingIndicator /> Loading...
         </div>
-      )
+      ),
     });
   }, [name]);
 

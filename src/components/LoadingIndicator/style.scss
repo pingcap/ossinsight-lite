@@ -1,0 +1,27 @@
+@keyframes loading-indicator-growth {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dashoffset: 28;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes loading-indicator-spin {
+  from {
+    rotate: 0;
+  }
+  to {
+    rotate: 360deg;
+  }
+}
+
+.loading-indicator {
+  &-bar {
+    animation: loading-indicator-growth 4s infinite ease, loading-indicator-spin 0.8s infinite linear;
+    transform-origin: center center;
+  }
+}

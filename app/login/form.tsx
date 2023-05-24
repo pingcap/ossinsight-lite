@@ -1,6 +1,6 @@
 'use client';
-import { withFormErrorBoundary } from '@/src/utils/form';
 import { ErrorComponent } from 'next/dist/client/components/error-boundary';
+import { ActionStateAlerts, Button, FormControl, Input, ServerActionForm } from '@/src/components/ServerActionForm';
 
 const Error: ErrorComponent = ({ error }) => {
   return (
@@ -11,19 +11,17 @@ const Error: ErrorComponent = ({ error }) => {
   );
 };
 
-const LoginForm = withFormErrorBoundary<{ loginAction: (form: FormData) => Promise<void> }>(({ loginAction, errorChildren }) => (
-  <>
-    {errorChildren}
-    <form className="flex flex-col gap-2" action={loginAction}>
-      <input name="username" value="admin" readOnly autoCorrect="no" hidden />
-      <div>
-        <input className="outline-none" name="password" type="password" autoCorrect="no" placeholder="password" />
-      </div>
-      <div>
-        <button className="rounded bg-blue-200 text-blue-900 w-full">Login</button>
-      </div>
-    </form>
-  </>
-), Error);
+const LoginForm = ({ loginAction }: { loginAction: (form: FormData) => Promise<void> }) => (
+  <ServerActionForm action={loginAction}>
+    <ActionStateAlerts />
+    <input name="username" value="admin" readOnly autoCorrect="no" hidden />
+    <FormControl name="password">
+      <Input type="password" autoCorrect="no" placeholder="password" />
+    </FormControl>
+    <div className="form-control">
+      <Button className="w-full">Login</Button>
+    </div>
+  </ServerActionForm>
+);
 
 export default LoginForm;

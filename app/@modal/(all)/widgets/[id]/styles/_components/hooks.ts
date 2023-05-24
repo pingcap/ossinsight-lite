@@ -4,7 +4,7 @@ import { readItem, useWatchReactiveValue } from '@/packages/ui/hooks/bind';
 import { library } from '@/app/bind';
 import { nextValue } from '@/packages/ui/hooks/bind/utils';
 
-type Style = Pick<CSSProperties, 'backgroundColor' | 'justifyContent' | 'alignItems'>
+type Style = Pick<CSSProperties, 'backgroundColor' | 'justifyContent' | 'alignItems' | 'textAlign'>
 
 export function useStyle<K extends keyof Style> (id: string, prop: K, defaultValue: Style[K]) {
   const item = readItem(library, id);

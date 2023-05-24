@@ -1,36 +1,42 @@
-import { ButtonHTMLAttributes, cloneElement, forwardRef, InputHTMLAttributes, ReactElement, ReactNode, SelectHTMLAttributes, TextareaHTMLAttributes, useContext, useId } from 'react';
-import { ServerActionFormContext } from '@/src/components/ServerActionForm/context';
-import { ServerActionFormState } from '@/src/components/ServerActionForm/type';
+import { experimental_useFormStatus as useFormStatus } from 'react-dom';
+import { ButtonHTMLAttributes, cloneElement, forwardRef, InputHTMLAttributes, ReactElement, ReactNode, SelectHTMLAttributes, TextareaHTMLAttributes, useId } from 'react';
+import LoadingIndicator from '@/src/components/LoadingIndicator';
+import clsx from 'clsx';
 
 export const Input = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>>(({ disabled, ...props }, ref) => {
-  const { state } = useContext(ServerActionFormContext);
+  const { pending } = useFormStatus();
 
   return (
-    <input {...props} disabled={state === ServerActionFormState.PENDING || disabled} ref={ref} />
+    <input {...props} disabled={pending || disabled} ref={ref} />
   );
 });
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaHTMLAttributes<HTMLTextAreaElement>>(({ disabled, ...props }, ref) => {
-  const { state } = useContext(ServerActionFormContext);
+  const { pending } = useFormStatus();
 
   return (
-    <textarea {...props} disabled={state === ServerActionFormState.PENDING || disabled} ref={ref} />
+    <textarea {...props} disabled={pending || disabled} ref={ref} />
   );
 });
 
-export const Button = forwardRef<HTMLButtonElement, ButtonHTMLAttributes<HTMLButtonElement>>(({ disabled, ...props }, ref) => {
-  const { state } = useContext(ServerActionFormContext);
+export const Button = forwardRef<HTMLButtonElement, ButtonHTMLAttributes<HTMLButtonElement>>(({ disabled, children, ...props }, ref) => {
+  const { pending } = useFormStatus();
 
   return (
-    <button {...props} disabled={state === ServerActionFormState.PENDING || disabled} ref={ref} />
+    <button {...props} disabled={pending || disabled} ref={ref}>
+      <span>
+        {children}
+      </span>
+      <LoadingIndicator className={clsx('transition-all', pending ? 'w-[1em] opacity-100' : 'w-0 opacity-0')} />
+    </button>
   );
 });
 
 export const Select = forwardRef<HTMLSelectElement, SelectHTMLAttributes<HTMLSelectElement>>(({ disabled, ...props }, ref) => {
-  const { state } = useContext(ServerActionFormContext);
+  const { pending } = useFormStatus();
 
   return (
-    <select {...props} disabled={state === ServerActionFormState.PENDING || disabled} ref={ref} />
+    <select {...props} disabled={pending || disabled} ref={ref} />
   );
 });
 
@@ -45,7 +51,7 @@ export const FormControl = function ({ label, name, children }: FormControlProps
 
   return (
     <div className="form-control">
-      <label htmlFor={children.props.id ?? id}>{label}</label>
+      {label && <label htmlFor={children.props.id ?? id}>{label}</label>}
       {cloneElement(children, { id: children.props.id ?? id, name })}
     </div>
   );

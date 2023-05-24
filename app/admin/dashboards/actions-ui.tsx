@@ -2,7 +2,7 @@
 import { ErrorComponent } from 'next/dist/client/components/error-boundary';
 import { useTransition } from 'react';
 import { addDashboardAction, deleteDashboardAction } from '@/app/admin/dashboards/actions';
-import { ActionError, ActionPending, ActionSucceed, Button, FormControl, Input, ServerActionForm } from '@/src/components/ServerActionForm';
+import { ActionError, ActionPending, ActionStateAlerts, ActionSucceed, Button, FormControl, Input, ServerActionForm } from '@/src/components/ServerActionForm';
 import { Alert } from '@/src/components/Alert';
 
 export const FormError: ErrorComponent = ({ error }) => {
@@ -18,13 +18,10 @@ export const AddDashboardForm = function NewTrackingRepoForm () {
     <section className="mt-4">
       <h2>Create new dashboard</h2>
       <ServerActionForm action={addDashboardAction}>
-        <ActionError />
-        <ActionSucceed>
-          <Alert type="success" title="New dashboard added." />
-        </ActionSucceed>
-        <ActionPending>
-          <Alert type="warning" title="Creating dashboard..." message="Please do not leave this page." />
-        </ActionPending>
+        <ActionStateAlerts
+          success={{ title: 'New dashboard created' }}
+          pending={{ title: 'Creating dashboard', message: 'Please don\'t leave this page.' }}
+        />
         <FormControl label="Dashboard name" name="name">
           <Input name="name" />
         </FormControl>

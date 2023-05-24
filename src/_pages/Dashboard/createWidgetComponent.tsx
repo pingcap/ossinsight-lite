@@ -1,4 +1,4 @@
-import { useWatchItemFields } from '@ossinsight-lite/ui/hooks/bind';
+import { useWatchItemField, useWatchItemFields } from '@ossinsight-lite/ui/hooks/bind';
 import useRefCallback from '@ossinsight-lite/ui/hooks/ref-callback';
 import { MenuItem } from '@ossinsight-lite/ui/components/menu';
 import { Component, ComponentType, forwardRef, ReactElement, Suspense, useContext, useState } from 'react';
@@ -16,7 +16,6 @@ import { useNullableDashboardItems } from '../../core/dashboard';
 import { ToolbarMenu } from '@/packages/ui/components/toolbar-menu';
 import DuplicateIcon from '@/src/icons/copy.svg';
 import TrashIcon from '@/src/icons/trash.svg';
-import PaletteIcon from '@/src/icons/palette.svg';
 import { DraggableState } from '@/packages/layout/src/hooks/draggable';
 
 export interface WidgetComponentProps extends ComponentProps, WidgetStateProps {
@@ -107,6 +106,8 @@ export function EditingLayer ({ id, editMode, dragging, draggableProps, active, 
   const [hover, setHover] = useState(false);
   const { duplicateItem } = useLayoutManager({ dashboardName });
 
+  const name = useWatchItemField('library', id, 'name');
+
   const deleteAction = useRefCallback(() => {
     items?.del(id);
   });
@@ -130,17 +131,27 @@ export function EditingLayer ({ id, editMode, dragging, draggableProps, active, 
           data-layer-item
         >
           <MenuItem
+            key="name"
+            id="WidgetName"
+            order={-1000}
+            custom
+          >
+            <span className='text-sm'>
+              {name}
+            </span>
+          </MenuItem>
+          <MenuItem
+            key="spacer"
+            id="Spacer"
+            order={-500}
+            separator
+          />
+          <MenuItem
             key="duplicate"
             id="duplicate"
             text={<DuplicateIcon fill="currentColor" />}
             action={duplicateAction}
             order={0}
-          />
-          <MenuItem
-            id="styles"
-            text={<PaletteIcon />}
-            href={`/widgets/${encodeURIComponent(id)}/styles`}
-            order={99}
           />
           <MenuItem
             key="delete"

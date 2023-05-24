@@ -13,11 +13,9 @@ import { VisualizeContext } from './visualize/context';
 import { Form } from '@ossinsight-lite/ui/components/form';
 import VisualizeConfig from './visualize/VisualizeConfig';
 import { migrate } from './visualize/guess';
-import { MenuItem } from '@ossinsight-lite/ui/components/menu';
 import WidgetContext from '@ossinsight-lite/ui/context/widget';
 import mergeRefs from '@ossinsight-lite/ui/utils/merge-refs';
 import { getCache, setCache } from './cache';
-import PencilIcon from '../../../icons/twbs/pencil.svg';
 
 export enum WidgetMode {
   EDITOR = 'editor',
@@ -35,7 +33,7 @@ export interface WidgetProps extends HTMLProps<HTMLDivElement> {
 }
 
 export default function Widget ({ defaultSql, defaultDb, sql, currentDb, mode = WidgetMode.EDITOR, visualize, ...props }: WidgetProps, forwardedRef: ForwardedRef<HTMLDivElement>) {
-  const { onPropChange, enabled, configurable, configure } = useContext(WidgetContext);
+  const { onPropChange } = useContext(WidgetContext);
 
   const { size, ref } = useSize<HTMLDivElement>();
   const [openVisualizeDialog, setOpenVisualizeDialog] = useState(false);
@@ -71,11 +69,6 @@ export default function Widget ({ defaultSql, defaultDb, sql, currentDb, mode = 
   if (mode === WidgetMode.VISUALIZATION) {
     return (
       <div {...props} ref={forwardedRef}>
-        {enabled && (
-          <Suspense fallback={<></>}>
-            <MenuItem id="configure" text={<PencilIcon fill='currentColor' />} href={configure} order={1} disabled={!configurable} />
-          </Suspense>
-        )}
         <ResultDisplay visualize={visualize} running={running} error={error} result={result} />
       </div>
     );

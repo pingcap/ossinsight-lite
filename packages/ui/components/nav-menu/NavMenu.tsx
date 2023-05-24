@@ -18,7 +18,7 @@ export function NavMenu ({ name, auto, children, className, ...props }: NavMenuP
           <MenuContent name={name} {...renderers} />
         </NavigationMenu.List>
       </NavigationMenu.Root>
-      <Suspense fallback="children loading">
+      <Suspense>
         {children}
       </Suspense>
     </Menu>

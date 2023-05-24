@@ -47,7 +47,12 @@ export function useConfig () {
 
 export type { LayoutItem } from '../../types/config';
 
-const WidgetCacheContext = createContext<Record<string, any>>({});
+const globalCache = {}
+const WidgetCacheContext = createContext<Record<string, any>>(globalCache);
+
+export function clearWidgetCache () {
+  Object.keys(globalCache).forEach((key: any) => delete (globalCache as any)[key])
+}
 
 export function useWidgetCache () {
   return useContext(WidgetCacheContext);

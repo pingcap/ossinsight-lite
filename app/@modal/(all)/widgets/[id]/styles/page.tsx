@@ -7,6 +7,7 @@ import BackgroundColorPicker from '@/app/@modal/(all)/widgets/[id]/styles/_compo
 import { JustifyContentSwitch } from '@/app/@modal/(all)/widgets/[id]/styles/_components/justifyContent';
 import './_components/style.scss';
 import { AlignItemsSwitch } from '@/app/@modal/(all)/widgets/[id]/styles/_components/alignItems';
+import { TextAlignSwitch } from '@/app/@modal/(all)/widgets/[id]/styles/_components/textAlign';
 
 export default function Page ({ params }: any) {
   const id = decodeURIComponent(params.id);
@@ -17,6 +18,7 @@ export default function Page ({ params }: any) {
       <div className="flex gap-2">
         <BackgroundColorPicker id={id} />
         <div className="p-2 flex flex-col gap-2">
+          <TextAlignSwitch id={id} />
           <JustifyContentSwitch id={id} />
           <AlignItemsSwitch id={id} />
         </div>

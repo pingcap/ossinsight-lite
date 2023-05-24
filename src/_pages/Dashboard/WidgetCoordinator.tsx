@@ -1,11 +1,13 @@
 import { ResolvedWidgetModule } from '../../widgets-manifest';
-import { forwardRef, useMemo, useState } from 'react';
+import { forwardRef, useEffect, useRef, useState } from 'react';
 import WidgetInstance from '../../components/WidgetInstance';
 import { useUpdater, useWatchItemFields } from '@ossinsight-lite/ui/hooks/bind';
 import useRefCallback from '@ossinsight-lite/ui/hooks/ref-callback';
 import { WidgetContextProvider } from '../../components/WidgetContext';
-import { usePathname } from 'next/navigation';
-import { getConfigurable } from '@/src/utils/widgets';
+import { getConfigurable, getStyleConfigurable } from '@/src/utils/widgets';
+import PaletteIcon from '@/src/icons/palette.svg';
+import PencilIcon from '@/src/icons/pencil.svg';
+import { MenuItem } from '@/packages/ui/components/menu';
 
 export interface WidgetCoordinator {
   name: string;
@@ -16,23 +18,14 @@ export interface WidgetCoordinator {
 }
 
 export const WidgetCoordinator = forwardRef<HTMLDivElement, WidgetCoordinator>(({ name, _id: id, draggable, editMode, props: passInProps }, ref) => {
-  // TODO: Configurable
+  const mountedRef = useRef(true);
+  const [styleConfigurable, setStyleConfigurable] = useState(false);
   const [configurable, setConfigurable] = useState(false);
-
-  const pathname = usePathname();
 
   const { props: watchingProps } = useWatchItemFields('library', id, ['props']);
   const updater = useUpdater('library', id);
 
   const props = { ...passInProps, ...watchingProps };
-
-  const configureHref = useMemo(() => {
-    const escapedId = encodeURIComponent(id);
-    if (!pathname) {
-      return '';
-    }
-    return `/widgets/${escapedId}/edit`;
-  }, [pathname]);
 
   const onPropChange = useRefCallback((key: string, value: any) => {
     updater((item) => {
@@ -41,8 +34,17 @@ export const WidgetCoordinator = forwardRef<HTMLDivElement, WidgetCoordinator>((
     });
   });
 
+  useEffect(() => {
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
+
   const onModuleLoad = useRefCallback((module: ResolvedWidgetModule) => {
-    setConfigurable(getConfigurable(module, props));
+    if (mountedRef.current) {
+      setConfigurable(getConfigurable(module, props));
+      setStyleConfigurable(getStyleConfigurable(module, props));
+    }
   });
 
   return (
@@ -53,11 +55,16 @@ export const WidgetCoordinator = forwardRef<HTMLDivElement, WidgetCoordinator>((
         configurable,
         onPropChange,
         props,
-        configure: configureHref,
         configuring: false,
       }}
     >
       <WidgetInstance name={name} ref={ref} props={props} configuring={false} onLoad={onModuleLoad} />
+      {styleConfigurable && (
+        <MenuItem id="styles" text={<PaletteIcon />} href={`/widgets/${encodeURIComponent(id)}/styles`} order={99} />
+      )}
+      {configurable && (
+        <MenuItem id="configure" text={<PencilIcon fill="currentColor" />} href={`/widgets/${encodeURIComponent(id)}/edit`} order={1} disabled={!configurable} />
+      )}
     </WidgetContextProvider>
   );
 });

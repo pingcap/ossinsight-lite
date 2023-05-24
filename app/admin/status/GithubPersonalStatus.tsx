@@ -1,6 +1,7 @@
 import { getDatabaseUri, withConnection } from '@/src/utils/mysql';
 import config from '@/.osswrc.json';
 import { Suspense, use } from 'react';
+import LoadingIndicator from '@/src/components/LoadingIndicator';
 
 const db = config.db.find(db => db.display === 'github-personal')!;
 const dbName = process.env[db.env] || db.database;
@@ -25,7 +26,7 @@ export default function GithubPersonalStatus () {
             Schema Version
           </td>
           <td>
-            <Suspense fallback={'loading...'}><SchemaVersion /></Suspense>
+            <Suspense fallback={<LoadingIndicator />}><SchemaVersion /></Suspense>
           </td>
         </tr>
         <tr>
@@ -33,7 +34,7 @@ export default function GithubPersonalStatus () {
             Current User
           </td>
           <td>
-            <Suspense fallback={'loading...'}><CurrentUser /></Suspense>
+            <Suspense fallback={<LoadingIndicator />}><CurrentUser /></Suspense>
           </td>
         </tr>
         </tbody>

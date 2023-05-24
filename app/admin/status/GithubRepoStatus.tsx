@@ -1,6 +1,7 @@
 import { getDatabaseUri, withConnection } from '@/src/utils/mysql';
 import config from '@/.osswrc.json';
 import { Suspense, use } from 'react';
+import LoadingIndicator from '@/src/components/LoadingIndicator';
 
 const db = config.db.find(db => db.display === 'github-repo')!;
 const dbName = process.env[db.env] || db.database;
@@ -25,7 +26,7 @@ export default function GithubRepoStatus () {
             Schema Version
           </td>
           <td>
-            <Suspense fallback={'loading...'}><SchemaVersion /></Suspense>
+            <Suspense fallback={<LoadingIndicator />}><SchemaVersion /></Suspense>
           </td>
         </tr>
         <tr>
@@ -33,7 +34,7 @@ export default function GithubRepoStatus () {
             Current tracking repos
           </td>
           <td>
-            <Suspense fallback={'loading...'}><CurrentTrackingRepos /></Suspense>
+            <Suspense fallback={<LoadingIndicator />}><CurrentTrackingRepos /></Suspense>
           </td>
         </tr>
         </tbody>
@@ -45,7 +46,7 @@ export default function GithubRepoStatus () {
 function CurrentTrackingRepos () {
   const rows = use(withConnection(getDatabaseUri(dbName), async ({ sql }) => (
     sql<{ full_name: string }>`SELECT full_name
-                           FROM repo_full_name_configs;`
+                               FROM repo_full_name_configs;`
   )));
 
   return <b>{rows.map(row => row.full_name).join(', ')}</b>;
@@ -60,5 +61,5 @@ function SchemaVersion () {
         LIMIT 1;`
   )));
 
-  return <b>{rows[0].version}</b>
+  return <b>{rows[0].version}</b>;
 }

@@ -1,10 +1,8 @@
 'use client';
 import { addTrackingRepoAction, deleteTrackingRepoAction } from '@/app/admin/repositories/actions';
 import { ErrorComponent } from 'next/dist/client/components/error-boundary';
-import { withFormErrorBoundary } from '@/src/utils/form';
 import { useTransition } from 'react';
-import { ActionError, ActionPending, ActionSucceed, Button, FormControl, Input, ServerActionForm } from '@/src/components/ServerActionForm';
-import { Alert } from '@/src/components/Alert';
+import { ActionStateAlerts, Button, FormControl, Input, ServerActionForm } from '@/src/components/ServerActionForm';
 
 export const FormError: ErrorComponent = ({ error }) => {
   return (
@@ -14,18 +12,15 @@ export const FormError: ErrorComponent = ({ error }) => {
   );
 };
 
-export const NewTrackingRepoForm = withFormErrorBoundary(function NewTrackingRepoForm ({ errorChildren, reset }) {
+export const NewTrackingRepoForm = function NewTrackingRepoForm ({}) {
   return (
     <section className="mt-4">
       <h2>Add new tracking repo</h2>
       <ServerActionForm action={addTrackingRepoAction}>
-        <ActionError />
-        <ActionSucceed>
-          <Alert type="success" title="New repo added." />
-        </ActionSucceed>
-        <ActionPending>
-          <Alert type="warning" title="Adding repo..." message="Please do not leave this page." />
-        </ActionPending>
+        <ActionStateAlerts
+          success={{ title: 'New tracking repo added' }}
+          pending={{ title: 'Adding tracking repo', message: 'Please don\'t leave this page.' }}
+        />
         <FormControl label="Repo name" name="repo_name">
           <Input />
         </FormControl>
@@ -35,7 +30,7 @@ export const NewTrackingRepoForm = withFormErrorBoundary(function NewTrackingRep
       </ServerActionForm>
     </section>
   );
-}, FormError);
+};
 
 export const DeleteActionButton = function ({ repoName }: { repoName: string }) {
   let [isPending, startTransition] = useTransition();

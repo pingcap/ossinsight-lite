@@ -8,6 +8,7 @@ import PlusIcon from '@/src/icons/plus.svg';
 import { WidgetContextProvider } from '@/src/components/WidgetContext';
 import Link from 'next/link';
 import clsx from 'clsx';
+import LoadingIndicator from '@/src/components/LoadingIndicator';
 
 function Section ({ name, items, onAdd }: { name: string, items: LibraryItem[], onAdd: (item: LibraryItem) => Promise<any> }) {
   return (
@@ -28,7 +29,7 @@ function Item ({ item: { name, id, props } }: { item: LibraryItem }) {
     <li className="border border-gray bg-white rounded text-gray-700 flex flex-col gap-4 p-2" key={name}>
       <h3 className="text-gray-400 text-sm">{id ?? name}</h3>
       <div className="h-[209px] flex justify-center items-center">
-        <Widget className='font-sketch' id={id} name={name} props={props} />
+        <Widget className="font-sketch" id={id} name={name} props={props} />
       </div>
     </li>
   );
@@ -84,7 +85,6 @@ function Widget ({ id, name, className, props }: { id: string | undefined, name:
                   editingLayout: true,
                   configurable: false,
                   onPropChange: () => {},
-                  configure: '',
                   configuring: false,
                 }}>
                   <Component {...props} {...module.widgetListItemPropsOverwrite} className={clsx(props.className, module.widgetListItemPropsOverwrite?.className, className)} ref={ref} />
@@ -105,7 +105,7 @@ function Widget ({ id, name, className, props }: { id: string | undefined, name:
   }, [name]);
 
   return (
-    <Suspense fallback="Loading">
+    <Suspense fallback={<div className={clsx('w-full h-full flex justify-center items-center', props?.className)}><LoadingIndicator /></div>}>
       <Component {...props} className={clsx('w-full h-full', props?.className)} />
     </Suspense>
   );
