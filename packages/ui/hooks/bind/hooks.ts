@@ -1,13 +1,17 @@
-import { BiConsume, BindingTypeEvent, CollectionBindKey, CollectionBindValue, Compare, ComparePath, Consume, KeyType, SingletonBindKey, ValueOrGetter } from './types';
-import { SetStateAction, useCallback, useEffect, useState } from 'react';
-import { getValue, pick } from './utils';
-import { collection, collections, readBind, singletons } from './context';
-import { BindBase } from './BindBase';
-import { ReactBindCollection } from './ReactBindCollection';
-import { BindKeyDuplicatedError } from './error';
+import { DependencyList, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
 import { filter, map, Subscription, Unsubscribable } from 'rxjs';
+import useRefCallback from '../ref-callback.ts';
+import { BindBase } from './BindBase';
+import { collection, collections, readBind, singletons } from './context';
+import { BindKeyDuplicatedError } from './error';
+import { ReactBindCollection } from './ReactBindCollection';
 import { ReactiveValue } from './ReactiveValueSubject';
+import { BiConsume, BindingTypeEvent, CollectionBindKey, CollectionBindValue, Compare, ComparePath, Consume, KeyType, SingletonBindKey, ValueOrGetter } from './types';
+import { getValue, pick } from './utils';
 
+/**
+ * @deprecated internal method
+ */
 export function whenReady<BindMap, K extends keyof BindMap, A extends any[]> (bindBase: BindBase<BindMap, A>, key: K, cb: BiConsume<BindMap[K], Subscription>): Subscription {
   const item = bindBase.getNullable(key);
   const subscription = new Subscription();
@@ -25,6 +29,15 @@ export function whenReady<BindMap, K extends keyof BindMap, A extends any[]> (bi
       }));
   }
   return subscription;
+}
+
+export function useWhenReady<BindMap, K extends keyof BindMap, A extends any[]> (bindBase: BindBase<BindMap, A>, key: K, cb: BiConsume<BindMap[K], Subscription>, depList: DependencyList) {
+  useEffect(() => {
+    const sub = whenReady(bindBase, key, cb);
+    return () => {
+      sub.unsubscribe();
+    };
+  }, depList);
 }
 
 function useOptionalBind<BindMap, K extends keyof BindMap, A extends any[]> (bindBase: BindBase<BindMap, A>, type: K): BindMap[K] | null {
@@ -219,4 +232,22 @@ export function useUpdater<K extends CollectionBindKey> (type: K, id: KeyType) {
   return useCallback((value: SetStateAction<CollectionBindValue<K>>) => {
     bind.update(id, value);
   }, [bind, id]);
+}
+
+export function useSafeUpdater<K extends CollectionBindKey> (type: K, id: KeyType) {
+  const bindRef = useRef<ReactBindCollection<CollectionBindValue<K>>>();
+
+  useWhenReady(collections, type, (bind, sub) => {
+    bindRef.current = bind;
+
+    sub.add(() => {
+      bindRef.current = null;
+    });
+  }, [type, id]);
+
+  return useRefCallback((newValue: SetStateAction<CollectionBindValue<K>>) => {
+    if (bindRef.current) {
+      bindRef.current.update(id, newValue);
+    }
+  });
 }

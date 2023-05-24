@@ -1,8 +1,8 @@
+import { MenuItem } from '@/packages/ui/components/menu';
+import LayoutWtfIcon from '@/src/icons/layout-wtf.svg';
+import SlidersIcon from '@/src/icons/sliders.svg';
 import { useRouter } from 'next/navigation';
 import { useCallback } from 'react';
-import { MenuItem } from '@/packages/ui/components/menu';
-import SlidersIcon from '@/src/icons/sliders.svg';
-import LayoutWtfIcon from '@/src/icons/layout-wtf.svg';
 
 const AppMenu = ({ dashboardNames }: { dashboardNames: string[] }) => {
   const router = useRouter();

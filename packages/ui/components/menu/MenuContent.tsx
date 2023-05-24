@@ -1,14 +1,12 @@
 'use client';
-import { collection, useCollectionKeys, useWatchItem } from '../../hooks/bind';
-import { ReactElement, ReactNode } from 'react';
-import { isActionItem, isCustomItem, isLinkItem, isSeparatorItem, MenuActionItemProps, MenuCustomItemProps, MenuLinkItemProps, MenuParentItemProps, MenuSeparatorItemProps } from './types';
-import { KeyType } from '../../hooks/bind/types';
-import { MenuKey } from './Menu';
+import { ReactElement, ReactNode, useContext } from 'react';
 import clientOnly from '../../../../src/utils/clientOnly';
+import { collection, useCollectionKeys, useWatchItem } from '../../hooks/bind';
+import { KeyType } from '../../hooks/bind/types';
+import { MenuContext, MenuDirectItemsContext, MenuKey } from './Menu';
+import { isActionItem, isCustomItem, isLinkItem, isSeparatorItem, MenuActionItemProps, MenuCustomItemProps, MenuItemProps, MenuLinkItemProps, MenuParentItemProps, MenuSeparatorItemProps } from './types';
 
-export interface MenuContentProps {
-
-  name: string;
+export interface MenuRenderers {
 
   renderSeparator (item: MenuSeparatorItemProps): ReactElement;
 
@@ -21,13 +19,35 @@ export interface MenuContentProps {
   renderItem (item: MenuActionItemProps): ReactElement;
 }
 
-export const MenuContent = clientOnly(function (menu: MenuContentProps) {
+export interface MenuContentProps extends DirectItemsProps {
+  name: string;
+  simple: boolean;
+}
+
+export interface DirectItemsProps {
+  items?: ReactNode;
+}
+
+export const MenuContent = clientOnly(function ({ items, simple, name }: MenuContentProps) {
+  const { renderers } = useContext(MenuContext);
+  if (simple) {
+    return (
+      <MenuDirectItemsContext.Provider value={{ direct: true }}>
+        {items}
+      </MenuDirectItemsContext.Provider>
+    );
+  }
+
+  const menu = { ...renderers, simple, name };
   const menuCollection = collection(`menu.${menu.name}`);
   const ids = useCollectionKeys(menuCollection);
 
   return (
     <>
-      {ids.map((id) => <RenderAny key={String(id)} id={id} menuKey={`menu.${menu.name}`} isRoot menu={menu} />)}
+      <MenuDirectItemsContext.Provider value={{ direct: true }}>
+        {items}
+      </MenuDirectItemsContext.Provider>
+      {ids.map((id) => <RenderAny key={String(id)} id={id} menuKey={`menu.${menu.name}`} isRoot menu={menu} renderers={renderers} />)}
     </>
   );
 });
@@ -37,29 +57,44 @@ interface RenderProps {
   menuKey: MenuKey<string>,
   menu: MenuContentProps
   isRoot?: boolean
+  renderers: MenuRenderers
 }
 
-export function RenderAny ({ id, menuKey, menu, isRoot = false }: RenderProps) {
+function RenderAny ({ id, menuKey, menu, isRoot = false, renderers }: RenderProps) {
   const item = useWatchItem(menuKey, id);
 
   if (isCustomItem(item)) {
-    return menu.renderCustomItem(item);
+    return renderers.renderCustomItem(item);
   } else if (isActionItem(item)) {
-    return menu.renderItem(item);
+    return renderers.renderItem(item);
   } else if (isLinkItem(item)) {
-    return menu.renderLinkItem(item);
+    return renderers.renderLinkItem(item);
   } else if (isSeparatorItem(item)) {
-    return menu.renderSeparator(item);
+    return renderers.renderSeparator(item);
   } else {
-    return <RenderParent props={item} menu={menu} menuKey={menuKey} isRoot={isRoot} />;
+    return <RenderParent props={item} menu={menu} menuKey={menuKey} isRoot={isRoot} renderers={renderers} />;
   }
 }
 
-function RenderParent ({ menu, menuKey, props, isRoot }: { menuKey: MenuKey<string>, props: MenuParentItemProps, menu: MenuContentProps, isRoot: boolean }) {
+function RenderParent ({ menu, menuKey, props, isRoot, renderers }: { menuKey: MenuKey<string>, props: MenuParentItemProps, menu: MenuContentProps, isRoot: boolean, renderers: MenuRenderers }) {
   menuKey = `${String(menuKey)}.${props.id}` as MenuKey<string>;
   const keys = useCollectionKeys(collection(menuKey));
 
-  return menu.renderParentItem(props, !isRoot, (
-    <>{keys.map(key => <RenderAny id={key} key={String(key)} menuKey={menuKey} menu={menu} />)}</>
+  return renderers.renderParentItem(props, !isRoot, (
+    <>{keys.map(key => <RenderAny id={key} key={String(key)} menuKey={menuKey} menu={menu} renderers={renderers} />)}</>
   ));
+}
+
+export function renderAny (item: MenuItemProps, renderers: MenuRenderers) {
+  if (isCustomItem(item)) {
+    return renderers.renderCustomItem(item);
+  } else if (isActionItem(item)) {
+    return renderers.renderItem(item);
+  } else if (isLinkItem(item)) {
+    return renderers.renderLinkItem(item);
+  } else if (isSeparatorItem(item)) {
+    return renderers.renderSeparator(item);
+  } else {
+    return renderers.renderParentItem(item, false, item.children);
+  }
 }

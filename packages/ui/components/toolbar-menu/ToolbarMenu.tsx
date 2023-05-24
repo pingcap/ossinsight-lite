@@ -1,23 +1,23 @@
 import * as RuiToolbar from '@radix-ui/react-toolbar';
 import { ToolbarProps } from '@radix-ui/react-toolbar';
-import { MenuContent } from '../menu';
+import clsx from 'clsx';
 import { Suspense } from 'react';
+import { DirectItemsProps, MenuContent } from '../menu';
 import { Menu, MenuProps } from '../menu/Menu';
 import * as renderers from './content';
-import clsx from 'clsx';
 
-export interface ToolbarMenuProps extends MenuProps, ToolbarProps {
+export interface ToolbarMenuProps extends MenuProps, ToolbarProps, DirectItemsProps {
 }
 
-export function ToolbarMenu ({ name, auto, children, ...props }: ToolbarMenuProps) {
+export function ToolbarMenu ({ name, auto, children, items, simple, ...props }: ToolbarMenuProps) {
   return (
-    <Menu name={name} auto={auto}>
+    <Menu name={name} auto={auto} renderers={renderers} simple={simple}>
       <RuiToolbar.Root
         {...props}
         className={clsx('z-[1]', props.className)}
       >
         <Suspense fallback="menu loading">
-          <MenuContent name={name} {...renderers} />
+          <MenuContent name={name} items={items} simple={simple} />
         </Suspense>
       </RuiToolbar.Root>
       <Suspense fallback="children loading">

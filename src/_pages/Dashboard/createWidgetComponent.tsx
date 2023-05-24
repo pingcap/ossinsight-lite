@@ -1,14 +1,20 @@
+import { widgets as widgetsBind } from '@/app/bind-client';
+import { move } from '@/packages/layout/src/core/types';
 import { DraggableState } from '@/packages/layout/src/hooks/draggable';
 import { ToolbarMenu } from '@/packages/ui/components/toolbar-menu';
+import { duplicateItem } from '@/src/components/WidgetsManager';
+import DuplicateIcon from '@/src/icons/copy.svg';
+import PaletteIcon from '@/src/icons/palette.svg';
+import PencilIcon from '@/src/icons/pencil.svg';
 import TrashIcon from '@/src/icons/trash.svg';
+import { getConfigurable, getDuplicable, getStyleConfigurable } from '@/src/utils/widgets';
 import { ComponentProps } from '@ossinsight-lite/layout/src/components/Components';
 import { MenuItem } from '@ossinsight-lite/ui/components/menu';
-import { Menu } from '@ossinsight-lite/ui/components/menu/Menu';
-import { useWatchItemField, useWatchItemFields } from '@ossinsight-lite/ui/hooks/bind';
+import { useWatchItemField, useWatchItemFields, whenReady } from '@ossinsight-lite/ui/hooks/bind';
 import { Consume } from '@ossinsight-lite/ui/hooks/bind/types';
 import useRefCallback from '@ossinsight-lite/ui/hooks/ref-callback';
 import clsx from 'clsx';
-import { ComponentType, forwardRef, ReactElement, Suspense, useContext, useState } from 'react';
+import { ComponentType, forwardRef, ReactElement, Suspense, useContext, useEffect, useState } from 'react';
 import { useNullableDashboardItems } from '../../core/dashboard';
 import widgets from '../../widgets-manifest';
 import { DashboardContext } from './context';
@@ -49,20 +55,18 @@ export const WidgetComponent = forwardRef<HTMLDivElement, WidgetComponentProps>(
 
   return (
     <div className={clsx('widget relative rounded-lg bg-white bg-opacity-60 overflow-hidden', className)} {...rest}>
-      <Menu name={`widgets.${id}`}>
-        <WidgetComponentWrapper
-          id={id}
-          editMode={editMode}
-          dragging={dragging}
-          active={active}
-          onActiveChange={onActiveChange}
-          draggableProps={draggableProps}
-        >
-          <Suspense fallback={<div className="w-full h-full flex items-center justify-center text-xl text-gray-400">Loading</div>}>
-            {el}
-          </Suspense>
-        </WidgetComponentWrapper>
-      </Menu>
+      <WidgetComponentWrapper
+        id={id}
+        editMode={editMode}
+        dragging={dragging}
+        active={active}
+        onActiveChange={onActiveChange}
+        draggableProps={draggableProps}
+      >
+        <Suspense fallback={<div className="w-full h-full flex items-center justify-center text-xl text-gray-400">Loading</div>}>
+          {el}
+        </Suspense>
+      </WidgetComponentWrapper>
     </div>
   );
 });
@@ -96,9 +100,17 @@ export function EditingLayer ({ id, editMode, dragging, draggableProps, active, 
   const [hover, setHover] = useState(false);
 
   const name = useWatchItemField('library', id, 'name');
+  const { configurable, styleConfigurable, duplicable } = useWidgetState(name);
 
   const deleteAction = useRefCallback(() => {
     items?.del(id);
+  });
+
+  const handleDuplicate = useRefCallback(() => {
+    if (!dashboardName) {
+      return;
+    }
+    duplicateItem(dashboardName, id, rect => move(rect, [1, 1]));
   });
 
   return (
@@ -113,18 +125,66 @@ export function EditingLayer ({ id, editMode, dragging, draggableProps, active, 
           onMouseDown={e => console.log(e)}
           name={`widgets.${id}`}
           auto={false}
+          simple
           data-layer-item
+          items={(
+            <>
+              <MenuItem
+                id="delete"
+                text={<TrashIcon className="text-red-500" />}
+                action={deleteAction}
+                order={100}
+              />
+              {duplicable && (
+                <MenuItem
+                  id="duplicate"
+                  text={<DuplicateIcon fill="currentColor" />}
+                  action={handleDuplicate}
+                  order={0}
+                />
+              )}
+              {styleConfigurable && (
+                <MenuItem id="styles" text={<PaletteIcon />} href={`/widgets/${encodeURIComponent(id)}/styles`} order={99} />
+              )}
+              {configurable && (
+                <MenuItem id="configure" text={<PencilIcon fill="currentColor" />} href={`/widgets/${encodeURIComponent(id)}/edit`} order={1} disabled={!configurable} />
+              )}
+            </>
+          )}
         >
-          <MenuItem
-            key="delete"
-            id="delete"
-            text={<TrashIcon className="text-red-500" />}
-            action={deleteAction}
-            order={100}
-          />
         </ToolbarMenu>
       </div>
       <div className="flex-1 justify-stretch cursor-pointer" {...draggableProps} />
     </div>
   );
+}
+
+type WidgetToolbarMenuState = {
+  configurable: boolean
+  duplicable: boolean
+  styleConfigurable: boolean
+}
+
+const fallbackState: WidgetToolbarMenuState = {
+  configurable: false,
+  duplicable: false,
+  styleConfigurable: false,
+};
+
+function useWidgetState (name: string) {
+  const [state, setState] = useState(fallbackState);
+
+  useEffect(() => {
+    const sub = whenReady(widgetsBind, name, (widget) => {
+      setState({
+        configurable: getConfigurable(widget.current),
+        duplicable: getDuplicable(widget.current),
+        styleConfigurable: getStyleConfigurable(widget.current),
+      });
+    });
+
+    return () => sub.unsubscribe();
+  }, [name]);
+
+  return state;
 }

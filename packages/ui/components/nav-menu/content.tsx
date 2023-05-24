@@ -1,13 +1,13 @@
 import * as RuiNavigationMenu from '@radix-ui/react-navigation-menu';
-import { MenuContentProps } from '../menu';
 import clsx from 'clsx';
 import Link from 'next/link';
+import { MenuRenderers } from '../menu';
 
-export const renderSeparator: MenuContentProps['renderSeparator'] = (item) => {
+export const renderSeparator: MenuRenderers['renderSeparator'] = (item) => {
   return <RuiNavigationMenu.Item className="flex-1 h-full" key={item.id} style={{ order: item.order }} />;
 };
 
-export const renderParentItem: MenuContentProps['renderParentItem'] = (item, isSub, children) => {
+export const renderParentItem: MenuRenderers['renderParentItem'] = (item, isSub, children) => {
   return (
     <RuiNavigationMenu.Item key={item.id} style={{ order: item.order }} className="relative">
       <RuiNavigationMenu.Trigger
@@ -27,7 +27,7 @@ export const renderParentItem: MenuContentProps['renderParentItem'] = (item, isS
   );
 };
 
-export const renderItem: MenuContentProps['renderItem'] = (item) => {
+export const renderItem: MenuRenderers['renderItem'] = (item) => {
   return (
     <RuiNavigationMenu.Item key={item.id} style={{ order: item.order }}>
       <RuiNavigationMenu.Trigger onClick={item.action} disabled={item.disabled} className="outline-none bg-transparent transition:colors p-1 cursor-pointer flex justify-between items-center">
@@ -37,7 +37,7 @@ export const renderItem: MenuContentProps['renderItem'] = (item) => {
   );
 };
 
-export const renderCustomItem: MenuContentProps['renderCustomItem'] = (item) => {
+export const renderCustomItem: MenuRenderers['renderCustomItem'] = (item) => {
   return (
     <RuiNavigationMenu.Item key={item.id} style={{ order: item.order }}>
       {item.children}
@@ -45,11 +45,11 @@ export const renderCustomItem: MenuContentProps['renderCustomItem'] = (item) => 
   );
 };
 
-export const renderLinkItem: MenuContentProps['renderLinkItem'] = (item) => {
+export const renderLinkItem: MenuRenderers['renderLinkItem'] = (item) => {
   return (
     <RuiNavigationMenu.Item key={item.id} style={{ order: item.order }}>
       <RuiNavigationMenu.Link asChild>
-        <Link href={item.href} className='inline-flex p-1'>
+        <Link href={item.href} className="inline-flex p-1">
           {item.text}
         </Link>
       </RuiNavigationMenu.Link>

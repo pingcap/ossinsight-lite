@@ -1,9 +1,11 @@
-import { isActionItem, isCustomItem, isParentItem, MenuItemProps } from './types';
 import { useContext, useEffect } from 'react';
-import { MenuContext, MenuKey } from './Menu';
-import { withSuspense } from '../../utils/suspense';
-import { collection, collections, useUpdater } from '../../hooks/bind';
 import clientOnly from '../../../../src/utils/clientOnly';
+import { collections } from '../../hooks/bind';
+import { useSafeUpdater, useWhenReady } from '../../hooks/bind/hooks.ts';
+import { withSuspense } from '../../utils/suspense';
+import { MenuContext, MenuDirectItemsContext, MenuKey } from './Menu';
+import { renderAny } from './MenuContent.tsx';
+import { isActionItem, isCustomItem, isParentItem, MenuItemProps } from './types';
 
 function computeCollectionKey (name: string, parentId: string | undefined): MenuKey<string> {
   if (parentId) {
@@ -22,26 +24,31 @@ function computeParentId (id: string, parentId: string | undefined): string {
 }
 
 export const MenuItem = clientOnly(withSuspense(function MenuItem (props: MenuItemProps) {
-  const { name, parentId } = useContext(MenuContext);
-  const collectionKey = computeCollectionKey(name, parentId);
-  const menuCollection = collection(collectionKey);
-  const updater = useUpdater(collectionKey, props.id);
+  const { direct } = useContext(MenuDirectItemsContext);
+  const { name, parentId, renderers } = useContext(MenuContext);
 
+  if (direct) {
+    return renderAny(props, renderers);
+  }
+
+  const collectionKey = computeCollectionKey(name, parentId);
+  const updater = useSafeUpdater(collectionKey, props.id);
   const isParent = isParentItem(props);
 
-  useEffect(() => {
+  useWhenReady(collections, collectionKey, (menuCollection, sub) => {
     const parentKey: MenuKey<string> = `${collectionKey}.${props.id}`;
     if (isParent) {
       collections.add(parentKey);
     }
     menuCollection.add(props.id, props);
 
-    return () => {
+    sub.add(() => {
       menuCollection.del(props.id);
-      if (isParent) {
-        collections.del(parentKey);
-      }
-    };
+    });
+
+    if (isParent) {
+      collections.del(parentKey);
+    }
   }, [name, props.id, isParent]);
 
   useEffect(() => {
@@ -50,7 +57,7 @@ export const MenuItem = clientOnly(withSuspense(function MenuItem (props: MenuIt
 
   if (isParentItem(props)) {
     return (
-      <MenuContext.Provider value={{ name, parentId: computeParentId(props.id, parentId) }}>
+      <MenuContext.Provider value={{ name, parentId: computeParentId(props.id, parentId), renderers }}>
         {props.children}
       </MenuContext.Provider>
     );

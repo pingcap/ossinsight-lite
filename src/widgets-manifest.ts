@@ -12,7 +12,7 @@ type WidgetModuleMeta<P = any> = {
   defaultProps?: Partial<P>,
   duplicable?: boolean,
   configureComponent?: () => Promise<{ default: (props: P & HTMLProps<HTMLDivElement>, ref: ForwardedRef<HTMLDivElement>) => JSX.Element }>
-  styleConfigurable?: boolean | ((props: any) => boolean),
+  styleConfigurable?: boolean,
   /** @deprecated */
   configurablePropsOverwrite?: Partial<P>,
   /** @deprecated */

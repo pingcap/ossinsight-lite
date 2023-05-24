@@ -1,17 +1,21 @@
 'use client';
-import React, { PropsWithChildren } from 'react';
+import { Menu } from '@/packages/ui/components/menu/Menu';
+import AppMenu from '@/src/AppMenu';
+import { NavMenu } from '@ossinsight-lite/ui/components/nav-menu';
+import React, { PropsWithChildren, Suspense } from 'react';
 
 import WidgetsManager from './components/WidgetsManager';
-import { NavMenu } from '@ossinsight-lite/ui/components/nav-menu';
-import AppMenu from '@/src/AppMenu';
 
 export default function App ({ children, dashboardNames }: PropsWithChildren<{ dashboardNames: string[] }>) {
   return (
     <WidgetsManager>
-      <NavMenu name="nav" className="h-[40px] p-[4px] min-w-[250px]">
-        <AppMenu dashboardNames={dashboardNames} />
-        {children}
-      </NavMenu>
+      <Menu name="nav">
+        <NavMenu auto={false} name="nav" className="h-[40px] p-[4px] min-w-[250px]" items={<AppMenu dashboardNames={dashboardNames} />} />
+
+        <Suspense>
+          {children}
+        </Suspense>
+      </Menu>
     </WidgetsManager>
   );
 }
