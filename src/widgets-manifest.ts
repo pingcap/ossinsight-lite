@@ -1,15 +1,20 @@
 /// IMPORTANT:
 /// This file is a slot, will be actually loaded by buildtool/webpack/loaders/widgets-manifest
 
+import { Rect } from '@/packages/layout/src/core/types';
 import { CSSProperties, ForwardedRef, ForwardRefExoticComponent, HTMLProps } from 'react';
 
 type Widgets = Record<string, Widget>
 type WidgetModuleMeta<P = any> = {
+  /** @deprecated */
   preferredSize?: CSSProperties,
+  defaultRect?: Rect;
   defaultProps?: Partial<P>,
-  configurable?: boolean | ((props: any) => boolean),
+  configureComponent?: () => Promise<{ default: (props: P & HTMLProps<HTMLDivElement>, ref: ForwardedRef<HTMLDivElement>) => JSX.Element }>
   styleConfigurable?: boolean | ((props: any) => boolean),
+  /** @deprecated */
   configurablePropsOverwrite?: Partial<P>,
+  /** @deprecated */
   widgetListItemPropsOverwrite?: Partial<P>,
 }
 

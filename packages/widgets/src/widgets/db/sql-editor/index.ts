@@ -1,6 +1,3 @@
-import { WidgetMode } from './Widget';
-import './index.css';
-
 export { default } from './Widget';
 
 export const preferredSize = {
@@ -17,6 +14,4 @@ export const defaultProps = {
   },
 };
 
-export const configurable = (props) => props.mode !== WidgetMode.EDITOR;
-
-export const configureComponent = () => import('../sql-editor/index')
+export const defaultRect = [0, -6, 18, 13];

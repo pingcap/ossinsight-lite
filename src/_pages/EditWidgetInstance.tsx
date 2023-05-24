@@ -1,11 +1,11 @@
 'use client';
+import LoadingIndicator from '@/src/components/LoadingIndicator';
+import clientOnly from '@/src/utils/clientOnly';
+import WidgetContext from '@ossinsight-lite/ui/context/widget';
+import clsx from 'clsx';
+import Link from 'next/link';
 import { forwardRef, lazy, Suspense, useMemo } from 'react';
 import widgetsManifest from '../widgets-manifest';
-import clsx from 'clsx';
-import WidgetContext from '@ossinsight-lite/ui/context/widget';
-import Link from 'next/link';
-import clientOnly from '@/src/utils/clientOnly';
-import LoadingIndicator from '@/src/components/LoadingIndicator';
 
 export interface EditWidgetInstanceProps {
   name: string;
@@ -24,29 +24,31 @@ function EditWidgetInstance ({ name, props, onPropsChange }: EditWidgetInstanceP
   const Component = useMemo(() => {
     if (widget) {
       return lazy(() => widget.module().then(module => {
-        const Component = forwardRef(module.default);
-        return {
-          default: (props: any) => {
-            return (
-              <WidgetContext.Provider
-                value={{
-                  configurable: false,
-                  configuring: false,
-                  enabled: false,
-                  editingLayout: false,
-                  onPropChange: onPropsChange,
-                  props: { ...props, ...module.configurablePropsOverwrite },
-                }}
-              >
-                <Component
-                  {...props}
-                  {...module.configurablePropsOverwrite}
-                  className={clsx('w-full h-full', module.configurablePropsOverwrite?.className, props.className)}
-                />
-              </WidgetContext.Provider>
-            );
-          },
-        };
+        return module.configureComponent!().then(configureModule => {
+          const Component = forwardRef(configureModule.default);
+          return {
+            default: (props: any) => {
+              return (
+                <WidgetContext.Provider
+                  value={{
+                    configuring: false,
+                    configurable: false,
+                    enabled: false,
+                    editingLayout: false,
+                    onPropChange: onPropsChange,
+                    props: { ...props, ...module.configurablePropsOverwrite },
+                  }}
+                >
+                  <Component
+                    {...props}
+                    {...module.configurablePropsOverwrite}
+                    className={clsx('w-full h-full', module.configurablePropsOverwrite?.className, props.className)}
+                  />
+                </WidgetContext.Provider>
+              );
+            },
+          };
+        });
       }));
     } else {
       return () => {

@@ -1,0 +1,92 @@
+@import "@ossinsight-lite/roughness/fonts/index.css";
+
+@config "../tailwind.config.js";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.draggable.active {
+  z-index: 1;
+  outline: 2px dashed gray;
+}
+
+/* Modal */
+.site-modal {
+  &-overlay {
+    @apply bg-black bg-opacity-70 fixed inset-0;
+
+    &[data-state=open] {
+      // todo: animate-overlayShow
+    }
+  }
+
+  &-content {
+    @apply z-10 bg-white p-4;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+
+    max-height: 85vh;
+    max-width: calc(100vw - 16px);
+    min-width: 600px;
+    height: 100%;
+    width: min-content;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate3d(-50%, -50%, 0);
+
+    box-shadow: hsl(206 22% 7% / 35%) 0 10px 38px -10px, hsl(206 22% 7% / 20%) 0px 10px 20px -15px;
+
+    &:focus {
+      outline: none;
+    }
+
+    @media screen and (min-width: 1080px) {
+      flex-direction: row;
+
+      &.extended {
+        width: 900px;
+      }
+    }
+
+    &[data-state=open] {
+      // todo: animate-contentShow
+    }
+  }
+}
+
+/* Transitions */
+.fade-enter {
+  transform: scale(0.8);
+  opacity: 0;
+}
+
+.fade-enter-active {
+  transition: transform .4s ease, opacity .4s;
+  transform: none;
+  transform-origin: center center;
+  opacity: 1;
+}
+
+.fade-enter-done {
+  transform: none;
+  opacity: 1;
+}
+
+.fade-exit {
+  transform: none;
+  opacity: 1;
+}
+
+.fade-exit-active {
+  transition: transform .4s ease, opacity .4s;
+  transform: scale(0.8);
+  transform-origin: center center;
+  opacity: 0;
+}
+
+.fade-exit-done {
+  transform: scale(0.8);
+  opacity: 0;
+}

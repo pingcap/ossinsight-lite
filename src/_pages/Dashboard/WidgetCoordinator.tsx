@@ -8,6 +8,7 @@ import { getConfigurable, getStyleConfigurable } from '@/src/utils/widgets';
 import PaletteIcon from '@/src/icons/palette.svg';
 import PencilIcon from '@/src/icons/pencil.svg';
 import { MenuItem } from '@/packages/ui/components/menu';
+import { usePathname } from 'next/navigation';
 
 export interface WidgetCoordinator {
   name: string;
@@ -22,6 +23,7 @@ export const WidgetCoordinator = forwardRef<HTMLDivElement, WidgetCoordinator>((
   const [styleConfigurable, setStyleConfigurable] = useState(false);
   const [configurable, setConfigurable] = useState(false);
 
+  const pathname = usePathname();
   const { props: watchingProps } = useWatchItemFields('library', id, ['props']);
   const updater = useUpdater('library', id);
 

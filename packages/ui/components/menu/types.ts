@@ -11,6 +11,9 @@ export type ActionSpecialProps = { action: () => void; };
 export type LinkSpecialProps = {
   // TODO: type not save
   href: any
+  as?: any
+  replace?: boolean
+  shallow?: boolean
 };
 export type ParentSpecialProps = { parent: true, children: ReactNode };
 export type CustomSpecialProps = { custom: true, children: ReactNode };

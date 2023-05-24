@@ -1,22 +1,22 @@
-import { useWatchItemField, useWatchItemFields } from '@ossinsight-lite/ui/hooks/bind';
-import useRefCallback from '@ossinsight-lite/ui/hooks/ref-callback';
-import { MenuItem } from '@ossinsight-lite/ui/components/menu';
-import { Component, ComponentType, forwardRef, ReactElement, Suspense, useContext, useState } from 'react';
-import * as layoutComponents from '../../layout-components';
-import widgets from '../../widgets-manifest';
-import { useLayoutManager } from '../../components/WidgetsManager';
-import { ComponentProps } from '@ossinsight-lite/layout/src/components/Components';
-import { move } from '@ossinsight-lite/layout/src/core/types';
-import clsx from 'clsx';
-import { Menu } from '@ossinsight-lite/ui/components/menu/Menu';
-import { Consume } from '@ossinsight-lite/ui/hooks/bind/types';
-import { DashboardContext } from './context';
-import { WidgetCoordinator } from './WidgetCoordinator';
-import { useNullableDashboardItems } from '../../core/dashboard';
+import { DraggableState } from '@/packages/layout/src/hooks/draggable';
 import { ToolbarMenu } from '@/packages/ui/components/toolbar-menu';
 import DuplicateIcon from '@/src/icons/copy.svg';
 import TrashIcon from '@/src/icons/trash.svg';
-import { DraggableState } from '@/packages/layout/src/hooks/draggable';
+import { ComponentProps } from '@ossinsight-lite/layout/src/components/Components';
+import { move } from '@ossinsight-lite/layout/src/core/types';
+import { MenuItem } from '@ossinsight-lite/ui/components/menu';
+import { Menu } from '@ossinsight-lite/ui/components/menu/Menu';
+import { useWatchItemField, useWatchItemFields } from '@ossinsight-lite/ui/hooks/bind';
+import { Consume } from '@ossinsight-lite/ui/hooks/bind/types';
+import useRefCallback from '@ossinsight-lite/ui/hooks/ref-callback';
+import clsx from 'clsx';
+import { Component, ComponentType, forwardRef, ReactElement, Suspense, useContext, useState } from 'react';
+import { useLayoutManager } from '../../components/WidgetsManager';
+import { useNullableDashboardItems } from '../../core/dashboard';
+import * as layoutComponents from '../../layout-components';
+import widgets from '../../widgets-manifest';
+import { DashboardContext } from './context';
+import { WidgetCoordinator } from './WidgetCoordinator';
 
 export interface WidgetComponentProps extends ComponentProps, WidgetStateProps {
   className?: string;
@@ -51,10 +51,10 @@ export const WidgetComponent = forwardRef<HTMLDivElement, WidgetComponentProps>(
     el = <Component _id={id} {...props} className={clsx('w-full h-full', props.className)} />;
   } else {
     if (!widgets[name]) {
-      throw new Error(`Unknown widget ${name}`);
+      el = <div className="text-sm text-gray-400">Unknown widget {name}, check your repository version.</div>;
+    } else {
+      el = <WidgetCoordinator name={name} _id={id} editMode={editMode} draggable={draggable} props={{ ...props, className: clsx('w-full h-full', props.className) }} ref={ref} />;
     }
-
-    el = <WidgetCoordinator name={name} _id={id} editMode={editMode} draggable={draggable} props={{ ...props, className: clsx('w-full h-full', props.className) }} ref={ref} />;
   }
 
   return (
@@ -136,7 +136,7 @@ export function EditingLayer ({ id, editMode, dragging, draggableProps, active, 
             order={-1000}
             custom
           >
-            <span className='text-sm'>
+            <span className="text-sm">
               {name}
             </span>
           </MenuItem>

@@ -10,7 +10,7 @@ export interface SQLEditorProps {
   onSqlChange?: (sql: string) => void;
 }
 
-export default function SQLEditor ({ sql, defaultSql, onSqlChange }: SQLEditorProps) {
+export function SQLEditor ({ sql, defaultSql, onSqlChange }: SQLEditorProps) {
   return (
     <Editor
       className="h-full w-full"

@@ -1,8 +1,8 @@
-import { createContext } from 'react';
+import { ComponentType, createContext } from 'react';
 
 export type WidgetContextValues = {
   enabled: boolean
-  configurable: boolean
+  configurable: boolean,
   editingLayout: boolean,
   props: any
   configuring: boolean

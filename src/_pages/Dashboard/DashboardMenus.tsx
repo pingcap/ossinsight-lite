@@ -18,18 +18,20 @@ export default function DashboardMenuItems ({ dashboardName, editMode, onEditMod
     }
     widget.module()
       .then((module) => {
+        console.log(module.defaultProps);
+
         if (items.has(name)) {
           const id = `${name}-${Math.round(Date.now() / 1000)}`;
           newItem({
             id,
             name,
-            rect: [0, 0, 8, 3],
+            rect: module.defaultRect ?? [0, 0, 8, 3],
             props: module.defaultProps ?? {},
           });
         } else {
           newItem({
             name,
-            rect: [0, 0, 8, 3],
+            rect: module.defaultRect ?? [0, 0, 8, 3],
             props: module.defaultProps ?? {},
           });
         }

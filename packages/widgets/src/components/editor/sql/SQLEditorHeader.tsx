@@ -39,7 +39,7 @@ config.db.forEach((db) => {
   dbDisplayNames[db.name] = db.display;
 });
 
-export default function SQLEditorHeader ({ currentDb, onCurrentDbChange, onRun, running = false }: SQLEditorHeaderProps) {
+export function SQLEditorHeader ({ currentDb, onCurrentDbChange, onRun, running = false }: SQLEditorHeaderProps) {
   return (
     <Toolbar.Root
       className="flex w-full min-w-max h-12 p-1 px-4 relative"

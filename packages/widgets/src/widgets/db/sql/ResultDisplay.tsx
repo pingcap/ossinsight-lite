@@ -1,13 +1,13 @@
-import { VisualizeType } from './visualize/common';
-import Visualize from './visualize/Visualize';
-import { Suspense } from 'react';
-import { Alert } from '../../../components/alert';
-import ChartTypeToggle from './visualize/ChartTypeToggle';
-import clsx from 'clsx';
 import RoughSvg from '@ossinsight-lite/roughness/components/RoughSvg';
-import SlidersIcon from '../../../icons/twbs/sliders.svg';
 import RoughBox from '@ossinsight-lite/ui/components/roughness/shape/box';
+import clsx from 'clsx';
+import { Suspense } from 'react';
 import colors from 'tailwindcss/colors';
+import { Alert } from '../../../components/alert';
+import ChartTypeToggle from '../../../components/visualize/ChartTypeToggle';
+import { VisualizeType } from '../../../components/visualize/common';
+import Visualize from '../../../components/visualize/Visualize';
+import SlidersIcon from '../../../icons/twbs/sliders.svg';
 
 export interface ResultDisplayProps {
   editing?: boolean;
