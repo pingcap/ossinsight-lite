@@ -1,14 +1,15 @@
 'use client';
-import { LibraryItem } from '@/src/types/config';
-import { forwardRef, lazy, Suspense, useEffect, useMemo, useState, useTransition } from 'react';
-import widgetsManifest from '@/src/widgets-manifest';
-import { getConfigurable } from '@/src/utils/widgets';
+import { widgets } from '@/app/bind-client';
+import { readItem } from '@/packages/ui/hooks/bind';
 import useRefCallback from '@/packages/ui/hooks/ref-callback';
-import PlusIcon from '@/src/icons/plus.svg';
-import { WidgetContextProvider } from '@/src/components/WidgetContext';
-import Link from 'next/link';
-import clsx from 'clsx';
 import LoadingIndicator from '@/src/components/LoadingIndicator';
+import { WidgetContextProvider } from '@/src/components/WidgetContext';
+import PlusIcon from '@/src/icons/plus.svg';
+import { LibraryItem } from '@/src/types/config';
+import { getConfigurable, getDuplicable } from '@/src/utils/widgets';
+import clsx from 'clsx';
+import Link from 'next/link';
+import { Suspense, useTransition } from 'react';
 
 function Section ({ name, items, onAdd }: { name: string, items: LibraryItem[], onAdd: (item: LibraryItem) => Promise<any> }) {
   return (
@@ -19,7 +20,9 @@ function Section ({ name, items, onAdd }: { name: string, items: LibraryItem[], 
       {items.length === 0 && (
         <li className="text-gray-400 text-xl">No widgets</li>
       )}
-      <Add name={name} onAdd={onAdd} />
+      <Suspense>
+        <Add name={name} onAdd={onAdd} />
+      </Suspense>
     </ul>
   );
 }
@@ -29,22 +32,17 @@ function Item ({ item: { name, id, props } }: { item: LibraryItem }) {
     <li className="border border-gray bg-white rounded text-gray-700 flex flex-col gap-4 p-2" key={name}>
       <h3 className="text-gray-400 text-sm">{id ?? name}</h3>
       <div className="h-[209px] flex justify-center items-center">
-        <Widget className="font-sketch" id={id} name={name} props={props} />
+        <Suspense fallback={<div className="w-full h-full flex justify-center items-center gap-2"><LoadingIndicator /> Loading widget...</div>}>
+          <Widget className="font-sketch" id={id} name={name} props={props} />
+        </Suspense>
       </div>
     </li>
   );
 }
 
 function Add ({ name, onAdd }: { name: string, onAdd: (item: LibraryItem) => Promise<void> }) {
+  const widget = readItem(widgets, name).current;
   let [isPending, startTransition] = useTransition();
-  const [configurable, setConfigurable] = useState(false);
-  const [defaultProps, setDefaultProps] = useState<any>();
-  useEffect(() => {
-    widgetsManifest[name].module().then(module => {
-      setConfigurable(getConfigurable(module));
-      setDefaultProps(module.defaultProps);
-    });
-  }, [name]);
 
   const handleAdd = useRefCallback(() => {
     startTransition(() => {
@@ -52,12 +50,12 @@ function Add ({ name, onAdd }: { name: string, onAdd: (item: LibraryItem) => Pro
       void onAdd({
         id,
         name,
-        props: defaultProps,
+        props: widget.defaultProps,
       });
     });
   });
 
-  if (configurable) {
+  if (getDuplicable(widget)) {
     return (
       <li className="border-4 border-dashed rounded text-gray-400 p-2 transition-colors hover:text-gray-700 hover:border-gray-500">
         <button className="flex w-full justify-center items-center h-[263px]" onClick={handleAdd}>
@@ -71,43 +69,28 @@ function Add ({ name, onAdd }: { name: string, onAdd: (item: LibraryItem) => Pro
 }
 
 function Widget ({ id, name, className, props }: { id: string | undefined, name: string, className: string, props: any }) {
-  const Component = useMemo(() => {
-    return lazy(() => widgetsManifest[name].module().then(module => {
-      const Component = forwardRef(module.default);
+  const widget = readItem(widgets, name).current;
+  const Widget = widget.default;
 
-      return {
-        default: forwardRef((props, ref) => {
-            const el =
-              (
-                <WidgetContextProvider value={{
-                  props,
-                  enabled: false,
-                  editingLayout: true,
-                  onPropChange: () => {},
-                  configuring: false,
-                  configurable: false,
-                }}>
-                  <Component {...props} {...module.widgetListItemPropsOverwrite} className={clsx(props.className, module.widgetListItemPropsOverwrite?.className, className)} ref={ref} />
-                </WidgetContextProvider>
-              );
-            if (getConfigurable(module, props)) {
-              return (
-                <Link className="w-full h-full flex justify-center items-center" href={`/widgets/${encodeURIComponent(id ?? name)}/edit`}>
-                  {el}
-                </Link>
-              );
-            }
-            return el;
-          },
-        ),
-      };
-    }));
-  }, [name]);
-
+  let el = <Widget {...props} {...widget.widgetListItemPropsOverwrite} className={clsx('w-full h-full', props.className, widget.widgetListItemPropsOverwrite?.className, className)} />;
+  if (getConfigurable(widget)) {
+    el = (
+      <Link className="w-full h-full flex justify-center items-center" href={`/widgets/${encodeURIComponent(id ?? name)}/edit`}>
+        {el}
+      </Link>
+    );
+  }
   return (
-    <Suspense fallback={<div className={clsx('w-full h-full flex justify-center items-center', props?.className)}><LoadingIndicator /></div>}>
-      <Component {...props} className={clsx('w-full h-full', props?.className)} />
-    </Suspense>
+    <WidgetContextProvider value={{
+      props,
+      enabled: false,
+      editingLayout: true,
+      onPropChange: () => {},
+      configuring: false,
+      configurable: false,
+    }}>
+      {el}
+    </WidgetContextProvider>
   );
 }
 

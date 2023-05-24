@@ -1,8 +1,8 @@
 import { filter, firstValueFrom, map, Observable, Subject, Subscription, Unsubscribable } from 'rxjs';
-import { BindingTypeEvent, Consume, Disposable, KeyType, PureCallback } from './types';
+import { isDev } from '../../utils/dev';
 import { BindKeyDuplicatedError, BindKeyNotExistsError } from './error';
 import { ReactiveValueSubject } from './ReactiveValueSubject';
-import { isDev } from '../../utils/dev';
+import { BindingTypeEvent, Consume, Disposable, KeyType, PureCallback } from './types';
 
 type TypedEntry<MapType, K extends keyof MapType> = [K, MapType[K]];
 
@@ -41,6 +41,7 @@ class BindBaseSubject<T> extends Subject<T> {
 export abstract class BindBase<BindMap, InitialArgs extends any[] = []> {
   protected readonly _store: TypedMap<BindMap> = new Map();
   protected readonly _pendingStore: TypedMap<{ [P in keyof BindMap]: Promise<BindMap[P]> }> = new Map();
+  protected readonly _predefinedStore: TypedMap<{ [P in keyof BindMap]: () => Promise<InitialArgs> }> = new Map();
   protected readonly _eventBus = new BindBaseSubject<GeneralEvent<keyof BindMap, BindMap[keyof BindMap]>>(() => this._active);
   protected readonly _loaded = new ReactiveValueSubject<boolean>(true);
 
@@ -80,15 +81,25 @@ export abstract class BindBase<BindMap, InitialArgs extends any[] = []> {
         }, 5000);
       }
 
-      this._pendingStore.set(type, ab = firstValueFrom(this._eventBus
-        .pipe(filter(([_, thisType, event]) => {
+      const pb = this._predefinedStore.get(type);
+      if (pb != null) {
+        this._pendingStore.set(type, ab = pb().then(initArgs => {
           if (isDev) {
             clearTimeout(h);
           }
-          return event === BindingTypeEvent.CREATED && type === thisType;
-        }))
-        .pipe(map(([bind]) => bind as BindMap[K])),
-      ));
+          return this.add(type, ...initArgs);
+        }));
+      } else {
+        this._pendingStore.set(type, ab = firstValueFrom(this._eventBus
+          .pipe(filter(([_, thisType, event]) => {
+            if (isDev) {
+              clearTimeout(h);
+            }
+            return event === BindingTypeEvent.CREATED && type === thisType;
+          }))
+          .pipe(map(([bind]) => bind as BindMap[K])),
+        ));
+      }
     }
     return ab;
   }
@@ -114,6 +125,10 @@ export abstract class BindBase<BindMap, InitialArgs extends any[] = []> {
     this._pendingStore.delete(key);
     this._eventBus.next([value, key, BindingTypeEvent.CREATED]);
     return value;
+  }
+
+  define<K extends keyof BindMap> (key: K, getArgs: () => Promise<InitialArgs>) {
+    this._predefinedStore.set(key, getArgs);
   }
 
   has (key: keyof BindMap) {

@@ -1,9 +1,7 @@
 import { DraggableState } from '@/packages/layout/src/hooks/draggable';
 import { ToolbarMenu } from '@/packages/ui/components/toolbar-menu';
-import DuplicateIcon from '@/src/icons/copy.svg';
 import TrashIcon from '@/src/icons/trash.svg';
 import { ComponentProps } from '@ossinsight-lite/layout/src/components/Components';
-import { move } from '@ossinsight-lite/layout/src/core/types';
 import { MenuItem } from '@ossinsight-lite/ui/components/menu';
 import { Menu } from '@ossinsight-lite/ui/components/menu/Menu';
 import { useWatchItemField, useWatchItemFields } from '@ossinsight-lite/ui/hooks/bind';
@@ -11,7 +9,6 @@ import { Consume } from '@ossinsight-lite/ui/hooks/bind/types';
 import useRefCallback from '@ossinsight-lite/ui/hooks/ref-callback';
 import clsx from 'clsx';
 import { Component, ComponentType, forwardRef, ReactElement, Suspense, useContext, useState } from 'react';
-import { useLayoutManager } from '../../components/WidgetsManager';
 import { useNullableDashboardItems } from '../../core/dashboard';
 import * as layoutComponents from '../../layout-components';
 import widgets from '../../widgets-manifest';
@@ -20,6 +17,7 @@ import { WidgetCoordinator } from './WidgetCoordinator';
 
 export interface WidgetComponentProps extends ComponentProps, WidgetStateProps {
   className?: string;
+  dashboardName?: string;
 }
 
 export interface WidgetStateProps {
@@ -35,7 +33,7 @@ const internalCache: Record<string, ResolvedComponentType> = {};
 export const WidgetComponent = forwardRef<HTMLDivElement, WidgetComponentProps>(({ ...componentProps }, ref) => {
   let el: ReactElement;
 
-  const { id, draggable, dragging, draggableProps, editMode, active, onActiveChange, className, ...rest } = componentProps;
+  const { id, draggable, dragging, draggableProps, editMode, active, onActiveChange, className, dashboardName, ...rest } = componentProps;
 
   const { props: itemProps, name } = useWatchItemFields('library', id, ['name', 'props']);
   const props = { ...rest, ...itemProps };
@@ -53,7 +51,7 @@ export const WidgetComponent = forwardRef<HTMLDivElement, WidgetComponentProps>(
     if (!widgets[name]) {
       el = <div className="text-sm text-gray-400">Unknown widget {name}, check your repository version.</div>;
     } else {
-      el = <WidgetCoordinator name={name} _id={id} editMode={editMode} draggable={draggable} props={{ ...props, className: clsx('w-full h-full', props.className) }} ref={ref} />;
+      el = <WidgetCoordinator dashboardName={dashboardName} name={name} _id={id} editMode={editMode} draggable={draggable} props={{ ...props, className: clsx('w-full h-full', props.className) }} ref={ref} />;
     }
   }
 
@@ -104,16 +102,11 @@ export function EditingLayer ({ id, editMode, dragging, draggableProps, active, 
   const { dashboardName } = useContext(DashboardContext);
   const items = useNullableDashboardItems(dashboardName);
   const [hover, setHover] = useState(false);
-  const { duplicateItem } = useLayoutManager({ dashboardName });
 
   const name = useWatchItemField('library', id, 'name');
 
   const deleteAction = useRefCallback(() => {
     items?.del(id);
-  });
-
-  const duplicateAction = useRefCallback(() => {
-    duplicateItem(id, rect => move(rect, [1, 1]));
   });
 
   return (
@@ -145,13 +138,6 @@ export function EditingLayer ({ id, editMode, dragging, draggableProps, active, 
             id="Spacer"
             order={-500}
             separator
-          />
-          <MenuItem
-            key="duplicate"
-            id="duplicate"
-            text={<DuplicateIcon fill="currentColor" />}
-            action={duplicateAction}
-            order={0}
           />
           <MenuItem
             key="delete"

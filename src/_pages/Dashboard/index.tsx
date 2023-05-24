@@ -100,6 +100,7 @@ function Dashboard ({ dashboardName, editMode }: { dashboardName: string, editMo
           updateRect={updateRect}
           commonProps={id => ({
             editMode,
+            dashboardName,
             active: active === id,
             wrapperClassName: active === id ? 'active' : undefined,
             onActiveChange: (open) => {

@@ -1,16 +1,16 @@
 'use client';
 
+import { dashboards, library } from '@/app/bind';
+import { defaultLayoutConfig } from '@/src/components/WidgetsManager/defaults';
 import { Rect } from '@ossinsight-lite/layout/src/core/types';
-import { createContext, PropsWithChildren, useCallback, useContext, useState } from 'react';
-import layout from '@ossinsight-lite/widgets/layout.json';
-import useRefCallback from '@ossinsight-lite/ui/hooks/ref-callback';
 import { ReactBindCollections } from '@ossinsight-lite/ui/hooks/bind';
 import { Fixup, Version } from '@ossinsight-lite/ui/hooks/migration';
+import useRefCallback from '@ossinsight-lite/ui/hooks/ref-callback';
+import layout from '@ossinsight-lite/widgets/layout.json';
+import { createContext, PropsWithChildren, useCallback, useContext, useState } from 'react';
+import { useNullableDashboardItems } from '../../core/dashboard';
 import type { LayoutConfigV0, LayoutConfigV1, LayoutItem, SavingFlags } from '../../types/config';
 import { LibraryItem } from '../../types/config';
-import { useNullableDashboardItems } from '../../core/dashboard';
-import { defaultLayoutConfig } from '@/src/components/WidgetsManager/defaults';
-import { dashboards, library } from '@/app/bind';
 
 declare module '@ossinsight-lite/ui/hooks/bind' {
   interface CollectionsBindMap {
@@ -47,17 +47,6 @@ export function useConfig () {
 
 export type { LayoutItem } from '../../types/config';
 
-const globalCache = {}
-const WidgetCacheContext = createContext<Record<string, any>>(globalCache);
-
-export function clearWidgetCache () {
-  Object.keys(globalCache).forEach((key: any) => delete (globalCache as any)[key])
-}
-
-export function useWidgetCache () {
-  return useContext(WidgetCacheContext);
-}
-
 export function toConfigV1 (currentConfig: LayoutConfigV1 | undefined, collections: ReactBindCollections): LayoutConfigV1 {
 
   return {
@@ -75,30 +64,6 @@ export function toConfigV1 (currentConfig: LayoutConfigV1 | undefined, collectio
 
 export function useLayoutManager ({ dashboardName }: { dashboardName: string }) {
   const dashboard = useNullableDashboardItems(dashboardName);
-
-  const duplicateItem = useCallback((id: string, rect: (rect: Rect) => Rect, props?: (props: any) => any) => {
-    if (!dashboard) {
-      return;
-    }
-    const subject = library.getNullable(id);
-    const position = dashboard.getNullable(id);
-    if (subject && position) {
-      const prev = subject.current;
-      const prevRect: Rect = [...position.current.rect];
-      const prevProps = cloneJson(prev.props);
-      const newItem = {
-        id: `${prev.name}-${Math.round(Date.now() / 1000)}`,
-        name: prev.name,
-        props: cloneJson(props?.(prevProps) ?? prevProps),
-      };
-      const newPosition = {
-        id: newItem.id,
-        rect: [...(rect?.(prevRect) ?? prevRect)] as Rect,
-      };
-      library.add(newItem.id, newItem);
-      dashboard.add(newItem.id, newPosition);
-    }
-  }, []);
 
   const newItem = useCallback(({ rect, ...item }: LayoutItem) => {
     if (!dashboard) {
@@ -121,7 +86,7 @@ export function useLayoutManager ({ dashboardName }: { dashboardName: string }) 
     a.click();
   });
 
-  return { download, duplicateItem, newItem };
+  return { download, newItem };
 }
 
 const layoutVersions: Version[] = [
@@ -181,4 +146,29 @@ function cloneJson<T> (val: T): T {
     return JSON.parse(JSON.stringify(val));
   }
   return val;
+}
+
+export function duplicateItem (dashboardName: string, id: string, rect: (rect: Rect) => Rect, props?: (props: any) => any) {
+  const dashboard = dashboards.getNullable(dashboardName)?.current.items;
+  if (!dashboard) {
+    return;
+  }
+  const subject = library.getNullable(id);
+  const position = dashboard.getNullable(id);
+  if (subject && position) {
+    const prev = subject.current;
+    const prevRect: Rect = [...position.current.rect];
+    const prevProps = cloneJson(prev.props);
+    const newItem = {
+      id: `${prev.name}-${Math.round(Date.now() / 1000)}`,
+      name: prev.name,
+      props: cloneJson(props?.(prevProps) ?? prevProps),
+    };
+    const newPosition = {
+      id: newItem.id,
+      rect: [...(rect?.(prevRect) ?? prevRect)] as Rect,
+    };
+    library.add(newItem.id, newItem);
+    dashboard.add(newItem.id, newPosition);
+  }
 }

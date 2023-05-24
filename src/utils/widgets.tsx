@@ -1,6 +1,6 @@
 import { WidgetModuleMeta } from '../widgets-manifest';
 
-export function getConfigurable (module: WidgetModuleMeta, props?: any) {
+export function getConfigurable (module: WidgetModuleMeta) {
   return !!module.configureComponent;
 }
 
@@ -10,4 +10,8 @@ export function getStyleConfigurable (module: WidgetModuleMeta, props?: any) {
     return configurable({ ...module.defaultProps, ...props });
   }
   return configurable ?? false;
+}
+
+export function getDuplicable (module: WidgetModuleMeta) {
+  return module.duplicable ?? false;
 }

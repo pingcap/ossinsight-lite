@@ -17,6 +17,6 @@ export const defaultProps = {
   },
 };
 
-export const configurable = (props) => props.mode !== WidgetMode.EDITOR;
-
 export const configureComponent = () => import('../sql-editor/index')
+
+export const duplicable = true;

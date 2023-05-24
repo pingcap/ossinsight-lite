@@ -1,11 +1,13 @@
 'use client';
+import { widgets } from '@/app/bind-client';
+import { readItem } from '@/packages/ui/hooks/bind';
 import LoadingIndicator from '@/src/components/LoadingIndicator';
 import clientOnly from '@/src/utils/clientOnly';
 import WidgetContext from '@ossinsight-lite/ui/context/widget';
 import clsx from 'clsx';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { forwardRef, lazy, Suspense, useMemo } from 'react';
-import widgetsManifest from '../widgets-manifest';
 
 export interface EditWidgetInstanceProps {
   name: string;
@@ -14,71 +16,34 @@ export interface EditWidgetInstanceProps {
 }
 
 function EditWidgetInstance ({ name, props, onPropsChange }: EditWidgetInstanceProps) {
-  const widget = useMemo(() => {
-    if (!name) {
-      return undefined;
+  const widget = readItem(widgets, name).current;
+  const Widget = useMemo(() => {
+    const fn = widget.configureComponent;
+    if (!fn) {
+      return () => <div>Widget is not configurable.</div>;
     }
-    return widgetsManifest[name];
-  }, [name]);
-
-  const Component = useMemo(() => {
-    if (widget) {
-      return lazy(() => widget.module().then(module => {
-        return module.configureComponent!().then(configureModule => {
-          const Component = forwardRef(configureModule.default);
-          return {
-            default: (props: any) => {
-              return (
-                <WidgetContext.Provider
-                  value={{
-                    configuring: false,
-                    configurable: false,
-                    enabled: false,
-                    editingLayout: false,
-                    onPropChange: onPropsChange,
-                    props: { ...props, ...module.configurablePropsOverwrite },
-                  }}
-                >
-                  <Component
-                    {...props}
-                    {...module.configurablePropsOverwrite}
-                    className={clsx('w-full h-full', module.configurablePropsOverwrite?.className, props.className)}
-                  />
-                </WidgetContext.Provider>
-              );
-            },
-          };
-        });
-      }));
-    } else {
-      return () => {
-        return <div>No such widget</div>;
-      };
-    }
+    return dynamic(async () => {
+      return forwardRef((await fn()).default);
+    });
   }, [widget]);
 
-  if (!name) {
-    return (
-      <div className="flex items-center justify-center h-screen text-xl text-gray-700 gap-4">
-        Widget not found
-        <Link href="/">HOME</Link>
-      </div>
-    );
-  }
-
   return (
-    <div className="w-full h-full">
-      <Suspense
-        fallback={
-          <div className="w-full h-full flex items-center justify-center text-gray-400 text-lg gap-2">
-            <LoadingIndicator />
-            Widget loading...
-          </div>
-        }
-      >
-        <Component {...props} />
-      </Suspense>
-    </div>
+    <WidgetContext.Provider
+      value={{
+        configuring: false,
+        configurable: false,
+        enabled: false,
+        editingLayout: false,
+        onPropChange: onPropsChange,
+        props: { ...props, ...widget.configurablePropsOverwrite },
+      }}
+    >
+      <Widget
+        {...props}
+        {...widget.configurablePropsOverwrite}
+        className={clsx('w-full h-full', widget.configurablePropsOverwrite?.className, props.className)}
+      />
+    </WidgetContext.Provider>
   );
 }
 
