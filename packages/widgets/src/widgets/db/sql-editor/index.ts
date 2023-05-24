@@ -15,3 +15,6 @@ export const defaultProps = {
 };
 
 export const defaultRect = [0, -6, 18, 13];
+
+export const category = 'SQL';
+export const displayName = 'Free Editor';

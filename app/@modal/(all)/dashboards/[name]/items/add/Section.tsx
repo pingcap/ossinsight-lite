@@ -14,13 +14,13 @@ export default function Section ({ dashboardName, name, items }: { dashboardName
   return (
     <section className="mt-8">
       <h3 className="mb-2 text-xl text-gray-700">
-        Widget Type: <b>{name}</b>
+        <b>{name}</b>
       </h3>
       <ul className="grid grid-cols-2 gap-4 p-4">
         {items.map(item => (
           <li
             key={item.id ?? item.name}
-            className="h-[209px] flex border rounded justify-center items-center gap-2 bg-white shadow-none hover:shadow cursor-pointer transition-all"
+            className="h-[239px] flex border rounded justify-center items-center gap-2 bg-white shadow-none hover:shadow cursor-pointer transition-all overflow-hidden"
           >
             <Suspense fallback={<><LoadingIndicator />Widget loading</>}>
               <Item item={item} dashboardName={dashboardName} />
@@ -35,7 +35,6 @@ export default function Section ({ dashboardName, name, items }: { dashboardName
 function Item ({ item, dashboardName }: { dashboardName: string, item: LibraryItem }) {
   const widget = readItem(widgets, item.name).current;
   const Widget = widget.default;
-  const router = useRouter();
 
   const { closeModal } = useContext(ModalContext);
 
@@ -56,8 +55,9 @@ function Item ({ item, dashboardName }: { dashboardName: string, item: LibraryIt
   });
 
   return (
-    <div className="w-full h-full" onClick={handleAdd}>
-      <Widget {...item.props} className={clsx('pointer-events-none w-full h-full', item.props?.className)} />
+    <div className="w-full h-full flex flex-col justify-stretch" onClick={handleAdd}>
+      <h4 className='p-1 text-center text-sm text-gray-400'>{item.props?.visualize?.title || widget.displayName}</h4>
+      <Widget {...item.props} className={clsx('pointer-events-none flex-1', item.props?.className)} />
     </div>
   );
 }

@@ -17,6 +17,9 @@ type WidgetModuleMeta<P = any> = {
   configurablePropsOverwrite?: Partial<P>,
   /** @deprecated */
   widgetListItemPropsOverwrite?: Partial<P>,
+
+  category?: string
+  displayName?: string
 }
 
 type WidgetModule<P = any> = {
@@ -24,7 +27,10 @@ type WidgetModule<P = any> = {
 } & WidgetModuleMeta<P>
 type ResolvedWidgetModule<P = any> = {
   default: ForwardRefExoticComponent<P & HTMLProps<HTMLDivElement>>
-} & WidgetModuleMeta<P>
+} & WidgetModuleMeta<P> & {
+  category: string
+  displayName: string
+}
 
 type Widget = {
   module: () => Promise<WidgetModule>

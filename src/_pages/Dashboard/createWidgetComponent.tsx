@@ -117,22 +117,6 @@ export function EditingLayer ({ id, editMode, dragging, draggableProps, active, 
           data-layer-item
         >
           <MenuItem
-            key="name"
-            id="WidgetName"
-            order={-1000}
-            custom
-          >
-            <span className="text-sm">
-              {name}
-            </span>
-          </MenuItem>
-          <MenuItem
-            key="spacer"
-            id="Spacer"
-            order={-500}
-            separator
-          />
-          <MenuItem
             key="delete"
             id="delete"
             text={<TrashIcon className="text-red-500" />}

@@ -20,3 +20,7 @@ export const defaultProps = {
 export const configureComponent = () => import('../sql-editor/index')
 
 export const duplicable = true;
+
+export const category = 'SQL';
+
+export const displayName = 'Chart';

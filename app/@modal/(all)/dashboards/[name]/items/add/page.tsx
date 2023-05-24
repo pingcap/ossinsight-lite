@@ -1,34 +1,39 @@
 'use client';
 import { dashboards, library } from '@/app/bind';
-import { groupBy } from '@/src/utils/collection';
+import { widgets } from '@/app/bind-client';
+import { LibraryItem } from '@/src/types/config';
+import { ResolvedWidgetModule } from '@/src/widgets-manifest';
 import { useMemo } from 'react';
 import Section from './Section';
 
 export default async function Page ({ params }: any) {
   const dashboardName = decodeURIComponent(params.name);
 
-  const dashboard = dashboards.getNullable(dashboardName)?.current
+  const dashboard = dashboards.getNullable(dashboardName)?.current;
 
   const items = useMemo(() => {
     return library.values.filter(item => {
       if (!dashboard) {
-        return false
+        return false;
       }
-      return !dashboard.items.has(item.id ?? item.name)
-    })
-  }, [])
+      return !dashboard.items.has(item.id ?? item.name);
+    });
+  }, []);
 
-  // SQL request cached across navigations, see https://github.com/vercel/next.js/issues/42991
-  //
-  // const items = await sql<LibraryItem>`
-  //     SELECT id, widget_name AS name, properties AS props
-  //     FROM library_items
-  //     WHERE id NOT IN (SELECT item_id
-  //                      FROM dashboard_items
-  //                      WHERE dashboard_name = ${dashboardName})
-  // `;
+  const names = Array.from(new Set(items.map(item => item.name)));
+  const resolvedWidgets = (await Promise.all(names.map(name => widgets.get(name)))).map(w => w.current);
 
-  const map = groupBy(items, 'name');
+  const widgetsMap: Record<string, ResolvedWidgetModule> = {};
+  for (let i = 0; i < names.length; i++) {
+    widgetsMap[names[i]] = resolvedWidgets[i];
+  }
+
+  const map = items.reduce((map, item) => {
+    const category = widgetsMap[item.name]!.category;
+    map[category] ||= [];
+    map[category].push(item);
+    return map;
+  }, {} as Record<string, LibraryItem[]>);
 
   return (
     <div className="font-sketch">

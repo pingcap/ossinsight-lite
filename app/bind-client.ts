@@ -17,6 +17,8 @@ for (let [name, widget] of Object.entries(widgetsManifest)) {
     return [{
       ...rawModule,
       default: forwardRef(rawModule.default),
+      category: rawModule.category ?? 'Common',
+      displayName: rawModule.displayName ?? name,
     } as ResolvedWidgetModule];
   });
 }
@@ -25,5 +27,7 @@ for (let [name, render] of Object.entries(internals)) {
   widgets.add(`internal:${name}`, {
     default: forwardRef(render),
     styleConfigurable: true,
+    category: 'built-in',
+    displayName: name + ' (Deprecated)',
   } satisfies ResolvedWidgetModule);
 }

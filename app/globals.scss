@@ -22,10 +22,7 @@
 
   &-content {
     @apply z-10 bg-white p-4;
-    display: flex;
-    flex-direction: column;
     overflow-y: auto;
-    align-items: center;
 
     max-height: 85vh;
     max-width: calc(100vw - 16px);
@@ -41,14 +38,6 @@
 
     &:focus {
       outline: none;
-    }
-
-    @media screen and (min-width: 1080px) {
-      flex-direction: row;
-
-      &.extended {
-        width: 900px;
-      }
     }
 
     &[data-state=open] {
