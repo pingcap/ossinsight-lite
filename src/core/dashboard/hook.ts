@@ -10,13 +10,6 @@ export function useDashboard (name: string) {
 
   return useWatchReactiveValue(dashboard);
 }
-
-export function useDashboardItems (name: string) {
-  const dashboard = useDashboard(name);
-
-  return dashboard.items;
-}
-
 export function useNullableDashboardItems (name: string) {
   const lastValid = useRef<ReactBindCollection<ItemReference>>();
   const dashboard: ReactiveValue<DashboardInstance> | undefined | null = dashboards.getNullable(name);

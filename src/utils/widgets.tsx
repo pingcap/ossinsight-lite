@@ -1,6 +1,6 @@
 import { widgets } from '@/app/bind-client';
-import { LibraryItem } from '@/src/types/config';
-import { ResolvedWidgetModule, WidgetModuleMeta } from '../widgets-manifest';
+import type { LibraryItem } from '@/src/types/config';
+import type { ResolvedWidgetModule, WidgetModuleMeta } from '../widgets-manifest';
 
 export function getConfigurable (module: WidgetModuleMeta) {
   return !!module.configureComponent;
