@@ -1,5 +1,6 @@
-import { getDashboards } from '@/app/admin/dashboards/op';
 import { AddDashboardForm, DeleteDashboardButton } from '@/app/admin/dashboards/actions-ui';
+import { getDashboards } from '@/app/admin/dashboards/op';
+import Link from 'next/link';
 
 export default async function () {
   const dashboards = await getDashboards();
@@ -18,7 +19,11 @@ export default async function () {
           <tr key={item.name}>
             <td>{item.name}</td>
             <td>
-              {item.name !== 'default' && <DeleteDashboardButton name={item.name} />}
+              <div className="flex gap-2 items-center">
+                <Link href={item.name === 'default' ? `/` : `/dashboards/${item.name}`}>Visit</Link>
+                <Link href={`/dashboards/${item.name}/edit`}>Edit</Link>
+                {item.name !== 'default' && <DeleteDashboardButton name={item.name} />}
+              </div>
             </td>
           </tr>
         ))}

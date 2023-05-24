@@ -1,8 +1,11 @@
 import { ComponentType, createContext } from 'react';
 
 export type WidgetContextValues = {
+  /** deprecated */
   enabled: boolean
+  /** deprecated */
   configurable: boolean,
+  /** deprecated */
   editingLayout: boolean,
   props: any
   configuring: boolean

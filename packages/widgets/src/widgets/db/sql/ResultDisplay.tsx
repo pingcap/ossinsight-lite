@@ -14,13 +14,14 @@ export interface ResultDisplayProps {
   result?: any;
   running?: boolean;
   error?: unknown;
+  configuring?: boolean;
   visualize?: VisualizeType;
   onVisualizeTypeChange?: (type: VisualizeType['type']) => void;
   onClickVisualizeOptions?: () => void;
   portal?: HTMLDivElement | null;
 }
 
-export default function ResultDisplay ({ editing = false, portal, visualize, onVisualizeTypeChange, onClickVisualizeOptions, result, running, error }: ResultDisplayProps) {
+export default function ResultDisplay ({ editing = false, configuring, portal, visualize, onVisualizeTypeChange, onClickVisualizeOptions, result, running, error }: ResultDisplayProps) {
   if (error) {
     return (
       <div className="w-full h-full flex items-center justify-center p-4">
@@ -35,7 +36,7 @@ export default function ResultDisplay ({ editing = false, portal, visualize, onV
       {editing && (
         <div className="flex gap-2 p-1">
           <ChartTypeToggle value={visualize.type} onChange={onVisualizeTypeChange} />
-          <button
+          {!configuring && <button
             className={clsx('relative text-gray-700 text-sm p-2 ml-auto')}
             disabled={running}
             onClick={onClickVisualizeOptions}
@@ -48,7 +49,7 @@ export default function ResultDisplay ({ editing = false, portal, visualize, onV
             </span>
 
             <RoughBox color={colors.gray['400']} />
-          </button>
+          </button>}
         </div>
       )}
       <div className="flex-1 flex items-center justify-center overflow-hidden">

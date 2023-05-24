@@ -1,6 +1,7 @@
-import { VisualizeType } from './common';
 import dynamic from 'next/dynamic';
+import { VisualizeType } from './common';
 
+const TableVisualizeConfig = dynamic(() => import('./TableVisualizeConfig'));
 const GaugeVisualizeConfig = dynamic(() => import('./GaugeVisualizeConfig'));
 const LineChartVisualizeConfig = dynamic(() => import('./LineChartVisualizeConfig'));
 const BarChartVisualizeConfig = dynamic(() => import('./BarChartVisualizeConfig'));
@@ -8,7 +9,7 @@ const BarChartVisualizeConfig = dynamic(() => import('./BarChartVisualizeConfig'
 export default function VisualizeConfig (props: VisualizeType) {
   switch (props.type) {
     case 'table':
-      return <></>;
+      return <TableVisualizeConfig {...props} />;
     case 'gauge':
       return <GaugeVisualizeConfig {...props} />;
     case 'chart:line':

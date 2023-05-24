@@ -30,7 +30,7 @@ function EditWidgetInstance ({ name, props, onPropsChange }: EditWidgetInstanceP
   return (
     <WidgetContext.Provider
       value={{
-        configuring: false,
+        configuring: true,
         configurable: false,
         enabled: false,
         editingLayout: false,
