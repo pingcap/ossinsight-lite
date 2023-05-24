@@ -39,14 +39,7 @@ export const WidgetComponent = forwardRef<HTMLDivElement, WidgetComponentProps>(
   const props = { ...rest, ...itemProps };
 
   if (name.startsWith('internal:')) {
-    let Component: ResolvedComponentType;
-    const componentName = name.split(':')[1];
-
-    Component = internalCache[componentName];
-    if (!Component) {
-      Component = internalCache[componentName] = forwardRef((layoutComponents as any)[componentName]);
-    }
-    el = <Component _id={id} {...props} className={clsx('w-full h-full', props.className)} />;
+    el = <WidgetCoordinator dashboardName={dashboardName} name={name} _id={id} editMode={editMode} draggable={draggable} props={{ ...props, className: clsx('w-full h-full', props.className) }} ref={ref} />;
   } else {
     if (!widgets[name]) {
       el = <div className="text-sm text-gray-400">Unknown widget {name}, check your repository version.</div>;

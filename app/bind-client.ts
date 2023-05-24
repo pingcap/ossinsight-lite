@@ -1,4 +1,5 @@
 import { collections } from '@/packages/ui/hooks/bind';
+import * as internals from '@/src/layout-components';
 import widgetsManifest, { ResolvedWidgetModule } from '@/src/widgets-manifest';
 import { forwardRef } from 'react';
 
@@ -18,4 +19,11 @@ for (let [name, widget] of Object.entries(widgetsManifest)) {
       default: forwardRef(rawModule.default),
     } as ResolvedWidgetModule];
   });
+}
+
+for (let [name, render] of Object.entries(internals)) {
+  widgets.add(`internal:${name}`, {
+    default: forwardRef(render),
+    styleConfigurable: true,
+  } satisfies ResolvedWidgetModule);
 }

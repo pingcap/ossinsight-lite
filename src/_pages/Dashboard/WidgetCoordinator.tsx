@@ -22,7 +22,7 @@ export interface WidgetCoordinator {
 
 export const WidgetCoordinator = forwardRef<HTMLDivElement, WidgetCoordinator>(({ dashboardName, name, _id: id, draggable, editMode, props: passInProps }, ref) => {
   const widget = readItem(widgets, name).current;
-  const styleConfigurable = useMemo(() => getStyleConfigurable(widget), [passInProps]);
+  const styleConfigurable = useMemo(() => getStyleConfigurable(widget), [widget, passInProps]);
   const configurable = getConfigurable(widget);
   const duplicable = getDuplicable(widget);
 

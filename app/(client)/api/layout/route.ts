@@ -1,3 +1,4 @@
+import { revalidatePath } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
 import { merge } from '@/src/core/commands';
 import { ADMIN_DATABASE_NAME, authenticateApiGuard } from '@/src/auth';
@@ -63,6 +64,8 @@ export async function POST (req: NextRequest) {
   } catch {
     success = false;
   }
+
+  revalidatePath('/dashboards/:*/items/add');
 
   return NextResponse.json({ tidb: success });
 }

@@ -18,8 +18,6 @@ export default function DashboardMenuItems ({ dashboardName, editMode, onEditMod
     }
     widget.module()
       .then((module) => {
-        console.log(module.defaultProps);
-
         if (items.has(name)) {
           const id = `${name}-${Math.round(Date.now() / 1000)}`;
           newItem({
@@ -41,15 +39,7 @@ export default function DashboardMenuItems ({ dashboardName, editMode, onEditMod
   return (
     <>
       {editMode && (
-        <MenuItem text={<PlusIcon width={20} height={20} />} id="new" order={2} disabled={false} parent>
-          {Object.entries(widgets).map(([k, v], index) => {
-            return (
-              <MenuItem id={k} key={k} order={index} text={k} disabled={false} action={() => {
-                addModule(k, v);
-              }} />
-            );
-          })}
-        </MenuItem>
+        <MenuItem text={<PlusIcon width={20} height={20} />} id="new" order={2} disabled={false} href={`/dashboards/${dashboardName}/items/add`} />
       )}
       <MenuItem id="EditModeSwitch" order={10} disabled={false} custom>
         <EditModeSwitch className="m-1" checked={editMode} onCheckedChange={onEditModeUpdate} />

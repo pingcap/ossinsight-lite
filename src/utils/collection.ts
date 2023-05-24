@@ -10,6 +10,10 @@ export function arrayToReducedMap<T extends Record<any, any>, K extends keyof T,
   return array.reduce(collectReduceMap(key, reducer, init), {} as Record<T[K], R>);
 }
 
+export function groupBy<T extends Record<any, any>, K extends keyof T> (array: T[], key: K): Record<T[K], T[]> {
+  return array.reduce(collectReduceMap(key, (arr: T[], item) => arr.concat(item), () => []), {} as Record<T[K], T[]>);
+}
+
 export function collectMap<T extends Record<any, any>, K extends keyof T, V extends keyof T> (key: K, value: V): (map: Record<T[K], T[V]>, current: T) => Record<T[K], T[V]> {
   return (map, current) => {
     map[current[key]] = current[value];
