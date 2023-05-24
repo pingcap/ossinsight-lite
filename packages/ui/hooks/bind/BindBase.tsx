@@ -27,12 +27,17 @@ interface TypedMap<MapType> extends Map<keyof MapType, MapType[keyof MapType]> {
 }
 
 class BindBaseSubject<T> extends Subject<T> {
-  constructor (readonly active: () => boolean) {
+  private _active: boolean = true;
+  constructor () {
     super();
   }
 
+  public set active (active: boolean) {
+    this._active = active
+  }
+
   next (value: T) {
-    if (this.active()) {
+    if (this._active) {
       super.next(value);
     }
   }
@@ -42,10 +47,8 @@ export abstract class BindBase<BindMap, InitialArgs extends any[] = []> {
   protected readonly _store: TypedMap<BindMap> = new Map();
   protected readonly _pendingStore: TypedMap<{ [P in keyof BindMap]: Promise<BindMap[P]> }> = new Map();
   protected readonly _predefinedStore: TypedMap<{ [P in keyof BindMap]: () => Promise<InitialArgs> }> = new Map();
-  protected readonly _eventBus = new BindBaseSubject<GeneralEvent<keyof BindMap, BindMap[keyof BindMap]>>(() => this._active);
+  protected readonly _eventBus = new BindBaseSubject<GeneralEvent<keyof BindMap, BindMap[keyof BindMap]>>();
   protected readonly _loaded = new ReactiveValueSubject<boolean>(true);
-
-  private _active: boolean = true;
 
   _parent: BindBase<any, any> | undefined;
   _key: KeyType | undefined;
@@ -223,10 +226,10 @@ export abstract class BindBase<BindMap, InitialArgs extends any[] = []> {
 
   inactiveScope<T> (cb: () => T): T {
     try {
-      this._active = false;
+      this._eventBus.active = false;
       return cb();
     } finally {
-      this._active = true;
+      this._eventBus.active = true;
     }
   }
 

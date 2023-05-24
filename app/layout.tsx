@@ -1,3 +1,4 @@
+import AppRoutingIndicator from '@/app/AppRoutingIndicator';
 import './globals.scss';
 
 export default function RootLayout ({
@@ -10,6 +11,7 @@ export default function RootLayout ({
     <body>
     {children}
     {modal}
+    <AppRoutingIndicator />
     </body>
     </html>
   );

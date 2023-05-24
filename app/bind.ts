@@ -3,6 +3,7 @@ import { collections, singletons } from '@/packages/ui/hooks/bind/context';
 import { BindingTypeEvent } from '@/packages/ui/hooks/bind/types';
 import { BatchCommands } from '@/src/core/commands';
 import { ReactiveDashboardInstance } from '@/src/core/dashboard/reactive-dashboard-instance';
+import { DashboardInstance } from '@/src/core/dashboard/type';
 import { LayoutConfigV1, LibraryItem } from '@/src/types/config';
 import { debounceTime } from 'rxjs';
 
@@ -10,17 +11,25 @@ declare module '@ossinsight-lite/ui/hooks/bind' {
   interface SingletonsBindMap {
     appState: {
       saving: boolean
+      routing: boolean
     };
+
+    currentDashboard: DashboardInstance | null;
   }
 }
 
-export const appState = singletons.add('appState', { saving: false });
+export const appState = singletons.add('appState', {
+  saving: false,
+  routing: false,
+});
 
 export const dashboards = collections.add('dashboards');
 
 export const library = collections.add('library');
 
 export const commands = new BatchCommands();
+
+export const currentDashboard = singletons.add('currentDashboard', null);
 
 // Auto save library items
 library.subscribeAll(([item, id, ev]) => {

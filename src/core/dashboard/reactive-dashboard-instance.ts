@@ -1,15 +1,16 @@
-import { ReactBindCollection } from '@ossinsight-lite/ui/hooks/bind/ReactBindCollection';
-import { Dashboard, ItemReference } from '../../types/config';
-import { BindingTypeEvent, KeyType } from '@ossinsight-lite/ui/hooks/bind/types';
-import { GeneralEvent } from '@ossinsight-lite/ui/hooks/bind/BindBase';
-import { Subscription } from 'rxjs';
 import { ReactiveValue } from '@/packages/ui/hooks/bind/ReactiveValueSubject';
 import { DashboardInstance } from '@/src/core/dashboard/type';
+import { GeneralEvent } from '@ossinsight-lite/ui/hooks/bind/BindBase';
+import { ReactBindCollection } from '@ossinsight-lite/ui/hooks/bind/ReactBindCollection';
+import { BindingTypeEvent, KeyType } from '@ossinsight-lite/ui/hooks/bind/types';
+import { Subscription } from 'rxjs';
+import { Dashboard, ItemReference } from '../../types/config';
 
 export class ReactiveDashboardInstance implements DashboardInstance {
   layout: Dashboard['layout'];
   readonly items: ReactBindCollection<ItemReference>;
   private _subscription: Subscription | undefined;
+  private _syncSubscriptions: Subscription | undefined;
 
   addDisposeDependency (subscription: Subscription | undefined) {
     if (this._subscription && !this._subscription?.closed) {
@@ -18,6 +19,15 @@ export class ReactiveDashboardInstance implements DashboardInstance {
       this._subscription = subscription;
     }
   }
+
+  addSyncDisposeDependency (subscription: Subscription | undefined) {
+    if (this._syncSubscriptions && !this._syncSubscriptions?.closed) {
+      this._syncSubscriptions.add(subscription);
+    } else {
+      this._syncSubscriptions = subscription;
+    }
+  }
+
 
   constructor (readonly name: string, config: Dashboard) {
     this.layout = config.layout;
@@ -35,6 +45,7 @@ export class ReactiveDashboardInstance implements DashboardInstance {
 
   dispose () {
     this._subscription?.unsubscribe();
+    this._syncSubscriptions?.unsubscribe();
     this.items.keys.forEach(key => this.items.del(key));
   }
 
@@ -42,7 +53,15 @@ export class ReactiveDashboardInstance implements DashboardInstance {
     console.debug(`[layout:${this.name}] switch to`, source.name, source.items.values.length);
     const items = this.items;
 
-    source.items.values.forEach((item) => {
+    this._syncSubscriptions?.unsubscribe();
+
+    Array.from(items.keys).forEach(key => {
+      if (!source.items.has(key)) {
+        items.del(key);
+      }
+    });
+
+    Array.from(source.items.values).forEach((item) => {
       if (items.has(item.id)) {
         items.update(item.id, clone(item));
       } else {
@@ -50,34 +69,25 @@ export class ReactiveDashboardInstance implements DashboardInstance {
       }
     });
 
-    let submitting = false;
-    let syncing = false;
-
     // Subscribe upstream changes
-    this.addDisposeDependency(source.items.events.subscribe((ev) => {
+    this.addSyncDisposeDependency(source.items.events.subscribe((ev) => {
       // Prevent sync when submit changes
-      if (submitting) {
-        return;
-      }
-      syncing = true;
-      sync(items, ev);
-      syncing = false;
+      source.items.inactiveScope(() => {
+        sync(items, ev);
+      })
     }));
 
     // Publish local changes
-    this.addDisposeDependency(items.events.subscribe((ev) => {
+    this.addSyncDisposeDependency(items.events.subscribe((ev) => {
       // Prevent submit when syncing upstream changes
-      if (syncing) {
-        return;
-      }
-      submitting = true;
-      sync(source.items, ev);
-      submitting = false;
+      items.inactiveScope(() => {
+        sync(source.items, ev);
+      })
     }));
 
-    this.addDisposeDependency(new Subscription(() => {
+    this.addSyncDisposeDependency(new Subscription(() => {
       console.debug(`[layout:${this.name}] exit`, source.name);
-    }))
+    }));
   }
 }
 
