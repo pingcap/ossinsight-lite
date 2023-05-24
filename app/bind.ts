@@ -85,6 +85,7 @@ commands.changed
     appState.notify();
     const cmds = commands.merge();
 
+    commands.pause();
     console.debug('[config] start saving', cmds);
     commit(cmds)
       .then(store => {
@@ -97,10 +98,16 @@ commands.changed
       })
       .catch(err => {
         console.error('[config] save failed', err);
+        // Reset commands state, wait for next save action.
+        commands.insert(cmds);
       })
       .finally(() => {
         appState.current.saving = false;
         appState.notify();
+        commands.resume();
+        if (commands.dirty) {
+          commands.changed.next();
+        }
       });
   });
 

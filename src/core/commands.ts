@@ -37,6 +37,14 @@ export class BatchCommands {
     this.observed = true;
   }
 
+  insert (cmds: Command[]) {
+    this.observed = false;
+    const current = this.merge()
+    cmds.forEach(command => this.add(command));
+    current.forEach(command => this.add(command));
+    this.observed = true;
+  }
+
   add (command: Command) {
     if (!this.active) {
       return false;
@@ -81,6 +89,19 @@ export class BatchCommands {
     this.active = false;
     cb();
     this.active = true;
+  }
+
+  //
+  pause () {
+    this.observed = false;
+  }
+
+  resume () {
+    this.observed = true;
+  }
+
+  get dirty () {
+    return this.n > 0;
   }
 
   public static readonly default = new BatchCommands();
