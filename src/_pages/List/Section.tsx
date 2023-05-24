@@ -85,7 +85,7 @@ function Widget ({ id, name, className, props }: { id: string | undefined, name:
   }
   return (
     <>
-      <h3 className="text-gray-400 text-sm">{props?.visualize?.title ?? widget.displayName}</h3>
+      <h3 className="text-gray-400 text-sm">{(widget.configureComponent ? props?.visualize?.title : undefined) ?? widget.displayName}</h3>
       <WidgetContextProvider value={{
         props,
         enabled: false,

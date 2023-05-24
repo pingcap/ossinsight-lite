@@ -56,7 +56,7 @@ function Item ({ item, dashboardName }: { dashboardName: string, item: LibraryIt
 
   return (
     <div className="w-full h-full flex flex-col justify-stretch" onClick={handleAdd}>
-      <h4 className='p-1 text-center text-sm text-gray-400'>{item.props?.visualize?.title || widget.displayName}</h4>
+      <h4 className='p-1 text-center text-sm text-gray-400'>{(widget.configureComponent ? item.props?.visualize?.title : undefined) ?? widget.displayName}</h4>
       <Widget {...item.props} className={clsx('pointer-events-none flex-1', item.props?.className)} />
     </div>
   );
