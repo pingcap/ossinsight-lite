@@ -17,7 +17,6 @@ export default function DashboardMenu ({ dashboardName, editMode }: { dashboardN
 
   return (
     <>
-      <MenuItem id="Admin" order={9999} href="/admin/dashboards" text={<SlidersIcon />} />
       <MenuItem id="Dashboards" order={60} text={<LayoutWtfIcon />} parent>
         {dashboardNames.map((dashboard, index) => (
           <MenuItem
@@ -46,11 +45,6 @@ export default function DashboardMenu ({ dashboardName, editMode }: { dashboardN
         <MenuItem text={<PlusIcon width={20} height={20} />} id="new" order={2} disabled={routing} href={`/dashboards/${dashboardName}/items/add`} />
       )}
       <MenuItem id="EditModeSwitch" order={10} disabled={routing} text={editMode ? <UnlockIcon /> : <LockIcon />} href={dashboardHref(dashboardName, !editMode)} />
-      <MenuItem id="DownloadLayoutJSON" order={100} custom>
-        <a href="/api/layout.json" download="layout.json">
-          <CloudDownloadIcon />
-        </a>
-      </MenuItem>
     </>
   );
 }

@@ -10,17 +10,11 @@ export default function Default () {
     return null
   }
 
-  if (path?.startsWith('/admin/')) {
-    return <AdminMenu />;
-  }
-
   if (path === '/') {
     return <DashboardMenu dashboardName="default" editMode={false} />
   }
 
   const [dashboards, name, edit, ...rest] = path.replace(/^\//, '').split('/')
-
-  console.log(path)
 
   if (rest.length === 0) {
     if (dashboards === 'dashboards') {

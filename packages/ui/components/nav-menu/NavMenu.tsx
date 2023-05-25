@@ -8,12 +8,21 @@ import { Menu, MenuProps } from '../menu/Menu';
 import * as renderers from './content';
 
 export interface NavMenuProps extends NavigationMenuProps, MenuProps, DirectItemsProps {
+  position: 'top' | 'bottom' | 'in-place';
 }
 
-export function NavMenu ({ name, auto, children, className, items, simple = false, ...props }: NavMenuProps) {
+export function NavMenu ({ name, auto, children, className, items, simple = false, position = 'in-place', ...props }: NavMenuProps) {
   return (
     <Menu name={name} auto={auto} renderers={renderers} simple={simple}>
-      <NavigationMenu.Root {...props} className="fixed top-0 left-0 w-screen z-50 hover:backdrop-blur-sm transition-all">
+      <NavigationMenu.Root
+        {...props}
+        className={clsx(
+          'hover:backdrop-blur-sm transition-all',
+          position === 'top' && 'fixed left-0 w-screen z-50 top-0',
+          position === 'bottom' && 'fixed left-0 w-screen z-50 bottom-0',
+          position === 'in-place' && 'relative',
+        )}
+      >
         <NavigationMenu.List className={clsx('flex gap-2 items-center relative z-[1]', className)}>
           <MenuContent name={name} items={items} simple={simple} />
         </NavigationMenu.List>

@@ -7,7 +7,8 @@ import './globals.scss';
 export default function RootLayout ({
   children,
   modal,
-  navMenu,
+  top,
+  bottom,
 }: any) {
 
   return (
@@ -16,11 +17,24 @@ export default function RootLayout ({
     <NavMenu
       simple
       name="nav"
+      position='top'
       className="h-[40px] p-[4px] min-w-[250px]"
       items={(
         <>
           <AppMenu />
-          {navMenu}
+          {top}
+        </>
+      )}
+    />
+    <NavMenu
+      simple
+      name="nav"
+      position='bottom'
+      className="h-[40px] p-[4px] min-w-[250px]"
+      items={(
+        <>
+          <AppMenu />
+          {bottom}
         </>
       )}
     />

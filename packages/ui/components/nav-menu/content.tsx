@@ -29,7 +29,7 @@ export const renderParentItem: MenuRenderers['renderParentItem'] = (item, isSub,
 
 export const renderItem: MenuRenderers['renderItem'] = (item) => {
   return (
-    <RuiNavigationMenu.Item key={item.id} style={{ order: item.order }}>
+    <RuiNavigationMenu.Item key={item.id} className='w-[32px] flex justify-center items-center' style={{ order: item.order }}>
       <RuiNavigationMenu.Trigger onClick={item.action} disabled={item.disabled} className="outline-none bg-transparent transition:colors p-1 cursor-pointer flex justify-between items-center">
         {item.text}
       </RuiNavigationMenu.Trigger>
@@ -39,7 +39,7 @@ export const renderItem: MenuRenderers['renderItem'] = (item) => {
 
 export const renderCustomItem: MenuRenderers['renderCustomItem'] = (item) => {
   return (
-    <RuiNavigationMenu.Item key={item.id} style={{ order: item.order }}>
+    <RuiNavigationMenu.Item key={item.id} className='w-[32px] flex justify-center items-center' style={{ order: item.order }}>
       {item.children}
     </RuiNavigationMenu.Item>
   );
@@ -47,7 +47,7 @@ export const renderCustomItem: MenuRenderers['renderCustomItem'] = (item) => {
 
 export const renderLinkItem: MenuRenderers['renderLinkItem'] = ({ order, id, text, disabled, ...props }) => {
   return (
-    <RuiNavigationMenu.Item key={id} style={{ order: order }}>
+    <RuiNavigationMenu.Item key={id} className='w-[32px] flex justify-center items-center' style={{ order: order }}>
       <RuiNavigationMenu.Link asChild>
         {disabled
           ? <span className="inline-flex p-1 text-gray-400 cursor-not-allowed">{text}</span>

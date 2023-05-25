@@ -3,6 +3,6 @@ import GridIcon from '@/src/icons/grid.svg';
 
 export default function AdminMenu () {
   return (
-    <MenuItem id="Home" order={9999} href="/" text={<GridIcon />} />
+    <MenuItem id="Home" order={-9999} href="/" text={<GridIcon />} />
   );
 }
