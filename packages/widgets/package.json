@@ -55,8 +55,6 @@
   },
   "dependencies": {
     "mysql2": "^3.3.1",
-    "rehype-parse": "^8.0.4",
-    "rehype-react": "^7.2.0",
     "unified": "^10.1.2"
   }
 }
