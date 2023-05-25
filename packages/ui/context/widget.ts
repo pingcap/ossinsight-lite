@@ -9,6 +9,7 @@ export type WidgetContextValues = {
   editingLayout: boolean,
   props: any
   configuring: boolean
+  creating: boolean
   onPropChange: (name: string, value: any) => void
 }
 
@@ -18,6 +19,7 @@ const WidgetContext = createContext<WidgetContextValues>({
   editingLayout: false,
   props: {},
   configuring: false,
+  creating: false,
   onPropChange: () => {},
 });
 

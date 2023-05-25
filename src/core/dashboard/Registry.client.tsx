@@ -11,6 +11,10 @@ function ClientEffect ({ name, dashboard: config }: { name: string, dashboard: D
     singletons.getOrCreate('dashboard', () => [new ReactiveDashboardInstance('canvas', config)]).current;
     const dashboard = dashboards.getOrCreate(name, () => [new ReactiveDashboardInstance(name, config)]).current;
     currentDashboard.update(dashboard);
+
+    return () => {
+      currentDashboard.update(null);
+    };
   }, [name]);
 
   return null;

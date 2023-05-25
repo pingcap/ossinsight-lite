@@ -13,9 +13,10 @@ export interface EditWidgetInstanceProps {
   name: string;
   props: any;
   onPropsChange: (key: string, value: any) => void;
+  creating?: boolean
 }
 
-function EditWidgetInstance ({ name, props, onPropsChange }: EditWidgetInstanceProps) {
+function EditWidgetInstance ({ name, props, onPropsChange, creating = false }: EditWidgetInstanceProps) {
   const widget = readItem(widgets, name).current;
   const Widget = useMemo(() => {
     const fn = widget.configureComponent;
@@ -32,6 +33,7 @@ function EditWidgetInstance ({ name, props, onPropsChange }: EditWidgetInstanceP
       value={{
         configuring: true,
         configurable: false,
+        creating,
         enabled: false,
         editingLayout: false,
         onPropChange: onPropsChange,

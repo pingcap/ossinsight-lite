@@ -2,7 +2,7 @@
 /// This file is a slot, will be actually loaded by buildtool/webpack/loaders/widgets-manifest
 
 import { Rect } from '@/packages/layout/src/core/types';
-import { CSSProperties, ForwardedRef, ForwardRefExoticComponent, HTMLProps } from 'react';
+import { ButtonHTMLAttributes, ComponentType, CSSProperties, ForwardedRef, ForwardRefExoticComponent, HTMLProps } from 'react';
 
 type Widgets = Record<string, Widget>
 type WidgetModuleMeta<P = any> = {
@@ -12,6 +12,7 @@ type WidgetModuleMeta<P = any> = {
   defaultProps?: Partial<P>,
   duplicable?: boolean,
   configureComponent?: () => Promise<{ default: (props: P & HTMLProps<HTMLDivElement>, ref: ForwardedRef<HTMLDivElement>) => JSX.Element }>
+  NewButton?: ComponentType<ButtonHTMLAttributes<HTMLButtonElement>>
   styleConfigurable?: boolean,
   /** @deprecated */
   configurablePropsOverwrite?: Partial<P>,
@@ -26,6 +27,7 @@ type WidgetModule<P = any> = {
   default: (props: P & HTMLProps<HTMLDivElement>, ref: ForwardedRef<HTMLDivElement>) => JSX.Element,
 } & WidgetModuleMeta<P>
 type ResolvedWidgetModule<P = any> = {
+  name: string
   default: ForwardRefExoticComponent<P & HTMLProps<HTMLDivElement>>
 } & WidgetModuleMeta<P> & {
   category: string

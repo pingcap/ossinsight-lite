@@ -49,6 +49,7 @@ export const WidgetCoordinator = forwardRef<HTMLDivElement, WidgetCoordinator>((
         onPropChange,
         props,
         configuring: false,
+        creating: false,
       }}
     >
       <Widget ref={ref} {...props} />

@@ -92,6 +92,7 @@ function Widget ({ id, name, className, props }: { id: string | undefined, name:
         editingLayout: true,
         onPropChange: () => {},
         configuring: false,
+        creating: false,
         configurable: false,
       }}>
         {el}

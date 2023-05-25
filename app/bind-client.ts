@@ -18,6 +18,7 @@ for (let [name, widget] of Object.entries(widgetsManifest)) {
       const rawModule = await widget.module();
       return [{
         ...rawModule,
+        name,
         default: forwardRef(rawModule.default),
         category: rawModule.category ?? 'Common',
         displayName: rawModule.displayName ?? name,
@@ -27,6 +28,7 @@ for (let [name, widget] of Object.entries(widgetsManifest)) {
         default: forwardRef(({}, ref) => {
           return createElement(Alert, { type: 'error', title: 'Failed to load widget', message: String(e?.message ?? e) });
         }),
+        name,
         category: 'Failed',
         displayName: name,
       }];
@@ -39,6 +41,17 @@ for (let [name, render] of Object.entries(internals)) {
     default: forwardRef(render),
     styleConfigurable: true,
     category: 'built-in',
+    name,
     displayName: name + ' (Deprecated)',
   } satisfies ResolvedWidgetModule);
+}
+
+for (let [name, widget] of Object.entries(widgetsManifest)) {
+  if (typeof requestIdleCallback !== 'undefined') {
+    requestIdleCallback(() => {
+      widgets.get(name);
+    });
+  } else {
+    widgets.get(name);
+  }
 }

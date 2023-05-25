@@ -1,4 +1,3 @@
-import { WidgetMode } from './Widget';
 import './index.css';
 
 export { default } from './Widget';
@@ -17,7 +16,9 @@ export const defaultProps = {
   },
 };
 
-export const configureComponent = () => import('../sql-editor/index')
+export const configureComponent = () => import('../sql-editor/index');
+
+export { NewButton } from './NewButton';
 
 export const duplicable = true;
 
