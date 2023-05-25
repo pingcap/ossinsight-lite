@@ -11,7 +11,7 @@
       "name": "repo-track",
       "display": "github-repo",
       "type": "mysql",
-      "database": "repo_track",
+      "database": "github_repos",
       "env": "GITHUB_REPO_DATABASE"
     }
   ]

@@ -36,7 +36,14 @@ const loader: LoaderDefinitionFunction = function (content, sourceMap, additiona
     //
     // const jsonFileName = id.replace(/\.sql(?:\?unique)?$/, '.json');
     // this.emitFile(jsonFileName, JSON.stringify(data));
-    return `export default ${JSON.stringify(data, undefined, 2)};`;
+    if (data.__error__) {
+      return `
+        console.error("Prefetch sql failed", ${JSON.stringify(data.__error__)});
+        throw new Error('Failed to execute sql: ' + ${JSON.stringify(data.__error__.message)});
+      `
+    } else {
+      return `export default ${JSON.stringify(data, undefined, 2)};`;
+    }
   };
 
   load()

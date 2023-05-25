@@ -58,7 +58,9 @@ export default class Cache {
     this.runningCaches.set(key, promise);
     promise
       .then(async res => {
-        this.caches.set(key, res);
+        if (!('__error__' in (res as any))) {
+          this.caches.set(key, res);
+        }
         await this.write();
       })
       .finally(() => {
