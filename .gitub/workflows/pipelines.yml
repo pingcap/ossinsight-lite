@@ -1,0 +1,31 @@
+name: GitHub Data Pipeline
+
+on:
+  schedule:
+    - cron: '0 */2 * * *'
+  workflow_dispatch:
+
+jobs:
+  github_repos_pipeline:
+    name: GitHub Repos Pipeline
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: main
+        uses: hooopo/repo-track-pipeline@main
+        env:
+          ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}/${{ secrets.GITHUB_REPO_DATABASE || 'github_repos' }}
+          REPO_FULL_NAME: ${{ secrets.REPO_FULL_NAME }}
+
+  github_personal_pipeline:
+    name: GitHub Personal Pipeline
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: main
+        uses: hooopo/oh-my-github-pipeline@main
+        env:
+          ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}/${{ secrets.GITHUB_PERSONAL_DATABASE || 'github_personal' }}
+          USER_LOGIN: ${{ secrets.USER_LOGIN }}
