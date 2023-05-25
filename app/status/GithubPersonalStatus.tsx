@@ -1,17 +1,17 @@
 import config from '@/.osswrc.json';
-import { SimpleErrorComponent } from '@/app/admin/status/SimpleErrorComponent';
+import { SimpleErrorComponent } from './SimpleErrorComponent';
 import LoadingIndicator from '@/src/components/LoadingIndicator';
 import { getDatabaseUri, withConnection } from '@/src/utils/mysql';
 import { Suspense, use } from 'react';
 
-const db = config.db.find(db => db.display === 'github-repo')!;
+const db = config.db.find(db => db.display === 'github-personal')!;
 const dbName = process.env[db.env] || db.database;
 
-export default function GithubRepoStatus () {
+export default function GithubPersonalStatus () {
 
   return (
     <section>
-      <h3>Github repo datasource status</h3>
+      <h3>Github personal datasource status</h3>
       <table className="data-table kv-table table-auto">
         <tbody>
         <tr>
@@ -32,10 +32,10 @@ export default function GithubRepoStatus () {
         </tr>
         <tr>
           <td>
-            Current tracking repos
+            Current User
           </td>
           <td>
-            <Suspense fallback={<LoadingIndicator />}><CurrentTrackingRepos /></Suspense>
+            <Suspense fallback={<LoadingIndicator />}><CurrentUser /></Suspense>
           </td>
         </tr>
         </tbody>
@@ -44,14 +44,15 @@ export default function GithubRepoStatus () {
   );
 }
 
-function CurrentTrackingRepos () {
+function CurrentUser () {
   try {
     const rows = use(withConnection(getDatabaseUri(dbName), async ({ sql }) => (
-      sql<{ full_name: string }>`SELECT full_name
-                                 FROM repo_full_name_configs;`
+      sql<{ login: string }>`
+          SELECT login
+          FROM curr_user;`
     )));
 
-    return <b>{rows.map(row => row.full_name).join(', ')}</b>;
+    return <b>@{rows.map(row => row.login).join(', ')}</b>;
   } catch (e: any) {
     if (e?.message?.indexOf('Suspense Exception') !== -1) {
       throw e;

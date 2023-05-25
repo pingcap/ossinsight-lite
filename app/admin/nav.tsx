@@ -12,13 +12,13 @@ const navs = [
   },
   {
     key: 'dashboards',
-    title: 'Dashboards Management',
+    title: 'Dashboards',
     href: '/admin/dashboards',
     public: false,
   },
   {
     key: 'widgets',
-    title: 'Widgets Management',
+    title: 'Widgets',
     href: '/admin/widgets',
     public: false,
   },
@@ -37,34 +37,26 @@ const navs = [
   {
     key: 'status',
     title: 'Status',
-    href: '/admin/status',
+    href: '/status',
     public: true,
   },
 ] as const;
 
-export default function Nav ({ authenticated }: { authenticated: boolean }) {
+export default function Nav ({}: { authenticated: boolean }) {
   const [first] = useSelectedLayoutSegments();
 
   return (
     <NavigationMenu.Root orientation="vertical" className="nav-menu">
       <NavigationMenu.List>
-        {navs
-          .filter(nav => {
-            if (!authenticated) {
-              return nav.public;
-            } else {
-              return true;
-            }
-          })
-          .map(nav => (
-            <NavigationMenu.Item key={nav.key}>
-              <NavigationMenu.Link asChild active={first === nav.key}>
-                <Link href={nav.href}>
-                  {nav.title}
-                </Link>
-              </NavigationMenu.Link>
-            </NavigationMenu.Item>
-          ))}
+        {navs.map(nav => (
+          <NavigationMenu.Item key={nav.key}>
+            <NavigationMenu.Link asChild active={first === nav.key}>
+              <Link href={nav.href}>
+                {nav.title}
+              </Link>
+            </NavigationMenu.Link>
+          </NavigationMenu.Item>
+        ))}
       </NavigationMenu.List>
     </NavigationMenu.Root>
   );

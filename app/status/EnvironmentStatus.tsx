@@ -2,17 +2,11 @@ export default function EnvironmentStatus () {
   return (
     <section>
       <h3>Environment Variables</h3>
-      <table className="data-table table-auto">
-        <thead>
-        <tr>
-          <th>Name</th>
-          <td>Value</td>
-        </tr>
-        </thead>
+      <table className="data-table kv-table table-auto">
         <tbody>
         {envs.map(env => (
           <tr key={env}>
-            <th>{env}</th>
+            <td>{env}</td>
             <td>{erasedEnvValue(env)}</td>
           </tr>
         ))}
@@ -33,8 +27,5 @@ function erasedEnvValue (env: string) {
   if (value == null) {
     return '(not set)';
   }
-  if (value.length <= 4) {
-    return value[0] + '***';
-  }
-  return value.slice(0, 2) + '*'.repeat(6) + value.slice(value.length - 2);
+  return '********';
 }

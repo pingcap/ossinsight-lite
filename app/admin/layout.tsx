@@ -13,7 +13,7 @@ export default async function ({ children }: any) {
 
   return (
     <div className="ossl-admin min-h-screen flex gap-2">
-      <aside className="h-[calc(100vh-40px)] w-[240px] overflow-y-auto bg-gray-100 sticky top-[40px] left-0">
+      <aside className="100vh w-[240px] overflow-y-auto bg-gray-100 sticky top-[0] pt-[40px] left-0">
         <Nav authenticated={authenticated} />
       </aside>
       <main className="flex-1 p-2 pt-[40px]">

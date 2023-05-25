@@ -80,3 +80,33 @@
   transform: scale(0.8);
   opacity: 0;
 }
+
+.data-table {
+  @apply border overflow-x-auto;
+
+  tr:not(:first-of-type) {
+    @apply border-t;
+  }
+
+  tbody > tr:first-of-type {
+    @apply border-t;
+  }
+
+  tr > :not(:first-child) {
+    @apply border-l;
+  }
+
+  th, td {
+    @apply px-2 py-0.5;
+  }
+
+  tr:nth-of-type(2n) {
+    @apply bg-gray-100;
+  }
+}
+
+.kv-table {
+  tr > *:first-child {
+    width: 160px;
+  }
+}
