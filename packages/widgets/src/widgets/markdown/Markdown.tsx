@@ -7,7 +7,7 @@ export interface IProps extends HTMLProps<HTMLDivElement> {
   markdown: string
 }
 
-export default function Markdown (props: IProps, ref: ForwardedRef<HTMLDivElement>) {
+export default function Markdown (props: IProps, ref: ForwardedRef<IProps>) {
   const html = useProcessor(props.markdown)
   return (
     <div dangerouslySetInnerHTML={{__html: html}} {...props} />
