@@ -18,7 +18,7 @@ declare module '../../hooks/bind' {
   }
 }
 
-export function Menu ({ name, auto = true, simple = false, renderers, children }: MenuProps & { renderers?: MenuRenderers }) {
+export function Menu ({ name, auto = true, simple = false, renderers, children }: MenuProps & { renderers: MenuRenderers }) {
   if (simple) {
     return <MenuContext.Provider value={{ name, parentId: undefined, renderers }}>{children}</MenuContext.Provider>;
   }
