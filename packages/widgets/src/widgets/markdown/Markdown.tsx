@@ -1,4 +1,4 @@
-import React, {createElement, ForwardedRef, Fragment, HTMLProps, useEffect, useState} from 'react';
+import React, {ForwardedRef, HTMLProps, useEffect, useState} from 'react';
 import {unified} from "unified";
 import remarkParse from 'remark-parse'
 import remarkRehype from 'remark-rehype'
@@ -11,11 +11,10 @@ export interface IProps extends HTMLProps<HTMLDivElement> {
 }
 
 export default function Markdown (props: IProps, ref: ForwardedRef<IProps>) {
-  const html = useMarkdown(props.markdown)
-  console.log({props})
-  console.log({html})
+  const {markdown, ...rest} = props
+  const html = useMarkdown(markdown)
   return (
-    <div dangerouslySetInnerHTML={{__html: html}} {...props} />
+    <div dangerouslySetInnerHTML={{__html: html}} {...rest} />
   );
 }
 
