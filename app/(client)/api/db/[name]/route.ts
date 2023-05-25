@@ -33,13 +33,15 @@ export async function POST (req: NextRequest, { params: { name } }: any) {
   }
 
   const database = process.env[target.env] || target.database;
-  const uri = getDatabaseUri(database, readonly)
 
   const { searchParams } = new URL(req.url);
 
   const force = searchParams.get('force');
+  const use = searchParams.get('use') ?? '';
   const sql = await req.text();
-  const cacheKey = `${name}${sql}`;
+  const cacheKey = `${name}:${use}:${sql}`;
+
+  const uri = getDatabaseUri(database, readonly, use)
 
   const ignoreCache = force === 'true';
 

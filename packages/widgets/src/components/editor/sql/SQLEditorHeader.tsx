@@ -13,13 +13,13 @@ const config = {
   "db": [
     {
       "name": "oh-my-github",
-      "display": "github-personal",
+      "display": "github_personal",
       "type": "mysql",
       "env": "OH_MY_GITHUB_DATABASE_URL"
     },
     {
       "name": "repo-track",
-      "display": "github-repo",
+      "display": "github_repos",
       "type": "mysql",
       "env": "REPO_TRACK_DATABASE_URL"
     }
@@ -42,7 +42,7 @@ config.db.forEach((db) => {
 export function SQLEditorHeader ({ currentDb, onCurrentDbChange, onRun, running = false }: SQLEditorHeaderProps) {
   return (
     <Toolbar.Root
-      className="flex w-full min-w-max h-12 p-1 px-4 relative"
+      className="flex w-full min-w-max h-12 p-1 relative border-b"
       aria-label="Editor toolbar"
     >
       <Select.Root
@@ -85,7 +85,7 @@ export function SQLEditorHeader ({ currentDb, onCurrentDbChange, onRun, running 
 const CurrentDb = ({ db }: { db: string }) => {
   return (
     <span>
-      Datasource: <b>{db}</b>
+      USE <b>{db}</b>
     </span>
   );
 };

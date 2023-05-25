@@ -2,9 +2,9 @@ import { Form } from '@ossinsight-lite/ui/components/form';
 import WidgetContext from '@ossinsight-lite/ui/context/widget';
 import useRefCallback from '@ossinsight-lite/ui/hooks/ref-callback';
 import updatePartial from '@ossinsight-lite/ui/utils/update-partial';
-import * as Dialog from '@radix-ui/react-dialog';
 import clsx from 'clsx';
 import { ForwardedRef, HTMLProps, Suspense, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import LoadingIndicator from '../../../../../../src/components/LoadingIndicator';
 import { SQLEditor, SQLEditorHeader } from '../../../components/editor/sql';
 import { VisualizeType } from '../../../components/visualize/common';
 import { VisualizeContext } from '../../../components/visualize/context';
@@ -13,6 +13,7 @@ import VisualizeConfig from '../../../components/visualize/VisualizeConfig';
 import { useOperation } from '../../../utils/operation';
 import { doDbSqlQuery } from '../../../utils/query';
 import ResultDisplay from '../sql/ResultDisplay';
+import SchemaTree from './SchemaTree';
 
 export enum WidgetMode {
   EDITOR = 'editor',
@@ -75,8 +76,15 @@ export default function Editor ({ defaultSql, defaultDb, sql, currentDb, visuali
 
   return (
     <VisualizeContext.Provider value={{ result: result?.data, running, error, columns: result?.columns }}>
-      <div ref={forwardedRef} {...props} className={clsx('relative flex gap-2', props.className)}>
-        <div className={clsx('h-full flex flex-col', configuring ? 'min-w-[600px]' : 'w-full')}>
+      <div ref={forwardedRef} {...props} className={clsx('relative flex gap-2 min-w-[800px]', props.className)}>
+        <div className='min-w-[240px] max-w-[240px] h-full overflow-auto border-r'>
+          <div>
+            <Suspense fallback={<LoadingIndicator />}>
+              <SchemaTree db='oh-my-github' />
+            </Suspense>
+          </div>
+        </div>
+        <div className={clsx('h-full flex flex-col min-w-[820px] w-full gap-2')}>
           <SQLEditorHeader
             currentDb={currentDb}
             onCurrentDbChange={onCurrentDbChange}
@@ -85,39 +93,29 @@ export default function Editor ({ defaultSql, defaultDb, sql, currentDb, visuali
             }}
             running={running}
           />
-          <div className="min-h-[240px] max-h-[320px] w-full">
+          <div className="min-h-[240px] max-h-[320px] w-full border-b">
             <SQLEditor sql={sql} defaultSql={defaultSql} onSqlChange={onSqlChange} />
           </div>
-          <div className="flex-1 w-full overflow-hidden">
-            <ResultDisplay
-              editing
-              configuring={configuring}
-              visualize={visualize}
-              onVisualizeTypeChange={onVisualizeTypeChange}
-              onClickVisualizeOptions={() => {
-                setOpenVisualizeDialog(true);
-              }}
-              running={running}
-              result={result}
-              error={error}
-            />
-            {!configuring && <Dialog.Root open={openVisualizeDialog} onOpenChange={setOpenVisualizeDialog}>
-              <Dialog.Portal>
-                <Dialog.Overlay className="bg-black bg-opacity-70 data-[state=open]:animate-overlayShow fixed inset-0" />
-                <Dialog.Content className="z-10 bg-white rounded data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] h-[85vh] w-[85vw] max-w-[600px] p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
-                  <Dialog.Title className="text-gray-700 m-0 text-xl font-medium">Visualization</Dialog.Title>
-                  <Visualize visualize={visualize} />
-                </Dialog.Content>
-              </Dialog.Portal>
-            </Dialog.Root>}
+          <div className="flex-1 w-full flex overflow-hidden">
+            <div className="flex-1 justify-stretch">
+              <ResultDisplay
+                editing
+                configuring={configuring}
+                visualize={visualize}
+                onVisualizeTypeChange={onVisualizeTypeChange}
+                onClickVisualizeOptions={() => {
+                  setOpenVisualizeDialog(true);
+                }}
+                running={running}
+                result={result}
+                error={error}
+              />
+            </div>
+            <div className="flex-1 min-w-[240px] p-2 border-l">
+              <Visualize visualize={visualize} />
+            </div>
           </div>
         </div>
-        {configuring && (
-          <div className="flex-1 min-w-[240px] p-2 border-l">
-            <h3>Visualization</h3>
-            <Visualize visualize={visualize} />
-          </div>
-        )}
       </div>
     </VisualizeContext.Provider>
   );

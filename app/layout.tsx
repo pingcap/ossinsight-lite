@@ -1,4 +1,5 @@
 import AppRoutingIndicator from '@/app/AppRoutingIndicator';
+import ConditionalModal from '@/app/ConditionalModal';
 import { NavMenu } from '@/packages/ui/components/nav-menu';
 import AppMenu from '@/src/AppMenu';
 import React from 'react';
@@ -17,7 +18,7 @@ export default function RootLayout ({
     <NavMenu
       simple
       name="nav"
-      position='top'
+      position="top"
       className="h-[40px] p-[4px] min-w-[250px]"
       items={(
         <>
@@ -29,7 +30,7 @@ export default function RootLayout ({
     <NavMenu
       simple
       name="nav"
-      position='bottom'
+      position="bottom"
       className="h-[40px] p-[4px] min-w-[250px]"
       items={(
         <>
@@ -39,7 +40,9 @@ export default function RootLayout ({
       )}
     />
     {children}
-    {modal}
+    <ConditionalModal>
+      {modal}
+    </ConditionalModal>
     <AppRoutingIndicator />
     </body>
     </html>

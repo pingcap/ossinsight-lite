@@ -1,17 +1,15 @@
 'use client';
-import { ModalContext } from '@/app/@modal/(all)/context';
 import { currentDashboard, library } from '@/app/bind';
 import { widgets } from '@/app/bind-client';
 import RoughBox from '@/packages/ui/components/roughness/shape/box';
 import { readItem } from '@/packages/ui/hooks/bind';
 import EditWidgetInstance from '@/src/_pages/EditWidgetInstance';
-import { useCallback, useContext, useState } from 'react';
+import { useCallback, useState } from 'react';
 import colors from 'tailwindcss/colors';
 
 export default function ({ params }: any) {
   const name = decodeURIComponent(params.name);
   const widget = readItem(widgets, name);
-  const { closeModal } = useContext(ModalContext);
 
   const [props, setProps] = useState(() => {
     return { ...widget.current.defaultProps };
@@ -34,11 +32,10 @@ export default function ({ params }: any) {
         rect: widget.current.defaultRect ?? [0, 0, 8, 3],
       });
     }
-    closeModal();
   }, []);
 
   return (
-    <div className='h-full flex flex-col justify-stretch'>
+    <div className="h-screen flex flex-col justify-stretch">
       <div className="flex items-center justify-end">
         <button className="block relative" onClick={handleSave}>
           <span className="relative z-10 px-4 font-bold inline-flex gap-2 items-center text-blue-700">
@@ -47,7 +44,7 @@ export default function ({ params }: any) {
           <RoughBox color={colors.blue['400']} />
         </button>
       </div>
-      <div className='flex-1 overflow-hidden'>
+      <div className="flex-1 overflow-hidden">
         <EditWidgetInstance
           props={props}
           onPropsChange={handlePropsChange}
