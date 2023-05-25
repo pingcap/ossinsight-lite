@@ -55,11 +55,6 @@
   },
   "dependencies": {
     "mysql2": "^3.3.1",
-    "rehype-document": "^6.1.0",
-    "rehype-format": "^4.0.1",
-    "rehype-stringify": "^9.0.3",
-    "remark-parse": "^10.0.2",
-    "remark-rehype": "^10.1.0",
     "unified": "^10.1.2"
   }
 }
