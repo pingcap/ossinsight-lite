@@ -15,6 +15,8 @@ type WidgetModuleMeta<P = any> = {
   NewButton?: ComponentType<ButtonHTMLAttributes<HTMLButtonElement>>
   styleConfigurable?: boolean,
   /** @deprecated */
+  styleFlexLayout?: 'col' | 'row',
+  /** @deprecated */
   configurablePropsOverwrite?: Partial<P>,
   /** @deprecated */
   widgetListItemPropsOverwrite?: Partial<P>,

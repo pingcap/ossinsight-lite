@@ -4,7 +4,7 @@ import clsx from 'clsx';
 
 export default function Widget (props: HTMLProps<HTMLDivElement>, ref: ForwardedRef<HTMLDivElement>) {
   return (
-    <div {...props} className={clsx('overflow-hidden flex p-2 gap-2 items-center justify-center', props.className)} ref={ref}>
+    <div {...props} className={clsx('overflow-hidden flex flex-col p-2 gap-2 items-center justify-center', props.className)} ref={ref}>
       <img
         className="block rounded-xl w-12 h-12"
         alt={cu.login} src={`https://github.com/${cu.login}.png`}
