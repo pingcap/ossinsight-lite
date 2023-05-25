@@ -1,5 +1,4 @@
 import React, {ForwardedRef, HTMLProps, useEffect, useState} from 'react';
-import clsx from 'clsx';
 import {unified} from "unified";
 import remarkParse from 'remark-parse'
 import remarkRehype from 'remark-rehype'
@@ -30,8 +29,6 @@ export default function Markdown (props: IProps, ref: ForwardedRef<HTMLDivElemen
 
   console.log({file: html})
   return (
-    <div {...props} className={clsx('overflow-hidden flex gap-2 items-center justify-center', props.className)} ref={ref}>
-      <div dangerouslySetInnerHTML={{__html: html}} />
-    </div>
+    <div dangerouslySetInnerHTML={{__html: html}} {...props} />
   );
 }
