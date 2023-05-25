@@ -1,10 +1,10 @@
 import { useContext, useEffect } from 'react';
 import clientOnly from '../../../../src/utils/clientOnly';
 import { collections } from '../../hooks/bind';
-import { useSafeUpdater, useWhenReady } from '../../hooks/bind/hooks.ts';
+import { useSafeUpdater, useWhenReady } from '../../hooks/bind/hooks';
 import { withSuspense } from '../../utils/suspense';
 import { MenuContext, MenuDirectItemsContext, MenuKey } from './Menu';
-import { renderAny } from './MenuContent.tsx';
+import { renderAny } from './MenuContent';
 import { isActionItem, isCustomItem, isParentItem, MenuItemProps } from './types';
 
 function computeCollectionKey (name: string, parentId: string | undefined): MenuKey<string> {

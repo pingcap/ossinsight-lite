@@ -1,6 +1,6 @@
 import { DependencyList, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
 import { filter, map, Subscription, Unsubscribable } from 'rxjs';
-import useRefCallback from '../ref-callback.ts';
+import useRefCallback from '../ref-callback';
 import { BindBase } from './BindBase';
 import { collection, collections, readBind, singletons } from './context';
 import { BindKeyDuplicatedError } from './error';

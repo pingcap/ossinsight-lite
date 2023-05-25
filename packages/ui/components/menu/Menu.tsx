@@ -1,7 +1,7 @@
 'use client';
 import { createContext, ReactNode, useContext, useEffect } from 'react';
 import { collections } from '../../hooks/bind';
-import { MenuRenderers } from './MenuContent.tsx';
+import { MenuRenderers } from './MenuContent';
 import { MenuItemProps } from './types';
 
 export interface MenuProps {
