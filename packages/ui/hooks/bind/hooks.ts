@@ -241,7 +241,7 @@ export function useSafeUpdater<K extends CollectionBindKey> (type: K, id: KeyTyp
     bindRef.current = bind;
 
     sub.add(() => {
-      bindRef.current = null;
+      bindRef.current = undefined;
     });
   }, [type, id]);
 
