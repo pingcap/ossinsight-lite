@@ -55,13 +55,19 @@ function Registry ({ name }: { name: string }) {
 export interface MenuContextValues {
   name: string;
   parentId: string | undefined;
-  renderers: MenuRenderers | undefined;
+  renderers: MenuRenderers;
 }
 
 export const MenuContext = createContext<MenuContextValues>({
   name: '',
   parentId: undefined,
-  renderers: undefined,
+  renderers: {
+    renderSeparator: () => { throw new Error('not impl'); },
+    renderItem: () => { throw new Error('not impl'); },
+    renderLinkItem: () => { throw new Error('not impl'); },
+    renderParentItem: () => { throw new Error('not impl'); },
+    renderCustomItem: () => { throw new Error('not impl'); },
+  },
 });
 
 export interface MenuDirectItemsContext {
