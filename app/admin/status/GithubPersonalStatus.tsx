@@ -1,7 +1,8 @@
-import { getDatabaseUri, withConnection } from '@/src/utils/mysql';
 import config from '@/.osswrc.json';
-import { Suspense, use } from 'react';
+import { SimpleErrorComponent } from '@/app/admin/status/SimpleErrorComponent';
 import LoadingIndicator from '@/src/components/LoadingIndicator';
+import { getDatabaseUri, withConnection } from '@/src/utils/mysql';
+import { Suspense, use } from 'react';
 
 const db = config.db.find(db => db.display === 'github-personal')!;
 const dbName = process.env[db.env] || db.database;
@@ -44,23 +45,37 @@ export default function GithubPersonalStatus () {
 }
 
 function CurrentUser () {
-  const rows = use(withConnection(getDatabaseUri(dbName), async ({ sql }) => (
-    sql<{ login: string }>`
-        SELECT login
-        FROM curr_user;`
-  )));
+  try {
+    const rows = use(withConnection(getDatabaseUri(dbName), async ({ sql }) => (
+      sql<{ login: string }>`
+          SELECT login
+          FROM curr_user;`
+    )));
 
-  return <b>@{rows.map(row => row.login).join(', ')}</b>;
+    return <b>@{rows.map(row => row.login).join(', ')}</b>;
+  } catch (e: any) {
+    if (e?.message?.indexOf('Suspense Exception') !== -1) {
+      throw e;
+    }
+    return <SimpleErrorComponent error={e}/>
+  }
 }
 
 function SchemaVersion () {
-  const rows = use(withConnection(getDatabaseUri(dbName), async ({ sql }) => (
-    sql<{ version: string }>`
-        SELECT version
-        FROM schema_migrations
-        ORDER BY version DESC
-        LIMIT 1;`
-  )));
+  try {
+    const rows = use(withConnection(getDatabaseUri(dbName), async ({ sql }) => (
+      sql<{ version: string }>`
+          SELECT version
+          FROM schema_migrations
+          ORDER BY version DESC
+          LIMIT 1;`
+    )));
 
-  return <b>{rows[0].version}</b>;
+    return <b>{rows[0].version}</b>;
+  } catch (e: any) {
+    if (e?.message?.indexOf('Suspense Exception') !== -1) {
+      throw e;
+    }
+    return <SimpleErrorComponent error={e}/>
+  }
 }

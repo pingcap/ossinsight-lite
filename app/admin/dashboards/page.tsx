@@ -1,8 +1,10 @@
 import { AddDashboardForm, DeleteDashboardButton } from '@/app/admin/dashboards/actions-ui';
 import { getDashboards } from '@/app/admin/dashboards/op';
+import { authenticateGuard } from '@/src/auth';
 import Link from 'next/link';
 
 export default async function () {
+  await authenticateGuard('/admin/dashboards');
   const dashboards = await getDashboards();
 
   return (

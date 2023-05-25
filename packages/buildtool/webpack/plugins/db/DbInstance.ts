@@ -10,7 +10,8 @@ type DbInstanceOptions = {
 
 export abstract class DbInstance<Pool> {
   cache: Cache;
-  pool!: Pool;
+  pool: Pool | undefined;
+  connectError: Error | undefined;
 
   constructor (public readonly options: DbInstanceOptions) {
     this.cache = new Cache(options.name, cwd('.db'));
@@ -24,16 +25,23 @@ export abstract class DbInstance<Pool> {
       throw new Error(`Database ${this.options.name}'s is not configured.`);
     }
     if (!process.env.TIDB_USER || !process.env.TIDB_HOST || !process.env.TIDB_HOST || !process.env.TIDB_PORT) {
-      throw new Error('TiDB integration was not configured. Check your vercel project config.');
+      this.connectError = new Error('TiDB integration was not configured. Check your vercel project config.');
+      return;
     }
     const uri = `mysql://${process.env.TIDB_USER}:${process.env.TIDB_PASSWORD}@${process.env.TIDB_HOST}:${process.env.TIDB_PORT}/${database}?timezone=Z&ssl={"rejectUnauthorized":true,"minVersion":"TLSv1.2"}`;
 
-    this.pool = await this.createPool(uri);
+    try {
+      this.pool = await this.createPool(uri);
+    } catch (e) {
+      this.connectError = e as Error;
+    }
   };
 
   async close () {
     await this.cache.close();
-    await this.closePool(this.pool);
+    if (this.pool) {
+      await this.closePool(this.pool);
+    }
   }
 
   abstract createPool (envValue: string): Pool | Promise<Pool>

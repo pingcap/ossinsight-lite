@@ -9,7 +9,7 @@ import * as renderers from './content';
 export interface ToolbarMenuProps extends MenuProps, ToolbarProps, DirectItemsProps {
 }
 
-export function ToolbarMenu ({ name, auto, children, items, simple, ...props }: ToolbarMenuProps) {
+export function ToolbarMenu ({ name, auto, children, items, simple = false, ...props }: ToolbarMenuProps) {
   return (
     <Menu name={name} auto={auto} renderers={renderers} simple={simple}>
       <RuiToolbar.Root

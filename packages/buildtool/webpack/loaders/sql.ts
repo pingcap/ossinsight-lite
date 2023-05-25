@@ -45,16 +45,20 @@ const loader: LoaderDefinitionFunction = function (content, sourceMap, additiona
 };
 
 async function sqlQuery (dbInstance: DbInstance<any>, id: string, content: string) {
-  let [raw] = await dbInstance.query(content);
+  try {
+    let [raw] = await dbInstance.query(content);
 
-  if (id.endsWith('?unique')) {
-    if (raw.length !== 1) {
-      throw new Error(`Database returned ${raw.length} result(s).`);
+    if (id.endsWith('?unique')) {
+      if (raw.length !== 1) {
+        throw new Error(`Database returned ${raw.length} result(s).`);
+      }
+      raw = raw[0];
     }
-    raw = raw[0];
-  }
 
-  return raw;
+    return raw;
+  } catch (e) {
+    return { __error__: e }
+  }
 }
 
 export = loader;

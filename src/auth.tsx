@@ -1,8 +1,8 @@
-import { RowDataPacket } from 'mysql2/promise';
+import { getDatabaseUri, withConnection } from '@/src/utils/mysql';
 // SEE https://github.com/vercel/next.js/issues/49759
 // import { compare, hash } from 'bcrypt';
 import { compare } from 'bcrypt-ts';
-import { getDatabaseUri, withConnection } from '@/src/utils/mysql';
+import { RowDataPacket } from 'mysql2/promise';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { NextRequest, NextResponse } from 'next/server';
@@ -31,8 +31,15 @@ export async function authenticateApiGuard (req: NextRequest) {
   const username = Buffer.from(bu, 'base64url').toString('utf-8');
   const password = Buffer.from(bp, 'base64url').toString('utf-8');
 
-  if (!await authenticate(username, password)) {
-    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+  try {
+    if (!await authenticate(username, password)) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
+  } catch (e: any) {
+    if (e?.isNoConnectionError) {
+      return NextResponse.json({ message: 'Database not configured' }, { status: 400 });
+    }
+    throw e;
   }
 }
 
@@ -47,7 +54,13 @@ export async function authenticateGuard (redirectUri: string) {
   const username = Buffer.from(bu, 'base64url').toString('utf-8');
   const password = Buffer.from(bp, 'base64url').toString('utf-8');
 
-  if (!await authenticate(username, password)) {
-    redirect(`/login?redirect_uri=${encodeURIComponent(redirectUri)}`);
+  try {
+    if (!await authenticate(username, password)) {
+      redirect(`/login?redirect_uri=${encodeURIComponent(redirectUri)}`);
+    }
+  } catch (e: any) {
+    if (e?.isNoConnectionError) {
+      redirect(`/admin/status`);
+    }
   }
 }

@@ -1,7 +1,8 @@
-import { getDatabaseUri, withConnection } from '@/src/utils/mysql';
 import config from '@/.osswrc.json';
-import { Suspense, use } from 'react';
+import { SimpleErrorComponent } from '@/app/admin/status/SimpleErrorComponent';
 import LoadingIndicator from '@/src/components/LoadingIndicator';
+import { getDatabaseUri, withConnection } from '@/src/utils/mysql';
+import { Suspense, use } from 'react';
 
 const db = config.db.find(db => db.display === 'github-repo')!;
 const dbName = process.env[db.env] || db.database;
@@ -44,22 +45,36 @@ export default function GithubRepoStatus () {
 }
 
 function CurrentTrackingRepos () {
-  const rows = use(withConnection(getDatabaseUri(dbName), async ({ sql }) => (
-    sql<{ full_name: string }>`SELECT full_name
-                               FROM repo_full_name_configs;`
-  )));
+  try {
+    const rows = use(withConnection(getDatabaseUri(dbName), async ({ sql }) => (
+      sql<{ full_name: string }>`SELECT full_name
+                                 FROM repo_full_name_configs;`
+    )));
 
-  return <b>{rows.map(row => row.full_name).join(', ')}</b>;
+    return <b>{rows.map(row => row.full_name).join(', ')}</b>;
+  } catch (e: any) {
+    if (e?.message?.indexOf('Suspense Exception') !== -1) {
+      throw e;
+    }
+    return <SimpleErrorComponent error={e}/>
+  }
 }
 
 function SchemaVersion () {
-  const rows = use(withConnection(getDatabaseUri(dbName), async ({ sql }) => (
-    sql<{ version: string }>`
-        SELECT version
-        FROM schema_migrations
-        ORDER BY version DESC
-        LIMIT 1;`
-  )));
+  try {
+    const rows = use(withConnection(getDatabaseUri(dbName), async ({ sql }) => (
+      sql<{ version: string }>`
+          SELECT version
+          FROM schema_migrations
+          ORDER BY version DESC
+          LIMIT 1;`
+    )));
 
-  return <b>{rows[0].version}</b>;
+    return <b>{rows[0].version}</b>;
+  } catch (e: any) {
+    if (e?.message?.indexOf('Suspense Exception') !== -1) {
+      throw e;
+    }
+    return <SimpleErrorComponent error={e}/>
+  }
 }

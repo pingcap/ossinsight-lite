@@ -1,7 +1,18 @@
 import { Connection, createConnection, RowDataPacket } from 'mysql2/promise';
 import { ADMIN_DATABASE_NAME } from '@/src/auth';
 
+export class NoConnectionError extends Error {
+  readonly isNoConnectionError = true;
+
+  constructor () {
+    super('Not connected to database.')
+  }
+}
+
 export async function withConnection<R> (uri: string, run: (conn: Connection & SqlExecutor) => Promise<R>): Promise<R> {
+  if (!uri) {
+    throw new NoConnectionError();
+  }
   const conn = await createConnection({
     uri,
   });
@@ -74,7 +85,8 @@ function withSqlExecutor (conn: Connection): Connection & SqlExecutor {
 
 export function getDatabaseUri (database?: string) {
   if (!process.env.TIDB_USER || !process.env.TIDB_HOST || !process.env.TIDB_HOST || !process.env.TIDB_PORT) {
-    throw new Error('TiDB integration was not configured. Check your vercel project config.');
+    console.error('TiDB integration was not configured. Check your vercel project config.');
+    return '';
   }
   if (database) {
     return `mysql://${process.env.TIDB_USER}:${process.env.TIDB_PASSWORD}@${process.env.TIDB_HOST}:${process.env.TIDB_PORT}/${database}?timezone=Z&ssl={"rejectUnauthorized":true,"minVersion":"TLSv1.2"}`;

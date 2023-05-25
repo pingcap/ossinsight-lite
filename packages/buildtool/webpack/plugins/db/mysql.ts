@@ -13,6 +13,12 @@ export class MysqlInstance extends DbInstance<Pool> {
   }
 
   override query (sql: string, values: any[] | undefined): Promise<any[]> {
+    if (this.connectError) {
+      return Promise.reject(this.connectError);
+    }
+    if (!this.pool) {
+      return Promise.reject(new Error('Not connected to database.'))
+    }
     return this.pool.query(sql, values);
   }
 }

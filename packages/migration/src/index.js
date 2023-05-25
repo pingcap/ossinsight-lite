@@ -15,7 +15,12 @@ const URI = `mysql://${process.env.TIDB_USER}:${process.env.TIDB_PASSWORD}@${pro
 let conn;
 
 async function main() {
-  conn = await mysql2.createConnection(URI);
+  try {
+    conn = await mysql2.createConnection(URI);
+  } catch (e) {
+    console.warn("unable to connect database", e)
+    process.exit(0)
+  }
   const files = glob.globSync('sql/*.sql').sort();
 
   let lastName

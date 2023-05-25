@@ -10,7 +10,7 @@ import * as renderers from './content';
 export interface NavMenuProps extends NavigationMenuProps, MenuProps, DirectItemsProps {
 }
 
-export function NavMenu ({ name, auto, children, className, items, simple, ...props }: NavMenuProps) {
+export function NavMenu ({ name, auto, children, className, items, simple = false, ...props }: NavMenuProps) {
   return (
     <Menu name={name} auto={auto} renderers={renderers} simple={simple}>
       <NavigationMenu.Root {...props} className="fixed top-0 left-0 w-screen z-50 hover:backdrop-blur-sm transition-all">
