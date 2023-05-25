@@ -122,7 +122,6 @@ export function EditingLayer ({ id, editMode, dragging, draggableProps, active, 
       <div className="text-black bg-black bg-opacity-0 opacity-20 hover:bg-opacity-30 hover:opacity-100 hover:text-white transition-all">
         <ToolbarMenu
           className="flex justify-end items-center"
-          onMouseDown={e => console.log(e)}
           name={`widgets.${id}`}
           auto={false}
           simple

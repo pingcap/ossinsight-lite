@@ -9,7 +9,7 @@ export const renderSeparator: MenuRenderers['renderSeparator'] = (item) => {
 
 export const renderParentItem: MenuRenderers['renderParentItem'] = (item, isSub, children) => {
   return (
-    <RuiNavigationMenu.Item key={item.id} style={{ order: item.order }} className="relative">
+    <RuiNavigationMenu.Item key={item.id} style={{ order: item.order }} className="relative w-[32px] flex justify-center items-center">
       <RuiNavigationMenu.Trigger
         className="relative z-0 outline-none bg-transparent transition:colors p-1 cursor-pointer flex justify-between items-center"
         disabled={item.disabled}

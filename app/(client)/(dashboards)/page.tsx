@@ -1,10 +1,7 @@
-import React from 'react';
 import DashboardServer from '@/app/(client)/(dashboards)/dashboard.server';
-import { authenticateGuard } from '@/src/auth';
+import React from 'react';
 
 export default async function Page () {
-  await authenticateGuard('/')
-
   return (
     <DashboardServer name="default" />
   );

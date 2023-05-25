@@ -8,6 +8,8 @@ require('dotenv').config({
   path: path.resolve(__dirname, '../../../.env')
 });
 
+process.env.READONLY_USERNAME = process.env.TIDB_USER?.replace(/\.root$/, '.osslreadonly')
+
 const URI = `mysql://${process.env.TIDB_USER}:${process.env.TIDB_PASSWORD}@${process.env.TIDB_HOST}:${process.env.TIDB_PORT}?timezone=Z&ssl={"rejectUnauthorized":true,"minVersion":"TLSv1.2"}`;
 /**
  * @type {import('mysql2/promise').Connection}
@@ -75,12 +77,16 @@ main().catch(err => {
 
 function parsePlaceholders(sql) {
   const REGEXP = /:env_([A-Za-z_]+)/g;
+  const REPLACE_REGEXP = /\$\{([A-Za-z_]+)}/g;
   const res = {}
 
   /**
    * @type {RegExpExecArray}
    */
   let matched
+
+  sql = sql.replace(REPLACE_REGEXP, (_, g) => process.env[g]);
+
   while ((matched = REGEXP.exec(sql))) {
     const [, name] = matched;
 

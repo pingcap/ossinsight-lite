@@ -1,3 +1,5 @@
+import { getDatabaseUri } from '@/src/utils/mysql';
+import { data } from 'autoprefixer';
 import { Connection, createConnection } from 'mysql2/promise';
 import * as process from 'process';
 import kv from '@/app/(client)/api/kv';
@@ -9,9 +11,10 @@ import { authenticateApiGuard } from '@/src/auth';
 const db = config.db;
 
 export async function POST (req: NextRequest, { params: { name } }: any) {
+  let readonly = false;
   const res = await authenticateApiGuard(req);
   if (res) {
-    return res;
+    readonly = true;
   }
 
   if (!process.env.TIDB_USER || !process.env.TIDB_HOST || !process.env.TIDB_HOST || !process.env.TIDB_PORT) {
@@ -30,7 +33,7 @@ export async function POST (req: NextRequest, { params: { name } }: any) {
   }
 
   const database = process.env[target.env] || target.database;
-  const uri = `mysql://${process.env.TIDB_USER}:${process.env.TIDB_PASSWORD}@${process.env.TIDB_HOST}:${process.env.TIDB_PORT}/${database}?timezone=Z&ssl={"rejectUnauthorized":true,"minVersion":"TLSv1.2"}`;
+  const uri = getDatabaseUri(database, readonly)
 
   const { searchParams } = new URL(req.url);
 

@@ -1,11 +1,11 @@
-import { Connection, createConnection, RowDataPacket } from 'mysql2/promise';
 import { ADMIN_DATABASE_NAME } from '@/src/auth';
+import { Connection, createConnection, RowDataPacket } from 'mysql2/promise';
 
 export class NoConnectionError extends Error {
   readonly isNoConnectionError = true;
 
   constructor () {
-    super('Not connected to database.')
+    super('Not connected to database.');
   }
 }
 
@@ -83,14 +83,16 @@ function withSqlExecutor (conn: Connection): Connection & SqlExecutor {
   return (conn as Connection & SqlExecutor);
 }
 
-export function getDatabaseUri (database?: string) {
-  if (!process.env.TIDB_USER || !process.env.TIDB_HOST || !process.env.TIDB_HOST || !process.env.TIDB_PORT) {
+export function getDatabaseUri (database?: string, readonly: boolean = false) {
+  if (!process.env.TIDB_USER || !process.env.TIDB_PASSWORD || !process.env.TIDB_HOST || !process.env.TIDB_PORT) {
     console.error('TiDB integration was not configured. Check your vercel project config.');
     return '';
   }
+  const username = readonly ? process.env.TIDB_USER.replace(/\.root$/, '.osslreadonly') : process.env.TIDB_USER;
+  const password = readonly ? 'ossinsight_lite_readonly_password' : process.env.TIDB_PASSWORD;
   if (database) {
-    return `mysql://${process.env.TIDB_USER}:${process.env.TIDB_PASSWORD}@${process.env.TIDB_HOST}:${process.env.TIDB_PORT}/${database}?timezone=Z&ssl={"rejectUnauthorized":true,"minVersion":"TLSv1.2"}`;
+    return `mysql://${username}:${password}@${process.env.TIDB_HOST}:${process.env.TIDB_PORT}/${database}?timezone=Z&ssl={"rejectUnauthorized":true,"minVersion":"TLSv1.2"}`;
   } else {
-    return `mysql://${process.env.TIDB_USER}:${process.env.TIDB_PASSWORD}@${process.env.TIDB_HOST}:${process.env.TIDB_PORT}?timezone=Z&ssl={"rejectUnauthorized":true,"minVersion":"TLSv1.2"}`;
+    return `mysql://${username}:${password}@${process.env.TIDB_HOST}:${process.env.TIDB_PORT}?timezone=Z&ssl={"rejectUnauthorized":true,"minVersion":"TLSv1.2"}`;
   }
 }
