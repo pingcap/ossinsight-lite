@@ -89,7 +89,7 @@ export function getDatabaseUri (database?: string, readonly: boolean = false) {
     return '';
   }
   const username = readonly ? process.env.TIDB_USER.replace(/\.root$/, '.osslreadonly') : process.env.TIDB_USER;
-  const password = readonly ? 'ossinsight_lite_readonly_password' : process.env.TIDB_PASSWORD;
+  const password = readonly ? process.env.TIDB_PASSWORD + '.osslreadonly' : process.env.TIDB_PASSWORD;
   if (database) {
     return `mysql://${username}:${password}@${process.env.TIDB_HOST}:${process.env.TIDB_PORT}/${database}?timezone=Z&ssl={"rejectUnauthorized":true,"minVersion":"TLSv1.2"}`;
   } else {

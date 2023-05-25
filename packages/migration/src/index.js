@@ -9,6 +9,7 @@ require('dotenv').config({
 });
 
 process.env.READONLY_USERNAME = process.env.TIDB_USER?.replace(/\.[^.]*$/, '.osslreadonly')
+process.env.READONLY_PASSWORD = process.env.TIDB_PASSWORD + '.osslreadonly'
 
 const URI = `mysql://${process.env.TIDB_USER}:${process.env.TIDB_PASSWORD}@${process.env.TIDB_HOST}:${process.env.TIDB_PORT}?timezone=Z&ssl={"rejectUnauthorized":true,"minVersion":"TLSv1.2"}`;
 /**
