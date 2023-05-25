@@ -42,7 +42,7 @@ const navs = [
   },
 ] as const;
 
-export default function Nav ({}: { authenticated: boolean }) {
+export default function Nav () {
   const [first] = useSelectedLayoutSegments();
 
   return (

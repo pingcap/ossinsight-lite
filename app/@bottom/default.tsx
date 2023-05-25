@@ -38,7 +38,7 @@ export default function Default () {
 
 const dashboardsItems = () => (
   <>
-    <MenuItem id="Admin" order={-9999} href="/admin/dashboards" text={<GearIcon />} />
+    <MenuItem id="Admin" order={-9999} href="/admin/dashboards" prefetch={false} text={<GearIcon />} />
     <MenuItem id="DownloadLayoutJSON" order={100} custom>
       <a href="/api/layout.json" download="layout.json">
         <CloudDownloadIcon />

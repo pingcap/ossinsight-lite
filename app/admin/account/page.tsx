@@ -8,3 +8,5 @@ export default async function () {
     <ChangePasswordForm />
   );
 }
+
+export const dynamic = 'force-dynamic';

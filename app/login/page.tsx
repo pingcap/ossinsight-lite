@@ -1,12 +1,13 @@
-import { authenticate } from '@/src/auth';
-import { cookies, headers } from 'next/headers';
-import { ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies';
-import { isDev } from '@/packages/ui/utils/dev';
-import { redirect } from 'next/navigation';
 import LoginForm from '@/app/login/form';
+import { isDev } from '@/packages/ui/utils/dev';
+import { authenticate } from '@/src/auth';
+import { revalidatePath } from 'next/cache';
+import { ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 export default function Page ({ searchParams }: any) {
-  const redirectUri = searchParams.redirect_uri ?? '/';
+  const redirectUri = decodeURIComponent(searchParams.redirect_uri) ?? '/';
 
   async function loginAction (form: FormData) {
     'use server';
@@ -31,8 +32,8 @@ export default function Page ({ searchParams }: any) {
       sameSite: 'strict',
     } as ResponseCookie);
 
-    const origin = headers().get('Origin');
-    redirect(origin + redirectUri);
+    revalidatePath(redirectUri);
+    redirect(redirectUri);
   }
 
   return (

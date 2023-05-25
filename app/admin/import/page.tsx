@@ -8,3 +8,5 @@ export default async function Page () {
     <ImportLayoutForm />
   );
 }
+
+export const dynamic = 'force-dynamic';
