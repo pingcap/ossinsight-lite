@@ -1,4 +1,5 @@
 import React, {ForwardedRef, HTMLProps, useEffect, useState} from 'react';
+import clsx from "clsx";
 import {unified} from "unified";
 import remarkParse from 'remark-parse'
 import remarkRehype from 'remark-rehype'
@@ -6,15 +7,17 @@ import rehypeRaw from 'rehype-raw'
 import rehypeSanitize from 'rehype-sanitize'
 import rehypeStringify from 'rehype-stringify'
 
+import './github-markdown.css'
+
 export interface IProps extends HTMLProps<HTMLDivElement> {
   markdown: string
 }
 
 export default function Markdown (props: IProps, ref: ForwardedRef<IProps>) {
-  const {markdown, ...rest} = props
+  const {markdown, className, ...rest} = props
   const html = useMarkdown(markdown)
   return (
-    <div dangerouslySetInnerHTML={{__html: html}} {...rest} />
+    <div className={clsx(className, 'markdown-body')} dangerouslySetInnerHTML={{__html: html}} {...rest} />
   );
 }
 
