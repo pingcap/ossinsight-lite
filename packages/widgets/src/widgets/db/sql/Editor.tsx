@@ -30,7 +30,7 @@ export interface WidgetProps extends HTMLProps<HTMLDivElement> {
   onPropChange?: (name: string, value: any) => void;
 }
 
-export default function Widget ({ defaultSql, defaultDb, sql, currentDb, visualize, mode, ...props }: WidgetProps, forwardedRef: ForwardedRef<HTMLDivElement>) {
+export default function Editor ({ defaultSql, defaultDb, sql, currentDb, visualize, mode, ...props }: WidgetProps, forwardedRef: ForwardedRef<HTMLDivElement>) {
   const { onPropChange, configuring } = useContext(WidgetContext);
 
   const [openVisualizeDialog, setOpenVisualizeDialog] = useState(false);

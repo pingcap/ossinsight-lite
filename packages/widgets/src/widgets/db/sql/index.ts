@@ -16,7 +16,7 @@ export const defaultProps = {
   },
 };
 
-export const configureComponent = () => import('../sql-editor/index');
+export const configureComponent = () => import('./Editor');
 
 export { NewButton } from './NewButton';
 
