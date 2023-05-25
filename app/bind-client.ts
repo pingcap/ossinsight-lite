@@ -1,4 +1,5 @@
 import { collections } from '@/packages/ui/hooks/bind';
+import { ReactiveValueSubject } from '@/packages/ui/hooks/bind/ReactiveValueSubject';
 import { Alert } from '@/src/components/Alert';
 import * as internals from '@/src/layout-components';
 import widgetsManifest, { ResolvedWidgetModule } from '@/src/widgets-manifest';
@@ -11,6 +12,16 @@ declare module '@ossinsight-lite/ui/hooks/bind' {
 }
 
 export const widgets = collections.add('widgets');
+
+widgets.rejectUnknownKey = true;
+widgets.fallback = new ReactiveValueSubject({
+  default: function ({}) {
+    return createElement(Alert, { type: 'error', title: 'Failed to load widget, check your repo version.' });
+  } as any,
+  name: 'UNKNOWN',
+  displayName: 'UNKNOWN',
+  category: 'UNKNOWN',
+});
 
 for (let [name, widget] of Object.entries(widgetsManifest)) {
   widgets.define(name, async () => {

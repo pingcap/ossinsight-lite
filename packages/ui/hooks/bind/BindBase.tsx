@@ -28,12 +28,13 @@ interface TypedMap<MapType> extends Map<keyof MapType, MapType[keyof MapType]> {
 
 class BindBaseSubject<T> extends Subject<T> {
   private _active: boolean = true;
+
   constructor () {
     super();
   }
 
   public set active (active: boolean) {
-    this._active = active
+    this._active = active;
   }
 
   next (value: T) {
@@ -49,6 +50,8 @@ export abstract class BindBase<BindMap, InitialArgs extends any[] = []> {
   protected readonly _predefinedStore: TypedMap<{ [P in keyof BindMap]: () => Promise<InitialArgs> }> = new Map();
   protected readonly _eventBus = new BindBaseSubject<GeneralEvent<keyof BindMap, BindMap[keyof BindMap]>>();
   protected readonly _loaded = new ReactiveValueSubject<boolean>(true);
+  public rejectUnknownKey = false;
+  public fallback: BindMap[keyof BindMap] | undefined;
 
   _parent: BindBase<any, any> | undefined;
   _key: KeyType | undefined;
@@ -93,15 +96,24 @@ export abstract class BindBase<BindMap, InitialArgs extends any[] = []> {
           return this.add(type, ...initArgs);
         }));
       } else {
-        this._pendingStore.set(type, ab = firstValueFrom(this._eventBus
-          .pipe(filter(([_, thisType, event]) => {
-            if (isDev) {
-              clearTimeout(h);
-            }
-            return event === BindingTypeEvent.CREATED && type === thisType;
-          }))
-          .pipe(map(([bind]) => bind as BindMap[K])),
-        ));
+        if (this.rejectUnknownKey) {
+          if (this.fallback) {
+            this._store.set(type, this.fallback);
+            return this.fallback as BindMap[K];
+          } else {
+            this._pendingStore.set(type, ab = Promise.reject(new Error(`Unknown ${String(this._key)}#${String(type)}`)));
+          }
+        } else {
+          this._pendingStore.set(type, ab = firstValueFrom(this._eventBus
+            .pipe(filter(([_, thisType, event]) => {
+              if (isDev) {
+                clearTimeout(h);
+              }
+              return event === BindingTypeEvent.CREATED && type === thisType;
+            }))
+            .pipe(map(([bind]) => bind as BindMap[K])),
+          ));
+        }
       }
     }
     return ab;
