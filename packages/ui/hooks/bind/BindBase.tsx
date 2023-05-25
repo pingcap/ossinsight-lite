@@ -51,7 +51,7 @@ export abstract class BindBase<BindMap, InitialArgs extends any[] = []> {
   protected readonly _eventBus = new BindBaseSubject<GeneralEvent<keyof BindMap, BindMap[keyof BindMap]>>();
   protected readonly _loaded = new ReactiveValueSubject<boolean>(true);
   public rejectUnknownKey = false;
-  public fallback: BindMap[keyof BindMap] | undefined;
+  public fallback: (<K extends keyof BindMap> (key: K) => BindMap[K]) | undefined;
 
   _parent: BindBase<any, any> | undefined;
   _key: KeyType | undefined;
@@ -98,8 +98,9 @@ export abstract class BindBase<BindMap, InitialArgs extends any[] = []> {
       } else {
         if (this.rejectUnknownKey) {
           if (this.fallback) {
-            this._store.set(type, this.fallback);
-            return this.fallback as BindMap[K];
+            const value = this.fallback(type);
+            this._store.set(type, value);
+            return value;
           } else {
             this._pendingStore.set(type, ab = Promise.reject(new Error(`Unknown ${String(this._key)}#${String(type)}`)));
           }

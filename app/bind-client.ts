@@ -14,14 +14,14 @@ declare module '@ossinsight-lite/ui/hooks/bind' {
 export const widgets = collections.add('widgets');
 
 widgets.rejectUnknownKey = true;
-widgets.fallback = new ReactiveValueSubject({
+widgets.fallback = ((name: string) => new ReactiveValueSubject({
   default: function ({}) {
     return createElement(Alert, { type: 'error', title: 'Failed to load widget, check your repo version.' });
   } as any,
-  name: 'UNKNOWN',
-  displayName: 'UNKNOWN',
-  category: 'UNKNOWN',
-});
+  name: name,
+  displayName: name,
+  category: 'Error',
+})) as any;
 
 for (let [name, widget] of Object.entries(widgetsManifest)) {
   widgets.define(name, async () => {
