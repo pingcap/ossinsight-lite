@@ -1,34 +1,31 @@
-import React, {ForwardedRef, HTMLProps, useEffect, useState} from 'react';
+import React, {createElement, ForwardedRef, Fragment, HTMLProps, useEffect, useState} from 'react';
 import {unified} from "unified";
-import remarkParse from 'remark-parse'
-import remarkRehype from 'remark-rehype'
-import rehypeDocument from 'rehype-document'
-import rehypeFormat from 'rehype-format'
-import rehypeStringify from 'rehype-stringify'
+import rehypeParse from 'rehype-parse'
+import rehypeReact from 'rehype-react'
 
 export interface IProps extends HTMLProps<HTMLDivElement> {
-  title: string
   markdown: string
 }
 
 export default function Markdown (props: IProps, ref: ForwardedRef<HTMLDivElement>) {
-  const [html, setHtml] = useState<string>()
-  useEffect(() => {
-    (async () => {
-      const result = await unified()
-        .use(remarkParse)
-        .use(remarkRehype)
-        .use(rehypeDocument, {title: props.title})
-        .use(rehypeFormat)
-        .use(rehypeStringify)
-        .process(props.markdown)
-      const str = String(result)
-      setHtml(str)
-    })()
-  }, [props]);
-
-  console.log({file: html})
+  const html = useProcessor(props.markdown)
   return (
     <div dangerouslySetInnerHTML={{__html: html}} {...props} />
   );
+}
+
+function useProcessor(text) {
+  const [Content, setContent] = useState(<></>)
+
+  useEffect(() => {
+    unified()
+      .use(rehypeParse, {fragment: true})
+      .use(rehypeReact, {createElement, Fragment})
+      .process(text)
+      .then((file) => {
+        setContent(file.result)
+      })
+  }, [text])
+
+  return Content
 }
