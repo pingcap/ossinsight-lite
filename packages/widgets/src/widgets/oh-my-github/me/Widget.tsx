@@ -10,7 +10,7 @@ export default function Widget (props: HTMLProps<HTMLDivElement>, ref: Forwarded
         alt={cu.login} src={`https://github.com/${cu.login}.png`}
       />
       <div className="flex flex-col">
-        <span className="text-gray-700">@{cu.login}</span>
+        <span className="text-gray-700">{cu.login}</span>
         <span className="text-gray-500">{cu.bio}</span>
       </div>
     </div>
