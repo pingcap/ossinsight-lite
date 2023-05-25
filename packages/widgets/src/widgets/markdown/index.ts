@@ -1,13 +1,17 @@
 export { default } from './Markdown';
 
-// TODO: MarkdownEditor
-// export const configureComponent = () => import('./MarkdownEditor.tsx')
+export const configureComponent = () => import('./MarkdownEditor');
+export const duplicable = true;
+export const styleConfigurable = true;
+
+export const defaultProps = {
+  markdown: '# Hello OSSInsight Lite!'
+}
+
+export { NewButton } from './NewButton';
 
 // defaultRect?: Rect;
 // defaultProps?: Partial<P>,
-// duplicable?: boolean,
-// configureComponent?: () => Promise<{ default: (props: P & HTMLProps<HTMLDivElement>, ref: ForwardedRef<HTMLDivElement>) => JSX.Element }>
-// styleConfigurable?: boolean,
 
 // export const category = '';
 export const displayName = 'Markdown';

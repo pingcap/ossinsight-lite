@@ -13,11 +13,11 @@ export interface IProps extends HTMLProps<HTMLDivElement> {
   markdown: string
 }
 
-export default function Markdown (props: IProps, ref: ForwardedRef<IProps>) {
+export default function Markdown (props: IProps, ref: ForwardedRef<HTMLDivElement>) {
   const {markdown, className, ...rest} = props
   const html = useMarkdown(markdown)
   return (
-    <div className={clsx(className, 'markdown-body')} dangerouslySetInnerHTML={{__html: html}} {...rest} />
+    <div ref={ref} className={clsx(className, 'markdown-body p-2')} dangerouslySetInnerHTML={{__html: html}} {...rest} />
   );
 }
 
