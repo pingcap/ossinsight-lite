@@ -80,7 +80,7 @@ function Widget ({ id, name, className, props }: { id: string | undefined, name:
     );
   } else {
     el = (
-      <div className='flex-1 items-stretch'>{el}</div>
+      <div className='flex-1 flex items-stretch overflow-hidden'>{el}</div>
     )
   }
   return (
