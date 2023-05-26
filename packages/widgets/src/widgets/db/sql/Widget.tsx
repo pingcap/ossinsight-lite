@@ -1,5 +1,5 @@
 import WidgetContext from '@ossinsight-lite/ui/context/widget';
-import { ForwardedRef, HTMLProps, useContext, useEffect, useRef } from 'react';
+import { ForwardedRef, forwardRef, HTMLProps, RefAttributes, useContext, useEffect, useRef } from 'react';
 import { VisualizeType } from '../../../components/visualize/common';
 import { useOperation } from '../../../utils/operation';
 import { doDbSqlQuery } from '../../../utils/query';
@@ -11,17 +11,17 @@ export enum WidgetMode {
 }
 
 export interface WidgetProps extends HTMLProps<HTMLDivElement> {
+  // See https://github.com/vercel/next.js/issues/40769
+  forwardedRef?: RefAttributes<HTMLDivElement>['ref']
+
   defaultDb?: string;
   defaultSql?: string;
   currentDb?: string;
   sql?: string;
-  /** @deprecated */
-  mode?: WidgetMode;
   visualize?: VisualizeType;
-  onPropChange?: (name: string, value: any) => void;
 }
 
-export default function Widget ({ defaultSql, defaultDb, sql, currentDb, visualize, mode, ...props }: WidgetProps, forwardedRef: ForwardedRef<HTMLDivElement>) {
+function Widget ({ defaultSql, defaultDb, sql, currentDb, visualize, forwardedRef, ...props }: WidgetProps, _forwardedRef: ForwardedRef<HTMLDivElement>) {
   const { visible } = useContext(WidgetContext);
   const firstExecuted = useRef(false);
   const { execute, running, result, error } = useOperation<{ sql: string, db: string, force: boolean }, any>(doDbSqlQuery);
@@ -39,3 +39,5 @@ export default function Widget ({ defaultSql, defaultDb, sql, currentDb, visuali
     </div>
   );
 }
+
+export default forwardRef(Widget)

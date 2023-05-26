@@ -1,3 +1,4 @@
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 const withSvgr = require('next-plugin-svgr');
 
 /** @type {import('next').NextConfig} */
@@ -22,6 +23,9 @@ const nextConfig = {
       ]
     })
     config.plugins.push(new (require('./packages/buildtool/dist/webpack/plugins/db/SQLPlugin')))
+    config.plugins.push(new MonacoWebpackPlugin({
+      languages: ['mysql', 'markdown'],
+    }))
 
     config.resolve.alias['roughjs'] = 'roughjs/bundled/rough.esm.js'
 

@@ -1,14 +1,13 @@
-export { default } from './Markdown';
+export const Widget = () => import('./Markdown');
+export const ConfigureComponent = () => import('./MarkdownEditor');
+export const NewButton = () => import('./NewButton');
 
-export const configureComponent = () => import('./MarkdownEditor');
 export const duplicable = true;
 export const styleConfigurable = true;
 
 export const defaultProps = {
-  markdown: '# Hello OSSInsight Lite!'
-}
-
-export { NewButton } from './NewButton';
+  markdown: '# Hello OSSInsight Lite!',
+};
 
 // defaultRect?: Rect;
 // defaultProps?: Partial<P>,

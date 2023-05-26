@@ -1,7 +1,9 @@
+import { startAppStateLoadingTransition } from '@/app/bind';
 import { widgets as widgetsBind } from '@/app/bind-client';
 import { move } from '@/packages/layout/src/core/types';
 import { DraggableState } from '@/packages/layout/src/hooks/draggable';
 import { ToolbarMenu } from '@/packages/ui/components/toolbar-menu';
+import LoadingIndicator from '@/src/components/LoadingIndicator';
 import { duplicateItem } from '@/src/components/WidgetsManager';
 import DuplicateIcon from '@/src/icons/copy.svg';
 import PaletteIcon from '@/src/icons/palette.svg';
@@ -14,6 +16,7 @@ import { useWatchItemField, useWatchItemFields, whenReady } from '@ossinsight-li
 import { Consume } from '@ossinsight-lite/ui/hooks/bind/types';
 import useRefCallback from '@ossinsight-lite/ui/hooks/ref-callback';
 import clsx from 'clsx';
+import { useRouter } from 'next/navigation';
 import { ComponentType, forwardRef, ReactElement, Suspense, useContext, useEffect, useState } from 'react';
 import { useNullableDashboardItems } from '../../core/dashboard';
 import widgets from '../../widgets-manifest';
@@ -63,7 +66,7 @@ export const WidgetComponent = forwardRef<HTMLDivElement, WidgetComponentProps>(
         onActiveChange={onActiveChange}
         draggableProps={draggableProps}
       >
-        <Suspense fallback={<div className="w-full h-full flex items-center justify-center text-xl text-gray-400">Loading</div>}>
+        <Suspense fallback={<div className="w-full h-full flex items-center justify-center text-xl text-gray-400" ref={ref}><LoadingIndicator /> Loading...</div>}>
           {el}
         </Suspense>
       </WidgetComponentWrapper>
@@ -97,10 +100,22 @@ function WidgetComponentWrapper ({ children, ...props }: WidgetState & { childre
 export function EditingLayer ({ id, editMode, dragging, draggableProps, active, onActiveChange }: WidgetState) {
   const { dashboardName } = useContext(DashboardContext);
   const items = useNullableDashboardItems(dashboardName);
-  const [hover, setHover] = useState(false);
+  const router = useRouter();
 
   const name = useWatchItemField('library', id, 'name');
   const { configurable, styleConfigurable, duplicable } = useWidgetState(name);
+
+  const configureAction = useRefCallback(() => {
+    startAppStateLoadingTransition(() => {
+      router.push(`/widgets/${encodeURIComponent(id)}/edit`);
+    });
+  });
+
+  const styleConfigureAction = useRefCallback(() => {
+    startAppStateLoadingTransition(() => {
+      `/widgets/${encodeURIComponent(id)}/styles`;
+    });
+  });
 
   const deleteAction = useRefCallback(() => {
     items?.del(id);
@@ -116,8 +131,6 @@ export function EditingLayer ({ id, editMode, dragging, draggableProps, active, 
   return (
     <div
       className={clsx('absolute left-0 top-0 w-full h-full z-10 bg-gray-700 bg-opacity-0 text-white flex flex-col transition-colors')}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
     >
       <div className="text-black bg-black bg-opacity-0 opacity-20 hover:bg-opacity-30 hover:opacity-100 hover:text-white transition-all">
         <ToolbarMenu
@@ -143,10 +156,21 @@ export function EditingLayer ({ id, editMode, dragging, draggableProps, active, 
                 />
               )}
               {styleConfigurable && (
-                <MenuItem id="styles" text={<PaletteIcon />} href={`/widgets/${encodeURIComponent(id)}/styles`} prefetch={false} order={99} />
+                <MenuItem
+                  id="styles"
+                  text={<PaletteIcon />}
+                  action={styleConfigureAction}
+                  order={99}
+                />
               )}
               {configurable && (
-                <MenuItem id="configure" text={<PencilIcon fill="currentColor" />} href={`/widgets/${encodeURIComponent(id)}/edit`} prefetch={false} order={1} disabled={!configurable} />
+                <MenuItem
+                  id="configure"
+                  text={<PencilIcon fill="currentColor" />}
+                  action={configureAction}
+                  order={1}
+                  disabled={!configurable}
+                />
               )}
             </>
           )}

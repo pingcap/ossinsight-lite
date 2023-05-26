@@ -1,6 +1,6 @@
 import { VisualizeLineChart, VisualizeRuntimeProps } from './common';
 import { Line } from 'react-chartjs-2';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { CategoryScale, Chart as ChartJs, Filler, Legend, LinearScale, LineElement, PointElement, TimeScale, TimeSeriesScale, Title, Tooltip as _Tooltip } from 'chart.js';
 import { getCartesianScaleOption } from './chartjs/getCartesianScaleOption';
 import { titlePlugin } from './chartjs/titlePlugin';

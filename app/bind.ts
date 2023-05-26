@@ -5,13 +5,14 @@ import { BatchCommands } from '@/src/core/commands';
 import { ReactiveDashboardInstance } from '@/src/core/dashboard/reactive-dashboard-instance';
 import { DashboardInstance } from '@/src/core/dashboard/type';
 import { LayoutConfigV1, LibraryItem } from '@/src/types/config';
+import { startTransition, TransitionFunction } from 'react';
 import { debounceTime } from 'rxjs';
 
 declare module '@ossinsight-lite/ui/hooks/bind' {
   interface SingletonsBindMap {
     appState: {
       saving: boolean
-      routing: boolean
+      loading: number
       fetchingConfig: boolean
     };
 
@@ -21,9 +22,21 @@ declare module '@ossinsight-lite/ui/hooks/bind' {
 
 export const appState = singletons.add('appState', {
   saving: false,
-  routing: false,
+  loading: 0,
   fetchingConfig: false,
 });
+
+export function startAppStateLoadingTransition (cb: TransitionFunction) {
+  appState.update({
+    ...appState.current,
+    loading: appState.current.loading + 1,
+  });
+  startTransition(cb);
+  appState.update({
+    ...appState.current,
+    loading: appState.current.loading - 1,
+  });
+}
 
 export const dashboards = collections.add('dashboards');
 
@@ -114,27 +127,8 @@ commands.changed
   });
 
 async function syncConfig () {
-  if (typeof localStorage === 'undefined') {
-    return;
-  }
-
   if (typeof window === 'undefined') {
     return;
-  }
-
-  const libraryString = localStorage.getItem('widgets:library');
-  if (libraryString) {
-    const items = JSON.parse(libraryString) as LibraryItem[];
-    commands.inactiveScope(() => {
-      for (let item of items) {
-        const key = item.id ?? item.name;
-        if (library.has(key)) {
-          library.update(key, item);
-        } else {
-          library.add(key, item);
-        }
-      }
-    });
   }
 
   console.debug('[config]: start syncing');
@@ -180,15 +174,40 @@ async function syncConfig () {
   }
 }
 
+function syncLocalConfig () {
+  if (typeof localStorage === 'undefined') {
+    return;
+  }
+  const libraryString = localStorage.getItem('widgets:library');
+  if (libraryString) {
+    const items = JSON.parse(libraryString) as LibraryItem[];
+    commands.inactiveScope(() => {
+      for (let item of items) {
+        const key = item.id ?? item.name;
+        if (library.has(key)) {
+          library.update(key, item);
+        } else {
+          library.add(key, item);
+        }
+      }
+    });
+  }
+}
+
+syncLocalConfig();
+
 appState.update({
   ...appState.current,
   fetchingConfig: true,
 });
-syncConfig()
-  .catch(console.error)
-  .finally(() => {
-    appState.update({
-      ...appState.current,
-      fetchingConfig: false,
+
+startTransition(() => {
+  syncConfig()
+    .catch(console.error)
+    .finally(() => {
+      appState.update({
+        ...appState.current,
+        fetchingConfig: false,
+      });
     });
-  });
+});

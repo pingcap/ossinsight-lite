@@ -3,7 +3,7 @@ import WidgetContext from '@ossinsight-lite/ui/context/widget';
 import useRefCallback from '@ossinsight-lite/ui/hooks/ref-callback';
 import updatePartial from '@ossinsight-lite/ui/utils/update-partial';
 import clsx from 'clsx';
-import { ForwardedRef, HTMLProps, Suspense, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { ForwardedRef, forwardRef, HTMLProps, RefAttributes, Suspense, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import LoadingIndicator from '../../../../../../src/components/LoadingIndicator';
 import { SQLEditor, SQLEditorHeader } from '../../../components/editor/sql';
 import { VisualizeType } from '../../../components/visualize/common';
@@ -21,17 +21,17 @@ export enum WidgetMode {
 }
 
 export interface WidgetProps extends HTMLProps<HTMLDivElement> {
+  // See https://github.com/vercel/next.js/issues/40769
+  forwardedRef?: RefAttributes<HTMLDivElement>['ref']
+
   defaultDb?: string;
   defaultSql?: string;
   currentDb?: string;
   sql?: string;
-  /** @deprecated */
-  mode?: WidgetMode;
   visualize?: VisualizeType;
-  onPropChange?: (name: string, value: any) => void;
 }
 
-export default function Editor ({ defaultSql, defaultDb, sql, currentDb, visualize, mode, ...props }: WidgetProps, forwardedRef: ForwardedRef<HTMLDivElement>) {
+function Editor ({ defaultSql, defaultDb, sql, currentDb, visualize, forwardedRef, ...props }: WidgetProps, _forwardedRef: ForwardedRef<HTMLDivElement>) {
   const { onPropChange, configuring } = useContext(WidgetContext);
 
   const [openVisualizeDialog, setOpenVisualizeDialog] = useState(false);
@@ -77,10 +77,10 @@ export default function Editor ({ defaultSql, defaultDb, sql, currentDb, visuali
   return (
     <VisualizeContext.Provider value={{ result: result?.data, running, error, columns: result?.columns }}>
       <div ref={forwardedRef} {...props} className={clsx('relative flex gap-2 min-w-[800px]', props.className)}>
-        <div className='min-w-[240px] max-w-[240px] h-full overflow-auto border-r'>
+        <div className="min-w-[240px] max-w-[240px] h-full overflow-auto border-r">
           <div>
             <Suspense fallback={<LoadingIndicator />}>
-              <SchemaTree db='oh-my-github' />
+              <SchemaTree db="oh-my-github" />
             </Suspense>
           </div>
         </div>
@@ -120,3 +120,5 @@ export default function Editor ({ defaultSql, defaultDb, sql, currentDb, visuali
     </VisualizeContext.Provider>
   );
 }
+
+export default forwardRef(Editor);

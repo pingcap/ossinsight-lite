@@ -1,5 +1,5 @@
 import DashboardRegistry from '@/src/core/dashboard/Registry';
-import React, { use } from 'react';
+import { use } from 'react';
 import { serverDashboard } from '@/app/(client)/api/layout/operations.server';
 
 export default function DashboardServer ({ name }: { name: string }) {

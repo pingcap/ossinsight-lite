@@ -1,6 +1,6 @@
 import { VisualizeBarChart, VisualizeRuntimeProps } from './common';
 import { Bar } from 'react-chartjs-2';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { BarElement, CategoryScale, Chart as ChartJs, Filler, Legend, LinearScale, PointElement, TimeScale, TimeSeriesScale, Title, Tooltip as _Tooltip } from 'chart.js';
 import { getCartesianScaleOption } from './chartjs/getCartesianScaleOption';
 import { titlePlugin } from './chartjs/titlePlugin';

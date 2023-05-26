@@ -1,6 +1,8 @@
 import './index.css';
 
-export { default } from './Widget';
+export const Widget = () => import('./Widget');
+export const ConfigureComponent = () => import('./Editor');
+export const NewButton = () => import('./NewButton');
 
 export const preferredSize = {
   width: 1024,
@@ -15,10 +17,6 @@ export const defaultProps = {
     title: 'Greeting',
   },
 };
-
-export const configureComponent = () => import('./Editor');
-
-export { NewButton } from './NewButton';
 
 export const duplicable = true;
 

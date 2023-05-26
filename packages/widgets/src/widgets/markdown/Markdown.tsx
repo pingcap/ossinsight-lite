@@ -1,4 +1,4 @@
-import React, {ForwardedRef, HTMLProps, useEffect, useState} from 'react';
+import { ForwardedRef, forwardRef, HTMLProps, RefAttributes, useEffect, useState } from 'react';
 import clsx from "clsx";
 import {unified} from "unified";
 import remarkParse from 'remark-parse'
@@ -10,14 +10,17 @@ import rehypeStringify from 'rehype-stringify'
 import './github-markdown.css'
 
 export interface IProps extends HTMLProps<HTMLDivElement> {
+  // See https://github.com/vercel/next.js/issues/40769
+  forwardedRef?: RefAttributes<HTMLDivElement>['ref']
+
   markdown: string
 }
 
-export default function Markdown (props: IProps, ref: ForwardedRef<HTMLDivElement>) {
-  const {markdown, className, ...rest} = props
+function Markdown (props: IProps, _ref: ForwardedRef<HTMLDivElement>) {
+  const {markdown, className, forwardedRef, ...rest} = props
   const html = useMarkdown(markdown)
   return (
-    <div ref={ref} className={clsx(className, 'markdown-body p-2')} dangerouslySetInnerHTML={{__html: html}} {...rest} />
+    <div ref={forwardedRef} className={clsx(className, 'markdown-body p-2')} dangerouslySetInnerHTML={{__html: html}} {...rest} />
   );
 }
 
@@ -39,3 +42,5 @@ function useMarkdown(markdown) {
 
   return html
 }
+
+export default forwardRef(Markdown)

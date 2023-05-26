@@ -11,6 +11,7 @@ export class ReactiveDashboardInstance implements DashboardInstance {
   readonly items: ReactBindCollection<ItemReference>;
   private _subscription: Subscription | undefined;
   private _syncSubscriptions: Subscription | undefined;
+  private _syncTarget: DashboardInstance | undefined;
 
   addDisposeDependency (subscription: Subscription | undefined) {
     if (this._subscription && !this._subscription?.closed) {
@@ -27,7 +28,6 @@ export class ReactiveDashboardInstance implements DashboardInstance {
       this._syncSubscriptions = subscription;
     }
   }
-
 
   constructor (readonly name: string, config: Dashboard) {
     this.layout = config.layout;
@@ -46,10 +46,15 @@ export class ReactiveDashboardInstance implements DashboardInstance {
   dispose () {
     this._subscription?.unsubscribe();
     this._syncSubscriptions?.unsubscribe();
+    this._syncTarget = undefined;
     this.items.keys.forEach(key => this.items.del(key));
   }
 
   syncWith (source: DashboardInstance) {
+    if (source === this._syncTarget) {
+      return;
+    }
+    this._syncTarget = source;
     console.debug(`[layout:${this.name}] switch to`, source.name, source.items.values.length);
     const items = this.items;
 
@@ -74,7 +79,7 @@ export class ReactiveDashboardInstance implements DashboardInstance {
       // Prevent sync when submit changes
       source.items.inactiveScope(() => {
         sync(items, ev);
-      })
+      });
     }));
 
     // Publish local changes
@@ -82,7 +87,7 @@ export class ReactiveDashboardInstance implements DashboardInstance {
       // Prevent submit when syncing upstream changes
       items.inactiveScope(() => {
         sync(source.items, ev);
-      })
+      });
     }));
 
     this.addSyncDisposeDependency(new Subscription(() => {

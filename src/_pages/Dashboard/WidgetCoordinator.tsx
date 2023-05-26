@@ -30,7 +30,7 @@ export const WidgetCoordinator = forwardRef<HTMLDivElement, WidgetCoordinator>((
     });
   });
 
-  const Widget = widget.default;
+  const Widget = widget.Widget;
   const { ref: visibleRef, visible } = useVisible<HTMLDivElement>();
 
   return (

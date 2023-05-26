@@ -7,7 +7,7 @@ import Dashboard from '@/src/_pages/Dashboard';
 import { defaultLayoutConfig } from '@/src/components/WidgetsManager/defaults';
 import { Dashboard as DashboardConfig } from '@/src/types/config';
 import { useSelectedLayoutSegments } from 'next/navigation';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 export default function DashboardClient () {
   const [, name = 'default', mode] = useSelectedLayoutSegments();

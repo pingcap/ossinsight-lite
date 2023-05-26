@@ -1,8 +1,8 @@
-import AppRoutingIndicator from '@/app/AppRoutingIndicator';
-import ConditionalModal from '@/app/ConditionalModal';
+import AppLoading from '@/app/app-loading';
+import AppLoadingIndicator from '@/app/AppLoadingIndicator';
 import { NavMenu } from '@/packages/ui/components/nav-menu';
 import AppMenu from '@/src/AppMenu';
-import React from 'react';
+import { Suspense } from 'react';
 import './globals.scss';
 
 export default function RootLayout ({
@@ -39,11 +39,13 @@ export default function RootLayout ({
         </>
       )}
     />
-    {children}
-    <ConditionalModal>
+    <Suspense fallback={<AppLoading />}>
+      {children}
+    </Suspense>
+    <Suspense fallback={<AppLoading />}>
       {modal}
-    </ConditionalModal>
-    <AppRoutingIndicator />
+    </Suspense>
+    <AppLoadingIndicator />
     </body>
     </html>
   );
