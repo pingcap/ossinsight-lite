@@ -1,4 +1,5 @@
 'use client';
+import { startAppStateLoadingTransition } from '@/app/bind';
 import { widgets } from '@/app/bind-client';
 import { MenuItem } from '@/packages/ui/components/menu';
 import { useCollectionValues } from '@/packages/ui/hooks/bind';
@@ -17,11 +18,13 @@ export default function Default () {
   }
 
   const widgetsWithNewButton = resolvedWidgets
-    .filter((widget) => !!widget.NewButton && !!widget.configureComponent);
+    .filter((widget) => !!widget.NewButton && !!widget.ConfigureComponent);
 
   const handleCreateWidget = useRefCallback((widget: ResolvedWidgetModule) => {
-    if (!!widget.configureComponent) {
-      router.push(`/widgets/create/${encodeURIComponent(widget.name)}`);
+    if (!!widget.ConfigureComponent) {
+      startAppStateLoadingTransition(() => {
+        router.push(`/widgets/create/${encodeURIComponent(widget.name)}`);
+      });
     }
   });
 
@@ -56,5 +59,3 @@ export default function Default () {
 
   return null;
 }
-
-export const dynamic = 'force-dynamic';

@@ -1,10 +1,10 @@
-import React, { ForwardedRef, HTMLProps } from 'react';
+import { ForwardedRef, forwardRef, HTMLProps, RefAttributes } from 'react';
 import cu from '../curr_user.sql?unique';
 import clsx from 'clsx';
 
-export default function Widget (props: HTMLProps<HTMLDivElement>, ref: ForwardedRef<HTMLDivElement>) {
+function Widget ({ forwardedRef, ...props }: HTMLProps<HTMLDivElement> & { forwardedRef: RefAttributes<HTMLDivElement>['ref'] }, _ref: ForwardedRef<HTMLDivElement>) {
   return (
-    <div {...props} className={clsx('overflow-hidden flex flex-col p-2 gap-2 items-center justify-center', props.className)} ref={ref}>
+    <div {...props} className={clsx('overflow-hidden flex flex-col p-2 gap-2 items-center justify-center', props.className)} ref={forwardedRef}>
       <img
         className="block rounded-xl w-12 h-12"
         alt={cu.login} src={`https://github.com/${cu.login}.png`}
@@ -16,3 +16,5 @@ export default function Widget (props: HTMLProps<HTMLDivElement>, ref: Forwarded
     </div>
   );
 }
+
+export default forwardRef(Widget)

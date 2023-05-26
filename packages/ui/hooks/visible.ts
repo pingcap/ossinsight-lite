@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { isSSR } from '../utils/ssr';
 import { useWatchReactiveValue } from './bind';
 import { ReactiveValueSubject } from './bind/ReactiveValueSubject';
@@ -15,24 +15,28 @@ if (!isSSR && !_registered) {
 
 export function useVisible<E extends Element> () {
   const [visible, setVisible] = useState(isSSR);
-  const ref = useRef<E | null>(null);
+  const [ref, setRef] = useState<E | null>(null);
 
   const documentVisible = useWatchReactiveValue(reactiveDocumentVisible);
 
   useEffect(() => {
-    if (ref.current) {
+    if (ref) {
       const io = new IntersectionObserver(([entry]) => {
         setVisible(entry.isIntersecting);
       }, {
         threshold: 0,
       });
-      io.observe(ref.current);
+      io.observe(ref);
       return () => io.disconnect();
     }
+  }, [ref]);
+
+  const refMethod = useCallback((element: E | null) => {
+    setRef(element);
   }, []);
 
   return {
-    ref,
+    ref: refMethod,
     visible: documentVisible && visible,
   };
 }

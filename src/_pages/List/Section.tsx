@@ -70,7 +70,7 @@ function Add ({ name, onAdd }: { name: string, onAdd: (item: LibraryItem) => Pro
 
 function Widget ({ id, name, className, props }: { id: string | undefined, name: string, className: string, props: any }) {
   const widget = readItem(widgets, name).current;
-  const Widget = widget.default;
+  const Widget = widget.Widget;
   const { ref: visibleRef, visible } = useVisible();
 
   let el = (
@@ -102,7 +102,7 @@ function Widget ({ id, name, className, props }: { id: string | undefined, name:
   }
   return (
     <>
-      <h3 className="text-gray-400 text-sm">{(widget.configureComponent ? props?.visualize?.title : undefined) ?? widget.displayName}</h3>
+      <h3 className="text-gray-400 text-sm">{(widget.ConfigureComponent ? props?.visualize?.title : undefined) ?? widget.displayName}</h3>
       {el}
     </>
   );

@@ -1,3 +1,4 @@
+import { resolveWidgetComponents } from '@/app/dynamic-widget';
 import { collections } from '@/packages/ui/hooks/bind';
 import { ReactiveValueSubject } from '@/packages/ui/hooks/bind/ReactiveValueSubject';
 import { Alert } from '@/src/components/Alert';
@@ -23,46 +24,23 @@ widgets.fallback = ((name: string) => new ReactiveValueSubject({
   category: 'Error',
 })) as any;
 
-for (let [name, widget] of Object.entries(widgetsManifest)) {
-  widgets.define(name, async () => {
-    try {
-      const rawModule = await widget.module();
-      return [{
-        ...rawModule,
-        name,
-        default: forwardRef(rawModule.default),
-        category: rawModule.category ?? 'Common',
-        displayName: rawModule.displayName ?? name,
-      } as ResolvedWidgetModule];
-    } catch (e: any) {
-      return [{
-        default: forwardRef(({}, ref) => {
-          return createElement(Alert, { type: 'error', title: 'Failed to load widget', message: String(e?.message ?? e) });
-        }),
-        name,
-        category: 'Failed',
-        displayName: name,
-      }];
-    }
+for (let [name, module] of Object.entries(widgetsManifest)) {
+  const { Widget, ConfigureComponent, NewButton, category, displayName, ...rest } = module;
+  widgets.add(name, {
+    name,
+    ...rest,
+    ...resolveWidgetComponents(module),
+    category: category ?? 'Common',
+    displayName: displayName ?? name,
   });
 }
 
 for (let [name, render] of Object.entries(internals)) {
   widgets.add(`internal:${name}`, {
-    default: forwardRef(render),
+    Widget: forwardRef(render),
     styleConfigurable: true,
     category: 'built-in',
     name,
     displayName: name + ' (Deprecated)',
   } satisfies ResolvedWidgetModule);
-}
-
-for (let [name, widget] of Object.entries(widgetsManifest)) {
-  if (typeof requestIdleCallback !== 'undefined') {
-    requestIdleCallback(() => {
-      widgets.get(name);
-    });
-  } else {
-    widgets.get(name);
-  }
 }

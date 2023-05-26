@@ -35,7 +35,7 @@ export default function Section ({ dashboardName, name, items }: { dashboardName
 
 function Item ({ item, dashboardName }: { dashboardName: string, item: LibraryItem }) {
   const widget = readItem(widgets, item.name).current;
-  const Widget = widget.default;
+  const Widget = widget.Widget;
   const { ref: visibleRef, visible } = useVisible();
 
   const { closeModal } = useContext(ModalContext);
@@ -58,7 +58,7 @@ function Item ({ item, dashboardName }: { dashboardName: string, item: LibraryIt
 
   return (
     <div className="w-full h-full flex flex-col justify-stretch" onClick={handleAdd}>
-      <h4 className="p-1 text-center text-sm text-gray-400">{(widget.configureComponent ? item.props?.visualize?.title : undefined) ?? widget.displayName}</h4>
+      <h4 className="p-1 text-center text-sm text-gray-400">{(widget.ConfigureComponent ? item.props?.visualize?.title : undefined) ?? widget.displayName}</h4>
       <WidgetContext.Provider
         value={{
           props: item.props,

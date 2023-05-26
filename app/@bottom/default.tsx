@@ -46,5 +46,3 @@ const dashboardsItems = () => (
     </MenuItem>
   </>
 );
-
-export const dynamic = 'force-dynamic';

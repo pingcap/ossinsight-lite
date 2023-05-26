@@ -1,7 +1,7 @@
 import cpm from './contributions_per_month.sql';
 import { Line } from 'react-chartjs-2';
 import { CategoryScale, Chart as ChartJs, Filler, Legend, LinearScale, LineElement, PointElement, TimeScale, TimeSeriesScale, Title, Tooltip as _Tooltip } from 'chart.js';
-import React, { ForwardedRef, HTMLProps } from 'react';
+import { ForwardedRef, forwardRef, HTMLProps, RefAttributes } from 'react';
 import clsx from 'clsx';
 import 'chartjs-adapter-luxon';
 import * as colors from 'tailwindcss/colors';
@@ -37,9 +37,9 @@ ChartJs.register(
   Filler,
 );
 
-export default function Widget (props: HTMLProps<HTMLDivElement>, ref: ForwardedRef<HTMLDivElement>) {
+function Widget ({ forwardedRef, ...props }: HTMLProps<HTMLDivElement> & { forwardedRef: RefAttributes<HTMLDivElement>['ref'] }, _ref: ForwardedRef<HTMLDivElement>) {
   return (
-    <div {...props} ref={ref} className={clsx(props.className, 'flex flex-col p-4 gap-4 relative font-sketch')}>
+    <div {...props} ref={forwardedRef} className={clsx(props.className, 'flex flex-col p-4 gap-4 relative font-sketch')}>
       <div className="flex-1 w-full overflow-hidden">
         <Line
           width="100%"
@@ -99,3 +99,5 @@ export default function Widget (props: HTMLProps<HTMLDivElement>, ref: Forwarded
     </div>
   );
 }
+
+export default forwardRef(Widget)

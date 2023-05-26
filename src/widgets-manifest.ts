@@ -2,17 +2,15 @@
 /// This file is a slot, will be actually loaded by buildtool/webpack/loaders/widgets-manifest
 
 import { Rect } from '@/packages/layout/src/core/types';
-import { ButtonHTMLAttributes, ComponentType, CSSProperties, ForwardedRef, ForwardRefExoticComponent, HTMLProps } from 'react';
+import { ButtonHTMLAttributes, ComponentType, CSSProperties, ForwardRefExoticComponent, HTMLProps } from 'react';
 
-type Widgets = Record<string, Widget>
+type Widgets = Record<string, WidgetModule>
 type WidgetModuleMeta<P = any> = {
   /** @deprecated */
   preferredSize?: CSSProperties,
   defaultRect?: Rect;
   defaultProps?: Partial<P>,
   duplicable?: boolean,
-  configureComponent?: () => Promise<{ default: (props: P & HTMLProps<HTMLDivElement>, ref: ForwardedRef<HTMLDivElement>) => JSX.Element }>
-  NewButton?: ComponentType<ButtonHTMLAttributes<HTMLButtonElement>>
   styleConfigurable?: boolean,
   /** @deprecated */
   styleFlexLayout?: 'col' | 'row',
@@ -26,26 +24,24 @@ type WidgetModuleMeta<P = any> = {
 }
 
 type WidgetModule<P = any> = {
-  default: (props: P & HTMLProps<HTMLDivElement>, ref: ForwardedRef<HTMLDivElement>) => JSX.Element,
+  Widget: () => Promise<{ default: ForwardRefExoticComponent<P & HTMLProps<HTMLDivElement>> }>,
+  ConfigureComponent?: () => Promise<{ default: ForwardRefExoticComponent<P & HTMLProps<HTMLDivElement>> }>
+  NewButton?: () => Promise<{ default: ComponentType<ButtonHTMLAttributes<HTMLButtonElement>> }>
 } & WidgetModuleMeta<P>
+
 type ResolvedWidgetModule<P = any> = {
   name: string
-  default: ForwardRefExoticComponent<P & HTMLProps<HTMLDivElement>>
+  Widget: ComponentType<P & HTMLProps<HTMLDivElement>>
+  ConfigureComponent?: ComponentType<P & HTMLProps<HTMLDivElement>>
+  NewButton?: ComponentType<ButtonHTMLAttributes<HTMLButtonElement>>
 } & WidgetModuleMeta<P> & {
   category: string
   displayName: string
 }
 
-type Widget = {
-  module: () => Promise<WidgetModule>
-  source: string
-  cssSource: string | undefined
-}
-
 export default {} as Widgets;
 
 export type {
-  Widget,
   Widgets,
   WidgetModule,
   WidgetModuleMeta,

@@ -1,4 +1,5 @@
 import { ReactBindCollection } from './ReactBindCollection';
+import { ReactBindSingletons } from './ReactBindSingletons.ts';
 import { CollectionsBindMap } from './types';
 import { BindBase } from './BindBase';
 import { isDev } from '../../utils/dev';
@@ -20,11 +21,13 @@ export class ReactBindCollections extends BindBase<{ [p in keyof CollectionsBind
 declare global {
   interface Window {
     sc: ReactBindCollections;
+    ss: ReactBindSingletons;
     detectScErrors: () => void;
   }
 }
 
 if (typeof window !== 'undefined') {
+  window.ss = ReactBindSingletons.default;
   window.sc = ReactBindCollections.default;
   window.detectScErrors = () => {
     const collections = ReactBindCollections.default;

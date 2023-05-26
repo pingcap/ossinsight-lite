@@ -1,4 +1,4 @@
-export { default } from './Widget';
+export const Widget = () => import('./Widget');
 
 export const preferredSize = {
   width: 800,

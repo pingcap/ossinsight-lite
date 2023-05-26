@@ -1,13 +1,10 @@
-import { LoaderDefinitionFunction } from 'webpack';
 import { globSync } from 'glob';
 import * as path from 'node:path';
-import * as fs from 'node:fs';
+import { LoaderDefinitionFunction } from 'webpack';
 
 type Widgets = Record<string, Widget>
 type Widget = {
-  module?: string
   source: string
-  cssSource: string | undefined
 }
 
 const widgetsManifestLoader: LoaderDefinitionFunction = function (content, map, meta) {
@@ -19,7 +16,6 @@ const widgetsManifestLoader: LoaderDefinitionFunction = function (content, map, 
   paths.forEach(fn => {
     widgets[getWidgetId(fn)] = {
       source: getSource(fn),
-      cssSource: getCssSource(fn),
     };
   });
 
@@ -29,28 +25,20 @@ const widgetsManifestLoader: LoaderDefinitionFunction = function (content, map, 
       .replace(/-/g, '_');
   }
 
-  const makeDynamicImport = (module: Widget) => {
-    if (module.cssSource) {
-      return `\n  import('@/${module.cssSource}', { assert: { type: 'css' } })\n    .then(() => import('@/${module.source}', { assert: { type: 'javascript' } }))`;
-    } else {
-      return `import('@/${module.source}', { assert: { type: 'javascript' } })`;
-    }
-  };
-
   const head = Object
     .entries(widgets)
-    .map(([key, widget]) => `/* ${widget.source} */\nconst ${normalize(key)} = () => ${makeDynamicImport(widget)}\n`)
+    .map(([key, widget]) => `import * as ${normalize(key)} from ${JSON.stringify(widget.source)};\n`)
     .join('\n');
 
-  const newWidgets = { ...widgets };
-  Object.entries(newWidgets).forEach(([name, widget]) => {
-    widget.module = `@@${normalize(name)}@@`;
+  let body = 'const widgets = {};\n\n';
+
+  Object.keys(widgets).forEach((key) => {
+    body += `widgets[${JSON.stringify(key)}] = ${normalize(key)}\n`;
   });
 
-  const exportStmt = `export default ${JSON.stringify(newWidgets, undefined, 2)}`
-    .replace(/"@@|@@"/g, '');
+  body += `export default widgets`;
 
-  return `/* GENERATED */\n\n${head}\n${exportStmt}`;
+  return `/* GENERATED */\n\n${head}\n${body}`;
 };
 
 export = widgetsManifestLoader;
@@ -61,12 +49,4 @@ function getWidgetId (fn: string) {
 
 function getSource (fn: string) {
   return path.relative(process.cwd(), fn);
-}
-
-function getCssSource (fn: string) {
-  fn = fn.replace(/index\.[jt]s$/, 'index.css');
-  if (fs.existsSync(fn)) {
-    return path.relative(process.cwd(), fn);
-  }
-  return undefined;
 }

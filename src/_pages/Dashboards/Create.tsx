@@ -1,6 +1,6 @@
 'use client';
 import RoughBox from '@/packages/ui/components/roughness/shape/box';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import useRefCallback from '@/packages/ui/hooks/ref-callback';
 import clientOnly from '@/src/utils/clientOnly';

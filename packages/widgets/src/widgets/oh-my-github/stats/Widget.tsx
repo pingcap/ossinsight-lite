@@ -1,28 +1,27 @@
-import React, { ForwardedRef, forwardRef, HTMLProps, ReactElement } from 'react';
-import cu from '../curr_user.sql?unique';
-import cc from './contribution_count.sql?unique';
-import es from './earned_stars.sql?unique';
-import cr from './contributed_repos.sql?unique';
-import ca from './code_additions.sql?unique';
-import cd from './code_deletions.sql?unique';
-import NorthStarIcon from '../../../icons/north-star.svg';
-import StarIcon from '../../../icons/star.svg';
-import EyeIcon from '../../../icons/eye.svg';
-import RepoIcon from '../../../icons/repo.svg';
+import RoughSvg from '@ossinsight-lite/roughness/components/RoughSvg';
+import clsx from 'clsx';
+import { ForwardedRef, forwardRef, HTMLProps, ReactElement, RefAttributes } from 'react';
 import DiffAddedIcon from '../../../icons/diff-added.svg';
 import DiffRemovedIcon from '../../../icons/diff-removed.svg';
-import clsx from 'clsx';
-import RoughSvg from '@ossinsight-lite/roughness/components/RoughSvg';
-import * as Tooltip from '@radix-ui/react-tooltip';
+import EyeIcon from '../../../icons/eye.svg';
+import NorthStarIcon from '../../../icons/north-star.svg';
+import RepoIcon from '../../../icons/repo.svg';
+import StarIcon from '../../../icons/star.svg';
+import cu from '../curr_user.sql?unique';
+import ca from './code_additions.sql?unique';
+import cd from './code_deletions.sql?unique';
+import cr from './contributed_repos.sql?unique';
+import cc from './contribution_count.sql?unique';
+import es from './earned_stars.sql?unique';
 
-export default function Widget (props: HTMLProps<HTMLDivElement>, ref: ForwardedRef<HTMLDivElement>) {
+function Widget ({ forwardedRef, ...props }: HTMLProps<HTMLDivElement> & { forwardedRef: RefAttributes<HTMLDivElement>['ref'] }, _ref: ForwardedRef<HTMLDivElement>) {
   return (
-    <div {...props} className={clsx('flex items-center justify-center', props.className)} ref={ref}>
+    <div {...props} className={clsx('flex items-center justify-center', props.className)} ref={forwardedRef}>
       <table className="table-auto widget-stats-table">
         <tbody>
         {cells.map(cell => (
           <tr key={cell.key}>
-            <td className='inline-flex items-center gap-2'>
+            <td className="inline-flex items-center gap-2">
               <span className="text-gray-500 inline-flex items-center">
                 <RoughSvg>
                   {cell.field}
@@ -63,3 +62,5 @@ const fmt = new Intl.NumberFormat('en');
 const format = (num: number) => {
   return fmt.format(num);
 };
+
+export default forwardRef(Widget);

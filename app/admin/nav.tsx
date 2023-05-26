@@ -1,7 +1,7 @@
 'use client';
+import { startAppStateLoadingTransition } from '@/app/bind';
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
-import Link from 'next/link';
-import { useSelectedLayoutSegments } from 'next/navigation';
+import { useRouter, useSelectedLayoutSegments } from 'next/navigation';
 
 const navs = [
   {
@@ -44,16 +44,15 @@ const navs = [
 
 export default function Nav () {
   const [first] = useSelectedLayoutSegments();
+  const router = useRouter();
 
   return (
     <NavigationMenu.Root orientation="vertical" className="nav-menu">
       <NavigationMenu.List>
         {navs.map(nav => (
           <NavigationMenu.Item key={nav.key}>
-            <NavigationMenu.Link asChild active={first === nav.key}>
-              <Link href={nav.href}>
-                {nav.title}
-              </Link>
+            <NavigationMenu.Link className='cursor-pointer' onSelect={() => startAppStateLoadingTransition(() => router.push(nav.href))} active={first === nav.key}>
+              {nav.title}
             </NavigationMenu.Link>
           </NavigationMenu.Item>
         ))}

@@ -6,28 +6,20 @@ import LoadingIndicator from '@/src/components/LoadingIndicator';
 import clientOnly from '@/src/utils/clientOnly';
 import WidgetContext from '@ossinsight-lite/ui/context/widget';
 import clsx from 'clsx';
-import dynamic from 'next/dynamic';
-import Link from 'next/link';
-import { forwardRef, lazy, Suspense, useMemo } from 'react';
 
 export interface EditWidgetInstanceProps {
   name: string;
   props: any;
   onPropsChange: (key: string, value: any) => void;
-  creating?: boolean
+  creating?: boolean;
 }
 
 function EditWidgetInstance ({ name, props, onPropsChange, creating = false }: EditWidgetInstanceProps) {
   const widget = readItem(widgets, name).current;
-  const Widget = useMemo(() => {
-    const fn = widget.configureComponent;
-    if (!fn) {
-      return () => <div>Widget is not configurable.</div>;
-    }
-    return dynamic(async () => {
-      return forwardRef((await fn()).default);
-    });
-  }, [widget]);
+  const Widget = widget.ConfigureComponent;
+  if (!Widget) {
+    throw new Error(`Widget ${widget.displayName} is not configurable.`);
+  }
   const { ref: visibleRef, visible } = useVisible<HTMLDivElement>();
 
   return (

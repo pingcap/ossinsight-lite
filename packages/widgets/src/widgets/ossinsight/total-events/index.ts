@@ -1,5 +1,4 @@
-export { default } from './Widget';
-
+export const Widget = () => import('./Widget');
 export const styleConfigurable = true;
 
 export const preferredSize = {

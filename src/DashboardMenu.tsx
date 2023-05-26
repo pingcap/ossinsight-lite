@@ -1,5 +1,5 @@
 'use client';
-import { appState, dashboards } from '@/app/bind';
+import { appState, dashboards, startAppStateLoadingTransition } from '@/app/bind';
 import { MenuItem } from '@/packages/ui/components/menu';
 import { useCollectionKeys, useWatchReactiveValueField } from '@/packages/ui/hooks/bind/hooks';
 import LoadingIndicator from '@/src/components/LoadingIndicator';
@@ -7,11 +7,20 @@ import LayoutWtfIcon from '@/src/icons/layout-wtf.svg';
 import LockIcon from '@/src/icons/lock.svg';
 import PlusIcon from '@/src/icons/plus.svg';
 import UnlockIcon from '@/src/icons/unlock.svg';
+import { useRouter } from 'next/navigation';
+import { useCallback } from 'react';
 
 export default function DashboardMenu ({ dashboardName, editMode }: { dashboardName: string, editMode: boolean }) {
-  const routing = useWatchReactiveValueField(appState, 'routing');
+  const router = useRouter();
+  const loading = useWatchReactiveValueField(appState, 'loading');
   const fetchingConfig = useWatchReactiveValueField(appState, 'fetchingConfig');
   const dashboardNames = useCollectionKeys(dashboards) as string[];
+
+  const handleClickNew = useCallback(() => {
+    startAppStateLoadingTransition(() => {
+      router.push(`/dashboards/${dashboardName}/items/add`);
+    });
+  }, [dashboardName]);
 
   return (
     <>
@@ -22,7 +31,7 @@ export default function DashboardMenu ({ dashboardName, editMode }: { dashboardN
             id={dashboard}
             order={index}
             text={dashboard}
-            disabled={routing}
+            disabled={loading > 0}
             prefetch={false}
             href={dashboardHref(dashboard, editMode)}
           />
@@ -41,20 +50,20 @@ export default function DashboardMenu ({ dashboardName, editMode }: { dashboardN
         )}
       </MenuItem>
       {editMode && (
-        <MenuItem text={<PlusIcon width={20} height={20} />} id="new" order={2} disabled={routing} href={`/dashboards/${dashboardName}/items/add`} />
+        <MenuItem text={<PlusIcon width={20} height={20} />} id="new" order={2} disabled={loading > 0} action={handleClickNew} />
       )}
-      <MenuItem id="EditModeSwitch" order={10} disabled={routing} text={editMode ? <UnlockIcon /> : <LockIcon />} href={dashboardHref(dashboardName, !editMode)} prefetch={false} />
+      <MenuItem id="EditModeSwitch" order={10} disabled={loading > 0} text={editMode ? <UnlockIcon /> : <LockIcon />} action={() => startAppStateLoadingTransition(() => router.push(dashboardHref(dashboardName, !editMode)))} />
     </>
   );
 }
 
 function dashboardHref (name: string, edit: boolean) {
   if (edit) {
-    return `/dashboards/${name}/edit`;
+    return `/dashboards/${name}/edit` as const;
   }
   if (name === 'default') {
-    return `/`;
+    return `/` as const;
   } else {
-    return `/dashboards/${name}`;
+    return `/dashboards/${name}` as const;
   }
 }

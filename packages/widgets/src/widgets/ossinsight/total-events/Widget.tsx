@@ -1,10 +1,10 @@
 import WidgetContext from '@ossinsight-lite/ui/context/widget';
 import clsx from 'clsx';
-import React, { ForwardedRef, HTMLProps, useContext, useEffect } from 'react';
+import { ForwardedRef, forwardRef, HTMLProps, RefAttributes, useContext, useEffect } from 'react';
 import AnimatedNumbers from 'react-awesome-animated-number';
 import { useEventsTotal } from './hook';
 
-export default function Widget ({ ...props }: HTMLProps<HTMLDivElement>, ref: ForwardedRef<HTMLDivElement>) {
+function Widget ({ forwardedRef, ...props }: HTMLProps<HTMLDivElement> & { forwardedRef: RefAttributes<HTMLDivElement>['ref'] }, _ref: ForwardedRef<HTMLDivElement>) {
   const { visible } = useContext(WidgetContext);
 
   const { totalEvents, subscribe, unsubscribe } = useEventsTotal();
@@ -17,7 +17,7 @@ export default function Widget ({ ...props }: HTMLProps<HTMLDivElement>, ref: Fo
   }, [visible]);
 
   return (
-    <div ref={ref} {...props} className={clsx('flex items-center justify-center', props.className)}>
+    <div ref={forwardedRef} {...props} className={clsx('flex items-center justify-center', props.className)}>
       <div className="p-2">
         <div>OSSInsight Total Events</div>
         <div className={'font-bold font-sketch text-gray-800'}>
@@ -31,3 +31,5 @@ export default function Widget ({ ...props }: HTMLProps<HTMLDivElement>, ref: Fo
     </div>
   );
 }
+
+export default forwardRef(Widget)
