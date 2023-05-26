@@ -1,11 +1,12 @@
-import { DbInstance } from './DbInstance.js';
 import { createPool, Pool } from 'mysql2/promise';
+import { DbInstance } from './DbInstance.js';
 
 export class MysqlInstance extends DbInstance<Pool> {
   override async closePool (pool: Pool): Promise<void> {
     try {
       await pool.end();
-    } catch {}
+    } catch {
+    }
   }
 
   override createPool (envValue: string): Promise<Pool> | Pool {
@@ -17,7 +18,7 @@ export class MysqlInstance extends DbInstance<Pool> {
       return Promise.reject(this.connectError);
     }
     if (!this.pool) {
-      return Promise.reject(new Error('Not connected to database.'))
+      return Promise.reject(new Error('Not connected to database.'));
     }
     return this.pool.query(sql, values);
   }

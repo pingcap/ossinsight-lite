@@ -1,6 +1,6 @@
-import { useSize } from '../../../utils/size';
 import { useMemo } from 'react';
 import rjs from 'roughjs';
+import { useSize } from '../../../utils/size';
 
 export default function RoughBox ({ color }: { color: string }) {
   const { size, ref } = useSize<SVGSVGElement>({

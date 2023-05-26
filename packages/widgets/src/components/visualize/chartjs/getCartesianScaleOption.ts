@@ -1,6 +1,6 @@
 import { CartesianScaleOptions, CartesianScaleTypeRegistry, ScaleOptionsByType, TimeScaleOptions, TimeUnit } from 'chart.js/dist/types';
-import { Axis } from '../common';
 import { DeepPartial } from 'chart.js/dist/types/utils';
+import { Axis } from '../common';
 
 export function getCartesianScaleOption (data: any[], config: Axis, axis: CartesianScaleOptions['axis']): DeepPartial<ScaleOptionsByType<keyof CartesianScaleTypeRegistry>> & { type: keyof CartesianScaleTypeRegistry } {
   let type: ScaleOptionsByType<keyof CartesianScaleTypeRegistry>['type'];

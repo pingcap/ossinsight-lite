@@ -2,7 +2,7 @@ import Editor from '@monaco-editor/react';
 
 import theme from 'monaco-themes/themes/Tomorrow.json';
 
-theme.colors['editor.background'] = '#FFFFFF60'
+theme.colors['editor.background'] = '#FFFFFF60';
 
 export interface SQLEditorProps {
   sql?: string;

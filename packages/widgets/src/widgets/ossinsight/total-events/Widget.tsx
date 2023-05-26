@@ -32,4 +32,4 @@ function Widget ({ forwardedRef, ...props }: HTMLProps<HTMLDivElement> & { forwa
   );
 }
 
-export default forwardRef(Widget)
+export default forwardRef(Widget);

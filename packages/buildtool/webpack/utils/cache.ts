@@ -29,7 +29,8 @@ export default class Cache {
       if (obj && typeof obj === 'object') {
         Object.entries(obj).forEach(([key, value]) => this.caches.set(key, value));
       }
-    } catch {}
+    } catch {
+    }
   }
 
   async write () {
@@ -52,7 +53,7 @@ export default class Cache {
       return this.runningCaches.get(key);
     }
     if (this.caches.has(key)) {
-      return this.caches.get(key)
+      return this.caches.get(key);
     }
     const promise = runner();
     this.runningCaches.set(key, promise);

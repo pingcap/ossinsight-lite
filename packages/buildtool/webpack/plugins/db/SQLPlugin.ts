@@ -7,6 +7,8 @@ const PLUGIN_NAME = 'SQLPlugin';
 const dbInstances: Record<string, DbInstance<any>> = {};
 
 class SQLPlugin implements WebpackPluginInstance {
+  static dbInstances = dbInstances;
+
   apply (compiler: Compiler) {
     compiler.hooks.beforeCompile.tapPromise(PLUGIN_NAME, async () => {
       if (!connected) {
@@ -19,8 +21,6 @@ class SQLPlugin implements WebpackPluginInstance {
       await Promise.all(Object.values(dbInstances).map((db) => db.close()));
     });
   }
-
-  static dbInstances = dbInstances;
 }
 
 async function initialize () {

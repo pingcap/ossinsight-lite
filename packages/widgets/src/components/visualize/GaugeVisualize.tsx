@@ -1,6 +1,6 @@
-import { VisualizeGauge, VisualizeRuntimeProps } from './common';
 import { useMemo } from 'react';
 import AnimatedNumber from 'react-awesome-animated-number';
+import { VisualizeGauge, VisualizeRuntimeProps } from './common';
 
 export default function GaugeVisualize ({ title, result }: VisualizeGauge & VisualizeRuntimeProps) {
   const value = useMemo(() => {

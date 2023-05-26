@@ -1,7 +1,8 @@
 import { getAllDashboards, getLibrary } from '@/app/(client)/api/layout/operations';
+import { LayoutConfigV1 } from '@/utils/types/config';
 import { NextRequest, NextResponse } from 'next/server';
-import { LayoutConfigV1 } from '@/src/types/config';
-// import { authenticateApiGuard } from '@/src/auth';
+
+// import { authenticateApiGuard } from '@/utils/server/auth';
 
 export async function GET (req: NextRequest) {
   // const res = await authenticateApiGuard(req);

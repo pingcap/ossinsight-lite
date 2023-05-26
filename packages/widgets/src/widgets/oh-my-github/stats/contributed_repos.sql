@@ -13,4 +13,4 @@ WITH events AS (SELECT id, user_id, repo_id
 
 SELECT COUNT(DISTINCT repo_id) AS contributed_repos
 FROM events
-         JOIN curr_user ON events.user_id = curr_user.id
+       JOIN curr_user ON events.user_id = curr_user.id

@@ -1,6 +1,6 @@
+import dynamic from 'next/dynamic';
 import { VisualizeRuntimeProps, VisualizeType } from './common';
 import TableVisualize from './TableVisualize';
-import dynamic from 'next/dynamic';
 
 const GaugeVisualize = dynamic(() => import('./GaugeVisualize'));
 const LineChartVisualize = dynamic(() => import('./LineChartVisualize'));

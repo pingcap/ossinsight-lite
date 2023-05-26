@@ -2,18 +2,17 @@
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import { NavigationMenuProps } from '@radix-ui/react-navigation-menu';
 import clsx from 'clsx';
-import { Suspense } from 'react';
-import { DirectItemsProps, MenuContent } from '../menu';
-import { Menu, MenuProps } from '../menu/Menu';
+import { DirectItemsProps } from '../menu';
+import { Menu } from '../menu/Menu';
 import * as renderers from './content';
 
-export interface NavMenuProps extends NavigationMenuProps, MenuProps, DirectItemsProps {
+export interface NavMenuProps extends NavigationMenuProps, DirectItemsProps {
   position: 'top' | 'bottom' | 'in-place';
 }
 
-export function NavMenu ({ name, auto, children, className, items, simple = false, position = 'in-place', ...props }: NavMenuProps) {
+export function NavMenu ({ children, className, items, position = 'in-place', ...props }: NavMenuProps) {
   return (
-    <Menu name={name} auto={auto} renderers={renderers} simple={simple}>
+    <Menu renderers={renderers}>
       <NavigationMenu.Root
         {...props}
         className={clsx(
@@ -24,13 +23,9 @@ export function NavMenu ({ name, auto, children, className, items, simple = fals
         )}
       >
         <NavigationMenu.List className={clsx('flex gap-2 items-center relative z-[1]', className)}>
-          <MenuContent name={name} items={items} simple={simple} />
+          {items}
         </NavigationMenu.List>
       </NavigationMenu.Root>
-
-      <Suspense>
-        {children}
-      </Suspense>
     </Menu>
   );
 }

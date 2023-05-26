@@ -1,4 +1,4 @@
-import Nav from '@/app/admin/nav';
+import Nav from '@/components/pages/admin/nav';
 import './layout.scss';
 
 export default async function ({ children }: any) {

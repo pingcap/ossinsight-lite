@@ -1,8 +1,8 @@
-import { Axis } from '../common';
 import { ChartDataset } from 'chart.js';
 import { DeepPartial } from 'chart.js/dist/types/utils';
-import * as colors from 'tailwindcss/colors';
 import 'chartjs-adapter-luxon';
+import * as colors from 'tailwindcss/colors';
+import { Axis } from '../common';
 
 const { cyan, green, red, yellow } = colors;
 
@@ -47,7 +47,7 @@ export function lineDataset (data: any[], x: Axis, y: Axis) {
     data: getXYData(data, x, y),
     label: [x, y].filter(axis => axis.type === 'value')?.[0]?.label,
     ...lineDatasetOptions,
-  } satisfies DeepPartial<ChartDataset<'line', XYData>> ;
+  } satisfies DeepPartial<ChartDataset<'line', XYData>>;
 }
 
 export function barDataset (data: any[], x: Axis, y: Axis) {

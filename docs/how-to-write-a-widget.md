@@ -58,6 +58,4 @@ Your widget could update custom props (not just in configure component). A
 function `onPropChange(key: string, value: any): void` was provided by `WidgetContext` to submit your propChanges. All
 props changes will finally be submitted to database.
 
-
-
 See markdown widget [example](../packages/widgets/src/widgets/markdown/index.ts) 

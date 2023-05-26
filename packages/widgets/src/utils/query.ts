@@ -1,6 +1,6 @@
 import { createCache } from './cache';
 
-const { getCache, setCache } = createCache('db/sql')
+const { getCache, setCache } = createCache('db/sql');
 
 export async function doDbSqlQuery (prop: { sql: string, db: string, force: boolean, use?: string }, signal: AbortSignal): Promise<any> {
   let invalidCache;

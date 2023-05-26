@@ -37,5 +37,5 @@ export function createCache (name: string) {
   return {
     getCache,
     setCache,
-  }
+  };
 }

@@ -1,6 +1,6 @@
-import { Command } from '@/src/core/commands';
-import { Dashboard, ItemReference, LibraryItem, Store } from '@/src/types/config';
-import { defaultLayoutConfig } from '@/src/components/WidgetsManager/defaults';
+import { Command } from '@/core/commands';
+import { defaultLayoutConfig } from '@/core/layout/defaults';
+import { Dashboard, ItemReference, LibraryItem, Store } from '@/utils/types/config';
 
 export async function commit (commands: Command[]) {
   const store: Partial<Record<Store, boolean>> = {};

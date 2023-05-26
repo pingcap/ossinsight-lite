@@ -1,7 +1,7 @@
 import { ReactElement, useMemo } from 'react';
-import { useSize } from '../../utils/size';
 import rjs from 'roughjs';
 import * as colors from 'tailwindcss/colors';
+import { useSize } from '../../utils/size';
 
 export interface AlertProps {
   icon?: ReactElement;

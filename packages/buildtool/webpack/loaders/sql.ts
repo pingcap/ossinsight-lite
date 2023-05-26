@@ -1,6 +1,7 @@
-import { LoaderDefinitionFunction } from 'webpack';
 import * as path from 'node:path';
+import { LoaderDefinitionFunction } from 'webpack';
 import { DbInstance } from '../plugins/db/DbInstance.js';
+
 const { dbInstances } = require('../plugins/db/SQLPlugin.js');
 
 const loader: LoaderDefinitionFunction = function (content, sourceMap, additionalData) {
@@ -40,7 +41,7 @@ const loader: LoaderDefinitionFunction = function (content, sourceMap, additiona
       return `
         console.error("Prefetch sql failed", ${JSON.stringify(data.__error__)});
         throw new Error('Failed to execute sql: ' + ${JSON.stringify(data.__error__.message)});
-      `
+      `;
     } else {
       return `export default ${JSON.stringify(data, undefined, 2)};`;
     }
@@ -64,7 +65,7 @@ async function sqlQuery (dbInstance: DbInstance<any>, id: string, content: strin
 
     return raw;
   } catch (e) {
-    return { __error__: e }
+    return { __error__: e };
   }
 }
 

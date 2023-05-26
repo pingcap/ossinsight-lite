@@ -1,6 +1,6 @@
-import * as path from 'path';
-import * as fs from 'fs';
 import { DotenvParseOutput, parse } from 'dotenv';
+import * as fs from 'fs';
+import * as path from 'path';
 
 let env: DotenvParseOutput | undefined;
 

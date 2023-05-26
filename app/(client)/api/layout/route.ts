@@ -1,8 +1,8 @@
+import { merge } from '@/core/commands';
+import { getDatabaseUri, withConnection } from '@/utils/mysql';
+import { ADMIN_DATABASE_NAME, authenticateApiGuard } from '@/utils/server/auth';
 import { revalidatePath } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
-import { merge } from '@/src/core/commands';
-import { ADMIN_DATABASE_NAME, authenticateApiGuard } from '@/src/auth';
-import { getDatabaseUri, withConnection } from '@/src/utils/mysql';
 
 export async function POST (req: NextRequest) {
   const res = await authenticateApiGuard(req);

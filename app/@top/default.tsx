@@ -1,11 +1,11 @@
 'use client';
-import { startAppStateLoadingTransition } from '@/app/bind';
-import { widgets } from '@/app/bind-client';
+import { startAppStateLoadingTransition } from '@/core/bind';
+import { widgets } from '@/core/bind-client';
+import DashboardMenu from '@/components/menu/DashboardMenu';
+import { ResolvedWidgetModule } from '@/core/widgets-manifest';
 import { MenuItem } from '@/packages/ui/components/menu';
 import { useCollectionValues } from '@/packages/ui/hooks/bind';
 import useRefCallback from '@/packages/ui/hooks/ref-callback';
-import DashboardMenu from '@/src/DashboardMenu';
-import { ResolvedWidgetModule } from '@/src/widgets-manifest';
 import { usePathname, useRouter } from 'next/navigation';
 
 export default function Default () {

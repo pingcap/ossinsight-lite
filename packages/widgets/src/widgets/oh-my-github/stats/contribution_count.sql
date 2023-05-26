@@ -13,4 +13,4 @@ WITH events AS (SELECT id, user_id, created_at
 
 SELECT COUNT(*) AS contribution_count
 FROM events
-         JOIN curr_user ON events.user_id = curr_user.id
+       JOIN curr_user ON events.user_id = curr_user.id

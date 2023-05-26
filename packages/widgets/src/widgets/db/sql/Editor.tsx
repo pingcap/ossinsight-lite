@@ -1,10 +1,10 @@
 import { Form } from '@ossinsight-lite/ui/components/form';
+import LoadingIndicator from '@ossinsight-lite/ui/components/loading-indicator';
 import WidgetContext from '@ossinsight-lite/ui/context/widget';
 import useRefCallback from '@ossinsight-lite/ui/hooks/ref-callback';
 import updatePartial from '@ossinsight-lite/ui/utils/update-partial';
 import clsx from 'clsx';
 import { ForwardedRef, forwardRef, HTMLProps, RefAttributes, Suspense, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import LoadingIndicator from '../../../../../../src/components/LoadingIndicator';
 import { SQLEditor, SQLEditorHeader } from '../../../components/editor/sql';
 import { VisualizeType } from '../../../components/visualize/common';
 import { VisualizeContext } from '../../../components/visualize/context';
@@ -15,14 +15,9 @@ import { doDbSqlQuery } from '../../../utils/query';
 import ResultDisplay from '../sql/ResultDisplay';
 import SchemaTree from './SchemaTree';
 
-export enum WidgetMode {
-  EDITOR = 'editor',
-  VISUALIZATION = 'visualization',
-}
-
 export interface WidgetProps extends HTMLProps<HTMLDivElement> {
   // See https://github.com/vercel/next.js/issues/40769
-  forwardedRef?: RefAttributes<HTMLDivElement>['ref']
+  forwardedRef?: RefAttributes<HTMLDivElement>['ref'];
 
   defaultDb?: string;
   defaultSql?: string;

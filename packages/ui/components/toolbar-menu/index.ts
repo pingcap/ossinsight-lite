@@ -1,1 +1,1 @@
-export * from './ToolbarMenu'
+export * from './ToolbarMenu';

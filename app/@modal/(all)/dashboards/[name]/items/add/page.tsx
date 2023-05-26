@@ -1,8 +1,8 @@
 'use client';
-import { dashboards, library } from '@/app/bind';
-import { groupItemsByCategory } from '@/src/utils/widgets';
+import Section from '@/components/pages/modal/widgets/add/Section';
+import { dashboards, library } from '@/core/bind';
+import { groupItemsByCategory } from '@/utils/widgets';
 import { useMemo } from 'react';
-import Section from './Section';
 
 export default async function Page ({ params }: any) {
   const dashboardName = decodeURIComponent(params.name);

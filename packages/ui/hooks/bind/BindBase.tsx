@@ -27,11 +27,11 @@ interface TypedMap<MapType> extends Map<keyof MapType, MapType[keyof MapType]> {
 }
 
 class BindBaseSubject<T> extends Subject<T> {
-  private _active: boolean = true;
-
   constructor () {
     super();
   }
+
+  private _active: boolean = true;
 
   public set active (active: boolean) {
     this._active = active;
@@ -45,26 +45,33 @@ class BindBaseSubject<T> extends Subject<T> {
 }
 
 export abstract class BindBase<BindMap, InitialArgs extends any[] = []> {
+  public rejectUnknownKey = false;
+  public fallback: (<K extends keyof BindMap> (key: K) => BindMap[K]) | undefined;
+  _parent: BindBase<any, any> | undefined;
+  _key: KeyType | undefined;
   protected readonly _store: TypedMap<BindMap> = new Map();
   protected readonly _pendingStore: TypedMap<{ [P in keyof BindMap]: Promise<BindMap[P]> }> = new Map();
   protected readonly _predefinedStore: TypedMap<{ [P in keyof BindMap]: () => Promise<InitialArgs> }> = new Map();
   protected readonly _eventBus = new BindBaseSubject<GeneralEvent<keyof BindMap, BindMap[keyof BindMap]>>();
   protected readonly _loaded = new ReactiveValueSubject<boolean>(true);
-  public rejectUnknownKey = false;
-  public fallback: (<K extends keyof BindMap> (key: K) => BindMap[K]) | undefined;
-
-  _parent: BindBase<any, any> | undefined;
-  _key: KeyType | undefined;
 
   protected constructor () {
   }
 
-  entries () {
-    return this._store.entries();
-  }
-
   get keys () {
     return [...this._store.keys()];
+  }
+
+  get events () {
+    return this._eventBus;
+  }
+
+  get isNeedLoaded () {
+    return !this._loaded.current;
+  }
+
+  entries () {
+    return this._store.entries();
   }
 
   getNullable<K extends keyof BindMap> (type: K): BindMap[K] | null {
@@ -180,12 +187,10 @@ export abstract class BindBase<BindMap, InitialArgs extends any[] = []> {
     });
   }
 
-  get events () {
-    return this._eventBus;
-  }
-
   subscribeKeys (): Observable<(keyof BindMap)[]>
+
   subscribeKeys (cb: Consume<(keyof BindMap)[]>): Subscription
+
   subscribeKeys (cb?: Consume<(keyof BindMap)[]>): Subscription | Observable<(keyof BindMap)[]> {
     if (cb) {
       return this._eventBus
@@ -214,10 +219,6 @@ export abstract class BindBase<BindMap, InitialArgs extends any[] = []> {
   resetLoaded () {
     this._loaded.current = true;
     this._loaded.markMutating();
-  }
-
-  get isNeedLoaded () {
-    return !this._loaded.current;
   }
 
   onceLoaded (cb: PureCallback): Unsubscribable {

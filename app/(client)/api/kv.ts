@@ -1,6 +1,6 @@
 ///
+import { isKvConfigured } from '@/utils/runtime';
 import { VercelKV } from '@vercel/kv';
-import { isKvConfigured } from '@/src/utils/runtime';
 
 let kv: VercelKV;
 

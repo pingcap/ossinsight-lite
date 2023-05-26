@@ -1,6 +1,6 @@
-import { VisualizeConfigProps, VisualizeLineChart } from './common';
 import { Field } from '@ossinsight-lite/ui/components/form';
 import AxisFields from './AxisFields';
+import { VisualizeLineChart } from './common';
 
 export default function LineChartVisualizeConfig ({}: VisualizeLineChart) {
   return (

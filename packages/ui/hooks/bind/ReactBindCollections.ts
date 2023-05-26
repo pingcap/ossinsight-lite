@@ -1,21 +1,20 @@
+import { isDev } from '../../utils/dev';
+import { BindBase } from './BindBase';
 import { ReactBindCollection } from './ReactBindCollection';
 import { ReactBindSingletons } from './ReactBindSingletons';
 import { CollectionsBindMap } from './types';
-import { BindBase } from './BindBase';
-import { isDev } from '../../utils/dev';
 
 export class ReactBindCollections extends BindBase<{ [p in keyof CollectionsBindMap]: ReactBindCollection<CollectionsBindMap[p]> }> {
+  static readonly default = new ReactBindCollections();
+  readonly _key = 'collections';
+
   constructor () {
     super();
   }
 
-  readonly _key = 'collections';
-
   protected initialize (): any {
     return new ReactBindCollection();
   }
-
-  static readonly default = new ReactBindCollections();
 }
 
 declare global {

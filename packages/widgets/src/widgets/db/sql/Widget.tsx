@@ -12,7 +12,7 @@ export enum WidgetMode {
 
 export interface WidgetProps extends HTMLProps<HTMLDivElement> {
   // See https://github.com/vercel/next.js/issues/40769
-  forwardedRef?: RefAttributes<HTMLDivElement>['ref']
+  forwardedRef?: RefAttributes<HTMLDivElement>['ref'];
 
   defaultDb?: string;
   defaultSql?: string;
@@ -40,4 +40,4 @@ function Widget ({ defaultSql, defaultDb, sql, currentDb, visualize, forwardedRe
   );
 }
 
-export default forwardRef(Widget)
+export default forwardRef(Widget);

@@ -1,7 +1,7 @@
 import { HTMLProps, LegacyRef, MouseEvent, useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
-import { equals, offset, Point, Rect } from '../core/types';
 import { useDraggableContext } from '../context/draggable';
 import type { Layout, ResizeOptions } from '../core/layout/base';
+import { equals, offset, Point, Rect } from '../core/types';
 
 export interface DraggableState<E extends HTMLElement> {
   id: string;

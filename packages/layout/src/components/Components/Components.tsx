@@ -1,14 +1,14 @@
+import useRefCallback from '@ossinsight-lite/ui/hooks/ref-callback';
+import mergeRefs from '@ossinsight-lite/ui/utils/merge-refs';
+import clsx from 'clsx';
 import { ComponentType, createRef, forwardRef, ReactElement, useEffect, useMemo, useState } from 'react';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import { DraggableItemContextProvider } from '../../context/draggable-item';
 import { Rect, toShapeStyle } from '../../core/types';
 import { DraggableState, useDraggable } from '../../hooks/draggable';
-import clsx from 'clsx';
 import './draggable.scss';
-import './transitions.scss';
-import { DraggableItemContextProvider } from '../../context/draggable-item';
 import { Resizer } from './resizer';
-import useRefCallback from '@ossinsight-lite/ui/hooks/ref-callback';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import mergeRefs from '@ossinsight-lite/ui/utils/merge-refs';
+import './transitions.scss';
 
 export type Item = {
   id?: string

@@ -1,7 +1,7 @@
-import { ADMIN_DATABASE_NAME } from '@/src/common';
-import { defaultLayoutConfig } from '@/src/components/WidgetsManager/defaults';
-import { Dashboard as DashboardConfig, Dashboard, ItemReference, LibraryItem, Store } from '@/src/types/config';
-import { getDatabaseUri, withConnection } from '@/src/utils/mysql';
+import { defaultLayoutConfig } from '@/core/layout/defaults';
+import { ADMIN_DATABASE_NAME } from '@/utils/common';
+import { getDatabaseUri, withConnection } from '@/utils/mysql';
+import { Dashboard as DashboardConfig, Dashboard, ItemReference, LibraryItem, Store } from '@/utils/types/config';
 
 const uri = getDatabaseUri(ADMIN_DATABASE_NAME);
 

@@ -1,12 +1,12 @@
-import { VisualizeLineChart, VisualizeRuntimeProps } from './common';
-import { Line } from 'react-chartjs-2';
-import { useMemo } from 'react';
-import { CategoryScale, Chart as ChartJs, Filler, Legend, LinearScale, LineElement, PointElement, TimeScale, TimeSeriesScale, Title, Tooltip as _Tooltip } from 'chart.js';
-import { getCartesianScaleOption } from './chartjs/getCartesianScaleOption';
-import { titlePlugin } from './chartjs/titlePlugin';
-import { legendsPlugin } from './chartjs/legendsPlugin';
-import { lineDataset } from './chartjs/getXYData';
 import '@ossinsight-lite/roughness/chartjs';
+import { CategoryScale, Chart as ChartJs, Filler, Legend, LinearScale, LineElement, PointElement, TimeScale, TimeSeriesScale, Title, Tooltip as _Tooltip } from 'chart.js';
+import { useMemo } from 'react';
+import { Line } from 'react-chartjs-2';
+import { getCartesianScaleOption } from './chartjs/getCartesianScaleOption';
+import { lineDataset } from './chartjs/getXYData';
+import { legendsPlugin } from './chartjs/legendsPlugin';
+import { titlePlugin } from './chartjs/titlePlugin';
+import { VisualizeLineChart, VisualizeRuntimeProps } from './common';
 
 ChartJs.register(
   TimeScale,

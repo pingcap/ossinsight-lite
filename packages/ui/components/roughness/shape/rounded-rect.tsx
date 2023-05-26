@@ -1,6 +1,6 @@
-import { useSize } from '../../../utils/size';
 import { useMemo } from 'react';
 import rjs from 'roughjs';
+import { useSize } from '../../../utils/size';
 
 export default function RoughRoundedRect ({ color, spacing = 0 }: { color: string, spacing?: number }) {
   const { size, ref } = useSize<SVGSVGElement>({
@@ -29,9 +29,9 @@ export default function RoughRoundedRect ({ color, spacing = 0 }: { color: strin
       svg.append(g);
       g = pen.arc(d / 2 + spacing + size.width - s, d / 2 + spacing, d, d, Math.PI * 1.5, Math.PI * 2.5);
       svg.append(g);
-      g = pen.line(d / 2 + spacing, spacing, d / 2 + spacing + size.width - s, spacing)
+      g = pen.line(d / 2 + spacing, spacing, d / 2 + spacing + size.width - s, spacing);
       svg.append(g);
-      g = pen.line(d / 2 + spacing, d + spacing, d / 2 + spacing + size.width - s, d + spacing)
+      g = pen.line(d / 2 + spacing, d + spacing, d / 2 + spacing + size.width - s, d + spacing);
       svg.append(g);
     }
 

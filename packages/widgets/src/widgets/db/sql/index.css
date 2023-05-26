@@ -29,9 +29,11 @@
 .AccordionContent {
   overflow: hidden;
 }
+
 .AccordionContent[data-state='open'] {
   animation: slideDown 300ms ease-out;
 }
+
 .AccordionContent[data-state='closed'] {
   animation: slideUp 300ms ease-out;
 }

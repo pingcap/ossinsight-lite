@@ -1,5 +1,5 @@
-import { ChangePasswordForm } from '@/app/admin/account/actions-ui';
-import { authenticateGuard } from '@/src/auth';
+import { ChangePasswordForm } from '@/components/pages/admin/account/forms';
+import { authenticateGuard } from '@/utils/server/auth';
 
 export default async function () {
   await authenticateGuard('/admin/account');
