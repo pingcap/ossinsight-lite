@@ -1,4 +1,5 @@
-import { ForwardedRef, HTMLProps, useEffect } from 'react';
+import WidgetContext from '@ossinsight-lite/ui/context/widget';
+import { ForwardedRef, HTMLProps, useContext, useEffect, useRef } from 'react';
 import { VisualizeType } from '../../../components/visualize/common';
 import { useOperation } from '../../../utils/operation';
 import { doDbSqlQuery } from '../../../utils/query';
@@ -21,13 +22,16 @@ export interface WidgetProps extends HTMLProps<HTMLDivElement> {
 }
 
 export default function Widget ({ defaultSql, defaultDb, sql, currentDb, visualize, mode, ...props }: WidgetProps, forwardedRef: ForwardedRef<HTMLDivElement>) {
+  const { visible } = useContext(WidgetContext);
+  const firstExecuted = useRef(false);
   const { execute, running, result, error } = useOperation<{ sql: string, db: string, force: boolean }, any>(doDbSqlQuery);
 
   useEffect(() => {
-    if ((sql || defaultSql) && currentDb) {
+    if ((sql || defaultSql) && currentDb && visible && !firstExecuted.current) {
+      firstExecuted.current = true;
       execute({ sql: sql || defaultSql, db: currentDb, force: false });
     }
-  }, []);
+  }, [visible]);
 
   return (
     <div {...props} ref={forwardedRef}>

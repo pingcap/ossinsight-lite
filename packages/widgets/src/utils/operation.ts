@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
 import useRefCallback from '@ossinsight-lite/ui/hooks/ref-callback';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 export type OperationOptions<P, T> = {
   (props: P, signal: AbortSignal): Promise<T>
@@ -23,26 +23,24 @@ export function useOperation<P, T> (action: OperationOptions<P, T>): OperationRe
   const execute = useCallback((prop: P) => {
     abortRef.current?.abort();
     const controller = abortRef.current = new AbortController();
-    setTimeout(() => {
-      setResult(null);
-      setError(undefined);
-      setRunning(true);
-      return action(prop, controller.signal)
-        .then(res => {
-          setResult(res);
-          return res;
-        })
-        .catch(err => {
-          if (err?.name === 'AbortError') {
-            return;
-          }
-          setError(err);
-          return Promise.reject(err);
-        })
-        .finally(() => {
-          setRunning(false);
-        });
-    }, 0)
+    setResult(null);
+    setError(undefined);
+    setRunning(true);
+    action(prop, controller.signal)
+      .then(res => {
+        setResult(res);
+        return res;
+      })
+      .catch(err => {
+        if (err?.name === 'AbortError') {
+          return;
+        }
+        setError(err);
+        return Promise.reject(err);
+      })
+      .finally(() => {
+        setRunning(false);
+      });
   }, []);
 
   const abort = useCallback((reason?: string) => {
