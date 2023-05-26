@@ -46,6 +46,7 @@ export class ReactiveDashboardInstance implements DashboardInstance {
   dispose () {
     this._subscription?.unsubscribe();
     this._syncSubscriptions?.unsubscribe();
+    this._syncTarget = undefined;
     this.items.keys.forEach(key => this.items.del(key));
   }
 
