@@ -20,6 +20,7 @@ export interface WidgetStateProps {
 }
 
 export const WidgetComponent = forwardRef<HTMLDivElement, WidgetComponentProps>(({ ...componentProps }, ref) => {
+  console.log(componentProps);
   let el: ReactElement;
 
   const { id, draggable, dragging, draggableProps, editMode, active, onActiveChange, className, dashboardName, ...rest } = componentProps;
