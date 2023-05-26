@@ -40,7 +40,7 @@ export default function TableVisualize ({ result, running }: ResultTableProps) {
 function AutoCollapse ({ value }: { value: any }) {
   return (
     <td>
-      <span className='inline-block max-w-[120px] text-ellipsis whitespace-nowrap overflow-hidden'>{value}</span>
+      <span className="inline-block max-w-[120px] text-ellipsis whitespace-nowrap overflow-hidden">{value}</span>
     </td>
-  )
+  );
 }

@@ -1,5 +1,5 @@
-import * as path from 'node:path';
 import { glob } from 'glob';
+import * as path from 'node:path';
 
 export function getSources () {
   const files: Record<string, string> = {};

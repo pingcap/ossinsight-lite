@@ -8,7 +8,7 @@ interface BackdropProps extends GridLayoutOptions {
 }
 
 const Backdrop: FC<Required<BackdropProps>> = function Backdrop ({ type, columns, gridSize, gap, size: viewportSize }) {
-  let size: Size
+  let size: Size;
   switch (type) {
     case GridLayoutType.FIX_SIZE:
       size = columns;
@@ -19,7 +19,7 @@ const Backdrop: FC<Required<BackdropProps>> = function Backdrop ({ type, columns
   }
 
   return (
-    <div className='absolute left-1 top-1'>
+    <div className="absolute left-1 top-1">
       {gridSize} {gap} {size.toString()}
       <svg xmlns="http://www.w3.org/2000/svg" style={{ display: 'none' }}>
         <symbol id="guide-point" width={8} height={8} viewBox="0 0 8 8" stroke="#ccc">

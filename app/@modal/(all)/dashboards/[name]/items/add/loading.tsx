@@ -1,4 +1,4 @@
-import LoadingIndicator from '@/src/components/LoadingIndicator';
+import LoadingIndicator from '@ossinsight-lite/ui/components/loading-indicator';
 
 export default function Loading () {
   return (

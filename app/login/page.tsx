@@ -1,6 +1,6 @@
-import LoginForm from '@/app/login/form';
+import LoginForm from '@/components/pages/login/LoginForm';
 import { isDev } from '@/packages/ui/utils/dev';
-import { authenticate } from '@/src/auth';
+import { authenticate } from '@/utils/server/auth';
 import { revalidatePath } from 'next/cache';
 import { ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies';
 import { cookies } from 'next/headers';

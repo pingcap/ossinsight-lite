@@ -1,15 +1,26 @@
-import { BindingTypeEvent, Consume, KeyType } from './types';
-import { BindBase } from './BindBase';
 import { filter, Observable, Subscription } from 'rxjs';
+import { BindBase } from './BindBase';
 import { BindKeyNotExistsError } from './error';
-import { nextValue, UpdateAction, UpdateContext } from './utils';
 import { ReactiveValue, ReactiveValueSubject } from './ReactiveValueSubject';
+import { BindingTypeEvent, Consume, KeyType } from './types';
+import { nextValue, UpdateAction, UpdateContext } from './utils';
 
 export class ReactBindCollection<Data> extends BindBase<Record<KeyType, ReactiveValue<Data>>, [Data]> {
   constructor () {super();}
 
-  protected initialize (value: Data) {
-    return new ReactiveValueSubject(value);
+  get rawValues () {
+    return [...this._store.values()];
+  }
+
+  get values () {
+    return this.rawValues.map(i => i.current);
+  }
+
+  get asRecord () {
+    return [...this._store.entries()].reduce((record, [key, val]) => {
+      record[key] = val.current;
+      return record;
+    }, {} as Record<KeyType, Data>);
   }
 
   update (key: KeyType, value: UpdateAction<Data>) {
@@ -27,7 +38,9 @@ export class ReactBindCollection<Data> extends BindBase<Record<KeyType, Reactive
   }
 
   subscribeAll (): Observable<[ReactiveValue<Data>, KeyType, BindingTypeEvent]>
+
   subscribeAll (consume: Consume<[Data, KeyType, BindingTypeEvent]>): Subscription
+
   subscribeAll (consume?: Consume<[Data, KeyType, BindingTypeEvent]>): Subscription | Observable<[ReactiveValue<Data>, KeyType, BindingTypeEvent]> {
     if (consume) {
       return this._eventBus
@@ -45,18 +58,7 @@ export class ReactBindCollection<Data> extends BindBase<Record<KeyType, Reactive
       .subscribe(([value]) => next(value.current));
   }
 
-  get rawValues () {
-    return [...this._store.values()];
-  }
-
-  get values () {
-    return this.rawValues.map(i => i.current);
-  }
-
-  get asRecord () {
-    return [...this._store.entries()].reduce((record, [key, val]) => {
-      record[key] = val.current;
-      return record;
-    }, {} as Record<KeyType, Data>);
+  protected initialize (value: Data) {
+    return new ReactiveValueSubject(value);
   }
 }

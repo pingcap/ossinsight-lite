@@ -1,13 +1,13 @@
-import { forwardRef } from 'react';
-import * as ToggleGroup from '@radix-ui/react-toggle-group';
-import TableIcon from '../../icons/twbs/table.svg';
-import GraphUpIcon from '../../icons/twbs/graph-up.svg';
-import { BarChartIcon } from '@radix-ui/react-icons';
 import RoughSvg from '@ossinsight-lite/roughness/components/RoughSvg';
+import { BarChartIcon } from '@radix-ui/react-icons';
+import * as ToggleGroup from '@radix-ui/react-toggle-group';
 import clsx from 'clsx';
+import { forwardRef } from 'react';
+import GraphUpIcon from '../../icons/twbs/graph-up.svg';
+import TableIcon from '../../icons/twbs/table.svg';
 
 interface ChartTypeToggleProps<T> {
-  className?: string
+  className?: string;
   value: T;
   onChange: (value: T) => void;
 }

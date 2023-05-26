@@ -9,8 +9,8 @@ export interface AxisFieldsProps<Axis extends BaseAxis> {
 
 export default function AxisFields<Axis extends BaseAxis> ({ axis }: AxisFieldsProps<Axis>) {
   return (
-    <fieldset className='p-4 mt-2 border'>
-      <legend className=''>{axis.toUpperCase()} Axis</legend>
+    <fieldset className="p-4 mt-2 border">
+      <legend className="">{axis.toUpperCase()} Axis</legend>
       <Field
         label="Field"
         control={<ColumnSelect />}

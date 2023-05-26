@@ -30,9 +30,9 @@ export enum BindingTypeEvent {
 
 // BindBase will auto call Disposable.dispose when delete an item.
 export interface Disposable {
-  dispose (): void;
-
   addDisposeDependency: (disposable: Subscription | undefined) => void;
+
+  dispose (): void;
 }
 
 export {};

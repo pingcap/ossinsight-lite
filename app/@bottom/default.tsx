@@ -1,8 +1,8 @@
 'use client';
+import AdminMenu from '@/components/menu/AdminMenu';
 import { MenuItem } from '@/packages/ui/components/menu';
-import AdminMenu from '@/src/AdminMenu';
-import CloudDownloadIcon from '@/src/icons/cloud-download.svg';
-import GearIcon from '@/src/icons/gear.svg';
+import CloudDownloadIcon from '@/components/icons/cloud-download.svg';
+import GearIcon from '@/components/icons/gear.svg';
 import { usePathname } from 'next/navigation';
 
 export default function Default () {

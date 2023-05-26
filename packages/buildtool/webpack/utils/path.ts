@@ -8,7 +8,7 @@ export function dep (src: string) {
 }
 
 export function devappSrc (src: string) {
-  return dep(path.join('@ossinsight-lite/devapp/src', src))
+  return dep(path.join('@ossinsight-lite/devapp/src', src));
 }
 
 export function buildtoolSrc (src: string) {

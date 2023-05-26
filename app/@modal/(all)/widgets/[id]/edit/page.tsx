@@ -1,9 +1,8 @@
 'use client';
-import EditWidgetInstance from '@/src/_pages/EditWidgetInstance';
-import { useParams } from 'next/navigation';
-import { library } from '@/app/bind';
-import { useCallback } from 'react';
+import { library } from '@/core/bind';
+import EditWidgetInstance from '@/components/EditWidgetInstance';
 import { useWatchItemFields } from '@/packages/ui/hooks/bind/hooks';
+import { useCallback } from 'react';
 
 export default function Page ({ params }: any) {
   const id = decodeURIComponent(params.id);

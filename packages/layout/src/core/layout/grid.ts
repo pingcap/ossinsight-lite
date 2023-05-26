@@ -1,5 +1,5 @@
-import { Layout } from './base';
 import { move, Point, Rect, resize, Size } from '../types';
+import { Layout } from './base';
 
 export const enum GridLayoutType {
   RESPONSIVE = 'responsive',
@@ -46,20 +46,6 @@ export class GridLayout extends Layout<Rect, Point> {
     return [...shape];
   }
 
-  protected override drag (offset: Point): false | Rect {
-    if (this.dragging) {
-      return this.currentShape = move(this.dragging.shape, offset);
-    }
-    return false;
-  }
-
-  protected override resize (offset: Point): false | Rect {
-    if (this.dragging) {
-      return this.currentShape = resize(this.dragging.shape, offset, this.resizeOptions!.start);
-    }
-    return false;
-  }
-
   override fromDomShape (shape: Rect): Rect {
     return [
       round(shape[0], this.gridSize[0], this.gap) - this._viewportSize[0] / 2,
@@ -101,6 +87,20 @@ export class GridLayout extends Layout<Rect, Point> {
     } else {
       return [0, offset[1]];
     }
+  }
+
+  protected override drag (offset: Point): false | Rect {
+    if (this.dragging) {
+      return this.currentShape = move(this.dragging.shape, offset);
+    }
+    return false;
+  }
+
+  protected override resize (offset: Point): false | Rect {
+    if (this.dragging) {
+      return this.currentShape = resize(this.dragging.shape, offset, this.resizeOptions!.start);
+    }
+    return false;
   }
 }
 

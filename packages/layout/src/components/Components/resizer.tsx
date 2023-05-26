@@ -1,9 +1,9 @@
 import clsx from 'clsx';
+import { useState } from 'react';
+import { Rect } from '../../core/types';
+import { useDraggable } from '../../hooks/draggable';
 import HorizontalIcon from './grip-horizontal.svg';
 import VerticalIcon from './grip-vertical.svg';
-import { useDraggable } from '../../hooks/draggable';
-import { Rect } from '../../core/types';
-import { useState } from 'react';
 
 const icons = {
   vertical: VerticalIcon,
@@ -11,7 +11,7 @@ const icons = {
 };
 
 export function Resizer ({ id, shape: propShape, position, type }: { id: string, shape: Rect, position: 'start' | 'end', type: 'vertical' | 'horizontal' }) {
-  const [shape, setShape] = useState(propShape)
+  const [shape, setShape] = useState(propShape);
   const { ref, domProps, dragging } = useDraggable<HTMLDivElement>({
     shape,
     onShapeChange: setShape,

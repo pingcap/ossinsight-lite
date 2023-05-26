@@ -1,5 +1,5 @@
-import DashboardServer from '@/app/(client)/(dashboards)/dashboard.server';
-import { authenticateGuard } from '@/src/auth';
+import DashboardServer from '@/components/pages/Dashboard/dashboard.server';
+import { authenticateGuard } from '@/utils/server/auth';
 
 export default async function Page ({ params }: any) {
   await authenticateGuard(`/dashboards/${encodeURIComponent(params.name)}/edit`);

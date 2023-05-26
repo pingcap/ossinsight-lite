@@ -1,6 +1,6 @@
-import Items from '@/app/admin/widgets/items';
-import { getWidgets } from '@/app/admin/widgets/op';
-import { authenticateGuard } from '@/src/auth';
+import { getWidgets } from '@/actions/widgets';
+import Items from '@/components/pages/admin/widgets/items';
+import { authenticateGuard } from '@/utils/server/auth';
 
 export default async function Page () {
   await authenticateGuard('/admin/widgets');

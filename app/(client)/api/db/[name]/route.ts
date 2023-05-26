@@ -1,11 +1,10 @@
-import { getDatabaseUri } from '@/src/utils/mysql';
-import { data } from 'autoprefixer';
-import { Connection, createConnection } from 'mysql2/promise';
-import * as process from 'process';
-import kv from '@/app/(client)/api/kv';
-import { NextRequest, NextResponse } from 'next/server';
 import config from '@/.osswrc.json';
-import { authenticateApiGuard } from '@/src/auth';
+import kv from '@/app/(client)/api/kv';
+import { getDatabaseUri } from '@/utils/mysql';
+import { authenticateApiGuard } from '@/utils/server/auth';
+import { Connection, createConnection } from 'mysql2/promise';
+import { NextRequest, NextResponse } from 'next/server';
+import * as process from 'process';
 
 // TODO: use config
 const db = config.db;
@@ -41,7 +40,7 @@ export async function POST (req: NextRequest, { params: { name } }: any) {
   const sql = await req.text();
   const cacheKey = `${name}:${use}:${sql}`;
 
-  const uri = getDatabaseUri(database, readonly, use)
+  const uri = getDatabaseUri(database, readonly, use);
 
   const ignoreCache = force === 'true';
 

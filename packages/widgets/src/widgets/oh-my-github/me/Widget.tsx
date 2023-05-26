@@ -1,6 +1,6 @@
+import clsx from 'clsx';
 import { ForwardedRef, forwardRef, HTMLProps, RefAttributes } from 'react';
 import cu from '../curr_user.sql?unique';
-import clsx from 'clsx';
 
 function Widget ({ forwardedRef, ...props }: HTMLProps<HTMLDivElement> & { forwardedRef: RefAttributes<HTMLDivElement>['ref'] }, _ref: ForwardedRef<HTMLDivElement>) {
   return (
@@ -17,4 +17,4 @@ function Widget ({ forwardedRef, ...props }: HTMLProps<HTMLDivElement> & { forwa
   );
 }
 
-export default forwardRef(Widget)
+export default forwardRef(Widget);

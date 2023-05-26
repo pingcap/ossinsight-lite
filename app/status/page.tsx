@@ -1,6 +1,6 @@
-import EnvironmentStatus from './EnvironmentStatus';
-import GithubPersonalStatus from './GithubPersonalStatus';
-import GithubRepoStatus from './GithubRepoStatus';
+import EnvironmentStatus from '@/components/pages/status/EnvironmentStatus';
+import GithubPersonalStatus from '@/components/pages/status/GithubPersonalStatus';
+import GithubRepoStatus from '@/components/pages/status/GithubRepoStatus';
 import './style.scss';
 
 export default function () {

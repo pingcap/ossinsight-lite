@@ -1,8 +1,8 @@
-import { ReactBindSingletons } from './ReactBindSingletons';
-import { ReactBindCollections } from './ReactBindCollections';
-import { CollectionBindKey, CollectionBindValue, SingletonBindKey } from './types';
-import { ReactBindCollection } from './ReactBindCollection';
 import { BindBase } from './BindBase';
+import { ReactBindCollection } from './ReactBindCollection';
+import { ReactBindCollections } from './ReactBindCollections';
+import { ReactBindSingletons } from './ReactBindSingletons';
+import { CollectionBindKey, CollectionBindValue, SingletonBindKey } from './types';
 import { isPromiseLike } from './utils';
 
 export const collections = ReactBindCollections.default;

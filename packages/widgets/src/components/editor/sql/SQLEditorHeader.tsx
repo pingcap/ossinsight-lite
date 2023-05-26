@@ -1,30 +1,30 @@
-import * as Toolbar from '@radix-ui/react-toolbar';
-import * as Select from '@radix-ui/react-select';
-import { SelectItemProps } from '@radix-ui/react-select';
-import { forwardRef } from 'react';
-import clsx from 'clsx';
-import PlayIcon from '../../../icons/twbs/play-fill.svg';
 import RoughSvg from '@ossinsight-lite/roughness/components/RoughSvg';
 import RoughBox from '@ossinsight-lite/ui/components/roughness/shape/box';
+import * as Select from '@radix-ui/react-select';
+import { SelectItemProps } from '@radix-ui/react-select';
+import * as Toolbar from '@radix-ui/react-toolbar';
+import clsx from 'clsx';
+import { forwardRef } from 'react';
 import colors from 'tailwindcss/colors';
+import PlayIcon from '../../../icons/twbs/play-fill.svg';
 
 // TODO
 const config = {
-  "db": [
+  'db': [
     {
-      "name": "oh-my-github",
-      "display": "github_personal",
-      "type": "mysql",
-      "env": "OH_MY_GITHUB_DATABASE_URL"
+      'name': 'oh-my-github',
+      'display': 'github_personal',
+      'type': 'mysql',
+      'env': 'OH_MY_GITHUB_DATABASE_URL',
     },
     {
-      "name": "repo-track",
-      "display": "github_repos",
-      "type": "mysql",
-      "env": "REPO_TRACK_DATABASE_URL"
-    }
-  ]
-}
+      'name': 'repo-track',
+      'display': 'github_repos',
+      'type': 'mysql',
+      'env': 'REPO_TRACK_DATABASE_URL',
+    },
+  ],
+};
 
 export interface SQLEditorHeaderProps {
   onRun?: () => void;
@@ -55,7 +55,7 @@ export function SQLEditorHeader ({ currentDb, onCurrentDbChange, onRun, running 
         >
           {dbDisplayNames[currentDb] ? <CurrentDb db={dbDisplayNames[currentDb]} /> : <Fallback />}
         </Select.Trigger>
-        <Select.Portal className='z-20'>
+        <Select.Portal className="z-20">
           <Select.Content className="overflow-hidden bg-white rounded shadow" position="popper">
             <Select.Viewport>
               {config.db.map(db => (

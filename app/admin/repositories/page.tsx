@@ -1,6 +1,6 @@
-import { getTrackingRepos } from '@/app/admin/repositories/op';
-import { DeleteActionButton, NewTrackingRepoForm } from '@/app/admin/repositories/actions-ui';
-import { authenticateGuard } from '@/src/auth';
+import { getTrackingRepos } from '@/actions/pipeline';
+import { DeleteActionButton, NewTrackingRepoForm } from '@/components/pages/admin/repositories/forms';
+import { authenticateGuard } from '@/utils/server/auth';
 
 export default async function Page () {
   await authenticateGuard('/admin/repositories');

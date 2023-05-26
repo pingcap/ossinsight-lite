@@ -30,40 +30,6 @@ export abstract class Layout<Shape, Offset> {
     return size;
   }
 
-  private startAction (id: string, action: Action) {
-    const el = this.elements.get(id);
-    if (el) {
-      this.elements.delete(id);
-      this.placeholder = this.clone(el);
-      this.dragging = el;
-      this.currentShape = this.cloneShape(el.shape);
-      this.action = action;
-      if (typeof window !== 'undefined') {
-        window.document.body.style.userSelect = 'none';
-      }
-    }
-  }
-
-  private endAction (action: Action) {
-    if (this.action !== action) {
-      throw new Error('Bad state');
-    }
-    const el = this.dragging;
-    if (el) {
-      el.shape = this.currentShape ?? el.shape;
-      this.elements.set(el.id, el);
-      this.dragging = null;
-      this.placeholder = null;
-      this.currentShape = null;
-      if (typeof window !== 'undefined') {
-        window.document.body.style.userSelect = '';
-      }
-      this.action = null;
-      return this.cloneShape(el.shape);
-    }
-    return null;
-  }
-
   starDrag (id: string) {
     this.startAction(id, Action.DRAG);
   }
@@ -82,10 +48,6 @@ export abstract class Layout<Shape, Offset> {
     this.resizeOptions = null;
     return result;
   }
-
-  protected abstract drag (offset: Offset): false | Shape;
-
-  protected abstract resize (offset: Offset): false | Shape;
 
   doAction (offset: Offset): false | Shape {
     switch (this.action) {
@@ -124,6 +86,44 @@ export abstract class Layout<Shape, Offset> {
   abstract toDomOffset (offset: Offset): Offset;
 
   abstract prepareResizeOffset (offset: Offset, vertical: boolean): Offset;
+
+  protected abstract drag (offset: Offset): false | Shape;
+
+  protected abstract resize (offset: Offset): false | Shape;
+
+  private startAction (id: string, action: Action) {
+    const el = this.elements.get(id);
+    if (el) {
+      this.elements.delete(id);
+      this.placeholder = this.clone(el);
+      this.dragging = el;
+      this.currentShape = this.cloneShape(el.shape);
+      this.action = action;
+      if (typeof window !== 'undefined') {
+        window.document.body.style.userSelect = 'none';
+      }
+    }
+  }
+
+  private endAction (action: Action) {
+    if (this.action !== action) {
+      throw new Error('Bad state');
+    }
+    const el = this.dragging;
+    if (el) {
+      el.shape = this.currentShape ?? el.shape;
+      this.elements.set(el.id, el);
+      this.dragging = null;
+      this.placeholder = null;
+      this.currentShape = null;
+      if (typeof window !== 'undefined') {
+        window.document.body.style.userSelect = '';
+      }
+      this.action = null;
+      return this.cloneShape(el.shape);
+    }
+    return null;
+  }
 }
 
 export interface DraggableElement<Shape> {

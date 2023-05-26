@@ -1,12 +1,11 @@
-import cpm from './contributions_per_month.sql';
-import { Line } from 'react-chartjs-2';
-import { CategoryScale, Chart as ChartJs, Filler, Legend, LinearScale, LineElement, PointElement, TimeScale, TimeSeriesScale, Title, Tooltip as _Tooltip } from 'chart.js';
-import { ForwardedRef, forwardRef, HTMLProps, RefAttributes } from 'react';
-import clsx from 'clsx';
-import 'chartjs-adapter-luxon';
-import * as colors from 'tailwindcss/colors';
-
 import '@ossinsight-lite/roughness/chartjs';
+import { CategoryScale, Chart as ChartJs, Filler, Legend, LinearScale, LineElement, PointElement, TimeScale, TimeSeriesScale, Title, Tooltip as _Tooltip } from 'chart.js';
+import 'chartjs-adapter-luxon';
+import clsx from 'clsx';
+import { ForwardedRef, forwardRef, HTMLProps, RefAttributes } from 'react';
+import { Line } from 'react-chartjs-2';
+import * as colors from 'tailwindcss/colors';
+import cpm from './contributions_per_month.sql';
 
 const { cyan, green, red, yellow } = colors;
 
@@ -100,4 +99,4 @@ function Widget ({ forwardedRef, ...props }: HTMLProps<HTMLDivElement> & { forwa
   );
 }
 
-export default forwardRef(Widget)
+export default forwardRef(Widget);

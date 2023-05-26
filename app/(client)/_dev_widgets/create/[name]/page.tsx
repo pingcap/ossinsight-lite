@@ -1,9 +1,9 @@
 'use client';
-import { currentDashboard, library } from '@/app/bind';
-import { widgets } from '@/app/bind-client';
+import { currentDashboard, library } from '@/core/bind';
+import { widgets } from '@/core/bind-client';
+import EditWidgetInstance from '@/components/EditWidgetInstance';
 import RoughBox from '@/packages/ui/components/roughness/shape/box';
 import { readItem } from '@/packages/ui/hooks/bind';
-import EditWidgetInstance from '@/src/_pages/EditWidgetInstance';
 import { useCallback, useState } from 'react';
 import colors from 'tailwindcss/colors';
 

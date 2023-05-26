@@ -1,7 +1,7 @@
-import rc from 'roughjs';
 import { BarElement, defaults, LineElement, plugins, Scale } from 'chart.js';
 import type BarElementType from 'chart.js/dist/elements/element.bar';
 import type LineElementType from 'chart.js/dist/elements/element.line';
+import rc from 'roughjs';
 
 defaults.font.family = 'CabinSketch';
 defaults.scale.grid.display = false;
@@ -99,7 +99,7 @@ BarElement.prototype.draw = function (this: BarElementType, ctx) {
   c.linearPath(path);
   c.polygon(path, {
     stroke: 'none',
-  })
+  });
 };
 
 const originalBeforeDatasetDraw = plugins.Filler.beforeDatasetDraw;

@@ -1,5 +1,5 @@
-import type { Layout } from '../core/layout/base';
 import { useEffect, useState } from 'react';
+import type { Layout } from '../core/layout/base';
 
 export function useLayout<
   Cls extends { new (options: O): T },

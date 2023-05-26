@@ -1,6 +1,6 @@
-import { AddDashboardForm, DeleteDashboardButton } from '@/app/admin/dashboards/actions-ui';
-import { getDashboards } from '@/app/admin/dashboards/op';
-import { authenticateGuard } from '@/src/auth';
+import { getDashboards } from '@/actions/widgets';
+import { AddDashboardForm, DeleteDashboardButton } from '@/components/pages/admin/dashboards/forms';
+import { authenticateGuard } from '@/utils/server/auth';
 import Link from 'next/link';
 
 export default async function () {

@@ -13,6 +13,6 @@ WITH events AS (SELECT id, user_id, created_at, 'issue' AS type
 
 SELECT DATE_FORMAT(events.created_at, '%Y-%m-01') AS month, type, COUNT(*) AS cnt
 FROM events
-         JOIN curr_user ON events.user_id = curr_user.id
+       JOIN curr_user ON events.user_id = curr_user.id
 GROUP BY 1, 2
 ORDER BY 1 ASC

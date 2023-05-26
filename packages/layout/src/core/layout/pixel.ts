@@ -1,23 +1,9 @@
-import { Layout } from './base';
 import { move, Point, Rect, resize } from '../types';
+import { Layout } from './base';
 
 export class PixelLayout extends Layout<Rect, Point> {
   cloneShape (shape: Rect): Rect {
     return [...shape];
-  }
-
-  protected override drag (offset: Point): false | Rect {
-    if (this.dragging) {
-      return this.currentShape = normalizePosition(move(this.dragging.shape, offset));
-    }
-    return false;
-  }
-
-  protected override resize (offset: Point): false | Rect {
-    if (this.dragging) {
-      return this.currentShape = normalizePosition(resize(this.dragging.shape, offset, this.resizeOptions?.start ?? false));
-    }
-    return false;
   }
 
   override fromDomShape (shape: Rect): Rect {
@@ -42,6 +28,20 @@ export class PixelLayout extends Layout<Rect, Point> {
     } else {
       return [0, offset[1]];
     }
+  }
+
+  protected override drag (offset: Point): false | Rect {
+    if (this.dragging) {
+      return this.currentShape = normalizePosition(move(this.dragging.shape, offset));
+    }
+    return false;
+  }
+
+  protected override resize (offset: Point): false | Rect {
+    if (this.dragging) {
+      return this.currentShape = normalizePosition(resize(this.dragging.shape, offset, this.resizeOptions?.start ?? false));
+    }
+    return false;
   }
 }
 

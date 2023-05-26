@@ -1,4 +1,4 @@
-import DashboardServer from '@/app/(client)/(dashboards)/dashboard.server';
+import DashboardServer from '@/components/pages/Dashboard/dashboard.server';
 import React from 'react';
 
 export default async function Page () {

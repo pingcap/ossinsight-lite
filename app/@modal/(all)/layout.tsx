@@ -1,7 +1,7 @@
-import AppLoading from '@/app/app-loading';
+import AppLoading from '@/components/AppLoading';
 import dynamic from 'next/dynamic';
 
-const DialogLayout = dynamic(() => import('./DialogLayout'), { ssr: false, loading: AppLoading });
+const DialogLayout = dynamic(() => import('@/components/pages/modal/DialogLayout'), { ssr: false, loading: AppLoading });
 
 export default function ({ children }: any) {
   return (

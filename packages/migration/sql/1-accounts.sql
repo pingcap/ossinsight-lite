@@ -6,4 +6,5 @@ CREATE TABLE site_accounts
   password CHAR(72)                 NOT NULL
 );
 
-INSERT INTO site_accounts(username, password) VALUES ('admin', :env_INITIAL_PASSWORD)
+INSERT INTO site_accounts(username, password)
+VALUES ('admin', :env_INITIAL_PASSWORD)
