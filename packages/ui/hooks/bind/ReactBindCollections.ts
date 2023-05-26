@@ -1,5 +1,5 @@
 import { ReactBindCollection } from './ReactBindCollection';
-import { ReactBindSingletons } from './ReactBindSingletons.ts';
+import { ReactBindSingletons } from './ReactBindSingletons';
 import { CollectionsBindMap } from './types';
 import { BindBase } from './BindBase';
 import { isDev } from '../../utils/dev';
