@@ -1,12 +1,7 @@
-import { ComponentType, createContext } from 'react';
+import { createContext } from 'react';
 
 export type WidgetContextValues = {
-  /** deprecated */
-  enabled: boolean
-  /** deprecated */
-  configurable: boolean,
-  /** deprecated */
-  editingLayout: boolean,
+  visible: boolean,
   props: any
   configuring: boolean
   creating: boolean
@@ -14,13 +9,13 @@ export type WidgetContextValues = {
 }
 
 const WidgetContext = createContext<WidgetContextValues>({
-  enabled: false,
-  configurable: false,
-  editingLayout: false,
+  visible: false,
   props: {},
   configuring: false,
   creating: false,
   onPropChange: () => {},
 });
+
+WidgetContext.displayName = 'WidgetContext';
 
 export default WidgetContext;

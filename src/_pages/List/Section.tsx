@@ -1,9 +1,10 @@
 'use client';
 import { widgets } from '@/app/bind-client';
+import WidgetContext from '@/packages/ui/context/widget';
 import { readItem } from '@/packages/ui/hooks/bind';
 import useRefCallback from '@/packages/ui/hooks/ref-callback';
+import { useVisible } from '@/packages/ui/hooks/visible';
 import LoadingIndicator from '@/src/components/LoadingIndicator';
-import { WidgetContextProvider } from '@/src/components/WidgetContext';
 import PlusIcon from '@/src/icons/plus.svg';
 import { LibraryItem } from '@/src/types/config';
 import { getConfigurable, getDuplicable } from '@/src/utils/widgets';
@@ -70,8 +71,24 @@ function Add ({ name, onAdd }: { name: string, onAdd: (item: LibraryItem) => Pro
 function Widget ({ id, name, className, props }: { id: string | undefined, name: string, className: string, props: any }) {
   const widget = readItem(widgets, name).current;
   const Widget = widget.default;
+  const { ref: visibleRef, visible } = useVisible();
 
-  let el = <Widget {...props} {...widget.widgetListItemPropsOverwrite} className={clsx('flex-1', props.className, widget.widgetListItemPropsOverwrite?.className, className)} />;
+  let el = (
+    <WidgetContext.Provider value={{
+      visible,
+      props,
+      onPropChange: () => {},
+      configuring: false,
+      creating: false,
+    }}>
+      <Widget
+        {...props}
+        {...widget.widgetListItemPropsOverwrite}
+        className={clsx('flex-1', props.className, widget.widgetListItemPropsOverwrite?.className, className)}
+        ref={visibleRef}
+      />
+    </WidgetContext.Provider>
+  );
   if (getConfigurable(widget)) {
     el = (
       <Link className="flex-1 flex items-stretch overflow-hidden" href={`/widgets/${encodeURIComponent(id ?? name)}/edit`}>
@@ -80,23 +97,13 @@ function Widget ({ id, name, className, props }: { id: string | undefined, name:
     );
   } else {
     el = (
-      <div className='flex-1 flex items-stretch overflow-hidden'>{el}</div>
-    )
+      <div className="flex-1 flex items-stretch overflow-hidden">{el}</div>
+    );
   }
   return (
     <>
       <h3 className="text-gray-400 text-sm">{(widget.configureComponent ? props?.visualize?.title : undefined) ?? widget.displayName}</h3>
-      <WidgetContextProvider value={{
-        props,
-        enabled: false,
-        editingLayout: true,
-        onPropChange: () => {},
-        configuring: false,
-        creating: false,
-        configurable: false,
-      }}>
-        {el}
-      </WidgetContextProvider>
+      {el}
     </>
   );
 }

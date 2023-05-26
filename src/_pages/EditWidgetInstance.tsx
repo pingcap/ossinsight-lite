@@ -1,6 +1,7 @@
 'use client';
 import { widgets } from '@/app/bind-client';
 import { readItem } from '@/packages/ui/hooks/bind';
+import { useVisible } from '@/packages/ui/hooks/visible';
 import LoadingIndicator from '@/src/components/LoadingIndicator';
 import clientOnly from '@/src/utils/clientOnly';
 import WidgetContext from '@ossinsight-lite/ui/context/widget';
@@ -27,15 +28,14 @@ function EditWidgetInstance ({ name, props, onPropsChange, creating = false }: E
       return forwardRef((await fn()).default);
     });
   }, [widget]);
+  const { ref: visibleRef, visible } = useVisible<HTMLDivElement>();
 
   return (
     <WidgetContext.Provider
       value={{
         configuring: true,
-        configurable: false,
+        visible,
         creating,
-        enabled: false,
-        editingLayout: false,
         onPropChange: onPropsChange,
         props: { ...props, ...widget.configurablePropsOverwrite },
       }}
@@ -44,6 +44,7 @@ function EditWidgetInstance ({ name, props, onPropsChange, creating = false }: E
         {...props}
         {...widget.configurablePropsOverwrite}
         className={clsx('w-full h-full', widget.configurablePropsOverwrite?.className, props.className)}
+        ref={visibleRef}
       />
     </WidgetContext.Provider>
   );

@@ -143,10 +143,10 @@ export function EditingLayer ({ id, editMode, dragging, draggableProps, active, 
                 />
               )}
               {styleConfigurable && (
-                <MenuItem id="styles" text={<PaletteIcon />} href={`/widgets/${encodeURIComponent(id)}/styles`}  prefetch={false} order={99} />
+                <MenuItem id="styles" text={<PaletteIcon />} href={`/widgets/${encodeURIComponent(id)}/styles`} prefetch={false} order={99} />
               )}
               {configurable && (
-                <MenuItem id="configure" text={<PencilIcon fill="currentColor" />} href={`/widgets/${encodeURIComponent(id)}/edit`}  prefetch={false} order={1} disabled={!configurable} />
+                <MenuItem id="configure" text={<PencilIcon fill="currentColor" />} href={`/widgets/${encodeURIComponent(id)}/edit`} prefetch={false} order={1} disabled={!configurable} />
               )}
             </>
           )}

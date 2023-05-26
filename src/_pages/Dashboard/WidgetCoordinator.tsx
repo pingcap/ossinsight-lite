@@ -1,15 +1,10 @@
 import { widgets } from '@/app/bind-client';
-import { move } from '@/packages/layout/src/core/types';
-import { MenuItem } from '@/packages/ui/components/menu';
-import { duplicateItem } from '@/src/components/WidgetsManager';
-import DuplicateIcon from '@/src/icons/copy.svg';
-import PaletteIcon from '@/src/icons/palette.svg';
-import PencilIcon from '@/src/icons/pencil.svg';
-import { getConfigurable, getDuplicable, getStyleConfigurable } from '@/src/utils/widgets';
+import WidgetContext from '@/packages/ui/context/widget';
+import { useVisible } from '@/packages/ui/hooks/visible';
+import mergeRefs from '@/packages/ui/utils/merge-refs';
 import { readItem, useUpdater, useWatchItemFields } from '@ossinsight-lite/ui/hooks/bind';
 import useRefCallback from '@ossinsight-lite/ui/hooks/ref-callback';
-import { forwardRef, useCallback, useMemo } from 'react';
-import { WidgetContextProvider } from '../../components/WidgetContext';
+import { forwardRef } from 'react';
 
 export interface WidgetCoordinator {
   dashboardName?: string;
@@ -22,9 +17,6 @@ export interface WidgetCoordinator {
 
 export const WidgetCoordinator = forwardRef<HTMLDivElement, WidgetCoordinator>(({ dashboardName, name, _id: id, draggable, editMode, props: passInProps }, ref) => {
   const widget = readItem(widgets, name).current;
-  const styleConfigurable = getStyleConfigurable(widget);
-  const configurable = getConfigurable(widget);
-  const duplicable = getDuplicable(widget);
 
   const { props: watchingProps } = useWatchItemFields('library', id, ['props']);
   const updater = useUpdater('library', id);
@@ -39,20 +31,19 @@ export const WidgetCoordinator = forwardRef<HTMLDivElement, WidgetCoordinator>((
   });
 
   const Widget = widget.default;
+  const { ref: visibleRef, visible } = useVisible<HTMLDivElement>();
 
   return (
-    <WidgetContextProvider
+    <WidgetContext.Provider
       value={{
-        enabled: true,
-        editingLayout: editMode,
-        configurable,
         onPropChange,
         props,
+        visible,
         configuring: false,
         creating: false,
       }}
     >
-      <Widget ref={ref} {...props} />
-    </WidgetContextProvider>
+      <Widget ref={mergeRefs(ref, visibleRef)} {...props} />
+    </WidgetContext.Provider>
   );
 });
