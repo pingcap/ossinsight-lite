@@ -6,6 +6,15 @@ import * as internals from '@/src/layout-components';
 import widgetsManifest, { ResolvedWidgetModule } from '@/src/widgets-manifest';
 import { createElement, forwardRef } from 'react';
 
+if (typeof window !== 'undefined') {
+  if (!window.requestIdleCallback) {
+    window.requestIdleCallback = (cb) => {
+      return setTimeout(cb, 0);
+    };
+    window.cancelIdleCallback = clearTimeout;
+  }
+}
+
 declare module '@ossinsight-lite/ui/hooks/bind' {
   interface CollectionsBindMap {
     widgets: ResolvedWidgetModule;
