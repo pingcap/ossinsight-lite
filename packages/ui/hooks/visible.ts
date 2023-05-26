@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { isSSR } from '../utils/ssr.ts';
+import { isSSR } from '../utils/ssr';
 import { useWatchReactiveValue } from './bind';
-import { ReactiveValueSubject } from './bind/ReactiveValueSubject.ts';
+import { ReactiveValueSubject } from './bind/ReactiveValueSubject';
 
 const reactiveDocumentVisible = new ReactiveValueSubject(true);
 let _registered = false;
