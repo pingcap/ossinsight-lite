@@ -49,6 +49,7 @@ export async function loginAction (form: FormData) {
     path: '/',
     secure: !isDev,
     sameSite: 'strict',
+    maxAge: parseInt(process.env.JWT_MAX_AGE || '1800') + 300,
   } as ResponseCookie);
 
   revalidatePath(redirectUri);
