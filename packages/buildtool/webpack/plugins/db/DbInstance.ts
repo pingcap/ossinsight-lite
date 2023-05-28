@@ -28,7 +28,7 @@ export abstract class DbInstance<Pool> {
       this.connectError = new Error('TiDB integration was not configured. Check your vercel project config.');
       return;
     }
-    const uri = `@ossinsight-lite/ui/components/loading-indicator//${process.env.TIDB_USER}:${process.env.TIDB_PASSWORD}@${process.env.TIDB_HOST}:${process.env.TIDB_PORT}/${database}?timezone=Z&ssl={"rejectUnauthorized":true,"minVersion":"TLSv1.2"}`;
+    const uri = `mysql://${process.env.TIDB_USER}:${process.env.TIDB_PASSWORD}@${process.env.TIDB_HOST}:${process.env.TIDB_PORT}/${database}?timezone=Z&ssl={"rejectUnauthorized":true,"minVersion":"TLSv1.2"}`;
 
     try {
       this.pool = await this.createPool(uri);
