@@ -1,15 +1,60 @@
 'use server';
-import { getDatabaseUri, withConnection } from '@/utils/mysql';
+import { isDev } from '@/packages/ui/utils/dev';
+import { sign } from '@/utils/jwt';
+import { getDatabaseUri, SqlExecutor, withConnection } from '@/utils/mysql';
 import { ADMIN_DATABASE_NAME, SALT_ROUNDS } from '@/utils/server/auth';
 import { isNonEmptyString } from '@/utils/types';
 import { compare, hash } from 'bcrypt-ts';
-import { RequestCookies } from 'next/dist/compiled/@edge-runtime/cookies';
+import { revalidatePath } from 'next/cache';
+import { RequestCookies, ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies';
 import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 export async function logout () {
   (cookies() as RequestCookies).delete('auth');
 }
 
+async function authenticate ({ sql }: SqlExecutor, username: string, password: string) {
+  const user = await sql.unique<{ username: string, password: string }>`
+      SELECT *
+      FROM site_accounts
+      WHERE username = ${username}
+  `;
+
+  if (user == null) {
+    return false;
+  }
+  return await compare(password, user.password);
+}
+
+export async function loginAction (form: FormData) {
+  'use server';
+  const username = form.get('username') || 'admin';
+  const password = form.get('password');
+  const redirectUri = form.get('redirect_uri') as string;
+
+  if (typeof username !== 'string' || typeof password !== 'string') {
+    throw new Error('Bad credential');
+  }
+
+  await withConnection(getDatabaseUri(ADMIN_DATABASE_NAME), async conn => {
+    if (!await authenticate(conn, username, password)) {
+      throw new Error('Bad credential');
+    }
+  });
+
+  cookies().set({
+    name: 'auth',
+    value: await sign({ sub: username }),
+    path: '/',
+    secure: !isDev,
+    sameSite: 'strict',
+    maxAge: parseInt(process.env.JWT_MAX_AGE || '1800') + 300,
+  } as ResponseCookie);
+
+  revalidatePath(redirectUri);
+  redirect(redirectUri);
+}
 
 export async function resetPasswordAction (formData: FormData) {
   const oldPassword = formData.get('old-password');
@@ -34,16 +79,9 @@ export async function resetPasswordAction (formData: FormData) {
 
   await withConnection(getDatabaseUri(ADMIN_DATABASE_NAME), async ({ sql, beginTransaction }) => {
     await beginTransaction();
-    const rows = await sql<{ password: string }>`
-        SELECT password
-        FROM site_accounts
-        WHERE username = 'admin';
-    `;
-
-    if (rows.length !== 1) {
+    if (!await authenticate({ sql }, 'admin', oldPassword)) {
       throw new Error('Bad credential');
     }
-    await compare(oldPassword, rows[0].password);
 
     await sql`
         UPDATE site_accounts
@@ -51,5 +89,4 @@ export async function resetPasswordAction (formData: FormData) {
         WHERE username = 'admin';
     `;
   });
-
 }

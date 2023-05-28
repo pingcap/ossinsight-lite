@@ -5,3 +5,5 @@ USER_LOGIN=github_login
 REPO_FULL_NAME=github_repo_name1,github_repo_name2,...
 GITHUB_REPO_DATABASE=github_repos
 GITHUB_PERSONAL_DATABASE=github_personal
+JWT_MAX_AGE=1800 #seconds
+JWT_SECRET=ossinsight-lite

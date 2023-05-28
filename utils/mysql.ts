@@ -56,12 +56,18 @@ export namespace sql {
   };
 }
 
-interface SqlExecutor {
-  sql<T> (templateStringsArray: TemplateStringsArray, ...args: any[]): Promise<(T & RowDataPacket)[]>;
+export interface SqlExecutor {
+  sql: SqlInterface;
+}
+
+export interface SqlInterface {
+  <T> (templateStringsArray: TemplateStringsArray, ...args: any[]): Promise<(T & RowDataPacket)[]>;
+
+  unique<T> (templateStringsArray: TemplateStringsArray, ...args: any[]): Promise<T & RowDataPacket | null>;
 }
 
 function withSqlExecutor (conn: Connection): Connection & SqlExecutor {
-  (conn as Connection & SqlExecutor).sql = async <T> (template: TemplateStringsArray, ...args: any[]) => {
+  const sql = (async <T> (template: TemplateStringsArray, ...args: any[]) => {
     let sql = '';
     let values: any[] = [];
     let i = 0;
@@ -78,7 +84,18 @@ function withSqlExecutor (conn: Connection): Connection & SqlExecutor {
     });
 
     return rows as (T & RowDataPacket)[];
+  }) as SqlInterface;
+  sql.unique = async <T> (templateStringsArray: TemplateStringsArray, ...args: any[]): Promise<T | null> => {
+    const res = await sql<T>(templateStringsArray, ...args);
+    if (res.length === 0) {
+      return null;
+    } else if (res.length > 1) {
+      throw new Error('More than on rows returned.');
+    }
+    return res[0];
   };
+
+  (conn as Connection & SqlExecutor).sql = sql;
 
   return (conn as Connection & SqlExecutor);
 }

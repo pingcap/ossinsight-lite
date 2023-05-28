@@ -1,7 +1,6 @@
 import config from '@/.osswrc.json';
 import kv from '@/app/(client)/api/kv';
 import { getDatabaseUri } from '@/utils/mysql';
-import { authenticateApiGuard } from '@/utils/server/auth';
 import { Connection, createConnection } from 'mysql2/promise';
 import { NextRequest, NextResponse } from 'next/server';
 import * as process from 'process';
@@ -10,11 +9,7 @@ import * as process from 'process';
 const db = config.db;
 
 export async function POST (req: NextRequest, { params: { name } }: any) {
-  let readonly = false;
-  const res = await authenticateApiGuard(req);
-  if (res) {
-    readonly = true;
-  }
+  let readonly = req.headers.get('X-Readonly') === 'true';
 
   if (!process.env.TIDB_USER || !process.env.TIDB_HOST || !process.env.TIDB_HOST || !process.env.TIDB_PORT) {
     return NextResponse.json({
@@ -67,9 +62,14 @@ export async function POST (req: NextRequest, { params: { name } }: any) {
   try {
     conn = await createConnection(uri);
   } catch (e) {
+    let msg = String((e as any)?.message ?? e);
+    if (msg.startsWith('Access denied for user')) {
+      msg = 'Access denied';
+    }
+
     return NextResponse.json({
       code: 'ERR_CONN',
-      message: `Connecting to database failed: ${String((e as any)?.message ?? e)}`,
+      message: `Connecting to database failed: ${msg}`,
     }, { status: 500 });
   }
 
