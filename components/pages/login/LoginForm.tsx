@@ -5,7 +5,7 @@ const LoginForm = ({ loginAction, redirectUri }: { loginAction: (form: FormData)
   <ServerActionForm action={loginAction}>
     <ActionStateAlerts />
     <input name="username" value="admin" readOnly autoCorrect="no" hidden />
-    <input name="redirect_uri" value={redirectUri} readOnly autoCorrect="no" hidden />
+    <input name="redirect_uri" value={redirectUri ?? '/'} readOnly autoCorrect="no" hidden />
     <FormControl name="password">
       <Input type="password" autoCorrect="no" placeholder="password" />
     </FormControl>
