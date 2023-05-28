@@ -47,6 +47,16 @@ async function main() {
     const fn = files[i];
     console.log('migrating:', fn)
 
+    const hookFile = fn.replace(/^sql/, 'hook')
+      .replace(/\.sql/, '.js')
+    if (fs.existsSync(hookFile)) {
+      const hook = require(path.join(process.cwd(), hookFile));
+      if (hook.before_migration) {
+        console.log('\t exec hook: before_migration')
+        await hook.before_migration();
+      }
+    }
+
     const content = fs.readFileSync(fn, {encoding: 'utf-8'});
     const commands = content.split(';').map(c => c.trim()).filter(Boolean);
 

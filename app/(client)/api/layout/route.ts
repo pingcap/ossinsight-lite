@@ -1,14 +1,10 @@
 import { merge } from '@/core/commands';
 import { getDatabaseUri, withConnection } from '@/utils/mysql';
-import { ADMIN_DATABASE_NAME, authenticateApiGuard } from '@/utils/server/auth';
+import { ADMIN_DATABASE_NAME } from '@/utils/server/auth';
 import { revalidatePath } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST (req: NextRequest) {
-  const res = await authenticateApiGuard(req);
-  if (res) {
-    return res;
-  }
   const commands = merge(await req.json());
   let success: boolean;
 

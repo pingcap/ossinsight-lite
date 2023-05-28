@@ -1,10 +1,7 @@
 import { getWidgets } from '@/actions/widgets';
 import Items from '@/components/pages/admin/widgets/items';
-import { authenticateGuard } from '@/utils/server/auth';
 
 export default async function Page () {
-  await authenticateGuard('/admin/widgets');
-
   return (
     <div className="container m-auto py-4">
       <h1 className="text-xl">Widgets list</h1>
