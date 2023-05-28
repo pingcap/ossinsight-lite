@@ -62,9 +62,14 @@ export async function POST (req: NextRequest, { params: { name } }: any) {
   try {
     conn = await createConnection(uri);
   } catch (e) {
+    let msg = String((e as any)?.message ?? e);
+    if (msg.startsWith('Access denied for user')) {
+      msg = 'Access denied';
+    }
+
     return NextResponse.json({
       code: 'ERR_CONN',
-      message: `Connecting to database failed: ${String((e as any)?.message ?? e)}`,
+      message: `Connecting to database failed: ${msg}`,
     }, { status: 500 });
   }
 
