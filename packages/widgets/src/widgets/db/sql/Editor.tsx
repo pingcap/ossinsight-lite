@@ -92,7 +92,7 @@ function Editor ({ defaultSql, defaultDb, sql, currentDb, visualize, forwardedRe
             <SQLEditor sql={sql} defaultSql={defaultSql} onSqlChange={onSqlChange} />
           </div>
           <div className="flex-1 w-full flex overflow-hidden">
-            <div className="flex-1 justify-stretch">
+            <div className="flex-1 justify-stretch overflow-hidden">
               <ResultDisplay
                 editing
                 configuring={configuring}

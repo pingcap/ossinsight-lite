@@ -1,4 +1,3 @@
-'use client';
 import { widgets } from '@/core/bind-client';
 import { readItem } from '@/packages/ui/hooks/bind';
 import { useVisible } from '@/packages/ui/hooks/visible';

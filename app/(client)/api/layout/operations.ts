@@ -1,6 +1,6 @@
 import { defaultLayoutConfig } from '@/core/layout/defaults';
 import { ADMIN_DATABASE_NAME } from '@/utils/common';
-import { getDatabaseUri, withConnection } from '@/utils/mysql';
+import { getDatabaseUri, sql, withConnection } from '@/utils/mysql';
 import { Dashboard as DashboardConfig, Dashboard, ItemReference, LibraryItem, Store } from '@/utils/types/config';
 
 const uri = getDatabaseUri(ADMIN_DATABASE_NAME);
@@ -148,6 +148,37 @@ export async function getAllDashboards () {
   if (!resolved) {
     throw new Error('No config found');
   }
+  return [store!, resolved] as const;
+}
+
+export async function getLibraryItem (id: string) {
+  let resolved: LibraryItem | undefined | null;
+  let store: Store | undefined;
+  try {
+    resolved = await sql.unique<LibraryItem>`
+        SELECT id, widget_name, properties
+        FROM library_items
+        WHERE id = ${id}
+    `;
+  } catch (e) {
+  }
+
+  if (!resolved) {
+    if (typeof localStorage !== 'undefined') {
+      const library = localStorage.getItem('widgets:library');
+      if (library) {
+        resolved = (JSON.parse(library) as LibraryItem[]).find(item => item.id === id || item.name === id);
+        if (resolved) {
+          store = 'localStorage';
+        }
+      }
+    }
+  }
+
+  if (!resolved) {
+    throw new Error('No library found');
+  }
+
   return [store!, resolved] as const;
 }
 

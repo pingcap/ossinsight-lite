@@ -1,11 +1,15 @@
-'use client';
-import { library } from '@/core/bind';
+'use client'
 import EditWidgetInstance from '@/components/EditWidgetInstance';
-import { useWatchItemFields } from '@/packages/ui/hooks/bind/hooks';
+import { library } from '@/core/bind';
+import { useWatchItemFields } from '@/packages/ui/hooks/bind';
+import clientOnly from '@/utils/clientOnly';
 import { useCallback } from 'react';
 
-export default function Page ({ params }: any) {
-  const id = decodeURIComponent(params.id);
+export interface EditWidgetProps {
+  id: string;
+}
+
+function EditWidget ({ id }: EditWidgetProps) {
   const { name, props } = useWatchItemFields('library', id, ['name', 'props']);
 
   return (
@@ -26,3 +30,5 @@ export default function Page ({ params }: any) {
     />
   );
 }
+
+export default clientOnly(EditWidget)
