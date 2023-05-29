@@ -1,0 +1,21 @@
+name: "Sync upstream"
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+jobs:
+  repo-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+      - name: repo-sync
+        uses: repo-sync/github-sync@v2
+        with:
+          source_repo: "634750802/ossinsight-lite"
+          source_branch: "main"
+          destination_branch: "main"
+          github_token: ${{ secrets.SYNC_GITHUB_TOKEN }}
