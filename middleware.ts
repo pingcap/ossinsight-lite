@@ -3,7 +3,6 @@ import { verify } from './utils/jwt';
 
 export async function middleware (req: NextRequest) {
   if (needAuth(req)) {
-    console.log(req.nextUrl.pathname);
     let allowAnonymous = anonymousAuth(req);
     let authenticated = false;
     let error: string | undefined = undefined;

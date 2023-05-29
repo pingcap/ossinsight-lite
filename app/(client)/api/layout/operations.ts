@@ -2,10 +2,15 @@ import { defaultLayoutConfig } from '@/core/layout/defaults';
 import { ADMIN_DATABASE_NAME } from '@/utils/common';
 import { getDatabaseUri, sql, withConnection } from '@/utils/mysql';
 import { Dashboard as DashboardConfig, Dashboard, ItemReference, LibraryItem, Store } from '@/utils/types/config';
+import { redirect } from 'next/navigation';
 
 const uri = getDatabaseUri(ADMIN_DATABASE_NAME);
 
 export async function getDashboard (name: string) {
+  if (uri === '') {
+    redirect('/status');
+  }
+
   let store: Store | undefined;
   let resolved: Dashboard | undefined | null;
   try {
