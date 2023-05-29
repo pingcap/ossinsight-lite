@@ -18,4 +18,4 @@ jobs:
           source_repo: "634750802/ossinsight-lite"
           source_branch: "main"
           destination_branch: "main"
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.SYNC_GITHUB_TOKEN }}
