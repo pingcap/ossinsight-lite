@@ -46,7 +46,7 @@ export function EditingLayer ({ id, draggableProps }: EditLayerProps) {
 
   const styleConfigureAction = useRefCallback(() => {
     startAppStateLoadingTransition(() => {
-      `/widgets/${encodeURIComponent(id)}/styles`;
+      router.push(`/widgets/${encodeURIComponent(id)}/styles`);
     });
   });
 

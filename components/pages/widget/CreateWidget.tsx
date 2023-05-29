@@ -1,15 +1,18 @@
-'use client';
+'use client'
 import { ModalContext } from '@/app/@modal/(all)/context';
+import EditWidgetInstance from '@/components/EditWidgetInstance';
 import { currentDashboard, library } from '@/core/bind';
 import { widgets } from '@/core/bind-client';
-import EditWidgetInstance from '@/components/EditWidgetInstance';
 import RoughBox from '@/packages/ui/components/roughness/shape/box';
 import { readItem } from '@/packages/ui/hooks/bind';
 import { useCallback, useContext, useState } from 'react';
 import colors from 'tailwindcss/colors';
 
-export default function ({ params }: any) {
-  const name = decodeURIComponent(params.name);
+export interface CreateWidgetProps {
+  name: string;
+}
+
+export default function CreateWidget ({ name }: CreateWidgetProps) {
   const widget = readItem(widgets, name);
   const { closeModal } = useContext(ModalContext);
 

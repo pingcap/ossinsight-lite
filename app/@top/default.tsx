@@ -1,7 +1,7 @@
 'use client';
+import DashboardMenu from '@/components/menu/DashboardMenu';
 import { startAppStateLoadingTransition } from '@/core/bind';
 import { widgets } from '@/core/bind-client';
-import DashboardMenu from '@/components/menu/DashboardMenu';
 import { ResolvedWidgetModule } from '@/core/widgets-manifest';
 import { MenuItem } from '@/packages/ui/components/menu';
 import { useCollectionValues } from '@/packages/ui/hooks/bind';
