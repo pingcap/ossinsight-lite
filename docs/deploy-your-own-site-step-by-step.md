@@ -43,7 +43,7 @@
     4. Set `DATABASE_URL` to "**mysql2**://`user`:`password`@`host`:4000".
        Example: `mysql2://xxxxx.root:yyyyy@zzzzzprod.aws.tidbcloud.com:4000`.
 
-    > See [GitHub Secrets](#github-secrets) for more details about what secrets we will use.
+  > See [GitHub Secrets](#github-secrets) for more details about what secrets we will use.
 
 - Make sure you enable GitHub Action for this forked repo.
 
@@ -60,23 +60,62 @@
 ### Deploy to vercel
 
 - Click `Add New...` / `Project` on the right top corner of the [Vercel dashboard page](https://vercel.com/dashboard).
-  
-- ![add-new-project.png](images/add-new-project.png)
+
+  ![add-new-project.png](images/add-new-project.png)
+
+- Select your repo and click `Deploy`. Wait about 2 minutes and you will see:
+
+  ![vercel-deploy.png](images/vercel-deploy.png)
+
+  Click `Add domain` at right side and assign a domain you want. (xxxx.vercel.app).
+
+- Setup TiDB Cloud Integration to connect Vercel project to TiDB Cloud
+
+    1. Click `Integrations` / `Browse Marketplace` and search `tidb`.
+
+    2. Click `TiDB Cloud` and `Add Integration`.
+    3. Click `Configure` and `Add Link` in TiDB Cloud page, select your repo and the cluster you've created before.
+       Click `Add link` again then you will see the Database is linked to Vercel.
+    4. Go to Vercel project `Deployment` tab and redeploy your project.
+
+  ![vercel-settings.png](images/vercel-settings.png)
+  ![vercel-integration-tidb-add.png](images/vercel-integration-tidb-add.png)
+  ![vercel-integration-tidb-configure.png](images/vercel-integration-tidb-configure.png)
+  ![vercel-integration-tidb-add-link.png](images/vercel-integration-tidb-add-link.png)
+  ![vercel-redeploy.png](images/vercel-redeploy.png)
 
 ## Advanced Usage
+
+> TODO
+
+### Tracking repos
+
+> TODO
+>
+> Add initial tracking repos via secret
+>
+> Add via admin page
 
 ### Private data collecting
 
 > TODO
-> Setup ACCESS_TOKEN
+>
+> Setup ACCESS_TOKEN in GitHub reposition
+>
+> Setup JWT_SECRET in Vercel to protect private data
 
 ### Enable SQL cache
 
 > TODO
+> 
 > Setup Vercel KV
 
 ## Appendix
 
 ### GitHub Secrets
 
+> TODO
+
 ### Vercel Secrets
+
+> TODO
