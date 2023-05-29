@@ -2,7 +2,6 @@
 
 Deploy a ***FREE*** online personal and customizable GitHub dashboard.
 
-
 ## Requirements
 
 - **[GitHub](https://github.com.)** account for fork and run your own data pipeline.
@@ -40,13 +39,3 @@ TODO
 TODO
 
 > Setup Vercel KV
-
-## Appendix
-
-### GitHub Secrets
-
-TODO
-
-### Vercel Secrets
-
-TODO

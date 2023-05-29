@@ -12,8 +12,8 @@ Click [here(TODO: CHANGE_OWNER_TO_pingcap)](http://github.com/634750802/ossinsig
 ## Setup GitHub Action secrets
 
 > Several environment variables is used to run data pipeline properly.
-> 
-> See [TODO: GitHub Secrets]() for more details about what pipeline will use.
+>
+> See [GitHub Secrets](./env.md#github) for more details about what pipeline will use.
 
 - Goto `Settings` / `Secrets and variables` / `Actions` page of your forked repository.
 - Click `New repository secret` button at right top of the page
