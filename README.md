@@ -1,6 +1,7 @@
 # OSSInsight lite
 
-> 🚧🚧🚧 This project is still in very early version, see #1 for roadmap.
+> 🚧🚧🚧 This project is still in very early version, see [roadmap](https://github.com/634750802/ossinsight-lite/issues/1).
+> 
 > Features might be changed before stable release without notification.
 > Suggestions and discussions are welcome.
 
