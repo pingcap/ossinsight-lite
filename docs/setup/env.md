@@ -5,7 +5,7 @@
 | Name                       | Required | Description                                                                                  |
 |----------------------------|----------|----------------------------------------------------------------------------------------------|
 | `DATABASE_URL`             | YES      | Used to connect to TiDB Cluster and manage collected data.                                   |
-| `USER_LOGIN`               | YES      | Determine which user to collect                                                              |
+| `USER_LOGIN`               | NO       | Determine which user to collect. Default to the repository owner.                            |
 | `GITHUB_TOKEN`             | NO       | GitHub personal token, set an authorized token if you want to fetch private repo activities. |
 | `GITHUB_PERSONAL_DATABASE` | NO       | The database name for personal data. Default to `github_personal`.                           |
 | `GITHUB_REPO_DATABASE`     | NO       | The database name for tracking repos. Default to `github_repos`                              |

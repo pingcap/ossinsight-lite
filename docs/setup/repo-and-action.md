@@ -17,7 +17,6 @@ Click [here(TODO: CHANGE_OWNER_TO_pingcap)](http://github.com/634750802/ossinsig
 
 - Goto `Settings` / `Secrets and variables` / `Actions` page of your forked repository.
 - Click `New repository secret` button at right top of the page
-- Set `USER_LOGIN` to your GitHub login
 - Set `DATABASE_URL` to "**mysql2**://`user`:`password`@`host`:4000".
   Example: `mysql2://xxxxx.root:yyyyy@zzzzzprod.aws.tidbcloud.com:4000`.
 
