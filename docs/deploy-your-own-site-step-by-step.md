@@ -43,7 +43,7 @@
     4. Set `DATABASE_URL` to "**mysql2**://`user`:`password`@`host`:4000".
        Example: `mysql2://xxxxx.root:yyyyy@zzzzzprod.aws.tidbcloud.com:4000`.
 
-      > See [GitHub Secrets](#github-secrets) for more details about what secrets we will use.
+    > See [GitHub Secrets](#github-secrets) for more details about what secrets we will use.
 
 - Make sure you enable GitHub Action for this forked repo.
 
