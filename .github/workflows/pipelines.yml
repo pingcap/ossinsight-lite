@@ -28,4 +28,4 @@ jobs:
         env:
           ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}/${{ secrets.GITHUB_PERSONAL_DATABASE || 'github_personal' }}
-          USER_LOGIN: ${{ secrets.USER_LOGIN }}
+          USER_LOGIN: ${{ secrets.USER_LOGIN || github.repository_owner }}
