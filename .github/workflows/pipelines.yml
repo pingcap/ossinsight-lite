@@ -13,10 +13,10 @@ jobs:
     steps:
       - name: main
         uses: hooopo/repo-track-pipeline@main
-        env:
-          ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}/${{ secrets.GITHUB_REPO_DATABASE || 'github_repos' }}
-          REPO_FULL_NAME: ${{ secrets.REPO_FULL_NAME }}
+        with:
+          access-token: ${{ secrets.GITHUB_TOKEN }}
+          database-url: ${{ secrets.DATABASE_URL }}/${{ secrets.GITHUB_REPO_DATABASE || 'github_repos' }}
+          repo-full-name: ${{ secrets.REPO_FULL_NAME }}
 
   github_personal_pipeline:
     name: GitHub Personal Pipeline
@@ -25,7 +25,7 @@ jobs:
     steps:
       - name: main
         uses: hooopo/oh-my-github-pipeline@main
-        env:
-          ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}/${{ secrets.GITHUB_PERSONAL_DATABASE || 'github_personal' }}
-          USER_LOGIN: ${{ secrets.USER_LOGIN || github.repository_owner }}
+        with:
+          access-token: ${{ secrets.GITHUB_TOKEN }}
+          database-url: ${{ secrets.DATABASE_URL }}/${{ secrets.GITHUB_PERSONAL_DATABASE || 'github_personal' }}
+          user-login: ${{ secrets.USER_LOGIN || github.repository_owner }}
