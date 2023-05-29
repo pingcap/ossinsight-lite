@@ -31,6 +31,4 @@ Deploy a ***FREE*** online personal and customizable GitHub dashboard.
 
 ### Get automatic updated
 
-Create a GitHub action secret `SYNC_GITHUB_TOKEN`, push permission is required.
-
 Enable workflow [Sync upstream](.github/workflows/repo-sync.yml) to automatically sync upstream updates. (force push)
