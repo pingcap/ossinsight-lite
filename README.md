@@ -1,7 +1,7 @@
 # OSSInsight lite
 
 > 🚧🚧🚧 This project is still in very early version, see [roadmap](https://github.com/634750802/ossinsight-lite/issues/1).
-> 
+>
 > Features might be changed before stable release without notification.
 > Suggestions and discussions are welcome.
 
@@ -26,3 +26,9 @@ Deploy a ***FREE*** online personal and customizable GitHub dashboard.
 - [Add tracking repos](docs/setup/tracking-repos.md)
 - TODO: Private data collecting
 - TODO: Enable SQL cache
+
+## Misc
+
+### Get automatic updated
+
+Enable workflow [repo-sync](.github/workflows/repo-sync.yml) to auto sync upstream changes. (force push)
