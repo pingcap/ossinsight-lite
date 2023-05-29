@@ -1,5 +1,9 @@
 # OSSInsight lite
 
+> 🚧🚧🚧 This project is still in very early version, see #1 for roadmap.
+> Features might be changed before stable release without notification.
+> Suggestions and discussions are welcome.
+
 Deploy a ***FREE*** online personal and customizable GitHub dashboard.
 
 ## Requirements
@@ -18,24 +22,6 @@ Deploy a ***FREE*** online personal and customizable GitHub dashboard.
 
 ## Advanced Usage
 
-### Tracking repos
-
-TODO
-
-> Add initial tracking repos via secret
->
-> Add via admin page
-
-### Private data collecting
-
-TODO
-
-> Setup ACCESS_TOKEN in GitHub reposition
->
-> Setup JWT_SECRET in Vercel to protect private data
-
-### Enable SQL cache
-
-TODO
-
-> Setup Vercel KV
+- [Add tracking repos](docs/setup/tracking-repos.md)
+- TODO: Private data collecting
+- TODO: Enable SQL cache
