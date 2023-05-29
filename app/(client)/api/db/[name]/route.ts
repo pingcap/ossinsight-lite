@@ -11,7 +11,7 @@ const db = config.db;
 export async function POST (req: NextRequest, { params: { name } }: any) {
   let readonly = req.headers.get('X-Readonly') === 'true';
 
-  if (!process.env.TIDB_USER || !process.env.TIDB_HOST || !process.env.TIDB_HOST || !process.env.TIDB_PORT) {
+  if (!process.env.TIDB_USER || !process.env.TIDB_HOST || !process.env.TIDB_PASSWORD || !process.env.TIDB_PORT) {
     return NextResponse.json({
       message: 'TiDB integration was not configured. Check your vercel project config.',
     }, { status: 500 });

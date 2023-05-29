@@ -105,7 +105,7 @@ export function getDatabaseUri (database?: string, readonly: boolean = false, us
     console.error('TiDB integration was not configured. Check your vercel project config.');
     return '';
   }
-  const username = readonly ? process.env.TIDB_USER.replace(/\.root$/, '.osslreadonly') : process.env.TIDB_USER;
+  const username = readonly ? process.env.TIDB_USER.replace(/\.[^.]*$/, '.osslreadonly') : process.env.TIDB_USER;
   const password = readonly ? process.env.TIDB_PASSWORD + '.osslreadonly' : process.env.TIDB_PASSWORD;
   if (database) {
     return `mysql://${username}:${password}@${process.env.TIDB_HOST}:${process.env.TIDB_PORT}/${use || database}?timezone=Z&ssl={"rejectUnauthorized":true,"minVersion":"TLSv1.2"}`;
