@@ -4,7 +4,7 @@ import widgetsManifest, { ResolvedWidgetModule } from '@/core/widgets-manifest';
 import { collections } from '@/packages/ui/hooks/bind';
 import { ReactiveValueSubject } from '@/packages/ui/hooks/bind/ReactiveValueSubject';
 import { createElement, forwardRef } from 'react';
-import { createErrorWidget, resolveWidgetComponents } from './dynamic-widget';
+import { resolveWidgetComponents } from './dynamic-widget';
 
 if (typeof window !== 'undefined') {
   if (!window.requestIdleCallback) {
@@ -35,22 +35,13 @@ widgets.fallback = ((name: string) => new ReactiveValueSubject({
 
 for (let [name, module] of Object.entries(widgetsManifest)) {
   const { Widget, ConfigureComponent, NewButton, category, displayName, ...rest } = module;
-  try {
-    widgets.add(name, {
-      name,
-      ...rest,
-      ...resolveWidgetComponents(module),
-      category: category ?? 'Common',
-      displayName: displayName ?? name,
-    });
-  } catch (e: any) {
-    widgets.add(name, {
-      name,
-      Widget: createErrorWidget(e),
-      category: 'Unknown',
-      displayName: name,
-    });
-  }
+  widgets.add(name, {
+    name,
+    ...rest,
+    ...resolveWidgetComponents(module),
+    category: category ?? 'Common',
+    displayName: displayName ?? name,
+  });
 }
 
 for (let [name, render] of Object.entries(internals)) {
