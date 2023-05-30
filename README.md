@@ -34,6 +34,9 @@ start a [Discussion](https://github.com/634750802/ossinsight-lite/discussions/ne
 
 ## Troubleshooting
 
+If your site's home page thrown a 'client side error', Visit `/status` page to see if your database was correctly
+configured.
+
 TODO
 
 ## Misc
