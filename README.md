@@ -27,6 +27,15 @@ Deploy a ***FREE*** online personal and customizable GitHub dashboard.
 - [Private repositories](docs/setup/private-repositories.md)
 - TODO: Enable SQL cache
 
+## Feedback
+
+Any feedback is welcome! Please create an [Issue](https://github.com/634750802/ossinsight-lite/issues/new/choose) or
+start a [Discussion](https://github.com/634750802/ossinsight-lite/discussions/new/choose).
+
+## Troubleshooting
+
+TODO
+
 ## Misc
 
 ### Get automatic updated
