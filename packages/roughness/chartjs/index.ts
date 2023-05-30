@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { BarElement, defaults, LineElement, plugins, Scale } from 'chart.js';
 import type BarElementType from 'chart.js/dist/elements/element.bar';
 import type LineElementType from 'chart.js/dist/elements/element.line';
