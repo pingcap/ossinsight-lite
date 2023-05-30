@@ -17,6 +17,7 @@ ChartJs.register(
 );
 
 export async function GET (req: NextRequest, { params: { id } }: any) {
+  let readonly = req.headers.get('X-Readonly') === 'true';
   id = decodeURIComponent(id);
 
   let ts = Date.now();
@@ -50,7 +51,7 @@ export async function GET (req: NextRequest, { params: { id } }: any) {
     }, { status: 400 });
   }
 
-  const [data] = await withConnection(getDatabaseUri(process.env[db.env] ?? db.database), async (conn) => {
+  const [data] = await withConnection(getDatabaseUri(process.env[db.env] ?? db.database, readonly), async (conn) => {
     return conn.query<any[]>(props.sql);
   });
 
