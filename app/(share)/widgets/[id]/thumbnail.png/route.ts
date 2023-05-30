@@ -76,3 +76,5 @@ export async function GET (req: NextRequest, { params: { id } }: any) {
     },
   });
 }
+
+export const dynamic = 'force-dynamic';
