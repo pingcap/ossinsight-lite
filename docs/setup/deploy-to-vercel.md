@@ -14,7 +14,7 @@ Click `Add domain` at right side and assign a domain you want. (xxxx.vercel.app)
 
 ## Link TiDB Serverless to Vercel project
 
-- Click `Integrations` / `Browse Marketplace`.
+- Go back to Vercel homepage, click `Integrations` / `Browse Marketplace`.
 
   ![vercel-integrations-browse-marketplace.png](images/vercel-integrations-browse-marketplace.png)
 
