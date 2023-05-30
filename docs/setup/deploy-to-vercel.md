@@ -1,19 +1,16 @@
 # Deploy to Vercel
 
-- [Deploy your project and assign a domain](#deploy-your-project-and-assign-a-domain)
-- [Link TiDB Serverless to Vercel project](#link-tidb-serverless-to-vercel-project)
-
 ## Deploy your project and assign a domain
 
-Click `Add New...` / `Project` on the right top corner of the [Vercel dashboard page](https://vercel.com/dashboard).
+1. Click `Add New...` / `Project` on the right top corner of the [Vercel dashboard page](https://vercel.com/dashboard).
 
-![add-new-project.png](images/add-new-project.png)
+   ![add-new-project.png](images/add-new-project.png)
 
-Select your repo and click `Deploy`. Wait about 2 minutes and you will see:
+2. Select your repo and click `Deploy`. Wait about 2 minutes and you will see:
 
-![vercel-deploy.png](images/vercel-deploy.png)
+   ![vercel-deploy.png](images/vercel-deploy.png)
 
-Click `Add domain` at right side and assign a domain you want. (xxxx.vercel.app).
+3. Click `Add domain` at right side and assign a domain you want. (xxxx.vercel.app).
 
 ## Link TiDB Serverless to Vercel project
 
