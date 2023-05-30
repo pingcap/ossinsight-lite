@@ -6,7 +6,6 @@ import { titlePlugin } from '@/packages/widgets/src/components/visualize/chartjs
 import { VisualizeType } from '@/packages/widgets/src/components/visualize/common';
 import { getDatabaseUri, sql, withConnection } from '@/utils/mysql';
 import '@ossinsight-lite/roughness/chartjs';
-import { Canvas } from 'canvas';
 import { Chart as ChartJs, registerables } from 'chart.js';
 import 'chartjs-adapter-luxon';
 import { notFound } from 'next/navigation';
@@ -51,7 +50,9 @@ export async function GET (req: NextRequest, { params: { id } }: any) {
 
   const { x, y, title } = props.visualize;
 
-  const canvas = new Canvas(800, 418);
+  const CanvasLibrary = await import('canvas');
+
+  const canvas = new CanvasLibrary.Canvas(800, 418);
 
   const chart = new ChartJs(canvas.getContext('2d') as any, {
     data: { datasets: [{ type: 'bar', ...barDataset(data, x, y) }] },
