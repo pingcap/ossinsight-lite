@@ -40,7 +40,7 @@ const loader: LoaderDefinitionFunction = function (content, sourceMap, additiona
     if (data.__error__) {
       return `
         console.error("Prefetch sql failed", ${JSON.stringify(data.__error__)});
-        throw new Error('Failed to execute sql: ' + ${JSON.stringify(data.__error__.message)});
+        export default new Proxy({}, { get() { throw new Error('Failed to execute sql: ' + ${JSON.stringify(data.__error__.message)}) } });
       `;
     } else {
       return `export default ${JSON.stringify(data, undefined, 2)};`;

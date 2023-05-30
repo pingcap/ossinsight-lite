@@ -1,8 +1,10 @@
-import LoadingIndicator from '@ossinsight-lite/ui/components/loading-indicator';
+import { Alert } from '@/components/Alert';
 import { WidgetModule } from '@/core/widgets-manifest';
+import LoadingIndicator from '@ossinsight-lite/ui/components/loading-indicator';
+import clsx from 'clsx';
 import { DynamicOptionsLoadingProps } from 'next/dist/shared/lib/dynamic';
 import dynamic, { Loader } from 'next/dynamic';
-import { FC, forwardRef } from 'react';
+import { ComponentType, FC, forwardRef, HTMLAttributes } from 'react';
 
 export function resolveWidgetComponents (module: WidgetModule) {
   const Widget = dynamicForwardRef(module.Widget, WidgetLoading);
@@ -13,7 +15,17 @@ export function resolveWidgetComponents (module: WidgetModule) {
 }
 
 function dynamicForwardRef<P> (loader: Loader<P>, LoadingComponent: FC<DynamicOptionsLoadingProps>) {
-  const DynamicComponent = dynamic(loader, {
+  const DynamicComponent = dynamic(async () => {
+    try {
+      if (loader instanceof Promise) {
+        return await loader;
+      } else {
+        return await loader();
+      }
+    } catch (e) {
+      return createErrorWidget<P>(e);
+    }
+  }, {
     loading: props => <LoadingComponent {...props} />,
   });
 
@@ -47,4 +59,14 @@ function NewButtonLoading (props: DynamicOptionsLoadingProps) {
       <LoadingIndicator />
     </span>
   );
+}
+
+function createErrorWidget<P> (e: any): ComponentType<P> {
+  return forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>((props, ref) => {
+    return (
+      <div className={clsx(props.className, 'flex items-center justify-center p-2')}>
+        <Alert type="error" title={`Failed to load widget`} message={String(e?.maessage ?? e)} />
+      </div>
+    );
+  }) as any;
 }
