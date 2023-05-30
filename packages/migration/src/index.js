@@ -113,5 +113,5 @@ function parsePlaceholders(sql) {
 }
 
 const defaultEnv = {
-  INITIAL_PASSWORD: hashSync('tidbcloud', 1),
+  INITIAL_PASSWORD: hashSync(process.env.SITE_INITIAL_PASSWORD || 'tidbcloud', 1),
 }

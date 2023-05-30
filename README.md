@@ -24,7 +24,7 @@ Deploy a ***FREE*** online personal and customizable GitHub dashboard.
 ## Advanced Usage
 
 - [Add tracking repos](docs/setup/tracking-repos.md)
-- TODO: Private data collecting
+- [Private repositories](docs/setup/private-repositories.md)
 - TODO: Enable SQL cache
 
 ## Misc
