@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import {createElement, ForwardedRef, forwardRef, Fragment, HTMLProps, RefAttributes, useEffect, useState} from 'react';
-import rehypeParse from 'rehype-parse'
+import remarkParse from 'remark-parse'
+import remarkRehype from "remark-rehype";
 import rehypeReact from 'rehype-react'
 import { unified } from 'unified';
 
@@ -28,7 +29,8 @@ function useMarkdown (markdown) {
 
   useEffect(() => {
     unified()
-      .use(rehypeParse, {fragment: true})
+      .use(remarkParse)
+      .use(remarkRehype, { allowDangerousHtml: true })
       .use(rehypeReact, {createElement, Fragment})
       .process(markdown)
       .then((file) => {
