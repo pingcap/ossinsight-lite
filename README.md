@@ -41,3 +41,13 @@ TODO
 ### Get automatic updated
 
 Enable workflow [Sync upstream](.github/workflows/repo-sync.yml) to automatically sync upstream updates. (force push)
+
+#### Syncing workflows updates
+
+Upstream workflows is not allowed to be synced without providing a GitHub Access Token with `workflows` permission. You
+need to manually sync upstream updates if any workflows changed.
+
+Alternatively, you could set GitHub Action secret `SYNC_GITHUB_TOKEN` to enable auto update workflows.
+
+See https://stackoverflow.com/questions/66643917/refusing-to-allow-a-github-app-to-create-or-update-workflow for more
+details.
