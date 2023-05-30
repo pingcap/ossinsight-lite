@@ -5,6 +5,7 @@ import { legendsPlugin } from '@/packages/widgets/src/components/visualize/chart
 import { titlePlugin } from '@/packages/widgets/src/components/visualize/chartjs/titlePlugin';
 import { VisualizeType } from '@/packages/widgets/src/components/visualize/common';
 import { getDatabaseUri, sql, withConnection } from '@/utils/mysql';
+import { createCanvas } from '@napi-rs/canvas';
 import '@ossinsight-lite/roughness/chartjs';
 import { Chart as ChartJs, registerables } from 'chart.js';
 import 'chartjs-adapter-luxon';
@@ -17,13 +18,18 @@ ChartJs.register(
 
 export async function GET (req: NextRequest, { params: { id } }: any) {
   id = decodeURIComponent(id);
-  console.log(id);
+
+  let ts = Date.now();
+
   const item = await sql.unique<{ props: { sql: string, currentDb: string, visualize: VisualizeType } }>`
       SELECT properties AS props
       FROM library_items
       WHERE id = ${id}
         AND widget_name = 'db/sql'
   `;
+
+  const firstSql = Date.now() - ts;
+  ts = Date.now();
 
   if (!item) {
     notFound();
@@ -48,11 +54,12 @@ export async function GET (req: NextRequest, { params: { id } }: any) {
     return conn.query<any[]>(props.sql);
   });
 
+  const secondSql = Date.now() - ts;
+  ts = Date.now();
+
   const { x, y, title } = props.visualize;
 
-  const CanvasLibrary = await import('canvas');
-
-  const canvas = new CanvasLibrary.Canvas(800, 418);
+  const canvas = createCanvas(800, 418);
 
   const chart = new ChartJs(canvas.getContext('2d') as any, {
     data: { datasets: [{ type: 'bar', ...barDataset(data, x, y) }] },
@@ -71,9 +78,14 @@ export async function GET (req: NextRequest, { params: { id } }: any) {
     },
   });
 
-  return new NextResponse(canvas.toBuffer(), {
+  const buffer = canvas.toBuffer('image/png');
+
+  const render = Date.now() - ts;
+
+  return new NextResponse(buffer, {
     headers: {
       'Content-Type': 'image/png',
+      'X-Performance-Trace': `${firstSql}, ${secondSql}, ${render}`,
     },
   });
 }
