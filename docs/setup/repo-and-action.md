@@ -17,19 +17,33 @@ Click [here(TODO: CHANGE_OWNER_TO_pingcap)](http://github.com/634750802/ossinsig
 
 - Goto `Settings` / `Secrets and variables` / `Actions` page of your forked repository.
 - Click `New repository secret` button at right top of the page
-- Set `DATABASE_URL` to "**mysql2**://`user`:`password`@`host`:4000".
+- Set `DATABASE_URL` to "**mysql2**://`user`:`password`@`host`:4000". The connection was generated
+  in [last step](database.md). Do not add any blank characters.
   Example: `mysql2://xxxxx.root:yyyyy@zzzzzprod.aws.tidbcloud.com:4000`.
+
+  ![github-set-secret.png](images/github-set-secret.png)
 
 ## Enable and run workflow
 
-Make sure you enable GitHub Action for this forked repo.
+Click `Actions` tab of your forked repository, Make sure you enable GitHub Action for this repo.
 
 ![enable-fork-action.png](images/enable-fork-action.png)![]()
 
-Enable `GitHub Data Pipeline` workflow, the workflow will be scheduled in every 2 hours.
+Click `GitHub Data Pipeline` workflow on the left side navigator, click `Enable workflow` if the warning alert exists.
+Once the workflow is enabled, it will be scheduled in every 2 hours.
 
+![github-actions-side.png](images/github-actions-side.png)
 ![TODO: make new screenshot](images/enable-workflow.png)
 
 For the first time, you can manually run workflow. The first run will take a while based on your activities amount.
 
 ![TODO: make new screenshot](images/run-workflow.png)
+
+Next step doesn't require the workflow finished, you could carry on while the workflow is running. If any error occurs,
+see [troubleshooting section](../../README.md#troubleshooting) for solutions.
+
+---
+
+Last step: [1. Setup TiDB Serverless cluster](database.md)
+
+Next step: [3. Deploy to Vercel](deploy-to-vercel.md)

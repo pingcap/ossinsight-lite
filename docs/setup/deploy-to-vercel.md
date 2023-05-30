@@ -24,13 +24,20 @@ Click `Add domain` at right side and assign a domain you want. (xxxx.vercel.app)
 
   ![vercel-integration-tidb-add.png](images/vercel-integration-tidb-add.png)
 
+  ![vercel-integration-add.png](images/vercel-integration-add.png)
 
-- Click `Configure` and `Add Link` in TiDB Cloud page, select your repo and the cluster you've created before.
+  Then you will see the TiDB Cloud integration page
 
   ![vercel-integration-tidb-configure.png](images/vercel-integration-tidb-configure.png)
 
+- Click `Manage Access` button, make sure your repository is accessible.
 
-- Click `Add link` again then you will see the Database is linked to Vercel.
+  ![vercel-integration-manage-access.png](images/vercel-integration-manage-access.png)
+
+- Click `Configure` in TiDB Cloud page, and `Add Link` button on the jumped page select your repo and the cluster you've
+  created before.
+
+  Click `Add link` again then you will see the Database is linked to Vercel.
 
   ![vercel-integration-tidb-add-link.png](images/vercel-integration-tidb-add-link.png)
 
@@ -39,3 +46,6 @@ Click `Add domain` at right side and assign a domain you want. (xxxx.vercel.app)
 
   ![vercel-redeploy.png](images/vercel-redeploy.png)
 
+---
+
+Last step: [2. Setup GitHub Action](repo-and-action.md) 
