@@ -10,7 +10,7 @@ Deploy a ***FREE*** online personal and customizable GitHub dashboard.
 ## Requirements
 
 - **[GitHub](https://github.com.)** account for fork and run your own data pipeline.
-- **[TiDB Cloud](https://tidbcloud.com/)** account for store your personal data.
+- **[TiDB Cloud](https://tidbcloud.com/?utm_source=github&utm_medium=ossinsight_lite)** account for store your personal data.
 - **[Vercel](https://vercel.com/)** account for deploy your dashboards.
 
 > You can sign in to TiDB Cloud and Vercel with GitHub account.
