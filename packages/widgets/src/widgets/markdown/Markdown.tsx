@@ -1,10 +1,7 @@
 import clsx from 'clsx';
-import { ForwardedRef, forwardRef, HTMLProps, RefAttributes, useEffect, useState } from 'react';
-import rehypeRaw from 'rehype-raw';
-import rehypeSanitize from 'rehype-sanitize';
-import rehypeStringify from 'rehype-stringify';
-import remarkParse from 'remark-parse';
-import remarkRehype from 'remark-rehype';
+import {createElement, ForwardedRef, forwardRef, Fragment, HTMLProps, RefAttributes, useEffect, useState} from 'react';
+import rehypeParse from 'rehype-parse'
+import rehypeReact from 'rehype-react'
 import { unified } from 'unified';
 
 import './github-markdown.css';
@@ -18,29 +15,28 @@ export interface IProps extends HTMLProps<HTMLDivElement> {
 
 function Markdown (props: IProps, _ref: ForwardedRef<HTMLDivElement>) {
   const { markdown, className, forwardedRef, ...rest } = props;
-  const html = useMarkdown(markdown);
+  const jsx = useMarkdown(markdown);
   return (
-    <div ref={forwardedRef} className={clsx(className, 'markdown-body p-2')} dangerouslySetInnerHTML={{ __html: html }} {...rest} />
+    <div ref={forwardedRef} className={clsx(className, 'markdown-body p-2')} {...rest}>
+      {jsx}
+    </div>
   );
 }
 
 function useMarkdown (markdown) {
-  const [html, setHtml] = useState('');
+  const [Content, setContent] = useState(<></>)
 
   useEffect(() => {
-    const file = unified()
-      .use(remarkParse)
-      .use(remarkRehype, { allowDangerousHtml: true })
-      .use(rehypeRaw)
-      .use(rehypeSanitize)
-      .use(rehypeStringify)
+    unified()
+      .use(rehypeParse, {fragment: true})
+      .use(rehypeReact, {createElement, Fragment})
       .process(markdown)
-      .then((value) => {
-        setHtml(String(value));
-      });
-  }, [markdown]);
+      .then((file) => {
+        setContent(file.result)
+      })
+  }, [markdown])
 
-  return html;
+  return Content
 }
 
 export default forwardRef(Markdown);
