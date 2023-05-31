@@ -12,10 +12,10 @@ export interface WidgetProps extends HTMLAttributes<HTMLDivElement> {
 
 const Widget = forwardRef<HTMLDivElement, WidgetProps>(function Widget ({ href, forwardedRef, className, ...props }, ref) {
   const markdown = useGetText(href);
-  const nodes = useMarkdownReact(markdown);
+  const nodes = useMarkdownReact(markdown, href);
 
   return (
-    <div ref={forwardedRef} className={clsx(className, 'markdown-body p-2')} {...props}>
+    <div ref={forwardedRef} className={clsx(className, 'markdown-body overflow-y-auto overflow-x-hidden p-2')} {...props}>
       {nodes}
     </div>
   );
