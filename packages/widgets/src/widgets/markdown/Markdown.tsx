@@ -1,3 +1,5 @@
+'use client';
+
 import clsx from 'clsx';
 import {createElement, ForwardedRef, forwardRef, Fragment, HTMLProps, RefAttributes, useEffect, useState} from 'react';
 import remarkParse from 'remark-parse'

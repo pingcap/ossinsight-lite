@@ -19,8 +19,14 @@ type WidgetModuleMeta<P = any> = {
   /** @deprecated */
   widgetListItemPropsOverwrite?: Partial<P>,
 
+  createPngThumbnail?: () => Promise<{ default: (server: ServerContext, props: P, ctx: CanvasRenderingContext2D, width: number, height: number) => void | Promise<void> }>,
+
   category?: string
   displayName?: string
+}
+
+export type ServerContext = {
+  runSql (db: string, sql: string): Promise<any[]>;
 }
 
 type WidgetModule<P = any> = {

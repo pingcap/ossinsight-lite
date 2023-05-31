@@ -1,8 +1,5 @@
 import config from '@/.osswrc.json';
-import { getCartesianScaleOption } from '@/packages/widgets/src/components/visualize/chartjs/getCartesianScaleOption';
-import { barDataset } from '@/packages/widgets/src/components/visualize/chartjs/getXYData';
-import { legendsPlugin } from '@/packages/widgets/src/components/visualize/chartjs/legendsPlugin';
-import { titlePlugin } from '@/packages/widgets/src/components/visualize/chartjs/titlePlugin';
+import widgetsManifest from '@/core/widgets-manifest';
 import { VisualizeType } from '@/packages/widgets/src/components/visualize/common';
 import { getDatabaseUri, sql, withConnection } from '@/utils/mysql';
 import { createCanvas } from '@napi-rs/canvas';
@@ -20,73 +17,45 @@ export async function GET (req: NextRequest, { params: { id } }: any) {
   let readonly = req.headers.get('X-Readonly') === 'true';
   id = decodeURIComponent(id);
 
-  let ts = Date.now();
-
-  const item = await sql.unique<{ props: { sql: string, currentDb: string, visualize: VisualizeType } }>`
-      SELECT properties AS props
+  const item = await sql.unique<{ name: string, props: { sql: string, currentDb: string, visualize: VisualizeType } }>`
+      SELECT widget_name AS name,
+             properties  AS props
       FROM library_items
       WHERE id = ${id}
-        AND widget_name = 'db/sql'
   `;
-
-  const firstSql = Date.now() - ts;
-  ts = Date.now();
-
   if (!item) {
     notFound();
   }
-  const { props } = item;
+  const { name, props } = item;
 
-  if (props.visualize.type !== 'chart:bar') {
-    return NextResponse.json({
-      message: `${props.visualize.type} not support yet`,
-    }, { status: 400 });
+  const widget = widgetsManifest[name];
+  if (!widget) {
+    notFound();
   }
 
-  const db = config.db.find(db => db.name === props.currentDb);
-
-  if (!db) {
-    return NextResponse.json({
-      message: 'Bad currentDb',
-    }, { status: 400 });
+  if (!widget.createPngThumbnail) {
+    notFound();
   }
 
-  const [data] = await withConnection(getDatabaseUri(process.env[db.env] ?? db.database, readonly), async (conn) => {
-    return conn.query<any[]>(props.sql);
-  });
-
-  const secondSql = Date.now() - ts;
-  ts = Date.now();
-
-  const { x, y, title } = props.visualize;
+  const createPngThumbnail = (await widget.createPngThumbnail()).default;
 
   const canvas = createCanvas(800, 418);
+  await createPngThumbnail({
+    async runSql (dbName: string, sql: string) {
+      const db = config.db.find(db => db.name = dbName);
+      if (!db) {
+        throw new Error(`Unknown datasource ${dbName}`);
+      }
+      const uri = getDatabaseUri(process.env[db.env] || db.database);
 
-  const chart = new ChartJs(canvas.getContext('2d') as any, {
-    data: { datasets: [{ type: 'bar', ...barDataset(data, x, y) }] },
-    options: {
-      animation: false,
-      maintainAspectRatio: false,
-      indexAxis: (['x', 'y'] as const)[[x, y].findIndex(axis => axis.type !== 'value') ?? 0] ?? 'x',
-      scales: {
-        x: getCartesianScaleOption(data, x, 'x'),
-        y: getCartesianScaleOption(data, y, 'y'),
-      },
-      plugins: {
-        title: titlePlugin(title),
-        legend: legendsPlugin(),
-      },
+      const [rows] = await withConnection(uri, conn => conn.execute(sql));
+      return rows as any[];
     },
-  });
+  }, props, canvas.getContext('2d') as any, 800, 418);
 
-  const buffer = canvas.toBuffer('image/png');
-
-  const render = Date.now() - ts;
-
-  return new NextResponse(buffer, {
+  return new NextResponse(canvas.toBuffer('image/png'), {
     headers: {
       'Content-Type': 'image/png',
-      'X-Performance-Trace': `${firstSql}, ${secondSql}, ${render}`,
     },
   });
 }

@@ -1,3 +1,5 @@
+'use client';
+
 import clsx from 'clsx';
 import { Highlight, themes } from 'prism-react-renderer';
 import { forwardRef } from 'react';

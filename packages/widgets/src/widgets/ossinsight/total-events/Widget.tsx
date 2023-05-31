@@ -1,3 +1,5 @@
+'use client';
+
 import WidgetContext from '@ossinsight-lite/ui/context/widget';
 import clsx from 'clsx';
 import { ForwardedRef, forwardRef, HTMLProps, RefAttributes, useContext, useEffect } from 'react';

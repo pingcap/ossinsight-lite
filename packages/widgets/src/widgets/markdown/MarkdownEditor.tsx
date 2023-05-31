@@ -1,3 +1,5 @@
+'use client';
+
 import WidgetContext from '@ossinsight-lite/ui/context/widget';
 import useRefCallback from '@ossinsight-lite/ui/hooks/ref-callback';
 import { ForwardedRef, forwardRef, useContext } from 'react';

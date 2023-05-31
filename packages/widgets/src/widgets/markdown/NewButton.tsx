@@ -1,3 +1,5 @@
+'use client';
+
 import clsx from 'clsx';
 import { ButtonHTMLAttributes, RefAttributes } from 'react';
 import MdIcon from './md.svg';
