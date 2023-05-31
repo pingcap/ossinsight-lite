@@ -1,50 +1,80 @@
 # Deploy to Vercel
 
-## Deploy your project and assign a domain
+## Create a Vercel project for your forked repository
 
-1. Click `Add New...` / `Project` on the right top corner of the [Vercel dashboard page](https://vercel.com/dashboard).
+1. Click **Add New...** button and select the **Project** option on the right top corner of the [Vercel dashboard page](https://vercel.com/dashboard).
 
-   ![add-new-project.png](images/add-new-project.png)
+   <div align="center">
+      <img src="images/vercel-new-project.png" width="400px" alt="Add new project on Vercel"/>
+      <p><i>Add new project on Vercel</i></p>
+   </div>
 
-2. Select your repo and click `Deploy`. Wait about 2 minutes and you will see:
+2. Select your forked `ossinsight-lite` repository and click the **Import** button. 
 
-   ![vercel-deploy.png](images/vercel-deploy.png)
+   <div align="center">
+      <img src="images/vercel-new-import-git-repository.png" width="650px" alt="Import the forked repository to Vercel project"/>
+      <p><i>Import the forked repository to Vercel project</i></p>
+   </div>
 
-3. Click `Add domain` at right side and assign a domain you want. (xxxx.vercel.app).
+3. Click the **Deploy** button to deploy the forked `ossinsight-lite` to Vercel (It will take about two to three minutes).
 
-## Link TiDB Serverless to Vercel project
+   <div align="center">
+      <img src="images/vercel-new-configure-project.png" width="650px" alt="Configure Vercel project"/>
+      <p><i>Configure Vercel project</i></p>
+   </div>
 
-1. Go back to Vercel homepage, click `Integrations` / `Browse Marketplace`.
+   <div align="center">
+      <img src="images/vercel-deploy-success.png" width="650px" alt="Deploy Vercel project successfully"/>
+      <p><i>Deploy Vercel project successfully</i></p>
+   </div>
 
-   ![vercel-integrations-browse-marketplace.png](images/vercel-integrations-browse-marketplace.png)
+4. Click **Add domain** at right side and assign a domain you like, such as `ossinsight-lite-five.vercel.app`.
 
-2. Search `tidb`, click `TiDB Cloud` then click `Add Integration`.
+## Integrate TiDB Serverless into Vercel project
 
-   ![vercel-integration-tidb.png](images/vercel-integration-tidb.png)
+1. Go to [TiDB Cloud Integration](https://vercel.com/integrations/tidb-cloud) page on Vercel, and click the **Add Integration** button.
 
-   ![vercel-integration-tidb-add.png](images/vercel-integration-tidb-add.png)
+2. Select the Vercel Account to add TiDB Cloud Integration to, and then click **Continue** button.
 
-   ![vercel-integration-add.png](images/vercel-integration-add.png)
+   <div align="center">
+      <img src="images/vercel-tidb-integration-add-to-account.png" width="700px" alt="Add TiDB integration to specify Vercel account"/>
+      <p><i>Add TiDB Cloud integration to specify Vercel account</i></p>
+   </div>
 
-   Select your deploying account, then you will see the TiDB Cloud integration page
+3. Select the Vercel project you've created before, and then click **Continue** button.
 
-   ![vercel-integration-tidb-configure.png](images/vercel-integration-tidb-configure.png)
+   <div align="center">
+      <img src="images/vercel-tidb-integration-add-to-project.png" width="400px" alt="Add TiDB Cloud integration to specify Vercel project"/>
+      <p><i>Add TiDB Cloud integration to specify Vercel project</i></p>
+   </div>
 
-    1. Click `Manage Access` button, make sure your repository is accessible to Vercel.
+   After clicking continue, the browser will open a new window, which is the integration page of TiDB Cloud.
 
-       ![vercel-integration-manage-access.png](images/vercel-integration-manage-access.png)
+4. Confirm the Vercel project and the TiDB Serverless cluster will be linked.
 
-    2. Click `Configure` in previous page, and `Add Link` button on the jumped page select your repo and the cluster
-       you've created before.
+   If there is no problem, click the **Next** button to continue.
 
-       Click `Add link` again then you will see the Database is linked to Vercel.
+   <div align="center">
+      <img src="images/vercel-tidb-integration-new.png" width="450px" alt="New TiDB Cloud integration page"/>
+      <p><i>New TiDB Cloud integration page</i></p>
+   </div>
 
-       ![vercel-integration-tidb-add-link.png](images/vercel-integration-tidb-add-link.png)
+   If there is no problem, click the **Add Integration and Return to Vercel** button to finish the integration.
 
-3. Go to Vercel project `Deployment` tab and redeploy your project.
+   <div align="center">
+      <img src="images/vercel-tidb-integration-config.png" width="450px" alt="Configure TiDB Cloud integration page"/>
+      <p><i>Configure TiDB Cloud integration page</i></p>
+   </div>
 
-   ![vercel-redeploy.png](images/vercel-redeploy.png)
+   > The TiDB Cloud integration with Vercel will automatically pass the database cluster connection information to the Vercel project through environment variables.
+
+5. Go to **Deployments** tab of the Vercel project and click the **Redeploy** button to redeploy your project, so that the environment variables can take effect.
+
+   <div align="center">
+      <img src="images/vercel-redeploy.png" width="750px" alt="Redeploy Vercel project"/>
+      <p><i>Redeploy Vercel project</i></p>
+   </div>
 
 ---
 
-Last step: [2. Setup GitHub Action](repo-and-action.md) 
+Previous step: [2. Setup GitHub Action](repo-and-action.md) 

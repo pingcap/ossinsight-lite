@@ -16,9 +16,9 @@ Demo: https://ossinsight-lite.vercel.app/
 
 ## How to deploy your own (10mins)
 
-1. [Setup a TiDB Serverless cluster](docs/setup/database.md)
-1. [Fork repository and setup GitHub Action to fetch data](docs/setup/repo-and-action.md)
-1. [Deploy to Vercel to get your dashboards!](docs/setup/deploy-to-vercel.md)
+1. [Create a TiDB Serverless cluster](docs/setup/database.md)
+2. [Fork repository and setup GitHub Action to fetch data](docs/setup/repo-and-action.md)
+3. [Deploy to Vercel to get your dashboards!](docs/setup/deploy-to-vercel.md)
 
 ## Advanced Usage (Optional)
 
