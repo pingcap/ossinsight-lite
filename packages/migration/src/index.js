@@ -8,9 +8,6 @@ require('dotenv').config({
   path: path.resolve(__dirname, '../../../.env')
 });
 
-process.env.READONLY_USERNAME = process.env.TIDB_USER?.replace(/\.[^.]*$/, '.osslreadonly')
-process.env.READONLY_PASSWORD = process.env.TIDB_PASSWORD + '.osslreadonly'
-
 const URI = `mysql://${process.env.TIDB_USER}:${process.env.TIDB_PASSWORD}@${process.env.TIDB_HOST}:${process.env.TIDB_PORT}?timezone=Z&ssl={"rejectUnauthorized":true,"minVersion":"TLSv1.2"}`;
 /**
  * @type {import('mysql2/promise').Connection}
@@ -30,7 +27,7 @@ async function main() {
 
   try {
     await conn.execute('use `ossinsight_lite_admin`');
-    const [rows] = await conn.execute('SELECT name FROM _migrations ORDER BY migrated_at DESC LIMIT 1');
+    const [rows] = await conn.execute('SELECT name FROM _migrations ORDER BY migrated_at DESC, name DESC LIMIT 1');
     if (rows.length !== 0) {
       lastName = rows[0].name
     }
@@ -58,10 +55,15 @@ async function main() {
     }
 
     const content = fs.readFileSync(fn, {encoding: 'utf-8'});
+    if (content.startsWith('-- ignore')) {
+      console.log('ignored:', fn);
+      continue;
+    }
+
     const commands = content.split(';').map(c => c.trim()).filter(Boolean);
 
     for (const command of commands) {
-      console.log('\texec: ', command.split('\n').map(s => `\t\t${s.trimStart()}`).join('\n'));
+      console.log('\texec:', command.split('\n').map(s => `\t\t${s.trimStart()}`).join('\n'));
 
       const [sql, values, havPlaceholders] = parsePlaceholders(command)
 
