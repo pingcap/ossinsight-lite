@@ -25,6 +25,7 @@ type WidgetModuleMeta<P = any> = {
 
 type WidgetModule<P = any> = {
   Widget: () => Promise<{ default: ForwardRefExoticComponent<P & HTMLProps<HTMLDivElement>> }>,
+  WidgetDetails?: () => Promise<{ default: ForwardRefExoticComponent<P & HTMLProps<HTMLDivElement>> }>,
   ConfigureComponent?: () => Promise<{ default: ForwardRefExoticComponent<P & HTMLProps<HTMLDivElement>> }>
   NewButton?: () => Promise<{ default: ComponentType<ButtonHTMLAttributes<HTMLButtonElement>> }>
 } & WidgetModuleMeta<P>
@@ -32,6 +33,7 @@ type WidgetModule<P = any> = {
 type ResolvedWidgetModule<P = any> = {
   name: string
   Widget: ComponentType<P & HTMLProps<HTMLDivElement>>
+  WidgetDetails?: ComponentType<P & HTMLProps<HTMLDivElement>>
   ConfigureComponent?: ComponentType<P & HTMLProps<HTMLDivElement>>
   NewButton?: ComponentType<ButtonHTMLAttributes<HTMLButtonElement>>
 } & WidgetModuleMeta<P> & {

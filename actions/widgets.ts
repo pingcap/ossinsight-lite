@@ -4,6 +4,7 @@ import { getDatabaseUri, sql, withConnection } from '@/utils/mysql';
 import { ADMIN_DATABASE_NAME } from '@/utils/server/auth';
 import { LayoutConfigV1, LibraryItem } from '@/utils/types/config';
 import { revalidatePath } from 'next/cache';
+import { cache } from 'react';
 
 export async function addLibraryItemAction (item: LibraryItem) {
   await addLibraryItem(item);
@@ -124,3 +125,12 @@ export async function deleteDashboard (name: string) {
     `
   ));
 }
+
+
+export const findItem = cache(async function findItem (id: string) {
+  return await sql.unique<{ id: string, name: string, props: any }>`
+      SELECT properties AS props, widget_name AS name, id
+      FROM library_items
+      WHERE id = ${id}
+  `;
+});

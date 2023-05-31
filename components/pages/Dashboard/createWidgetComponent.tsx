@@ -1,4 +1,5 @@
 import { EditingLayer } from '@/components/pages/Dashboard/EditingLayer';
+import ExploreLayer from '@/components/pages/Dashboard/ExploreLayer';
 import widgetsManifest from '@/core/widgets-manifest';
 import { ComponentProps } from '@ossinsight-lite/layout/src/components/Components';
 import LoadingIndicator from '@ossinsight-lite/ui/components/loading-indicator';
@@ -47,6 +48,13 @@ export const WidgetComponent = forwardRef<HTMLDivElement, WidgetComponentProps>(
           id={id}
           draggableProps={draggableProps}
         />
+      </div>
+    );
+  } else {
+    el = (
+      <div className="relative w-full h-full">
+        {el}
+        <ExploreLayer id={id} />
       </div>
     );
   }

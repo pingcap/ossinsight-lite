@@ -55,6 +55,7 @@
     "@radix-ui/react-toolbar": "^1.0.3",
     "@radix-ui/react-tooltip": "^1.0.5",
     "mysql2": "^3.3.1",
+    "prism-react-renderer": "^2.0.4",
     "rehype-react": "^7.2.0",
     "remark-parse": "^10.0.2",
     "remark-rehype": "^10.1.0",
