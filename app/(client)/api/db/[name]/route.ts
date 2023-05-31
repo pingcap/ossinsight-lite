@@ -65,6 +65,7 @@ export async function POST (req: NextRequest, { params: { name } }: any) {
     let msg = String((e as any)?.message ?? e);
     if (msg.startsWith('Access denied for user')) {
       msg = 'Access denied';
+      console.error(e);
     }
 
     return NextResponse.json({
