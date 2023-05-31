@@ -77,4 +77,4 @@
 
 ---
 
-Last step: [2. Setup GitHub Action](repo-and-action.md) 
+Previous step: [2. Setup GitHub Action](repo-and-action.md) 
