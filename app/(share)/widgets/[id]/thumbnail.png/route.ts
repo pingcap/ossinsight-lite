@@ -4,14 +4,9 @@ import { VisualizeType } from '@/packages/widgets/src/components/visualize/commo
 import { getDatabaseUri, sql, withConnection } from '@/utils/mysql';
 import { createCanvas } from '@napi-rs/canvas';
 import '@ossinsight-lite/roughness/chartjs';
-import { Chart as ChartJs, registerables } from 'chart.js';
 import 'chartjs-adapter-luxon';
 import { notFound } from 'next/navigation';
 import { NextRequest, NextResponse } from 'next/server';
-
-ChartJs.register(
-  ...registerables,
-);
 
 export async function GET (req: NextRequest, { params: { id } }: any) {
   let readonly = req.headers.get('X-Readonly') === 'true';

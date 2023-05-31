@@ -1,10 +1,14 @@
-import { Chart as ChartJs } from 'chart.js';
+import { Chart as ChartJs, registerables } from 'chart.js';
 import { ServerContext } from '../../../../../../core/widgets-manifest';
 import { getCartesianScaleOption } from '../../../components/visualize/chartjs/getCartesianScaleOption';
 import { barDataset } from '../../../components/visualize/chartjs/getXYData';
 import { legendsPlugin } from '../../../components/visualize/chartjs/legendsPlugin';
 import { titlePlugin } from '../../../components/visualize/chartjs/titlePlugin';
 import { WidgetProps } from './Widget';
+
+ChartJs.register(
+  ...registerables,
+);
 
 export default async function (server: ServerContext, props: WidgetProps, ctx: CanvasRenderingContext2D) {
   if (props.visualize.type === 'table') {
