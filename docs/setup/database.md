@@ -1,21 +1,38 @@
-# Setup TiDB Serverless cluster
+# Create TiDB Serverless cluster
 
-1. Click [here](https://tidbcloud.com/console/clusters/create-cluster?utm_source=github&utm_medium=ossinsight_lite) to
-   create a TiDB Cloud Serverless cluster
+1. Click [here](https://tidbcloud.com/console/clusters/create-cluster?utm_source=github&utm_medium=ossinsight_lite) to create a TiDB Cloud Serverless cluster.
 
-   ![create-cluster.png](images/create-cluster.png)
+   <div align="center">
+      <img src="images/create-cluster.png" width="1000px" alt="Create TiDB Serverless cluster page"/>
+      <p><i>Create TiDB Serverless cluster page</i></p>
+   </div>
 
-2. Wait a few seconds and click `Connect` on right top corner:
+2. After waiting for the cluster to be created (About a few seconds), click the **Connect** button in the upper right corner to open the **Connect to** dialog.
 
-   ![connect.png](images/connect.png)
+   <div align="center">
+      <img src="images/connect.png" width="1000px" alt="The details page of TiDB serverless cluster"/>
+      <p><i>The details page of TiDB serverless cluster</i></p>
+   </div>
 
-3. Select `General` in `Connect With` label, click `Create password` and save your database connection info.
-   ***(Attention: this password will be shown only once)***
+3. Click **Create password** button to create password for root user.
 
-   The connection info will be used in [next step](repo-and-action.md)
+   > **Attention:**
+   > The password cannot be displayed next time for safety, please save it in a safe place.
 
-   ![img.png](images/connect-with.png)
+   <div align="center">
+      <img src="images/create-password.png" width="800px" alt="Create password for TiDB Serverless cluster"/>
+      <p><i>Create password for TiDB Serverless cluster</i></p>
+   </div>
+
+4. Select `General` in the **Connect With** drop-down list, and then COPY the connection information of TiDB Serverless.
+
+   > The connection information of TiDB serverless cluster will be used in [next step](repo-and-action.md).
+
+   <div align="center">
+      <img src="images/connect-with.png" width="800px" alt="Create password for TiDB Serverless cluster"/>
+      <p><i>Create password for TiDB Serverless cluster</i></p>
+   </div>
 
 ---
 
-Next step: [2. Setup GitHub Action](repo-and-action.md): 
+Next step: [2. Setup GitHub Action](repo-and-action.md)
