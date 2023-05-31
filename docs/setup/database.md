@@ -7,7 +7,7 @@
       <p><i>Create TiDB Serverless cluster page</i></p>
    </div>
 
-2. After waiting for the cluster to be created (About a few seconds), click the **Connect** button in the upper right corner to open the **Connect to** dialog.
+2. When the cluster creation is complete (about a few seconds), click the **Connect** button in the upper right corner to open the **Connect to** dialog.
 
    <div align="center">
       <img src="images/connect.png" width="1000px" alt="The details page of TiDB serverless cluster"/>
