@@ -6,7 +6,7 @@
 
 Deploy a ***FREE*** online personal and customizable GitHub dashboard.
 
-Demo: http://ossinsight-lite.vercel.app/
+Demo: https://ossinsight-lite.vercel.app/
 
 ## Requirements
 
