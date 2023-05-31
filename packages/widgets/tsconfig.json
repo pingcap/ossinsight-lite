@@ -10,6 +10,7 @@
     "strict": false,
     "jsx": "react-jsx",
     "types": [
+      "react/experimental"
     ]
   },
   "include": [
