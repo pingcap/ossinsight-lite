@@ -43,7 +43,9 @@ export function getCartesianScaleOption (data: any[], config: Axis, axis: Cartes
   };
 
   if (axis === 'y' && config.type === 'category') {
-    common.ticks.mirror = true;
+    if (common.ticks) {
+      common.ticks.mirror = true;
+    }
   }
 
   switch (type) {

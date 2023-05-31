@@ -1,3 +1,5 @@
+'use client';
+
 import { Form } from '@ossinsight-lite/ui/components/form';
 import LoadingIndicator from '@ossinsight-lite/ui/components/loading-indicator';
 import WidgetContext from '@ossinsight-lite/ui/context/widget';

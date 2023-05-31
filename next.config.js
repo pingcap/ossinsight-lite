@@ -42,7 +42,7 @@ const nextConfig = {
   experimental: {
     appDir: true,
     typedRoutes: true,
-    serverComponentsExternalPackages: ["mysql2"],
+    serverComponentsExternalPackages: ["mysql2", "@napi-rs/canvas"],
     serverActions: true,
   },
 }

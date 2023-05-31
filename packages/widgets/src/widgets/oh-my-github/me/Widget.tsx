@@ -1,3 +1,5 @@
+'use client';
+
 import clsx from 'clsx';
 import { ForwardedRef, forwardRef, HTMLProps, RefAttributes } from 'react';
 import cu from '../curr_user.sql?unique';

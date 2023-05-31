@@ -31,6 +31,7 @@
     "vercel": "^28.20.0"
   },
   "dependencies": {
+    "@napi-rs/canvas": "^0.1.41",
     "@radix-ui/react-dialog": "^1.0.3",
     "@radix-ui/react-navigation-menu": "^1.1.2",
     "@radix-ui/react-switch": "^1.0.2",
@@ -42,6 +43,7 @@
     "autoprefixer": "^10.4.14",
     "bcrypt": "^5.1.0",
     "bcrypt-ts": "^3.0.1",
+    "chart.js": "^4.3.0",
     "clsx": "^1.2.1",
     "eslint": "8.40.0",
     "eslint-config-next": "13.4.2",

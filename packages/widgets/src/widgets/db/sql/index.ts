@@ -1,8 +1,11 @@
 import './index.css';
 
 export const Widget = () => import('./Widget');
+export const WidgetDetails = () => import('./WidgetDetails');
 export const ConfigureComponent = () => import('./Editor');
 export const NewButton = () => import('./NewButton');
+
+export const createPngThumbnail = () => import('./createPngThumbnail');
 
 export const preferredSize = {
   width: 1024,

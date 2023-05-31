@@ -48,7 +48,7 @@ export async function POST (req: NextRequest, { params: { name } }: any) {
         cached.cached = true;
       }
     } catch (e) {
-      console.error(e);
+      // console.error(e);
     }
     if (cached) {
       return NextResponse.json({
@@ -90,7 +90,7 @@ export async function POST (req: NextRequest, { params: { name } }: any) {
       data.ttl = 1800;
     } catch (e) {
       // ignore if kv not configured.
-      console.error(e);
+      // console.error(e);
     }
     return NextResponse.json(data);
 

@@ -5,7 +5,11 @@ export default function updatePartial<T extends FieldValues> (origin: T, partial
     if (partial[key] != null) {
       const val = partial[key];
       if (typeof partial[key] === 'object') {
-        updatePartial(origin[key], val);
+        if (!origin[key]) {
+          origin[key] = val as any;
+        } else {
+          updatePartial(origin[key], val);
+        }
       } else {
         origin[key] = val as any;
       }

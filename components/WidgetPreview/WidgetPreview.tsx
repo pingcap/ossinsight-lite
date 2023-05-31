@@ -1,7 +1,9 @@
+'use client';
 import { widgets } from '@/core/bind-client';
 import WidgetContext from '@/packages/ui/context/widget';
 import { readItem } from '@/packages/ui/hooks/bind';
 import { useVisible } from '@/packages/ui/hooks/visible';
+import clientOnly from '@/utils/clientOnly';
 import { LibraryItem } from '@/utils/types/config';
 import clsx from 'clsx';
 
@@ -9,11 +11,11 @@ export interface WidgetPreviewProps extends LibraryItem {
   id?: string | undefined;
   name: string;
   props: any;
-  className: string;
+  className?: string;
   onClick?: () => void;
 }
 
-export default function WidgetPreview ({ id, name, className, onClick, props }: WidgetPreviewProps) {
+function WidgetPreview ({ id, name, className, onClick, props }: WidgetPreviewProps) {
   const widget = readItem(widgets, name).current;
   const Widget = widget.Widget;
   const { ref: visibleRef, visible } = useVisible();
@@ -40,3 +42,5 @@ export default function WidgetPreview ({ id, name, className, onClick, props }: 
     </>
   );
 }
+
+export default clientOnly(WidgetPreview);

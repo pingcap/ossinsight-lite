@@ -1,3 +1,5 @@
+'use client';
+
 import WidgetContext from '@ossinsight-lite/ui/context/widget';
 import { ForwardedRef, forwardRef, HTMLProps, RefAttributes, useContext, useEffect, useRef } from 'react';
 import { VisualizeType } from '../../../components/visualize/common';

@@ -1,3 +1,4 @@
+'use client';
 import { widgets } from '@/core/bind-client';
 import WidgetContext from '@/packages/ui/context/widget';
 import { useVisible } from '@/packages/ui/hooks/visible';

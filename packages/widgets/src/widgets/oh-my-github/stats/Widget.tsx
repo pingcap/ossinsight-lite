@@ -1,3 +1,5 @@
+'use client';
+
 import RoughSvg from '@ossinsight-lite/roughness/components/RoughSvg';
 import clsx from 'clsx';
 import { ForwardedRef, forwardRef, HTMLProps, ReactElement, RefAttributes } from 'react';

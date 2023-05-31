@@ -1,27 +1,12 @@
+'use client';
+
 import '@ossinsight-lite/roughness/chartjs';
 import { CategoryScale, Chart as ChartJs, Filler, Legend, LinearScale, LineElement, PointElement, TimeScale, TimeSeriesScale, Title, Tooltip as _Tooltip } from 'chart.js';
 import 'chartjs-adapter-luxon';
 import clsx from 'clsx';
 import { ForwardedRef, forwardRef, HTMLProps, RefAttributes } from 'react';
 import { Line } from 'react-chartjs-2';
-import * as colors from 'tailwindcss/colors';
-import cpm from './contributions_per_month.sql';
-
-const { cyan, green, red, yellow } = colors;
-
-const lineColors = [
-  red['500'],
-  green['500'],
-  yellow['500'],
-  cyan['500'],
-];
-
-const areaColors = [
-  red['200'],
-  green['200'],
-  yellow['200'],
-  cyan['200'],
-];
+import { data, options } from './chart-options';
 
 ChartJs.register(
   TimeScale,
@@ -43,56 +28,8 @@ function Widget ({ forwardedRef, ...props }: HTMLProps<HTMLDivElement> & { forwa
         <Line
           width="100%"
           height="100%"
-          data={{
-            labels: ['issue', 'pull_request', 'issue_comment', 'commit_comment'],
-            datasets: ['issue', 'pull_request', 'issue_comment', 'commit_comment'].map((dim, index) => ({
-              data: cpm
-                .filter(x => x.type === dim)
-                .map(({ month, cnt }) => ({
-                  x: month,
-                  y: cnt,
-                })),
-              label: dim,
-              borderColor: lineColors[index],
-              borderWidth: 1,
-              pointRadius: 0,
-              backgroundColor: areaColors[index] + 'c0',
-              fill: true,
-            })),
-          }}
-          options={{
-            maintainAspectRatio: false,
-            scales: {
-              x: {
-                axis: 'x',
-                type: 'time',
-                min: cpm[0].month,
-                max: cpm[cpm.length - 1].month,
-                time: {},
-                adapters: {
-                  date: {
-                    locale: 'en',
-
-                  },
-                },
-              },
-            },
-            plugins: {
-              title: {
-                display: true,
-                text: 'Activity trends by month',
-              },
-              legend: {
-                labels: {
-                  usePointStyle: true,
-                  pointStyle: 'circle',
-                  boxHeight: 4,
-                  boxPadding: 0,
-                  textAlign: 'left',
-                },
-              },
-            },
-          }}
+          data={data}
+          options={options}
         />
       </div>
     </div>
