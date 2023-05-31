@@ -20,7 +20,7 @@ function Markdown (props: IProps, _ref: ForwardedRef<HTMLDivElement>) {
   const { markdown, className, forwardedRef, ...rest } = props;
   const jsx = useMarkdown(markdown);
   return (
-    <div ref={forwardedRef} className={clsx(className, 'markdown-body p-2')} {...rest}>
+    <div ref={forwardedRef} className={clsx(className, 'markdown-body p-2 overflow-y-auto overflow-x-hidden')} {...rest}>
       {jsx}
     </div>
   );

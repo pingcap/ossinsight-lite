@@ -50,9 +50,9 @@ export default function DashboardMenu ({ dashboardName, editMode }: { dashboardN
         )}
       </MenuItem>
       {editMode && (
-        <MenuItem text={<PlusIcon width={20} height={20} />} id="new" order={2} disabled={loading > 0} action={handleClickNew} />
+        <MenuItem text={<PlusIcon width={20} height={20} />} id="new" order={40} disabled={loading > 0} action={handleClickNew} />
       )}
-      <MenuItem id="EditModeSwitch" order={10} disabled={loading > 0} text={editMode ? <UnlockIcon /> : <LockIcon />} action={() => startAppStateLoadingTransition(() => router.push(dashboardHref(dashboardName, !editMode)))} />
+      <MenuItem id="EditModeSwitch" order={50} disabled={loading > 0} text={editMode ? <UnlockIcon /> : <LockIcon />} action={() => startAppStateLoadingTransition(() => router.push(dashboardHref(dashboardName, !editMode)))} />
     </>
   );
 }
