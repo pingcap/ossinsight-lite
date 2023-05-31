@@ -55,7 +55,7 @@ async function main() {
     }
 
     const content = fs.readFileSync(fn, {encoding: 'utf-8'});
-    if (content.startsWith('-- ignore') {
+    if (content.startsWith('-- ignore')) {
       console.log('ignored:', fn);
       continue;
     }
