@@ -17,8 +17,8 @@
   "license": "ISC",
   "packageManager": "pnpm@8.5.1",
   "engines": {
-    "node": "~18.16.0",
-    "pnpm": "8.5.1"
+    "node": "~18",
+    "pnpm": "~8"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
