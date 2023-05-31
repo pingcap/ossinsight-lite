@@ -58,10 +58,9 @@ async function main() {
     const commands = content.split(';').map(c => c.trim()).filter(Boolean);
 
     for (const command of commands) {
+      console.log('\texec:', command.split('\n').map(s => `\t\t${s.trimStart()}`).join('\n'));
 
       const [sql, values, havPlaceholders] = parsePlaceholders(command)
-      console.log('\texec:', sql.split('\n').map(s => `\t\t${s.trimStart()}`).join('\n'));
-      console.log('\tvalues:', values);
 
       const [res] = await conn.execute({
         sql,
