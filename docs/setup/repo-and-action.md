@@ -98,6 +98,6 @@ Please follow the steps below to configure the connection information of TiDB cl
 
 ---
 
-Last step: [1. Setup TiDB Serverless cluster](database.md)
+Previous step: [1. Setup TiDB Serverless cluster](database.md)
 
 Next step: [3. Deploy to Vercel](deploy-to-vercel.md)
