@@ -5,6 +5,11 @@ export async function GET (req: NextRequest, { params: { owner, repo, branch, pa
   const isJs = path[path.length - 1].endsWith('.js');
   // https://raw.githubusercontent.com/634750802/ossinsight-lite/feat-remote-sql-widget/collections/contribution-monthly/visualization.js
   const res = await fetch(url);
+
+  if (owner !== 'pingcap' || repo !== 'ossinsight-lite') {
+    return NextResponse.json({ 'message': `${owner}/${repo} is not trusted.` }, { status: 403 });
+  }
+
   if (res.ok) {
     return new NextResponse(res.body, {
       status: res.status,
@@ -16,7 +21,6 @@ export async function GET (req: NextRequest, { params: { owner, repo, branch, pa
       },
     });
   } else {
-    console.log(url)
     return new NextResponse(res.body, {
       status: res.status,
     });
