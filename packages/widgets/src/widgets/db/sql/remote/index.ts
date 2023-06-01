@@ -13,5 +13,5 @@ export const defaultProps = {
 
 export const duplicable = true;
 
-export const category = 'Common';
-export const displayName = 'Remote Markdown';
+export const category = 'SQL';
+export const displayName = 'Remote SQL Chart';
