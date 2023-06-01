@@ -5,7 +5,7 @@ export const ConfigureComponent = () => import('./ConfigureComponent');
 export const Icon = () => import('./Icon');
 
 export const defaultProps = {
-  owner: '634750802',
+  owner: 'pingcap',
   repo: 'ossinsight-lite',
   branch: 'main',
   name: 'contribution-monthly',
