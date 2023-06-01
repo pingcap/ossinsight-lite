@@ -1,58 +1,79 @@
-import * as RuiNavigationMenu from '@radix-ui/react-navigation-menu';
+import * as RuiMenubar from '@radix-ui/react-menubar';
 import clsx from 'clsx';
 import Link from 'next/link';
+import { createContext, useContext } from 'react';
 import { MenuRenderers } from '../menu';
+import './style.scss';
+
+const PrivateContext = createContext({
+  isSub: false,
+});
 
 export const renderSeparator: MenuRenderers['renderSeparator'] = (item) => {
-  return <RuiNavigationMenu.Item className="flex-1 h-full" key={item.id} style={{ order: item.order }} />;
+  return <RuiMenubar.Separator className="navmenu-sep" key={item.id} style={{ order: item.order }} />;
 };
 
-export const renderParentItem: MenuRenderers['renderParentItem'] = (item, isSub, children) => {
+export const renderParentItem: MenuRenderers['renderParentItem'] = (item, _, children) => {
+  const { isSub } = useContext(PrivateContext);
+  if (isSub) {
+    throw new Error('nested navmenu item not supported yet.');
+  }
+
   return (
-    <RuiNavigationMenu.Item key={item.id} style={{ order: item.order }} className="relative min-w-[32px] flex justify-center items-center">
-      <RuiNavigationMenu.Trigger
-        className="relative z-0 outline-none bg-transparent transition:colors p-1 cursor-pointer flex justify-between items-center"
+    <RuiMenubar.Menu key={item.id}>
+      <RuiMenubar.Trigger
+        style={{ order: item.order }}
+        className="navmenu-item relative z-0 p-1 cursor-pointer"
         disabled={item.disabled}
       >
         {item.text}
-      </RuiNavigationMenu.Trigger>
-      <RuiNavigationMenu.Content className={clsx('absolute z-[11px] bg-white rounded shadow-sm min-w-max p-2', isSub ? 'right-[calc(100%+8px)] top-0' : 'right-0 top-full')}>
-        <RuiNavigationMenu.Sub>
-          <RuiNavigationMenu.List className="flex flex-col">
+      </RuiMenubar.Trigger>
+      <RuiMenubar.Portal>
+        <RuiMenubar.Content className={clsx('navmenu-sub z-50 bg-white rounded shadow-lg min-w-max py-2 flex flex-col')} align="end">
+          <PrivateContext.Provider value={{ isSub: true }}>
             {children}
-          </RuiNavigationMenu.List>
-        </RuiNavigationMenu.Sub>
-      </RuiNavigationMenu.Content>
-    </RuiNavigationMenu.Item>
+          </PrivateContext.Provider>
+        </RuiMenubar.Content>
+      </RuiMenubar.Portal>
+    </RuiMenubar.Menu>
   );
 };
 
 export const renderItem: MenuRenderers['renderItem'] = (item) => {
-  return (
-    <RuiNavigationMenu.Item key={item.id} className="min-w-[32px] flex justify-center items-center" style={{ order: item.order }}>
-      <RuiNavigationMenu.Trigger onClick={item.action} disabled={item.disabled} className="outline-none bg-transparent transition:colors p-1 cursor-pointer flex justify-between items-center">
-        {item.text}
-      </RuiNavigationMenu.Trigger>
-    </RuiNavigationMenu.Item>
+  const { isSub } = useContext(PrivateContext);
+  let el = (
+    <button key={item.id} onClick={item.action} disabled={item.disabled} style={{ order: item.order }} className="navmenu-item p-1 cursor-pointer">
+      {item.text}
+    </button>
   );
+  if (isSub) {
+    el = <RuiMenubar.Item key={item.id} asChild>{el}</RuiMenubar.Item>;
+  }
+  return el;
 };
 
 export const renderCustomItem: MenuRenderers['renderCustomItem'] = (item) => {
+  const { isSub } = useContext(PrivateContext);
+  if (!isSub) {
+    return <div key={item.id} className="navmenu-item p-1" style={{ order: item.order }}>{item.children}</div>;
+  }
   return (
-    <RuiNavigationMenu.Item key={item.id} className="min-w-[32px] flex justify-center items-center" style={{ order: item.order }}>
+    <RuiMenubar.Item key={item.id} className="navmenu-item p-1" style={{ order: item.order }}>
       {item.children}
-    </RuiNavigationMenu.Item>
+    </RuiMenubar.Item>
   );
 };
 
 export const renderLinkItem: MenuRenderers['renderLinkItem'] = ({ order, id, text, disabled, ...props }) => {
-  return (
-    <RuiNavigationMenu.Item key={id} className="min-w-[32px] flex justify-center items-center" style={{ order: order }}>
-      <RuiNavigationMenu.Link asChild>
-        {disabled
-          ? <span className="inline-flex p-1 text-gray-400 cursor-not-allowed">{text}</span>
-          : <Link className="inline-flex p-1 cursor-pointer" {...props}>{text}</Link>}
-      </RuiNavigationMenu.Link>
-    </RuiNavigationMenu.Item>
-  );
+  const { isSub } = useContext(PrivateContext);
+
+  let el = disabled
+    ? <span key={id} className="navmenu-item inline-flex p-1 text-gray-400 cursor-not-allowed" style={{ order: order }}>{text}</span>
+    : <Link key={id} className="navmenu-item inline-flex p-1 cursor-pointer" {...props} style={{ order: order }}>{text}</Link>;
+
+  if (isSub) {
+    el = <RuiMenubar.Item key={id} asChild>{el}</RuiMenubar.Item>;
+  }
+
+  return el;
 };

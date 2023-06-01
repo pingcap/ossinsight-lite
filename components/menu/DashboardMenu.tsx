@@ -1,20 +1,24 @@
 'use client';
-import { appState, dashboards, startAppStateLoadingTransition } from '@/core/bind';
-import LoadingIndicator from '@ossinsight-lite/ui/components/loading-indicator';
-import { MenuItem } from '@/packages/ui/components/menu';
-import { useCollectionKeys, useWatchReactiveValueField } from '@/packages/ui/hooks/bind/hooks';
 import LayoutWtfIcon from '@/components/icons/layout-wtf.svg';
 import LockIcon from '@/components/icons/lock.svg';
 import PlusIcon from '@/components/icons/plus.svg';
 import UnlockIcon from '@/components/icons/unlock.svg';
+import { appState, dashboards, startAppStateLoadingTransition } from '@/core/bind';
+import { widgets } from '@/core/bind-client';
+import { MenuItem } from '@/packages/ui/components/menu';
+import { useCollectionKeys, useWatchReactiveValueField } from '@/packages/ui/hooks/bind/hooks';
+import LoadingIndicator from '@ossinsight-lite/ui/components/loading-indicator';
 import { useRouter } from 'next/navigation';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 export default function DashboardMenu ({ dashboardName, editMode }: { dashboardName: string, editMode: boolean }) {
   const router = useRouter();
   const loading = useWatchReactiveValueField(appState, 'loading');
   const fetchingConfig = useWatchReactiveValueField(appState, 'fetchingConfig');
   const dashboardNames = useCollectionKeys(dashboards) as string[];
+  const configurableWidgets = useMemo(() => {
+    return widgets.values.filter(widget => !!widget.ConfigureComponent);
+  }, []);
 
   const handleClickNew = useCallback(() => {
     startAppStateLoadingTransition(() => {
@@ -50,7 +54,25 @@ export default function DashboardMenu ({ dashboardName, editMode }: { dashboardN
         )}
       </MenuItem>
       {editMode && (
-        <MenuItem text={<PlusIcon width={20} height={20} />} id="new" order={40} disabled={loading > 0} action={handleClickNew} />
+        <MenuItem text={<PlusIcon width={20} height={20} />} id="new" order={40} disabled={loading > 0} parent>
+          {configurableWidgets.map(({ name, displayName, Icon }, index) => (
+            <MenuItem
+              id={name}
+              key={name}
+              order={index}
+              action={() => router.push(`/widgets/${encodeURIComponent(name)}/create`)}
+              text={(
+                <div className="flex justify-between items-center min-w-[180px] text-sm text-gray-600">
+                  <span>{displayName}</span>
+                  {Icon && <Icon />}
+                </div>
+              )}
+            >
+            </MenuItem>
+          ))}
+          <MenuItem id="sep" order={998} separator />
+          <MenuItem id={'new'} order={999} action={handleClickNew} text={<span className="inline-block min-w-[180px] text-sm text-left text-gray-600">Browse library</span>} />
+        </MenuItem>
       )}
       <MenuItem id="EditModeSwitch" order={50} disabled={loading > 0} text={editMode ? <UnlockIcon /> : <LockIcon />} action={() => startAppStateLoadingTransition(() => router.push(dashboardHref(dashboardName, !editMode)))} />
     </>

@@ -1,6 +1,7 @@
 export const Widget = () => import('./Markdown');
 export const ConfigureComponent = () => import('./MarkdownEditor');
-export const NewButton = () => import('./NewButton');
+
+export const Icon = () => import('./Icon');
 
 export const duplicable = true;
 export const styleConfigurable = true;

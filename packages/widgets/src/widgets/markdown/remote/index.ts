@@ -2,7 +2,7 @@ export const Widget = import('./Widget');
 
 export const ConfigureComponent = () => import('./ConfigureComponent');
 
-export const NewButton = () => import('./NewButton');
+export const Icon = () => import('./Icon');
 
 export const defaultProps = {
   href: 'https://raw.githubusercontent.com/634750802/ossinsight-lite/main/README.md',
