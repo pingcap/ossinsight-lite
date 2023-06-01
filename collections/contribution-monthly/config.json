@@ -1,0 +1,16 @@
+{
+  "__comment:min-ossl-version": "Define the minimum version of OSSInsight lite.",
+  "min-ossl-version": 0,
+
+  "__comment:database": "which database the SQL executed on",
+  "database": "github_personal",
+
+  "__comment:title": "Displayed title for this widget. (Will be used in SEO)",
+  "title": "Contribution monthly",
+
+  "__comment:description": "Displayed description for this widget. (Will be used in SEO)",
+  "description": "This chart shows",
+
+  "__comment:vis": "Visualization type. Currently support only 'chart.js'",
+  "vis": "chart.js"
+}

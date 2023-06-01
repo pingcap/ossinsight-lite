@@ -14,7 +14,10 @@ const ConfigureComponent = forwardRef<HTMLDivElement, WidgetProps>(function Conf
 
   return (
     <div {...props} ref={forwardedRef}>
-      <Form values={{ href }} onChange={onFormChange}>
+      <Form className='p-2' values={{ href }} onChange={onFormChange}>
+        <p className="p-2 rounded mb-2 text-yellow-500 bg-yellow-50">
+          This widget is still not stable, do not edit this form if unless you know what you are doing.
+        </p>
         <Field
           label="Href"
           control={<input className="outline-none flex-1 border-b px-2 py-1" placeholder="Input a remote markdown href" />}

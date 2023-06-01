@@ -1,4 +1,4 @@
-import { createElement, Fragment, ReactElement, use, useMemo } from 'react';
+import { createElement, Fragment, ReactElement, useEffect, useState } from 'react';
 import rehypeReact from 'rehype-react';
 import remarkParse from 'remark-parse';
 import remarkRehype from 'remark-rehype';
@@ -45,13 +45,16 @@ const processor = unified()
   .freeze();
 
 export function useMarkdownReact (text: string, base: string): ReactElement {
-  const promise = useMemo(() => {
-    return processor.process({ value: text, data: { base } })
+  const [res, setRes] = useState<ReactElement>(null);
+
+  useEffect(() => {
+    processor.process({ value: text, data: { base } })
       .then((file) => {
-        return file.result;
+        setRes(file.result);
       });
   }, [text]);
-  return use(promise);
+
+  return res;
 }
 
 // https://raw.githubusercontent.com/pingcap/ossinsight-lite/main/docs/setup/secure-your-site.md
