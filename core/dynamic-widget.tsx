@@ -11,8 +11,9 @@ export function resolveWidgetComponents (module: WidgetModule) {
   const WidgetDetails = module.WidgetDetails && dynamicForwardRef(module.WidgetDetails, WidgetLoading);
   const ConfigureComponent = module.ConfigureComponent && dynamicForwardRef(module.ConfigureComponent, ConfigureComponentLoading);
   const NewButton = module.NewButton && dynamicForwardRef(module.NewButton, NewButtonLoading);
+  const Icon = module.Icon && dynamic(module.Icon, { loading: NewButtonLoading });
 
-  return { Widget, WidgetDetails, ConfigureComponent, NewButton };
+  return { Widget, WidgetDetails, ConfigureComponent, NewButton, Icon };
 }
 
 function dynamicForwardRef<P> (loader: Loader<P>, LoadingComponent: FC<DynamicOptionsLoadingProps>) {

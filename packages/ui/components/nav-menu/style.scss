@@ -1,0 +1,61 @@
+
+.navmenu {
+  &-item {
+    @apply min-w-[32px] flex justify-center items-center rounded transition-colors outline-none;
+
+    &:not([disabled], [aria-disabled]):hover {
+      @apply bg-gray-100;
+    }
+  }
+
+  &-sep {
+    @apply flex-1 h-full;
+  }
+
+
+  &-sub {
+    animation-duration: 0.6s;
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+    transform-origin: var(--radix-menubar-content-transform-origin);
+
+    &[data-state='open'] {
+      animation-name: navmenu-slideIn;
+    }
+
+    &[data-state='closed'] {
+      animation-name: navmenu-slideOut;
+      animation-duration: 300ms;
+    }
+
+    .navmenu-sep {
+      @apply flex-auto w-full h-[0.5px] bg-gray-200 my-2;
+    }
+
+    .navmenu-item {
+      @apply px-2 rounded-none;
+    }
+  }
+}
+
+
+@keyframes navmenu-slideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes navmenu-slideOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+}
