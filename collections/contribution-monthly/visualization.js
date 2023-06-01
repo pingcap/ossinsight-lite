@@ -78,7 +78,11 @@ export default function (rawData, theme) {
     },
   };
 
-  return {data, options}
+  return {
+    type: 'line',
+    data,
+    options
+  }
 }
 
 /**
@@ -95,6 +99,7 @@ export default function (rawData, theme) {
 
 /**
  * @typedef ChartJsConfig
+ * @property {import('chart.js').ChartType} type
  * @property {import('chart.js').ChartData} data
  * @property {import('chart.js').ChartOptions} options
  */
