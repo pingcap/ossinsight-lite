@@ -1,6 +1,6 @@
 # OSSInsight lite
 
-> 🚧🚧🚧 This project is still in very early version, see [roadmap](https://github.com/634750802/ossinsight-lite/issues/1).
+> 🚧🚧🚧 This project is still in very early version, see [roadmap](https://github.com/pingcap/ossinsight-lite/issues/1).
 > Features might be changed before stable release without notification.
 > Suggestions and discussions are welcome.
 
@@ -28,12 +28,12 @@ Demo: https://ossinsight-lite.vercel.app/
 
 ## Roadmap
 
-See [roadmap](https://github.com/634750802/ossinsight-lite/issues/1)
+See [roadmap](https://github.com/pingcap/ossinsight-lite/issues/1)
 
 ## Help
 
-- Any feedback is welcome! Please create an [Issue](https://github.com/634750802/ossinsight-lite/issues/new/choose) or
-start a [Discussion](https://github.com/634750802/ossinsight-lite/discussions/new/choose).
+- Any feedback is welcome! Please create an [Issue](https://github.com/pingcap/ossinsight-lite/issues/new/choose) or
+start a [Discussion](https://github.com/pingcap/ossinsight-lite/discussions/new/choose).
 - If your site's home page thrown a 'client side error', Visit `/status` page to see if your database was correctly
 configured.
 - How to update? You can:

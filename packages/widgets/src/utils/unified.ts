@@ -54,7 +54,7 @@ export function useMarkdownReact (text: string, base: string): ReactElement {
   return use(promise);
 }
 
-// https://raw.githubusercontent.com/634750802/ossinsight-lite/main/docs/setup/secure-your-site.md
+// https://raw.githubusercontent.com/pingcap/ossinsight-lite/main/docs/setup/secure-your-site.md
 const regexp = /^https:\/\/raw\.githubusercontent\.com\/([^\/]+)\/([^\/]+)\/(.*)$/;
 
 function getGithubMdBase (base: string) {
