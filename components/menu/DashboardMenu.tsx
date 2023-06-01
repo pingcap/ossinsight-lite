@@ -60,7 +60,7 @@ export default function DashboardMenu ({ dashboardName, editMode }: { dashboardN
               id={name}
               key={name}
               order={index}
-              action={() => router.push(`/widgets/${encodeURIComponent(name)}/create`)}
+              action={() => router.push(`/widgets/create/${encodeURIComponent(name)}`)}
               text={(
                 <div className="flex justify-between items-center min-w-[180px] text-sm text-gray-600">
                   <span>{displayName}</span>
