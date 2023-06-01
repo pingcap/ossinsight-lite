@@ -13,7 +13,7 @@ Please follow the steps below to set up GitHub Actions on your forked repository
 
 ## Fork ossinsight-lite repository
 
-Click [here](http://github.com/634750802/ossinsight-lite/fork) (TODO: need change owner to pingcap org) to fork your own repository from the pingcap/ossinsight-lite repository
+Click [here](http://github.com/pingcap/ossinsight-lite/fork) to fork your own repository from the pingcap/ossinsight-lite repository
 
 ## Setup GitHub Action secrets
 

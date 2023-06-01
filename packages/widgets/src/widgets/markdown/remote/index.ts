@@ -5,7 +5,7 @@ export const ConfigureComponent = () => import('./ConfigureComponent');
 export const Icon = () => import('./Icon');
 
 export const defaultProps = {
-  href: 'https://raw.githubusercontent.com/634750802/ossinsight-lite/main/README.md',
+  href: 'https://raw.githubusercontent.com/pingcap/ossinsight-lite/main/README.md',
 };
 
 export const duplicable = true;
