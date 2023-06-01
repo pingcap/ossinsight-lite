@@ -1,19 +1,28 @@
-import { use, useMemo } from 'react';
+import { use } from 'react';
+
+let _cache: Record<string, Promise<Response>> = {};
+let _cacheText: Record<string, Promise<string>> = {};
 
 export function useGet (url: string): Response {
-  const fetched = useMemo(() => {
-    return fetch(url);
-  }, [url]);
+  let res: Promise<Response>;
+  if (_cache[url]) {
+    res = _cache[url];
+  } else {
+    res = _cache[url] = fetch(url);
+  }
 
-  return use(fetched);
+  return use(res);
 }
 
 export function useGetText (url: string): string {
   const resp = useGet(url);
+  let text: Promise<string>;
 
-  const text = useMemo(() => {
-    return resp.text();
-  }, [resp]);
+  if (_cacheText[url]) {
+    text = _cacheText[url];
+  } else {
+    text = _cacheText[url] = resp.text();
+  }
 
   return use(text);
 }
