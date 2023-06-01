@@ -4,7 +4,7 @@
 > Features might be changed before stable release without notification.
 > Suggestions and discussions are welcome.
 
-Deploy a ***FREE*** online personal and customizable GitHub dashboard.
+Yet another customizable **FREE** github stats dashboard.
 
 Demo: https://ossinsight-lite.vercel.app/
 
