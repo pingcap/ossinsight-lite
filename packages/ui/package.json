@@ -12,6 +12,7 @@
     "@radix-ui/react-menubar": "^1.0.3",
     "@radix-ui/react-navigation-menu": "^1.1.2",
     "@radix-ui/react-popover": "^1.0.5",
+    "@radix-ui/react-select": "^1.2.1",
     "@radix-ui/react-toolbar": "^1.0.3",
     "clsx": "^1.2.1",
     "react-hook-form": "^7.43.9",

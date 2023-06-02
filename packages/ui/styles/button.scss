@@ -1,0 +1,19 @@
+.btn {
+  @apply inline-flex text-sm gap-2 items-center transition-colors px-2 py-1 rounded;
+
+  &-default {
+    @apply text-gray-700 bg-gray-100;
+
+    &:hover, &:active {
+      @apply bg-gray-200;
+    }
+  }
+
+  &-green {
+    @apply text-green-500 bg-green-50;
+
+    &:hover, &:active {
+      @apply bg-green-100;
+    }
+  }
+}

@@ -8,6 +8,7 @@ import updatePartial from '@ossinsight-lite/ui/utils/update-partial';
 import clsx from 'clsx';
 import { ForwardedRef, forwardRef, HTMLProps, RefAttributes, Suspense, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { SQLEditor, SQLEditorHeader } from '../../../components/editor/sql';
+import ChartTypeToggle from '../../../components/visualize/ChartTypeToggle';
 import { VisualizeType } from '../../../components/visualize/common';
 import { VisualizeContext } from '../../../components/visualize/context';
 import { migrate } from '../../../components/visualize/guess';
@@ -71,6 +72,10 @@ function Editor ({ defaultSql, defaultDb, sql, currentDb, visualize, forwardedRe
     );
   }, []);
 
+  const runSql = useRefCallback(() => {
+    execute({ sql, db: currentDb, force: true });
+  })
+
   return (
     <VisualizeContext.Provider value={{ result: result?.data, running, error, columns: result?.columns }}>
       <div ref={forwardedRef} {...props} className={clsx('relative flex gap-2 min-w-[800px]', props.className)}>
@@ -85,13 +90,11 @@ function Editor ({ defaultSql, defaultDb, sql, currentDb, visualize, forwardedRe
           <SQLEditorHeader
             currentDb={currentDb}
             onCurrentDbChange={onCurrentDbChange}
-            onRun={() => {
-              execute({ sql, db: currentDb, force: true });
-            }}
+            onRun={runSql}
             running={running}
           />
-          <div className="min-h-[240px] max-h-[320px] w-full border-b">
-            <SQLEditor sql={sql} defaultSql={defaultSql} onSqlChange={onSqlChange} />
+          <div className="min-h-[240px] max-h-[320px] w-full overflow-hidden border-b">
+            <SQLEditor sql={sql} defaultSql={defaultSql} onSqlChange={onSqlChange} onCommand={runSql} />
           </div>
           <div className="flex-1 w-full flex overflow-hidden">
             <div className="flex-1 justify-stretch overflow-hidden">
@@ -99,16 +102,17 @@ function Editor ({ defaultSql, defaultDb, sql, currentDb, visualize, forwardedRe
                 editing
                 configuring={configuring}
                 visualize={visualize}
-                onVisualizeTypeChange={onVisualizeTypeChange}
                 onClickVisualizeOptions={() => {
                   setOpenVisualizeDialog(true);
                 }}
                 running={running}
                 result={result}
                 error={error}
+                title={props.title}
               />
             </div>
-            <div className="flex-1 min-w-[240px] p-2 border-l">
+            <div className="p-2 border-l text-sm text-gray-700">
+              <ChartTypeToggle value={visualize.type} onChange={onVisualizeTypeChange} />
               <Visualize visualize={visualize} />
             </div>
           </div>

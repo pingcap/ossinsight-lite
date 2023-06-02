@@ -1,8 +1,10 @@
 import { widgets } from '@/core/bind-client';
 import { readItem } from '@/packages/ui/hooks/bind';
+import useRefCallback from '@/packages/ui/hooks/ref-callback';
 import { useVisible } from '@/packages/ui/hooks/visible';
 import WidgetContext from '@ossinsight-lite/ui/context/widget';
 import clsx from 'clsx';
+import { ChangeEvent } from 'react';
 
 export interface EditWidgetInstanceProps {
   name: string;
@@ -19,6 +21,10 @@ export default function EditWidgetInstance ({ name, props, onPropsChange, creati
   }
   const { ref: visibleRef, visible } = useVisible<HTMLDivElement>();
 
+  const handleTitleChange = useRefCallback((event: ChangeEvent<HTMLInputElement>) => {
+    onPropsChange('title', event.target.value);
+  });
+
   return (
     <WidgetContext.Provider
       value={{
@@ -29,12 +35,22 @@ export default function EditWidgetInstance ({ name, props, onPropsChange, creati
         props: { ...props, ...widget.configurablePropsOverwrite },
       }}
     >
-      <Widget
-        {...props}
-        {...widget.configurablePropsOverwrite}
-        className={clsx('w-full h-full', widget.configurablePropsOverwrite?.className, props.className)}
-        ref={visibleRef}
-      />
+      <div className="w-full h-full">
+        <div className="mb-[8px]">
+          <input
+            className="text-input border-b"
+            placeholder="Input a title"
+            value={props.title ?? ''}
+            onChange={handleTitleChange}
+          />
+        </div>
+        <Widget
+          {...props}
+          {...widget.configurablePropsOverwrite}
+          className={clsx('w-full h-[calc(100%-40px)]', widget.configurablePropsOverwrite?.className, props.className)}
+          ref={visibleRef}
+        />
+      </div>
     </WidgetContext.Provider>
   );
 }

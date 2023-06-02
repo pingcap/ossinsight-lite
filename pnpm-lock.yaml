@@ -210,6 +210,9 @@ importers:
       '@radix-ui/react-popover':
         specifier: ^1.0.5
         version: 1.0.5(@types/react@18.2.6)(react-dom@18.2.0)(react@18.2.0)
+      '@radix-ui/react-select':
+        specifier: ^1.2.1
+        version: 1.2.1(@types/react@18.2.6)(react-dom@18.2.0)(react@18.2.0)
       '@radix-ui/react-toolbar':
         specifier: ^1.0.3
         version: 1.0.3(react-dom@18.2.0)(react@18.2.0)
