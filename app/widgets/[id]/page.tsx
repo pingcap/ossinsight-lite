@@ -30,7 +30,7 @@ export async function generateMetadata ({ params }: any): Promise<Metadata> {
     return {};
   }
 
-  const title = item.props.visualize?.title ?? 'Untitled widget';
+  const title = item.props?.title ?? 'Untitled widget';
   const image = `/widgets/${params.id}/thumbnail.png`;
 
   return {
