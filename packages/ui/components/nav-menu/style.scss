@@ -1,7 +1,7 @@
 
 .navmenu {
   &-item {
-    @apply min-w-[32px] flex justify-center items-center rounded transition-colors outline-none;
+    @apply min-w-[32px] flex justify-center items-center rounded transition-colors outline-none pointer-events-auto;
 
     &:not([disabled], [aria-disabled]):hover {
       @apply bg-gray-100;

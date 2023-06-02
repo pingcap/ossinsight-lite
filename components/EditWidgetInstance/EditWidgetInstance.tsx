@@ -11,9 +11,10 @@ export interface EditWidgetInstanceProps {
   props: any;
   onPropsChange: (key: string, value: any) => void;
   creating?: boolean;
+  disableTitle?: boolean;
 }
 
-export default function EditWidgetInstance ({ name, props, onPropsChange, creating = false }: EditWidgetInstanceProps) {
+export default function EditWidgetInstance ({ name, props, onPropsChange, creating = false, disableTitle = false }: EditWidgetInstanceProps) {
   const widget = readItem(widgets, name).current;
   const Widget = widget.ConfigureComponent;
   if (!Widget) {
@@ -36,18 +37,18 @@ export default function EditWidgetInstance ({ name, props, onPropsChange, creati
       }}
     >
       <div className="w-full h-full">
-        <div className="mb-[8px]">
+        {!disableTitle && <div className="mb-[8px]">
           <input
             className="text-input border-b"
             placeholder="Input a title"
             value={props.title ?? ''}
             onChange={handleTitleChange}
           />
-        </div>
+        </div>}
         <Widget
           {...props}
           {...widget.configurablePropsOverwrite}
-          className={clsx('w-full h-[calc(100%-40px)]', widget.configurablePropsOverwrite?.className, props.className)}
+          className={clsx('w-full', disableTitle ? 'h-full' : 'h-[calc(100%-40px)]', widget.configurablePropsOverwrite?.className, props.className)}
           ref={visibleRef}
         />
       </div>

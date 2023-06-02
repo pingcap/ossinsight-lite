@@ -1,0 +1,11 @@
+.btn-playground {
+  @apply font-mono border fixed z-10 text-xs text-gray-400 cursor-text;
+
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  &:hover {
+    @apply border-gray-400;
+  }
+}

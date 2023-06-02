@@ -17,7 +17,7 @@ export function NavMenu ({ children, className, items, position = 'in-place', ..
         {...props}
         className={clsx(
           className,
-          'hover:backdrop-blur-sm transition-all flex gap-2 items-center z-[1]',
+          'hover:backdrop-blur-sm transition-all pointer-events-none flex gap-2 items-center z-[1]',
           position === 'top' && 'fixed left-0 w-screen z-50 top-0',
           position === 'bottom' && 'fixed left-0 w-screen z-50 bottom-0',
           position === 'in-place' && 'relative',

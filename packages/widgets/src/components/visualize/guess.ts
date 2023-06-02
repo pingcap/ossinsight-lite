@@ -124,13 +124,20 @@ function guessFromScratch (result: Result): VisualizeType {
   };
 }
 
+function ifNotFoundThen(index: number, then: number): number {
+  if (index === -1) {
+    return then
+  } else {
+    return index;
+  }
+}
+
 function guessWithType (result: Result, next: VisualizeType['type']): VisualizeType {
   switch (next) {
     case 'chart:line':
     case 'chart:bar': {
-      const firstNumberColumn = result.columns.findIndex(col => NumberTypes.has(col.type));
-      const categoryColumn = result.columns.findIndex(col => CategoryTypes.has(col.type)) ?? (firstNumberColumn > 0 ? 0 : 1);
-
+      const firstNumberColumn = ifNotFoundThen(result.columns.findIndex(col => NumberTypes.has(col.type)), 0);
+      const categoryColumn = ifNotFoundThen(result.columns.findIndex(col => CategoryTypes.has(col.type)), firstNumberColumn > 0 ? 0 : Math.min(1, result.columns.length));
       return {
         type: next,
         x: {
