@@ -1,6 +1,7 @@
 'use client';
-import { resetPasswordAction } from '@/actions/auth';
+import { recreateReadonlyUser, resetPasswordAction } from '@/actions/auth';
 import { ActionStateAlerts, Button, FormControl, Input, ServerActionForm } from '@/components/ServerActionForm';
+import { ReactNode } from 'react';
 
 export function ChangePasswordForm () {
   return (
@@ -22,6 +23,26 @@ export function ChangePasswordForm () {
         </FormControl>
         <div className="form-control">
           <Button type="submit">Reset password</Button>
+        </div>
+      </ServerActionForm>
+    </section>
+  );
+}
+
+export function RecreateReadonlyDatabaseUserForm ({ status }: { status: ReactNode }) {
+  return (
+    <section className="mt-8">
+      <h2>Recreate readonly database user</h2>
+      <p className="mb-2">
+        Readonly user status: {status}
+      </p>
+      <ServerActionForm action={recreateReadonlyUser}>
+        <ActionStateAlerts
+          success={{ title: 'Readonly database user created' }}
+          pending={{ title: 'Recreating readonly database user', message: 'Please don\'t leave this page.' }}
+        />
+        <div className="form-control">
+          <Button type="submit">Recreate</Button>
         </div>
       </ServerActionForm>
     </section>

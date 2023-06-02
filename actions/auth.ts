@@ -90,3 +90,34 @@ export async function resetPasswordAction (formData: FormData) {
     `;
   });
 }
+
+export async function recreateReadonlyUser () {
+  const username = process.env.TIDB_USER;
+  const password = process.env.TIDB_PASSWORD;
+  if (!username || !password) {
+    throw new Error('Bad state');
+  }
+
+  const readonlyUsername = username.replace(/\.[^.]*$/, '.osslreadonly');
+  const readonlyPassword = password + '.osslreadonly';
+
+  await withConnection(getDatabaseUri(), async ({ sql }) => {
+    await sql`
+        DROP USER IF EXISTS ${readonlyUsername};
+    `;
+
+    await sql`
+        CREATE USER ${readonlyUsername}@'%' IDENTIFIED BY ${readonlyPassword};
+    `;
+
+    await sql`
+        GRANT SELECT, SHOW DATABASES, SHOW VIEW ON *.* TO ${readonlyUsername}@'%';
+    `;
+
+    await sql`
+        FLUSH PRIVILEGES;
+    `;
+  });
+
+  revalidatePath('/admin/account');
+}
