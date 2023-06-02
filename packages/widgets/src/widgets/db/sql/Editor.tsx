@@ -64,7 +64,7 @@ function Editor ({ defaultSql, defaultDb, sql, currentDb, visualize, forwardedRe
 
   const Visualize = useMemo(() => ({ visualize }: { visualize: VisualizeType }) => {
     return (
-      <Form className="overflow-auto p-2 text-gray-700" values={visualize} onChange={onVisualizeChange}>
+      <Form className="overflow-auto p-2 text-gray-700 max-w-[260px]" values={visualize} onChange={onVisualizeChange}>
         <Suspense fallback="Loading...">
           <VisualizeConfig {...visualize} />
         </Suspense>
@@ -88,15 +88,15 @@ function Editor ({ defaultSql, defaultDb, sql, currentDb, visualize, forwardedRe
 
   return (
     <VisualizeContext.Provider value={{ result: result?.data, running, error, columns: result?.columns, selectedColumns }}>
-      <div ref={forwardedRef} {...props} className={clsx('relative flex gap-2 min-w-[800px]', props.className)}>
-        <div className="min-w-[240px] max-w-[240px] h-full overflow-auto border-r">
+      <div ref={forwardedRef} {...props} className={clsx('relative flex gap-2 min-w-[88vw]', props.className)}>
+        <div className="h-full min-w-[240px] max-w-[240px] overflow-auto border-r">
           <div>
             <Suspense fallback={<LoadingIndicator />}>
               <SchemaTree db="oh-my-github" />
             </Suspense>
           </div>
         </div>
-        <div className={clsx('h-full flex flex-col min-w-[820px] w-full gap-2')}>
+        <div className={clsx('h-full flex flex-col w-full gap-2')}>
           <SQLEditorHeader
             currentDb={currentDb}
             onCurrentDbChange={onCurrentDbChange}
