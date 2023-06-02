@@ -1,8 +1,10 @@
 import Editor from '@monaco-editor/react';
+import * as monaco from 'monaco-editor';
 
 import theme from 'monaco-themes/themes/Tomorrow.json';
 
 theme.colors['editor.background'] = '#FFFFFF60';
+monaco.editor.defineTheme('tomorrow', theme as any);
 
 export interface MarkdownEditorProps {
   markdown?: string;
@@ -19,9 +21,6 @@ export function MarkdownEditor ({ markdown, defaultMarkdown, onMarkdownChange }:
       defaultLanguage="markdown"
       defaultValue={defaultMarkdown}
       onChange={onMarkdownChange}
-      beforeMount={monaco => {
-        monaco.editor.defineTheme('tomorrow', theme as any);
-      }}
       options={{
         fontFamily: 'CabinSketch',
         fontSize: 16,

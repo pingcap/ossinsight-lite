@@ -1,8 +1,10 @@
 import Editor from '@monaco-editor/react';
+import * as monaco from 'monaco-editor';
 
 import theme from 'monaco-themes/themes/Tomorrow.json';
 
 theme.colors['editor.background'] = '#FFFFFF60';
+monaco.editor.defineTheme('tomorrow', theme as any);
 
 export interface SQLEditorProps {
   sql?: string;
@@ -21,8 +23,7 @@ export function SQLEditor ({ sql, defaultSql, onSqlChange, onCommand }: SQLEdito
       defaultValue={defaultSql}
       onChange={onSqlChange}
       beforeMount={monaco => {
-        monaco.editor.defineTheme('tomorrow', theme as any);
-        monaco.editor.addEditorAction({
+        const action = monaco.editor.addEditorAction({
           id: 'run-sql',
           label: 'Run SQL',
           keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter],
@@ -30,6 +31,9 @@ export function SQLEditor ({ sql, defaultSql, onSqlChange, onCommand }: SQLEdito
           run (): void | Promise<void> {
             onCommand?.('run-sql');
           },
+        });
+        monaco.editor.onWillDisposeModel(() => {
+          action.dispose();
         });
       }}
       options={{
