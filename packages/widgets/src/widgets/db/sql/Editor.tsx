@@ -74,10 +74,20 @@ function Editor ({ defaultSql, defaultDb, sql, currentDb, visualize, forwardedRe
 
   const runSql = useRefCallback(() => {
     execute({ sql, db: currentDb, force: true });
-  })
+  });
+
+  const selectedColumns = useMemo(() => {
+    switch (visualize.type) {
+      case 'chart:line':
+      case 'chart:bar':
+        return [visualize.x.field, visualize.y.field];
+      default:
+        return undefined;
+    }
+  }, [visualize]);
 
   return (
-    <VisualizeContext.Provider value={{ result: result?.data, running, error, columns: result?.columns }}>
+    <VisualizeContext.Provider value={{ result: result?.data, running, error, columns: result?.columns, selectedColumns }}>
       <div ref={forwardedRef} {...props} className={clsx('relative flex gap-2 min-w-[800px]', props.className)}>
         <div className="min-w-[240px] max-w-[240px] h-full overflow-auto border-r">
           <div>

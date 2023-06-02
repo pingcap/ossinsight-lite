@@ -1,6 +1,6 @@
 import * as RuiSelect from '@radix-ui/react-select';
 import clsx from 'clsx';
-import { CSSProperties, ReactNode, useMemo, useState } from 'react';
+import { CSSProperties, ForwardedRef, ReactNode, useMemo, useState } from 'react';
 import useRefCallback from '../../hooks/ref-callback.ts';
 import './style.scss';
 
@@ -14,10 +14,12 @@ export type SelectProps<T> = {
   renderOption: (value: T, selected: boolean) => ReactNode;
   renderOptionLabel?: (value: T, open: boolean) => ReactNode;
   selectItemProps?: (value: T, selected: boolean) => RuiSelect.PrimitiveDivProps;
+  getDisabled?: (value: T) => boolean;
+  forwardedButtonRef?: ForwardedRef<HTMLButtonElement>
 }
 
 // TODO: <select hidden> ref for standard html forms
-export function Select<T> ({ value, onValueChange, options, getKey, renderOptionLabel, renderOption, selectItemProps, className, style }: SelectProps<T>) {
+export function Select<T> ({ forwardedButtonRef, value, onValueChange, options, getDisabled, getKey, renderOptionLabel, renderOption, selectItemProps, className, style }: SelectProps<T>) {
   const [selected, setSelected] = useState(() => getKey(value));
   const [open, setOpen] = useState(false);
 
@@ -36,7 +38,7 @@ export function Select<T> ({ value, onValueChange, options, getKey, renderOption
 
   return (
     <RuiSelect.Root value={selected} onValueChange={handleValueChange} open={open} onOpenChange={setOpen}>
-      <RuiSelect.Trigger className={clsx('select-trigger', className)} style={style}>
+      <RuiSelect.Trigger className={clsx('select-trigger', className)} style={style} ref={forwardedButtonRef}>
         {renderOptionLabel?.(value, open) ?? renderOption(value, false)}
       </RuiSelect.Trigger>
       <RuiSelect.Portal className="select-content">
@@ -45,14 +47,17 @@ export function Select<T> ({ value, onValueChange, options, getKey, renderOption
             {options.map(option => {
               const key = getKey(option);
               const isSelected = selected === key;
+              const isDisabled = getDisabled?.(option) ?? false;
               const itemProps = selectItemProps?.(option, isSelected);
               return (
                 <RuiSelect.Item
                   key={key}
                   value={key}
                   aria-selected={isSelected}
+                  aria-disabled={isDisabled}
+                  disabled={isDisabled}
                   {...itemProps}
-                  className={clsx('select-item', itemProps?.className, { selected: isSelected })}
+                  className={clsx('select-item', itemProps?.className, { selected: isSelected, disabled: isDisabled })}
                 >
                   {renderOption(option, isSelected)}
                 </RuiSelect.Item>

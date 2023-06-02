@@ -27,8 +27,16 @@
       @apply bg-gray-100;
     }
 
+    &.disabled {
+      @apply bg-transparent;
+    }
+
     &.selected {
       @apply bg-gray-200;
+    }
+
+    &.disabled {
+      @apply cursor-not-allowed text-gray-400;
     }
   }
 }

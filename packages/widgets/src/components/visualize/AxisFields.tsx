@@ -1,4 +1,5 @@
 import { Field } from '@ossinsight-lite/ui/components/form';
+import AxisTypeSelect from './AxisTypeSelect';
 import ColumnSelect from './ColumnSelect';
 
 export type BaseAxis = 'x' | 'y';
@@ -23,7 +24,7 @@ export default function AxisFields<Axis extends BaseAxis> ({ axis }: AxisFieldsP
       />
       <Field
         label="Axis type"
-        control={<input className="outline-none flex-1 border-b px-2 py-1" placeholder="Input a title" />}
+        control={<AxisTypeSelect />}
         name={`${axis}.type`}
       />
     </fieldset>

@@ -2,6 +2,7 @@ import { createContext } from 'react';
 
 type VisualizeContextValues = {
   columns?: { name: string }[] | undefined
+  selectedColumns?: string[] | undefined
   running: boolean
   result: any | undefined
   error: unknown
@@ -10,6 +11,7 @@ type VisualizeContextValues = {
 
 export const VisualizeContext = createContext<VisualizeContextValues>({
   columns: undefined,
+  selectedColumns: undefined,
   running: false,
   result: undefined,
   error: undefined,
