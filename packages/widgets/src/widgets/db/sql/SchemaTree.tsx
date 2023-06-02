@@ -1,6 +1,6 @@
-import * as Accordion from '@radix-ui/react-accordion';
-import { useEffect, useState } from 'react';
 import LoadingIndicator from '@ossinsight-lite/ui/components/loading-indicator';
+import * as Accordion from '@radix-ui/react-accordion';
+import { useEffect, useMemo, useState } from 'react';
 import { Alert } from '../../../components/alert';
 import { doDbSqlQuery } from '../../../utils/query';
 import { AccordionContent, AccordionItem, AccordionTrigger } from './Accordion';
@@ -17,7 +17,10 @@ import TypeIcon from './icons/type.svg';
 export default function SchemaTree ({ db }: { db: string }) {
 
   return (
-    <DatabaseList db={db} />
+    <>
+      <h6 className="px-2 my-2 text-md font-bold text-gray-700">Database Schema</h6>
+      <DatabaseList db={db} />
+    </>
   );
 }
 
@@ -37,6 +40,17 @@ function Loading () {
 function DatabaseList ({ db }: { db: string }) {
   const { result, loading, error } = useQuery<{ Database: string }>(db, 'SHOW DATABASES;');
 
+  const items = useMemo(() => {
+    return result?.data.filter(item => ![
+      'mysql',
+      'test',
+      'ossinsight_lite_admin',
+      'sample_data',
+      'INFORMATION_SCHEMA',
+      'PERFORMANCE_SCHEMA',
+    ].includes(item.Database));
+  }, [result]);
+
   if (loading) {
     return <Loading />;
   }
@@ -46,8 +60,8 @@ function DatabaseList ({ db }: { db: string }) {
   }
 
   return (
-    <Accordion.Root type="single" collapsible className="font-mono text-[12px]">
-      {result.data.map(item => (
+    <Accordion.Root type="single" collapsible className="text-xs">
+      {items.map(item => (
         <AccordionItem key={item.Database} value={item.Database}>
           <AccordionTrigger>
             <DatabaseIcon className="text-gray-400" />
@@ -85,7 +99,7 @@ function TablesList ({ db, database }: { db: string, database: string }) {
       {result.data.map(item => (
         <AccordionItem key={item[columnName]} value={item[columnName]}>
           <AccordionTrigger>
-            <TableIcon width={14} height={14} className="text-gray-400" />
+            <TableIcon width={14} height={14} className="text-gray-400 text-xs" />
             <span>
               {item[columnName]}
             </span>
@@ -137,7 +151,7 @@ function Column ({ column }: { column: ColumnDefine }) {
     <span className="flex items-center gap-2">
       <Icon className="text-gray-400" />
       {column.Key === 'PRI' ? <KeyFillIcon className="text-gray-400" /> : column.Key ? <KeyIcon className="text-gray-400" /> : null}
-      <span className="text-gray-500">
+      <span className="text-gray-500 text-xs">
         {column.Field}
       </span>
     </span>

@@ -2,7 +2,6 @@
 import { currentDashboard, library } from '@/core/bind';
 import { widgets } from '@/core/bind-client';
 import EditWidgetInstance from '@/components/EditWidgetInstance';
-import RoughBox from '@/packages/ui/components/roughness/shape/box';
 import { readItem } from '@/packages/ui/hooks/bind';
 import { useCallback, useState } from 'react';
 import colors from 'tailwindcss/colors';
@@ -41,7 +40,6 @@ export default function ({ params }: any) {
           <span className="relative z-10 px-4 font-bold inline-flex gap-2 items-center text-blue-700">
             Save
           </span>
-          <RoughBox color={colors.blue['400']} />
         </button>
       </div>
       <div className="flex-1 overflow-hidden">

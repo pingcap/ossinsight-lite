@@ -1,4 +1,5 @@
 @import "@ossinsight-lite/roughness/fonts/index.css";
+@import "@ossinsight-lite/ui/style.scss";
 
 @config "../tailwind.config.js";
 @tailwind base;
@@ -15,8 +16,15 @@
   &-overlay {
     @apply bg-black bg-opacity-70 fixed inset-0;
 
+    animation-duration: 0.6s;
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+
     &[data-state=open] {
-      // todo: animate-overlayShow
+      animation-name: overlay-show;
+    }
+
+    &[data-state=closed] {
+      animation-name: overlay-hide;
     }
   }
 
@@ -36,15 +44,66 @@
 
     box-shadow: hsl(206 22% 7% / 35%) 0 10px 38px -10px, hsl(206 22% 7% / 20%) 0px 10px 20px -15px;
 
+
+    animation-duration: 0.6s;
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+
     &:focus {
       outline: none;
     }
 
     &[data-state=open] {
-      // todo: animate-contentShow
+      animation-name: dialog-in;
+    }
+
+    &[data-state=closed] {
+      animation-name: dialog-out;
     }
   }
 }
+
+
+@keyframes overlay-show {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes overlay-hide {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translate3d(-50%, -50%, 0) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(-50%, -50%, 0) scale(1);
+  }
+}
+
+@keyframes dialog-out {
+  from {
+    opacity: 1;
+    transform: translate3d(-50%, -50%, 0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(-50%, -50%, 0) scale(0.8);
+  }
+}
+
 
 /* Transitions */
 .fade-enter {

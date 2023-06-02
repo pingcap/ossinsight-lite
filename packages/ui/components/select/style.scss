@@ -1,0 +1,64 @@
+.select {
+  &-trigger {
+    @apply outline-none text-gray-700;
+  }
+
+  &-content {
+    @apply z-20 overflow-hidden bg-white rounded py-1 shadow-lg;
+
+    animation-duration: 0.6s;
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+    transform-origin: var(--radix-select-content-transform-origin);
+
+    &[data-state='open'] {
+      animation-name: select-slideIn;
+    }
+
+    &[data-state='closed'] {
+      animation-name: select-slideOut;
+      animation-duration: 300ms;
+    }
+  }
+
+  &-item {
+    @apply px-2 py-1 cursor-pointer transition-colors text-sm text-gray-700 outline-none;
+
+    &:hover, &:focus {
+      @apply bg-gray-100;
+    }
+
+    &.disabled {
+      @apply bg-transparent;
+    }
+
+    &.selected {
+      @apply bg-gray-200;
+    }
+
+    &.disabled {
+      @apply cursor-not-allowed text-gray-400;
+    }
+  }
+}
+
+@keyframes select-slideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes select-slideOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+}

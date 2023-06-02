@@ -22,7 +22,7 @@ function WidgetPreview ({ id, name, className, onClick, props }: WidgetPreviewPr
 
   return (
     <>
-      <h3 className="text-gray-400 text-sm">{(widget.ConfigureComponent ? props?.visualize?.title : undefined) ?? widget.displayName}</h3>
+      <h3 className="text-gray-400 text-sm">{(widget.ConfigureComponent ? props?.title : undefined) ?? widget.displayName}</h3>
       <div className={clsx('flex-1 flex items-stretch overflow-hidden', onClick && 'cursor-pointer')} onClick={onClick}>
         <WidgetContext.Provider value={{
           visible,

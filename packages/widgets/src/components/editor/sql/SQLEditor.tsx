@@ -8,9 +8,10 @@ export interface SQLEditorProps {
   sql?: string;
   defaultSql?: string;
   onSqlChange?: (sql: string) => void;
+  onCommand?: (command: 'run-sql') => void;
 }
 
-export function SQLEditor ({ sql, defaultSql, onSqlChange }: SQLEditorProps) {
+export function SQLEditor ({ sql, defaultSql, onSqlChange, onCommand }: SQLEditorProps) {
   return (
     <Editor
       className="h-full w-full"
@@ -21,12 +22,20 @@ export function SQLEditor ({ sql, defaultSql, onSqlChange }: SQLEditorProps) {
       onChange={onSqlChange}
       beforeMount={monaco => {
         monaco.editor.defineTheme('tomorrow', theme as any);
+        monaco.editor.addEditorAction({
+          id: 'run-sql',
+          label: 'Run SQL',
+          keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter],
+          contextMenuGroupId: 'navigation',
+          run (): void | Promise<void> {
+            onCommand?.('run-sql');
+          },
+        });
       }}
       options={{
-        fontFamily: 'CabinSketch',
-        fontSize: 16,
+        fontSize: 14,
         padding: {
-          top: 8,
+          top: 0,
         },
         minimap: {
           enabled: false,
@@ -37,6 +46,8 @@ export function SQLEditor ({ sql, defaultSql, onSqlChange }: SQLEditorProps) {
         occurrencesHighlight: false,
         selectionHighlight: false,
         renderLineHighlight: 'none',
+        lineNumbers: 'off',
+        folding: false,
       }}
     />
   );

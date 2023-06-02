@@ -16,6 +16,7 @@ module.exports = {
       },
       fontFamily: {
         sketch: ['CabinSketch', 'system-ui'],
+        mono: ['Menlo', 'Monaco', "Courier New", 'monospace'],
       },
     },
   },

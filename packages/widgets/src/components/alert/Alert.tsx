@@ -13,6 +13,9 @@ export function Alert ({ icon, title, children }: AlertProps) {
   const { size, ref } = useSize<HTMLDivElement>();
 
   const svg = useMemo(() => {
+    if (!document) {
+      return '';
+    }
     const svg = document.createElement('svg') as any as SVGSVGElement;
 
     svg.setAttribute('viewbox', `0 0 ${size.width} ${size.height}`);

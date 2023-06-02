@@ -1,12 +1,10 @@
-'use client'
+'use client';
 import { ModalContext } from '@/app/@modal/(all)/context';
 import EditWidgetInstance from '@/components/EditWidgetInstance';
 import { currentDashboard, library } from '@/core/bind';
 import { widgets } from '@/core/bind-client';
-import RoughBox from '@/packages/ui/components/roughness/shape/box';
 import { readItem } from '@/packages/ui/hooks/bind';
 import { useCallback, useContext, useState } from 'react';
-import colors from 'tailwindcss/colors';
 
 export interface CreateWidgetProps {
   name: string;
@@ -47,7 +45,6 @@ export default function CreateWidget ({ name }: CreateWidgetProps) {
           <span className="relative z-10 px-4 font-bold inline-flex gap-2 items-center text-blue-700">
             Save
           </span>
-          <RoughBox color={colors.blue['400']} />
         </button>
       </div>
       <div className="flex-1 overflow-hidden">

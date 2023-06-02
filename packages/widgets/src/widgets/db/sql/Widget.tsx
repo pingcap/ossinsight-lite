@@ -37,7 +37,7 @@ function Widget ({ defaultSql, defaultDb, sql, currentDb, visualize, forwardedRe
 
   return (
     <div {...props} ref={forwardedRef}>
-      <ResultDisplay visualize={visualize} running={running} error={error} result={result} />
+      <ResultDisplay visualize={visualize} running={running} error={error} result={result} title={props.title} />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 export type VisualizeRuntimeProps = {
   result: any
   running: any
+  title: string | undefined
 }
 
 export type VisualizeConfigProps = {
@@ -17,11 +18,17 @@ export type VisualizeType =
 
 export type VisualizeTable = {
   type: 'table'
+  /**
+   * @deprecated use `props`.`title` directly
+   */
   title: string
 }
 
 export type VisualizeGauge = {
   type: 'gauge'
+  /**
+   * @deprecated use `props`.`title` directly
+   */
   title: string
 }
 
@@ -33,6 +40,9 @@ export type Axis = {
 }
 
 export type VisualizeXYChart = {
+  /**
+   * @deprecated use `props`.`title` directly
+   */
   title: string
   x: Axis
   y: Axis
