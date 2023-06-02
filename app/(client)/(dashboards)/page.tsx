@@ -1,9 +1,13 @@
 import DashboardServer from '@/components/pages/Dashboard/dashboard.server';
+import { TiDBCloudPlaygroundButton } from '@/components/TiDBCloudPlayground';
 import React from 'react';
 
 export default async function Page () {
   return (
-    <DashboardServer name="default" />
+    <>
+      <TiDBCloudPlaygroundButton />
+      <DashboardServer name="default" />
+    </>
   );
 }
 
