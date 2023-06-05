@@ -42,7 +42,7 @@ export const renderParentItem: MenuRenderers['renderParentItem'] = (item, _, chi
 export const renderItem: MenuRenderers['renderItem'] = (item) => {
   const { isSub } = useContext(PrivateContext);
   let el = (
-    <button key={item.id} onClick={item.action} disabled={item.disabled} style={{ order: item.order }} className="navmenu-item p-1 cursor-pointer">
+    <button key={item.id} onClick={item.action} disabled={item.disabled} style={{ order: item.order }} className={clsx('navmenu-item p-1', item.disabled ? 'text-gray-400 cursor-not-allowed' : 'cursor-pointer')}>
       {item.text}
     </button>
   );

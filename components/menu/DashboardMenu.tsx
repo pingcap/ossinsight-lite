@@ -13,6 +13,7 @@ import { useCallback, useMemo } from 'react';
 export default function DashboardMenu ({ dashboardName, dashboardNames, editMode }: { dashboardName: string, dashboardNames: string[], editMode: boolean }) {
   const router = useRouter();
   const loading = useWatchReactiveValueField(appState, 'loading');
+  const saving = useWatchReactiveValueField(appState, 'saving');
   const configurableWidgets = useMemo(() => {
     return widgets.values.filter(widget => !!widget.ConfigureComponent);
   }, []);
@@ -59,7 +60,7 @@ export default function DashboardMenu ({ dashboardName, dashboardNames, editMode
           <MenuItem id={'new'} order={999} action={handleClickNew} text={<span className="inline-block min-w-[180px] text-sm text-left text-gray-600">Browse library</span>} />
         </MenuItem>
       )}
-      <MenuItem id="EditModeSwitch" order={50} disabled={loading > 0} text={editMode ? <UnlockIcon /> : <LockIcon />} action={() => startAppStateLoadingTransition(() => router.push(dashboardHref(dashboardName, !editMode)))} />
+      <MenuItem id="EditModeSwitch" order={50} disabled={loading > 0 || saving} text={editMode ? <UnlockIcon /> : <LockIcon />} action={() => startAppStateLoadingTransition(() => router.push(dashboardHref(dashboardName, !editMode)))} />
     </>
   );
 }
