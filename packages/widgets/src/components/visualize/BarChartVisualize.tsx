@@ -1,4 +1,3 @@
-import '@ossinsight-lite/roughness/chartjs';
 import { BarElement, CategoryScale, Chart as ChartJs, Filler, Legend, LinearScale, PointElement, TimeScale, TimeSeriesScale, Title, Tooltip as _Tooltip } from 'chart.js';
 import { useMemo } from 'react';
 import { Bar } from 'react-chartjs-2';

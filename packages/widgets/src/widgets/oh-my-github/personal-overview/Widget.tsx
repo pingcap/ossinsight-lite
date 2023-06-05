@@ -1,6 +1,5 @@
 'use client';
 
-import '@ossinsight-lite/roughness/chartjs';
 import { CategoryScale, Chart as ChartJs, Filler, Legend, LinearScale, LineElement, PointElement, TimeScale, TimeSeriesScale, Title, Tooltip as _Tooltip } from 'chart.js';
 import 'chartjs-adapter-luxon';
 import clsx from 'clsx';
