@@ -5,7 +5,7 @@ export type WidgetContextValues = {
   props: any
   configuring: boolean
   creating: boolean
-  onPropChange: (name: string, value: any) => void
+  onPropChange: (name: any, value: any) => void
 }
 
 const WidgetContext = createContext<WidgetContextValues>({

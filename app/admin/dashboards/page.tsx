@@ -1,5 +1,7 @@
-import { AddDashboardForm, DeleteDashboardButton } from '@/components/pages/admin/dashboards/forms';
+import { AddDashboardForm, ChangeVisibleButton, DeleteDashboardButton } from '@/components/pages/admin/dashboards/forms';
 import { sql } from '@/utils/mysql';
+import BoxArrowUpRightIcon from 'bootstrap-icons/icons/box-arrow-up-right.svg';
+import PencilIcon from 'bootstrap-icons/icons/pencil.svg';
 import Link from 'next/link';
 
 export default async function () {
@@ -22,10 +24,20 @@ export default async function () {
           <tr key={item.name}>
             <td>{item.name}</td>
             <td>
-              <div className="flex gap-2 items-center">
-                <Link href={item.name === 'default' ? `/` : `/dashboards/${item.name}`}>Visit</Link>
-                <Link href={`/dashboards/${item.name}/edit`}>Edit</Link>
-                {item.name !== 'default' && <DeleteDashboardButton name={item.name} />}
+              <div className="flex gap-1 items-center">
+                <Link className="btn btn-link" href={item.name === 'default' ? `/` : `/dashboards/${item.name}`}>
+                  <BoxArrowUpRightIcon width={12} height={12} />
+                </Link>
+                <Link className="btn btn-link" href={`/dashboards/${item.name}/edit`}>
+                  <PencilIcon width={12} height={12} />
+                </Link>
+
+                {item.name !== 'default' && (
+                  <>
+                    <ChangeVisibleButton name={item.name} visibility={item.visibility} />
+                    <DeleteDashboardButton name={item.name} />
+                  </>
+                )}
               </div>
             </td>
           </tr>

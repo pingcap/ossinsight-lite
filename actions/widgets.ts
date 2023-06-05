@@ -4,7 +4,6 @@ import { getDatabaseUri, sql, withConnection } from '@/utils/mysql';
 import { ADMIN_DATABASE_NAME } from '@/utils/server/auth';
 import { LayoutConfigV1, LibraryItem } from '@/utils/types/config';
 import { revalidatePath } from 'next/cache';
-import { cache } from 'react';
 
 export async function addLibraryItemAction (item: LibraryItem) {
   await addLibraryItem(item);
@@ -85,13 +84,22 @@ export async function deleteDashboardAction (name: string) {
   revalidatePath('/admin/dashboards');
 }
 
+export async function toggleDashboardVisibilityAction (name: string, visibility: string) {
+  let newVisibility = visibility === 'public' ? 'private' : 'public';
+
+  if (typeof name !== 'string') {
+    throw new Error('name is required');
+  }
+
+  await updateDashboardVisibility(name, newVisibility);
+  revalidatePath('/admin/dashboards');
+}
+
 export async function addDashboard (name: string) {
-  await withConnection(getDatabaseUri(ADMIN_DATABASE_NAME), async ({ sql }) => (
-    sql`
-        INSERT INTO dashboards (name, properties)
-        VALUES (${name}, ${JSON.stringify({ layout: defaultLayoutConfig })})
-    `
-  ));
+  await sql`
+      INSERT INTO dashboards (name, properties)
+      VALUES (${name}, ${JSON.stringify({ layout: defaultLayoutConfig })})
+  `;
 }
 
 export async function deleteDashboard (name: string) {
@@ -99,11 +107,20 @@ export async function deleteDashboard (name: string) {
     throw new Error(`Do not delete dashboard ${name}`);
   }
 
-  await withConnection(getDatabaseUri(ADMIN_DATABASE_NAME), async ({ sql }) => (
-    sql`
-        DELETE
-        FROM dashboards
-        WHERE name = ${name}
-    `
-  ));
+  await sql`
+      DELETE
+      FROM dashboards
+      WHERE name = ${name}
+  `;
+}
+
+export async function updateDashboardVisibility (name: string, visibility: string) {
+  if (name === 'default') {
+    throw new Error(`Default dashboard must bu public.`);
+  }
+  await sql`
+      UPDATE dashboards
+      SET visibility = ${visibility}
+      WHERE name = ${name}
+  `;
 }

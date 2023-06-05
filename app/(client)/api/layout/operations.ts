@@ -115,7 +115,7 @@ export async function getLibrary (readonly: boolean) {
 }
 
 export async function getDashboardNames (readonly: boolean) {
-  const dashboards = await (readonly ? db.getDashboardNames : db.getPublicDashboardNames)(sql);
+  const dashboards = await (readonly ? db.getPublicDashboardNames : db.getDashboardNames)(sql);
 
   return dashboards.map(item => item.name);
 }
