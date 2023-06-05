@@ -53,3 +53,11 @@ for (let [name, render] of Object.entries(internals)) {
     displayName: name + ' (Deprecated)',
   } satisfies ResolvedWidgetModule);
 }
+
+if (typeof window !== 'undefined') {
+  setInterval(() => {
+    if (document.visibilityState !== 'hidden') {
+      fetch('/api/refresh-token')
+    }
+  }, 5 * 60 * 1000);
+}
