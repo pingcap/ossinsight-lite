@@ -11,7 +11,7 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 export async function logout () {
-  (cookies() as RequestCookies).delete('auth');
+  (cookies() as unknown as RequestCookies).delete('auth');
 }
 
 async function authenticate ({ sql }: SqlExecutor, username: string, password: string) {

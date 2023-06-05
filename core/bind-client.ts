@@ -55,9 +55,11 @@ for (let [name, render] of Object.entries(internals)) {
 }
 
 if (typeof window !== 'undefined') {
+  void fetch('/api/refresh-token');
+
   setInterval(() => {
     if (document.visibilityState !== 'hidden') {
-      fetch('/api/refresh-token')
+      void fetch('/api/refresh-token');
     }
   }, 5 * 60 * 1000);
 }
