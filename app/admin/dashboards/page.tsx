@@ -25,10 +25,10 @@ export default async function () {
             <td>{item.name}</td>
             <td>
               <div className="flex gap-1 items-center">
-                <Link className="btn btn-link" href={item.name === 'default' ? `/` : `/dashboards/${item.name}`}>
+                <Link className="btn btn-link" href={item.name === 'default' ? `/` : `/dashboards/${item.name}`} prefetch={false}>
                   <BoxArrowUpRightIcon width={12} height={12} />
                 </Link>
-                <Link className="btn btn-link" href={`/dashboards/${item.name}/edit`}>
+                <Link className="btn btn-link" href={`/dashboards/${item.name}/edit`} prefetch={false}>
                   <PencilIcon width={12} height={12} />
                 </Link>
 
