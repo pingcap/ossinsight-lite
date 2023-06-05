@@ -23,7 +23,7 @@ export default async function (server: ServerContext, props: WidgetProps, ctx: C
 
   const { x, y, title } = props.visualize;
 
-  if (props.visualize.type !== 'chart:bar') {
+  if (props.visualize.type === 'chart:bar') {
     new ChartJs(ctx, {
       data: { datasets: [{ type: 'bar', ...barDataset(data, x, y) }] },
       options: {

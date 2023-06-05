@@ -3,7 +3,9 @@ import AppLoadingIndicator from '@/components/AppLoadingIndicator';
 import { MenuItem } from '@/packages/ui/components/menu';
 import { NavMenu } from '@/packages/ui/components/nav-menu';
 import { Suspense } from 'react';
+import './client-entry';
 import './globals.scss';
+import '@/static/CabinSketch.css';
 
 export default function RootLayout ({
   children,
