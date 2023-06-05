@@ -23,6 +23,7 @@ export function useStyle<K extends keyof Style> (id: string, prop: K, defaultVal
       }
       pulling = true;
       const newValue = next.props.style?.[prop];
+      // @ts-ignore TS2590: too complex
       if (newValue !== value.current) {
         value.current = newValue;
         value.notify();

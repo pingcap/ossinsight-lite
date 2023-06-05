@@ -41,7 +41,7 @@ const nextConfig = {
   onDemandEntries: {},
   experimental: {
     appDir: true,
-    typedRoutes: true,
+    // typedRoutes: true,
     serverComponentsExternalPackages: ["mysql2", "@napi-rs/canvas"],
     serverActions: true,
   },
