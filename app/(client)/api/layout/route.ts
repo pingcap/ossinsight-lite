@@ -15,14 +15,15 @@ export async function POST (req: NextRequest) {
       for (let command of commands) {
         switch (command.type) {
           case 'update-library-item': {
-            const { name, props } = command.payload;
+            const { name, props, visibility } = command.payload;
             const propsString = JSON.stringify(props || {});
 
             await sql`
-                INSERT INTO library_items (id, widget_name, properties)
-                VALUES (${command.id}, ${name}, ${propsString})
+                INSERT INTO library_items (id, widget_name, properties, visibility)
+                VALUES (${command.id}, ${name}, ${propsString}, ${visibility})
                 ON DUPLICATE KEY UPDATE widget_name = ${name},
-                                        properties  = ${propsString}
+                                        properties  = ${propsString},
+                                        visibility  = ${visibility}
             `;
             break;
           }
@@ -60,8 +61,6 @@ export async function POST (req: NextRequest) {
   } catch {
     success = false;
   }
-
-  revalidatePath('/dashboards/:*/items/add');
 
   return NextResponse.json({ tidb: success });
 }

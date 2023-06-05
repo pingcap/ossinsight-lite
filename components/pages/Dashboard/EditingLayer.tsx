@@ -3,7 +3,7 @@ import PaletteIcon from '@/components/icons/palette.svg';
 import PencilIcon from '@/components/icons/pencil.svg';
 import TrashIcon from '@/components/icons/trash.svg';
 import { DashboardContext } from '@/components/pages/Dashboard/context';
-import { startAppStateLoadingTransition } from '@/core/bind';
+import { library, startAppStateLoadingTransition } from '@/core/bind';
 import { useNullableDashboardItems } from '@/core/dashboard';
 import { duplicateItem } from '@/core/helpers/items';
 import widgets from '@/core/widgets-manifest';
@@ -14,6 +14,8 @@ import { ToolbarMenu } from '@/packages/ui/components/toolbar-menu';
 import { useWatchItemField } from '@/packages/ui/hooks/bind';
 import useRefCallback from '@/packages/ui/hooks/ref-callback';
 import { getConfigurable, getDuplicable, getStyleConfigurable } from '@/utils/widgets';
+import EyeSlashIcon from 'bootstrap-icons/icons/eye-slash.svg';
+import EyeIcon from 'bootstrap-icons/icons/eye.svg';
 import clsx from 'clsx';
 import { useRouter } from 'next/navigation';
 import { useContext, useMemo } from 'react';
@@ -61,11 +63,25 @@ export function EditingLayer ({ id, draggableProps }: EditLayerProps) {
     duplicateItem(dashboardName, id, rect => move(rect, [1, 1]));
   });
 
+  const handleVisibilityChange = useRefCallback(() => {
+    library.update(id, (item, ctx) => {
+      if (item.visibility === 'public') {
+        item.visibility = 'private';
+      } else {
+        item.visibility = 'public';
+      }
+      ctx.changedKeys = [`visibility`];
+      return item;
+    });
+  });
+
+  const isPrivate = useWatchItemField('library', id, 'visibility') !== 'public';
+
   return (
     <div
-      className={clsx('absolute left-0 top-0 w-full h-full z-10 bg-gray-700 bg-opacity-0 text-white flex flex-col transition-colors')}
+      className={clsx('absolute left-0 top-0 w-full h-full z-10 text-white flex flex-col transition-colors')}
     >
-      <div className="text-black bg-black bg-opacity-0 opacity-20 hover:bg-opacity-30 hover:opacity-100 hover:text-white transition-all">
+      <div className="text-black transition-all">
         <ToolbarMenu
           className="flex justify-end items-center"
           data-layer-item
@@ -75,7 +91,7 @@ export function EditingLayer ({ id, draggableProps }: EditLayerProps) {
                 id="delete"
                 text={<TrashIcon className="text-red-500" />}
                 action={deleteAction}
-                order={100}
+                order={10000}
               />
               {duplicable && (
                 <MenuItem
@@ -102,6 +118,12 @@ export function EditingLayer ({ id, draggableProps }: EditLayerProps) {
                   disabled={!configurable}
                 />
               )}
+              <MenuItem
+                id="visibility"
+                text={isPrivate ? <EyeSlashIcon /> : <EyeIcon className="text-green-500" />}
+                action={handleVisibilityChange}
+                order={100}
+              />
             </>
           )}
         >

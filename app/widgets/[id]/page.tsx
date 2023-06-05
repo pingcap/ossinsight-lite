@@ -1,7 +1,12 @@
-import { findItem } from '@/actions/widgets';
+import { getLibraryItem } from '@/app/(client)/api/layout/operations';
+import { Unauthorized } from '@/components/Errors';
 import WidgetPreviewWithDetails from '@/components/pages/widget/WidgetPreviewWithDetails';
+import { isReadonly } from '@/utils/server/auth';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { cache } from 'react';
+
+const findItem = cache(getLibraryItem);
 
 export default async function ({ params }: any) {
   const id = decodeURIComponent(params.id);
@@ -10,6 +15,12 @@ export default async function ({ params }: any) {
 
   if (!item) {
     notFound();
+  }
+
+  if (isReadonly() && item.visibility !== 'public') {
+    return (
+      <Unauthorized />
+    );
   }
 
   return (

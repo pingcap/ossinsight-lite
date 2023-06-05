@@ -23,6 +23,7 @@
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
     "@types/react-transition-group": "^4.4.6",
+    "bootstrap-icons": "^1.10.5",
     "chartjs-plugin-roughness": "^1.0.3",
     "dotenv": "^16.0.3",
     "monaco-editor-webpack-plugin": "^7.0.1",

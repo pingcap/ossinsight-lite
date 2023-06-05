@@ -1,9 +1,12 @@
-import { getDashboards } from '@/actions/widgets';
 import { AddDashboardForm, DeleteDashboardButton } from '@/components/pages/admin/dashboards/forms';
+import { sql } from '@/utils/mysql';
 import Link from 'next/link';
 
 export default async function () {
-  const dashboards = await getDashboards();
+  const dashboards = await sql<{ name: string, properties: any, visibility: 'public' | 'private' }>`
+      SELECT name, properties, visibility
+      FROM dashboards
+  `;
 
   return (
     <div>

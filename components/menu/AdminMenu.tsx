@@ -12,7 +12,7 @@ export default function AdminMenu () {
   return (
     <>
       <MenuItem id="Home" order={-9999} href="/" prefetch={false} text={<GridIcon />} />
-      <MenuItem id="Home" order={-9998} text={<BoxArrowRightIcon />} action={() => startTransition(() => logout().then(() => {
+      <MenuItem id="Logout" order={-9998} text={<BoxArrowRightIcon />} action={() => startTransition(() => logout().then(() => {
         router.push('/');
         router.refresh();
       }))} />

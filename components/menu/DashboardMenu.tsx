@@ -3,19 +3,16 @@ import LayoutWtfIcon from '@/components/icons/layout-wtf.svg';
 import LockIcon from '@/components/icons/lock.svg';
 import PlusIcon from '@/components/icons/plus.svg';
 import UnlockIcon from '@/components/icons/unlock.svg';
-import { appState, dashboards, startAppStateLoadingTransition } from '@/core/bind';
+import { appState, startAppStateLoadingTransition } from '@/core/bind';
 import { widgets } from '@/core/bind-client';
 import { MenuItem } from '@/packages/ui/components/menu';
-import { useCollectionKeys, useWatchReactiveValueField } from '@/packages/ui/hooks/bind/hooks';
-import LoadingIndicator from '@ossinsight-lite/ui/components/loading-indicator';
+import { useWatchReactiveValueField } from '@/packages/ui/hooks/bind/hooks';
 import { useRouter } from 'next/navigation';
 import { useCallback, useMemo } from 'react';
 
-export default function DashboardMenu ({ dashboardName, editMode }: { dashboardName: string, editMode: boolean }) {
+export default function DashboardMenu ({ dashboardName, dashboardNames, editMode }: { dashboardName: string, dashboardNames: string[], editMode: boolean }) {
   const router = useRouter();
   const loading = useWatchReactiveValueField(appState, 'loading');
-  const fetchingConfig = useWatchReactiveValueField(appState, 'fetchingConfig');
-  const dashboardNames = useCollectionKeys(dashboards) as string[];
   const configurableWidgets = useMemo(() => {
     return widgets.values.filter(widget => !!widget.ConfigureComponent);
   }, []);
@@ -40,18 +37,6 @@ export default function DashboardMenu ({ dashboardName, editMode }: { dashboardN
             href={dashboardHref(dashboard, editMode)}
           />
         ))}
-        {fetchingConfig && (
-          <MenuItem
-            key="Fetching config"
-            id="Fetching config"
-            order={1000}
-            custom
-          >
-            <span className="text-gray-400 flex items-center justify-center">
-              <LoadingIndicator />
-            </span>
-          </MenuItem>
-        )}
       </MenuItem>
       {editMode && (
         <MenuItem text={<PlusIcon width={20} height={20} />} id="new" order={40} disabled={loading > 0} parent>

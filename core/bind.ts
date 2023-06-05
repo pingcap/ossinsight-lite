@@ -1,10 +1,8 @@
 import { commit } from '@/app/(client)/api/layout/operations.client';
 import { BatchCommands } from '@/core/commands';
-import { ReactiveDashboardInstance } from '@/core/dashboard/reactive-dashboard-instance';
 import { DashboardInstance } from '@/core/dashboard/type';
 import { collections, singletons } from '@/packages/ui/hooks/bind/context';
 import { BindingTypeEvent } from '@/packages/ui/hooks/bind/types';
-import { LayoutConfigV1, LibraryItem } from '@/utils/types/config';
 import { startTransition, TransitionFunction } from 'react';
 import { debounceTime } from 'rxjs';
 
@@ -125,89 +123,3 @@ commands.changed
         }
       });
   });
-
-async function syncConfig () {
-  if (typeof window === 'undefined') {
-    return;
-  }
-
-  console.debug('[config]: start syncing');
-  const res = await fetch('/api/layout.json');
-  if (res.ok) {
-    const config: LayoutConfigV1 = await res.json();
-
-    localStorage.setItem('widgets:library', JSON.stringify(config.library));
-    localStorage.setItem('widgets:dashboards', JSON.stringify(config.dashboard));
-
-    commands.inactiveScope(() => {
-      for (let item of config.library) {
-        const key = item.id ?? item.name;
-        if (library.has(key)) {
-          library.update(key, item);
-        } else {
-          library.add(key, item);
-        }
-      }
-    });
-
-    for (const [name, dashboardConfig] of Object.entries(config.dashboard)) {
-      const dashboard = dashboards.getNullable(name);
-      if (!dashboard) {
-        dashboards.add(name, new ReactiveDashboardInstance(name, dashboardConfig));
-      } else {
-        dashboard.current.layout = dashboardConfig.layout;
-        const items = dashboard.current.items;
-        commands.inactiveScope(() => {
-          for (let item of dashboardConfig.items) {
-            if (items.has(item.id)) {
-              items.update(item.id, item);
-            } else {
-              items.add(item.id, item);
-            }
-          }
-        });
-      }
-    }
-    console.debug('[config]: sync succeed', `${config.library.length} items`);
-  } else {
-    throw new Error(`${res.status} ${res.statusText}`);
-  }
-}
-
-function syncLocalConfig () {
-  if (typeof localStorage === 'undefined') {
-    return;
-  }
-  const libraryString = localStorage.getItem('widgets:library');
-  if (libraryString) {
-    const items = JSON.parse(libraryString) as LibraryItem[];
-    commands.inactiveScope(() => {
-      for (let item of items) {
-        const key = item.id ?? item.name;
-        if (library.has(key)) {
-          library.update(key, item);
-        } else {
-          library.add(key, item);
-        }
-      }
-    });
-  }
-}
-
-syncLocalConfig();
-
-appState.update({
-  ...appState.current,
-  fetchingConfig: true,
-});
-
-startTransition(() => {
-  syncConfig()
-    .catch(console.error)
-    .finally(() => {
-      appState.update({
-        ...appState.current,
-        fetchingConfig: false,
-      });
-    });
-});

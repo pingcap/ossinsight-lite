@@ -1,7 +1,7 @@
 'use client';
 import { ModalContext } from '@/app/@modal/(all)/context';
 import WidgetPreview from '@/components/WidgetPreview';
-import { dashboards } from '@/core/bind';
+import { dashboards, library } from '@/core/bind';
 import { widgets } from '@/core/bind-client';
 import { readItem } from '@/packages/ui/hooks/bind';
 import useRefCallback from '@/packages/ui/hooks/ref-callback';
@@ -39,6 +39,12 @@ function Item ({ item, dashboardName }: { dashboardName: string, item: LibraryIt
     const dashboard = dashboards.getNullable(dashboardName)?.current;
     if (dashboard) {
       const id = item.id ?? item.name;
+
+      if (!library.has(id)) {
+        library.inactiveScope(() => {
+          library.add(id, item);
+        })
+      }
 
       if (!dashboard.items.has(id)) {
         dashboard.items.add(id, {

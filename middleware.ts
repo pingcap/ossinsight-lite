@@ -45,6 +45,12 @@ function anonymousAuth (req: NextRequest) {
   if (/\/api\/db\//.test(req.nextUrl.pathname)) {
     return true;
   }
+  if (req.nextUrl.pathname === '/' || /^\/dashboards\/[^/]*\/?$/.test(req.nextUrl.pathname)) {
+    return true;
+  }
+  if (req.nextUrl.pathname === 'layout.json') {
+    return true;
+  }
   return false;
 }
 

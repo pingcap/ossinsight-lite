@@ -12,15 +12,6 @@ export async function addLibraryItemAction (item: LibraryItem) {
   revalidatePath('/admin/widgets');
 }
 
-export async function getWidgets () {
-  return await sql<LibraryItem>`
-      SELECT id, widget_name AS name, properties AS props
-      FROM library_items
-      WHERE widget_name NOT LIKE 'internal:%'
-      ORDER BY widget_name, id
-  `;
-}
-
 export async function addLibraryItem (item: LibraryItem) {
   await sql`
       INSERT INTO library_items (id, widget_name, properties)
@@ -94,15 +85,6 @@ export async function deleteDashboardAction (name: string) {
   revalidatePath('/admin/dashboards');
 }
 
-export async function getDashboards () {
-  return await withConnection(getDatabaseUri(ADMIN_DATABASE_NAME), async ({ sql }) => (
-    sql<{ name: string }>`
-        SELECT name
-        FROM dashboards;
-    `
-  ));
-}
-
 export async function addDashboard (name: string) {
   await withConnection(getDatabaseUri(ADMIN_DATABASE_NAME), async ({ sql }) => (
     sql`
@@ -125,12 +107,3 @@ export async function deleteDashboard (name: string) {
     `
   ));
 }
-
-
-export const findItem = cache(async function findItem (id: string) {
-  return await sql.unique<{ id: string, name: string, props: any }>`
-      SELECT properties AS props, widget_name AS name, id
-      FROM library_items
-      WHERE id = ${id}
-  `;
-});
