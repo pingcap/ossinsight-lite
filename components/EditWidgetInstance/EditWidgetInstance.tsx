@@ -2,6 +2,7 @@ import { widgets } from '@/core/bind-client';
 import { readItem } from '@/packages/ui/hooks/bind';
 import useRefCallback from '@/packages/ui/hooks/ref-callback';
 import { useVisible } from '@/packages/ui/hooks/visible';
+import { LibraryItemProps } from '@/utils/types/config';
 import WidgetContext from '@ossinsight-lite/ui/context/widget';
 import clsx from 'clsx';
 import { ChangeEvent } from 'react';
@@ -9,7 +10,7 @@ import { ChangeEvent } from 'react';
 export interface EditWidgetInstanceProps {
   name: string;
   props: any;
-  onPropsChange: (key: string, value: any) => void;
+  onPropsChange: (key: keyof LibraryItemProps, value: any) => void;
   creating?: boolean;
   disableTitle?: boolean;
 }

@@ -50,7 +50,7 @@ export async function getDashboard (name: string, readonly: boolean) {
 
 export async function getAllDashboards (readonly: boolean) {
   try {
-    const dashboards = await withConnection(uri, async ({ sql }) => {
+    return await withConnection(uri, async ({ sql }) => {
       const items = await (readonly ? db.getAllPublicDashboardItems : db.getAllDashboardItems)(sql);
 
       const parsedItems = items.reduce((map, item) => {
@@ -76,7 +76,6 @@ export async function getAllDashboards (readonly: boolean) {
         return dashboards;
       }, {} as Record<string, Dashboard>);
     });
-    return ['tidb', dashboards] as const;
   } catch (e) {
     console.error(e);
   }
@@ -97,7 +96,7 @@ export async function getLibraryItem (id: string) {
 
 export async function getLibrary (readonly: boolean) {
   try {
-    const items = await withConnection(uri, async ({ sql }) => {
+    return await withConnection(uri, async ({ sql }) => {
       const rows = await (readonly ? getPublicLibraryItems : getLibraryItems)(sql);
       return rows.map(item => {
         return {
@@ -108,7 +107,6 @@ export async function getLibrary (readonly: boolean) {
         };
       });
     });
-    return ['tidb', items] as const;
   } catch (e) {
     console.error(e);
   }
