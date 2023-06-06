@@ -2,6 +2,7 @@ import config from '@/.osswrc.json';
 import widgetsManifest from '@/core/widgets-manifest';
 import { VisualizeType } from '@/packages/widgets/src/components/visualize/common';
 import { getDatabaseUri, sql, withConnection } from '@/utils/mysql';
+import { isReadonly } from '@/utils/server/auth';
 import { createCanvas, GlobalFonts, Path2D } from '@napi-rs/canvas';
 import { defaults } from 'chart.js';
 import { patchContext2D } from 'chartjs-plugin-roughness';
@@ -23,14 +24,22 @@ export async function GET (req: NextRequest, { params: { id } }: any) {
   let readonly = req.headers.get('X-Readonly') === 'true';
   id = decodeURIComponent(id);
 
-  const item = await sql.unique<{ name: string, props: { sql: string, currentDb: string, visualize: VisualizeType } }>`
+  const item = await sql.unique<{ name: string, props: { sql: string, currentDb: string, visualize: VisualizeType }, visibility: string }>`
       SELECT widget_name AS name,
-             properties  AS props
+             properties  AS props,
+             visibility  AS visibility
       FROM library_items
       WHERE id = ${id}
   `;
   if (!item) {
     notFound();
+  }
+
+  if (isReadonly(req) && item.visibility !== 'public') {
+    // todo unauthorized image
+    return new NextResponse(null, {
+      status: 401,
+    });
   }
   const { name, props } = item;
 
