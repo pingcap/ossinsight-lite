@@ -4,6 +4,7 @@ import EditWidgetInstance from '@/components/EditWidgetInstance';
 import { currentDashboard, library } from '@/core/bind';
 import { widgets } from '@/core/bind-client';
 import { readItem } from '@/packages/ui/hooks/bind';
+import useRefCallback from '@/packages/ui/hooks/ref-callback';
 import { useCallback, useContext, useState } from 'react';
 
 export interface CreateWidgetProps {
@@ -22,7 +23,7 @@ export default function CreateWidget ({ name }: CreateWidgetProps) {
     setProps(props => ({ ...props, [key]: value }));
   }, []);
 
-  const handleSave = useCallback(() => {
+  const handleSave = useRefCallback(() => {
     const id = `${name}-${Date.now()}`;
     library.add(id, {
       id,
@@ -36,7 +37,7 @@ export default function CreateWidget ({ name }: CreateWidgetProps) {
       });
     }
     closeModal();
-  }, []);
+  });
 
   return (
     <div className="h-full flex flex-col justify-stretch">
