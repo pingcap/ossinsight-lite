@@ -6,8 +6,10 @@
   "main": "index.js",
   "scripts": {
     "devtool:build": "pnpm --filter @ossinsight-lite/buildtool run build",
-    "dev": "npm run devtool:build && npm run migrate && next dev",
-    "build": "npm run devtool:build && npm run migrate && next build --no-lint",
+    "next:dev": "next dev",
+    "next:build": "next build --no-lint",
+    "dev": "run-s devtool:build migrate next:dev",
+    "build": "run-s devtool:build migrate next:build",
     "start": "next start",
     "lint": "next lint",
     "migrate": "pnpm --filter @ossinsight-lite/migration run up"
