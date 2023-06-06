@@ -1,114 +1,57 @@
+import * as db from '@/app/(client)/api/layout/sql';
+import { getLibraryItems, getPublicLibraryItems } from '@/app/(client)/api/layout/sql';
 import { defaultLayoutConfig } from '@/core/layout/defaults';
 import { ADMIN_DATABASE_NAME } from '@/utils/common';
 import { getDatabaseUri, sql, withConnection } from '@/utils/mysql';
-import { Dashboard as DashboardConfig, Dashboard, ItemReference, LibraryItem, Store } from '@/utils/types/config';
-import { redirect } from 'next/navigation';
+import { Dashboard, ItemReference, LibraryItem } from '@/utils/types/config';
+import { notFound, redirect } from 'next/navigation';
 
 const uri = getDatabaseUri(ADMIN_DATABASE_NAME);
 
-export async function getDashboard (name: string) {
+export async function getDashboard (name: string, readonly: boolean) {
   if (uri === '') {
     redirect('/status');
   }
 
-  let store: Store | undefined;
-  let resolved: Dashboard | undefined | null;
   try {
-    const dashboard = await withConnection(uri, async ({ sql }) => {
-
-      let dashboard: Dashboard = { layout: defaultLayoutConfig, items: [] };
-      const res = await sql<{ name: string }>`
-          SELECT properties
-          FROM dashboards
-          WHERE name = ${name}
-          LIMIT 1;
-      `;
+    const res = await withConnection(uri, async ({ sql }) => {
+      let dashboard: Dashboard;
+      dashboard = { layout: defaultLayoutConfig, items: [] };
+      const res = await (readonly ? db.getPublicDashboard : db.getDashboard)(sql, name);
       if (!res[0]) {
         return;
       }
       dashboard.layout = res[0].properties.layout;
-      const rows = await sql<{ item_id: string, properties: any }>`
-          SELECT item_id, properties
-          FROM dashboard_items
-          WHERE dashboard_name = ${name};`;
+      const rows = await (readonly ? db.getDashboardPublicLibraryItems : db.getDashboardLibraryItems)(sql, name);
       dashboard.items = rows.map(row => {
         return {
           id: row.item_id,
           ...row.properties,
         };
       });
+      dashboard.visibility = res[0].visibility;
 
-      return dashboard;
+      return [dashboard, rows.map((item): LibraryItem => ({
+        id: item.item_id,
+        name: item.widget_name,
+        props: item.item_properties,
+        visibility: item.visibility,
+      }))] as const;
     });
-
-    if (dashboard) {
-      resolved = dashboard;
-      store = 'tidb';
+    if (res) {
+      return res;
     }
   } catch (e) {
     console.error(e);
   }
 
-  if (!resolved) {
-    if (typeof localStorage !== 'undefined') {
-      const dashboards = localStorage.getItem('widgets:dashboards');
-      if (dashboards) {
-        resolved = JSON.parse(dashboards)[name.replace(/^dashboard:/, '')] as Dashboard;
-        if (resolved) {
-          store = 'localStorage';
-        }
-      }
-    }
-  }
-  if (!resolved) {
-    throw new Error(`Dashboard ${name} not found`);
-  }
-  return [store!, resolved] as const;
+  notFound();
 }
 
-export async function getAllDashboardNames () {
-  let store: Store | undefined;
-  let resolved: string[] | undefined | null;
-
+export async function getAllDashboards (readonly: boolean) {
   try {
-    const res = await withConnection(uri, ({ sql }) => {
-      return sql<{ name: string }>`
-          SELECT name
-          FROM dashboards;
-      `;
-    });
-    resolved = res.map(item => item.name);
-    store = 'tidb';
-  } catch (e) {
-    console.error(e);
-  }
-
-  if (!resolved) {
-    if (typeof localStorage !== 'undefined') {
-      const dashboards = localStorage.getItem('widgets:dashboards');
-      if (dashboards) {
-        resolved = Object.keys(JSON.parse(dashboards));
-        store = 'localStorage';
-      }
-    }
-  }
-
-  if (!resolved) {
-    throw new Error('No config found');
-  }
-
-  return [store!, resolved] as const;
-}
-
-export async function getAllDashboards () {
-  let store: Store | undefined;
-  let resolved: Record<string, Dashboard> | undefined | null;
-  try {
-    resolved = await withConnection(uri, async ({ sql }) => {
-      const items = await sql<{ dashboard_name: string, item_id: string, properties: any }>`
-          SELECT dashboard_name, item_id, properties
-          FROM dashboard_items;
-      `;
+    return await withConnection(uri, async ({ sql }) => {
+      const items = await (readonly ? db.getAllPublicDashboardItems : db.getAllDashboardItems)(sql);
 
       const parsedItems = items.reduce((map, item) => {
         let items = map[item.dashboard_name];
@@ -122,113 +65,67 @@ export async function getAllDashboards () {
         return map;
       }, {} as Record<string, ItemReference[]>);
 
-      const dashboards = await sql<{ name: string, properties: any }>`
-          SELECT name, properties
-          FROM dashboards;
-      `;
+      const dashboards = await (readonly ? db.getPublicDashboards : db.getDashboards)(sql);
 
       return dashboards.reduce((dashboards, dashboard) => {
         dashboards[dashboard.name] = {
           ...dashboard.properties,
+          visibility: dashboard.visibility,
           items: parsedItems[dashboard.name] ?? [],
         };
         return dashboards;
       }, {} as Record<string, Dashboard>);
     });
-    store = 'tidb';
   } catch (e) {
     console.error(e);
   }
-
-  if (!resolved) {
-    if (typeof localStorage !== 'undefined') {
-      const dashboards = localStorage.getItem('widgets:dashboards');
-      if (dashboards) {
-        resolved = JSON.parse(dashboards) as Record<string, Dashboard>;
-        store = 'localStorage';
-      }
-    }
-  }
-
-  if (!resolved) {
-    throw new Error('No config found');
-  }
-  return [store!, resolved] as const;
+  throw new Error('No config found');
 }
 
 export async function getLibraryItem (id: string) {
-  let resolved: LibraryItem | undefined | null;
-  let store: Store | undefined;
   try {
-    resolved = await sql.unique<LibraryItem>`
-        SELECT id, widget_name, properties
-        FROM library_items
-        WHERE id = ${id}
-    `;
-  } catch (e) {
-  }
-
-  if (!resolved) {
-    if (typeof localStorage !== 'undefined') {
-      const library = localStorage.getItem('widgets:library');
-      if (library) {
-        resolved = (JSON.parse(library) as LibraryItem[]).find(item => item.id === id || item.name === id);
-        if (resolved) {
-          store = 'localStorage';
-        }
-      }
+    const item = await db.getLibraryItem(sql, id);
+    if (item) {
+      const { id, properties, visibility, widget_name } = item;
+      return { id, name: widget_name, props: properties, visibility } satisfies LibraryItem;
     }
+  } catch (e) {
+    console.error(e);
   }
-
-  if (!resolved) {
-    throw new Error('No library found');
-  }
-
-  return [store!, resolved] as const;
 }
 
-export async function getLibrary () {
-  let resolved: LibraryItem[] | undefined | null;
-  let store: Store | undefined;
+export async function getLibrary (readonly: boolean) {
   try {
-    resolved = await withConnection(uri, async ({ sql }) => {
-      const rows = await sql<{ id: string, widget_name: string, properties: object }>`
-          SELECT id, widget_name, properties
-          FROM library_items
-      `;
+    return await withConnection(uri, async ({ sql }) => {
+      const rows = await (readonly ? getPublicLibraryItems : getLibraryItems)(sql);
       return rows.map(item => {
         return {
           id: item.id,
           name: item.widget_name,
           props: item.properties,
+          visibility: item.visibility,
         };
       });
     });
-    store = 'tidb';
   } catch (e) {
     console.error(e);
   }
 
-  if (!resolved) {
-    if (typeof localStorage !== 'undefined') {
-      const library = localStorage.getItem('widgets:library');
-      if (library) {
-        resolved = JSON.parse(library);
-        store = 'localStorage';
-      }
-    }
-  }
-
-  if (!resolved) {
-    throw new Error('No library found');
-  }
-
-  return [store!, resolved] as const;
+  throw new Error('No library found');
 }
 
-const defaultDashboard = (): DashboardConfig => {
-  return {
-    layout: { ...defaultLayoutConfig },
-    items: [],
-  };
-};
+export async function getDashboardNames (readonly: boolean) {
+  const dashboards = await (readonly ? db.getPublicDashboardNames : db.getDashboardNames)(sql);
+
+  return dashboards.map(item => item.name);
+}
+
+export async function getDashboardAbsentLibraryItems (dashboard: string) {
+  const data = await db.getDashboardAbsentLibraryItems(sql, dashboard);
+  return data.map((item): LibraryItem => ({
+    id: item.id,
+    name: item.widget_name,
+    props: item.properties,
+    visibility: item.visibility,
+  }));
+}

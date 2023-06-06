@@ -1,4 +1,5 @@
 'use client';
+import { useDataOptions } from '@/components/pages/Dashboard/dataOptions';
 import { widgets } from '@/core/bind-client';
 import WidgetContext from '@/packages/ui/context/widget';
 import { useVisible } from '@/packages/ui/hooks/visible';
@@ -33,6 +34,7 @@ export const WidgetCoordinator = forwardRef<HTMLDivElement, WidgetCoordinator>((
 
   const Widget = widget.Widget;
   const { ref: visibleRef, visible } = useVisible<HTMLDivElement>();
+  const dataOptions = useDataOptions(name, id);
 
   return (
     <WidgetContext.Provider
@@ -42,6 +44,7 @@ export const WidgetCoordinator = forwardRef<HTMLDivElement, WidgetCoordinator>((
         visible,
         configuring: false,
         creating: false,
+        ...dataOptions,
       }}
     >
       <Widget ref={mergeRefs(ref, visibleRef)} {...props} />

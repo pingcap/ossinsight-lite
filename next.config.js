@@ -29,6 +29,8 @@ const nextConfig = {
 
     config.resolve.alias['roughjs'] = 'roughjs/bundled/rough.esm.js'
 
+    config.externals.push('@napi-rs/canvas')
+
     return config;
   },
   svgrOptions: {
@@ -41,8 +43,8 @@ const nextConfig = {
   onDemandEntries: {},
   experimental: {
     appDir: true,
-    typedRoutes: true,
-    serverComponentsExternalPackages: ["mysql2", "@napi-rs/canvas"],
+    // typedRoutes: true,
+    serverComponentsExternalPackages: ["mysql2"],
     serverActions: true,
   },
 }

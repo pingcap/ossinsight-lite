@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { verify } from './utils/jwt';
 
 export async function middleware (req: NextRequest) {
-  if (needAuth(req)) {
-    let allowAnonymous = anonymousAuth(req);
+  let allowAnonymous = anonymousAuth(req);
+  if (allowAnonymous || needAuth(req)) {
     let authenticated = false;
     let error: string | undefined = undefined;
     try {
@@ -42,7 +42,19 @@ export async function middleware (req: NextRequest) {
 }
 
 function anonymousAuth (req: NextRequest) {
-  if (/\/api\/db\//.test(req.nextUrl.pathname)) {
+  if (/^\/api\/db\//.test(req.nextUrl.pathname)) {
+    return true;
+  }
+  if (req.nextUrl.pathname === '/' || /^\/dashboards\/[^/]*\/?$/.test(req.nextUrl.pathname)) {
+    return true;
+  }
+  if (/^\/widgets\/[^/]+(?:\/(?:thumbnail\.png)?)?$/.test(req.nextUrl.pathname)) {
+    return true;
+  }
+  if (req.nextUrl.pathname === 'layout.json') {
+    return true;
+  }
+  if (/^\/api\/(refresh-token|auth)$/.test(req.nextUrl.pathname)) {
     return true;
   }
   return false;
@@ -53,11 +65,7 @@ function needAuth (req: NextRequest) {
     return false;
   }
 
-  if (anonymousAuth(req)) {
-    return true;
-  }
-
-  if (/\/api\/layout\/route/.test(req.nextUrl.pathname)) {
+  if (/^\/api\/layout\/route$/.test(req.nextUrl.pathname)) {
     return true;
   }
 

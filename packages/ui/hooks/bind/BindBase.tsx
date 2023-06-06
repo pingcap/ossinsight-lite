@@ -49,6 +49,7 @@ export abstract class BindBase<BindMap, InitialArgs extends any[] = []> {
   public fallback: (<K extends keyof BindMap> (key: K) => BindMap[K]) | undefined;
   _parent: BindBase<any, any> | undefined;
   _key: KeyType | undefined;
+  _lastUpdated = Date.now();
   protected readonly _store: TypedMap<BindMap> = new Map();
   protected readonly _pendingStore: TypedMap<{ [P in keyof BindMap]: Promise<BindMap[P]> }> = new Map();
   protected readonly _predefinedStore: TypedMap<{ [P in keyof BindMap]: () => Promise<InitialArgs> }> = new Map();
@@ -56,6 +57,9 @@ export abstract class BindBase<BindMap, InitialArgs extends any[] = []> {
   protected readonly _loaded = new ReactiveValueSubject<boolean>(true);
 
   protected constructor () {
+    this._eventBus.subscribe(() => {
+      this._lastUpdated = Date.now();
+    });
   }
 
   get keys () {

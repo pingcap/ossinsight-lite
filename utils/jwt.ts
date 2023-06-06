@@ -65,6 +65,13 @@ export async function verify<T> (jwt: string): Promise<JwtClaims & T> {
   if (!verified) {
     throw new Error('Invalid signature');
   }
+
+  if (claims.exp) {
+    if (claims.exp * 1000 < Date.now()) {
+      throw new Error('Authorization expired');
+    }
+  }
+
   return claims as JwtClaims & T;
 }
 

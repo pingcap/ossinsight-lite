@@ -1,5 +1,6 @@
 import { Alert } from '@/components/Alert';
 import * as internals from '@/components/internal-widgets';
+// import { appState, startAppStateLoadingTransition, withAppStateLoadingState } from '@/core/bind';
 import widgetsManifest, { ResolvedWidgetModule } from '@/core/widgets-manifest';
 import { collections } from '@/packages/ui/hooks/bind';
 import { ReactiveValueSubject } from '@/packages/ui/hooks/bind/ReactiveValueSubject';
@@ -52,4 +53,14 @@ for (let [name, render] of Object.entries(internals)) {
     name,
     displayName: name + ' (Deprecated)',
   } satisfies ResolvedWidgetModule);
+}
+
+if (typeof window !== 'undefined') {
+  void fetch('/api/refresh-token');
+
+  setInterval(() => {
+    if (document.visibilityState !== 'hidden') {
+      void fetch('/api/refresh-token');
+    }
+  }, 5 * 60 * 1000);
 }

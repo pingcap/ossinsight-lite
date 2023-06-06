@@ -1,5 +1,5 @@
 'use client';
-import { recreateReadonlyUser, resetPasswordAction } from '@/actions/auth';
+import { deleteReadonlyUser, recreateReadonlyUser, resetPasswordAction } from '@/actions/auth';
 import { ActionStateAlerts, Button, FormControl, Input, ServerActionForm } from '@/components/ServerActionForm';
 import { ReactNode } from 'react';
 
@@ -43,6 +43,23 @@ export function RecreateReadonlyDatabaseUserForm ({ status }: { status: ReactNod
         />
         <div className="form-control">
           <Button type="submit">Recreate</Button>
+        </div>
+      </ServerActionForm>
+    </section>
+  );
+}
+
+export function DeleteReadonlyDatabaseUserForm () {
+  return (
+    <section className="mt-8">
+      <h2>Delete readonly database user</h2>
+      <ServerActionForm action={deleteReadonlyUser}>
+        <ActionStateAlerts
+          success={{ title: 'Readonly database user deleted' }}
+          pending={{ title: 'Deleting readonly database user', message: 'Please don\'t leave this page.' }}
+        />
+        <div className="form-control">
+          <Button type="submit">Delete</Button>
         </div>
       </ServerActionForm>
     </section>

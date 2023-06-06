@@ -26,3 +26,5 @@ export async function GET (req: NextRequest, { params: { owner, repo, branch, pa
     });
   }
 }
+
+export const dynamic = 'force-dynamic';

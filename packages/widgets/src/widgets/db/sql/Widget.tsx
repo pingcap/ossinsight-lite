@@ -3,8 +3,6 @@
 import WidgetContext from '@ossinsight-lite/ui/context/widget';
 import { ForwardedRef, forwardRef, HTMLProps, RefAttributes, useContext, useEffect, useRef } from 'react';
 import { VisualizeType } from '../../../components/visualize/common';
-import { useOperation } from '../../../utils/operation';
-import { doDbSqlQuery } from '../../../utils/query';
 import ResultDisplay from './ResultDisplay';
 
 export enum WidgetMode {
@@ -24,14 +22,15 @@ export interface WidgetProps extends HTMLProps<HTMLDivElement> {
 }
 
 function Widget ({ defaultSql, defaultDb, sql, currentDb, visualize, forwardedRef, ...props }: WidgetProps, _forwardedRef: ForwardedRef<HTMLDivElement>) {
-  const { visible } = useContext(WidgetContext);
+  const { visible, requestingData: running, data: result, onRequestData: execute, requestDataError: error } = useContext(WidgetContext);
   const firstExecuted = useRef(false);
-  const { execute, running, result, error } = useOperation<{ sql: string, db: string, force: boolean }, any>(doDbSqlQuery);
+
+
 
   useEffect(() => {
     if ((sql || defaultSql) && currentDb && visible && !firstExecuted.current) {
       firstExecuted.current = true;
-      execute({ sql: sql || defaultSql, db: currentDb, force: false });
+      execute();
     }
   }, [visible]);
 

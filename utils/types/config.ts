@@ -1,14 +1,25 @@
 import { GridLayoutType } from '@ossinsight-lite/layout/src/core/layout/grid';
 import { Rect, Size } from '@ossinsight-lite/layout/src/core/types';
+import { CSSProperties } from 'react';
 
 export type LayoutItem = LibraryItem & {
   rect: Rect
 }
 
+export interface CustomLibraryItemProps {
+}
+
+export interface LibraryItemProps extends CustomLibraryItemProps {
+  title?: string;
+  className?: string;
+  style?: CSSProperties;
+}
+
 export type LibraryItem = {
   id?: string | undefined
   name: string
-  props: any
+  props: LibraryItemProps
+  visibility?: 'public' | 'private'
 }
 
 export type ItemReference = {
@@ -24,13 +35,10 @@ export type Dashboard = {
     gap: number
   }
   items: ItemReference[]
+  visibility?: string
 }
 
-export type LayoutConfigV0 = LayoutItem[];
-
-export type Store = 'tidb' | 'localStorage' | 'localStorageLegacy' | 'new' | 'default';
-
-export type SavingFlags = { error: unknown } | Partial<Record<Store, boolean>>;
+export type Store = 'tidb';
 
 export type LayoutConfigV1 = {
   version: 1

@@ -4,6 +4,9 @@ export const ConfigureComponent = () => import('./ConfigureComponent');
 
 export const Icon = () => import('./Icon');
 
+
+export const getData = () => import('./getData');
+
 export const defaultProps = {
   owner: 'pingcap',
   repo: 'ossinsight-lite',

@@ -11,7 +11,7 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 export async function logout () {
-  (cookies() as RequestCookies).delete('auth');
+  (cookies() as unknown as RequestCookies).delete('auth');
 }
 
 async function authenticate ({ sql }: SqlExecutor, username: string, password: string) {
@@ -103,7 +103,7 @@ export async function recreateReadonlyUser () {
 
   await withConnection(getDatabaseUri(), async ({ sql }) => {
     await sql`
-        DROP USER IF EXISTS ${readonlyUsername};
+        DROP USER IF EXISTS ${readonlyUsername}@'%';
     `;
 
     await sql`
@@ -114,6 +114,28 @@ export async function recreateReadonlyUser () {
         GRANT SELECT, SHOW DATABASES, SHOW VIEW ON *.* TO ${readonlyUsername}@'%';
     `;
 
+    await sql`
+        FLUSH PRIVILEGES;
+    `;
+  });
+
+  revalidatePath('/admin/account');
+}
+
+export async function deleteReadonlyUser () {
+  const username = process.env.TIDB_USER;
+  const password = process.env.TIDB_PASSWORD;
+  if (!username || !password) {
+    throw new Error('Bad state');
+  }
+
+  const readonlyUsername = username.replace(/\.[^.]*$/, '.osslreadonly');
+
+  await withConnection(getDatabaseUri(), async ({ sql }) => {
+    console.log(`DROP USER IF EXISTS ${readonlyUsername}@'%';`)
+    await sql`
+        DROP USER IF EXISTS ${readonlyUsername}@'%';
+    `;
     await sql`
         FLUSH PRIVILEGES;
     `;

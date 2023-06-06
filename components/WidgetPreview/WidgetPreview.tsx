@@ -1,6 +1,6 @@
 'use client';
 import { widgets } from '@/core/bind-client';
-import WidgetContext from '@/packages/ui/context/widget';
+import WidgetContext, { noDataOptions } from '@/packages/ui/context/widget';
 import { readItem } from '@/packages/ui/hooks/bind';
 import { useVisible } from '@/packages/ui/hooks/visible';
 import clientOnly from '@/utils/clientOnly';
@@ -17,12 +17,15 @@ export interface WidgetPreviewProps extends LibraryItem {
 
 function WidgetPreview ({ id, name, className, onClick, props }: WidgetPreviewProps) {
   const widget = readItem(widgets, name).current;
-  const Widget = widget.Widget;
+  const { Widget, Icon } = widget;
   const { ref: visibleRef, visible } = useVisible();
 
   return (
     <>
-      <h3 className="text-gray-400 text-sm">{(widget.ConfigureComponent ? props?.title : undefined) ?? widget.displayName}</h3>
+      <h3 className="text-gray-400 text-sm inline-flex gap-2 items-center">
+        {Icon && <Icon />}
+        {props?.title ?? widget.displayName}
+      </h3>
       <div className={clsx('flex-1 flex items-stretch overflow-hidden', onClick && 'cursor-pointer')} onClick={onClick}>
         <WidgetContext.Provider value={{
           visible,
@@ -30,6 +33,7 @@ function WidgetPreview ({ id, name, className, onClick, props }: WidgetPreviewPr
           onPropChange: () => {},
           configuring: false,
           creating: false,
+          ...noDataOptions,
         }}>
           <Widget
             {...props}

@@ -1,8 +1,7 @@
 import ShareIcon from '@/components/icons/share.svg';
-import { widgets } from '@/core/bind-client';
 import { MenuItem } from '@/packages/ui/components/menu';
 import { ToolbarMenu } from '@/packages/ui/components/toolbar-menu';
-import { readItem, useWatchItemField } from '@/packages/ui/hooks/bind';
+import { useWatchItemField } from '@/packages/ui/hooks/bind';
 import clsx from 'clsx';
 import { useRouter } from 'next/navigation';
 import { useCallback } from 'react';
@@ -13,9 +12,9 @@ export interface EditLayerProps {
 
 export default function ExploreLayer ({ id }: EditLayerProps) {
   const router = useRouter();
-  const name = useWatchItemField('library', id, 'name');
-  const widget = readItem(widgets, name);
+  const visibility = useWatchItemField('library', id, 'visibility');
 
+  const isPublic = visibility === 'public';
 
   const share = useCallback(() => {
     router.push(`/widgets/${encodeURIComponent(id)}`);
@@ -29,7 +28,7 @@ export default function ExploreLayer ({ id }: EditLayerProps) {
         <ToolbarMenu
           className="flex justify-end items-center"
           data-layer-item
-          items={(
+          items={isPublic && (
             <>
               <MenuItem
                 id="styles"

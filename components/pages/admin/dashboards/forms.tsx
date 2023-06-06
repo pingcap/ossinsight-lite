@@ -1,6 +1,10 @@
 'use client';
-import { addDashboardAction, deleteDashboardAction } from '@/actions/widgets';
+import { addDashboardAction, deleteDashboardAction, toggleDashboardVisibilityAction } from '@/actions/widgets';
 import { ActionStateAlerts, Button, FormControl, Input, ServerActionForm } from '@/components/ServerActionForm';
+import LoadingIndicator from '@ossinsight-lite/ui/components/loading-indicator';
+import EyeSlashIcon from 'bootstrap-icons/icons/eye-slash.svg';
+import EyeIcon from 'bootstrap-icons/icons/eye.svg';
+import TrashIcon from 'bootstrap-icons/icons/trash.svg';
 import { useTransition } from 'react';
 
 export const AddDashboardForm = function NewTrackingRepoForm () {
@@ -28,11 +32,26 @@ export const DeleteDashboardButton = function ({ name }: { name: string }) {
 
   return (
     <button
-      className="inline-flex text-red-600"
+      className="btn btn-red"
       onClick={() => startTransition(() => deleteDashboardAction(name))}
       disabled={isPending}
     >
-      {isPending ? 'Deleting...' : 'Delete'}
+      {isPending ? <LoadingIndicator /> : <TrashIcon />}
+    </button>
+  );
+};
+
+export const ChangeVisibleButton = function ({ name, visibility }: { name: string, visibility: 'public' | 'private' }) {
+  let [isPending, startTransition] = useTransition();
+  const isPrivate = visibility !== 'public';
+
+  return (
+    <button
+      className="btn btn-link"
+      onClick={() => startTransition(() => toggleDashboardVisibilityAction(name, visibility))}
+      disabled={isPending}
+    >
+      {isPending ? <LoadingIndicator /> : isPrivate ? <EyeSlashIcon /> : <EyeIcon className="text-green-500" />}
     </button>
   );
 };
