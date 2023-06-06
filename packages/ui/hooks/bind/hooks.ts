@@ -110,15 +110,21 @@ export function useCollectionKeys<BindMap> (collection: BindBase<BindMap, any> |
   return keys;
 }
 
-export function useCollectionValues<Data> (collection: ReactBindCollection<Data>): Data[] {
-  const [values, setValues] = useState(() => collection.values);
+export function useCollectionValues<Data> (collection: ReactBindCollection<Data> | undefined): Data[] {
+  const [values, setValues] = useState(() => collection?.values ?? []);
 
   useEffect(() => {
-    const sub = collection.subscribeAll(() => {
+    if (collection) {
       setValues(collection.values);
-    });
 
-    return () => sub.unsubscribe();
+      const sub = collection.subscribeAll(() => {
+        setValues(collection.values);
+      });
+
+      return () => sub.unsubscribe();
+    } else {
+      setValues([]);
+    }
   }, [collection]);
 
   return values;

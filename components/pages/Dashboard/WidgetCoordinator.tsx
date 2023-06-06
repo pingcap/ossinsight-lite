@@ -14,10 +14,9 @@ export interface WidgetCoordinator {
   props: any;
   _id: string;
   editMode: boolean;
-  draggable: boolean;
 }
 
-export const WidgetCoordinator = forwardRef<HTMLDivElement, WidgetCoordinator>(({ dashboardName, name, _id: id, draggable, editMode, props: passInProps }, ref) => {
+export const WidgetCoordinator = forwardRef<HTMLDivElement, WidgetCoordinator>(({ dashboardName, name, _id: id, editMode, props: passInProps }, ref) => {
   const widget = readItem(widgets, name).current;
 
   const { props: watchingProps } = useWatchItemFields('library', id, ['props']);

@@ -7,8 +7,6 @@ import { library, startAppStateLoadingTransition } from '@/core/bind';
 import { useNullableDashboardItems } from '@/core/dashboard';
 import { duplicateItem } from '@/core/helpers/items';
 import widgets from '@/core/widgets-manifest';
-import { move } from '@/packages/layout/src/core/types';
-import { DraggableState } from '@/packages/layout/src/hooks/draggable';
 import { MenuItem } from '@/packages/ui/components/menu';
 import { ToolbarMenu } from '@/packages/ui/components/toolbar-menu';
 import { useWatchItemField } from '@/packages/ui/hooks/bind';
@@ -22,10 +20,9 @@ import { useContext, useMemo } from 'react';
 
 export interface EditLayerProps {
   id: string;
-  draggableProps?: DraggableState<HTMLDivElement>['domProps'];
 }
 
-export function EditingLayer ({ id, draggableProps }: EditLayerProps) {
+export function EditingLayer ({ id }: EditLayerProps) {
   const { dashboardName } = useContext(DashboardContext);
   const items = useNullableDashboardItems(dashboardName);
   const router = useRouter();
@@ -60,7 +57,7 @@ export function EditingLayer ({ id, draggableProps }: EditLayerProps) {
     if (!dashboardName) {
       return;
     }
-    duplicateItem(dashboardName, id, rect => move(rect, [1, 1]));
+    duplicateItem(dashboardName, id);
   });
 
   const handleVisibilityChange = useRefCallback(() => {
@@ -129,7 +126,7 @@ export function EditingLayer ({ id, draggableProps }: EditLayerProps) {
         >
         </ToolbarMenu>
       </div>
-      <div className="flex-1 justify-stretch cursor-pointer" {...draggableProps} />
+      <div className="flex-1 justify-stretch cursor-pointer" />
     </div>
   );
 }

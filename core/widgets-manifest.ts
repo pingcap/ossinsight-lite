@@ -1,14 +1,12 @@
 /// IMPORTANT:
 /// This file is a slot, will be actually loaded by buildtool/webpack/loaders/widgets-manifest
 
-import { Rect } from '@/packages/layout/src/core/types';
 import { ButtonHTMLAttributes, ComponentType, CSSProperties, ForwardRefExoticComponent, HTMLProps } from 'react';
 
 type Widgets = Record<string, WidgetModule>
 type WidgetModuleMeta<P = any> = {
   /** @deprecated */
   preferredSize?: CSSProperties,
-  defaultRect?: Rect;
   defaultProps?: Partial<P>,
   duplicable?: boolean,
   styleConfigurable?: boolean,

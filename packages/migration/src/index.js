@@ -26,7 +26,23 @@ async function main() {
   let lastName
 
   try {
-    await conn.execute('use `ossinsight_lite_admin`');
+    await conn.execute(`
+        USE ${defaultEnv.ADMIN_DATABASE_NAME}
+    `);
+  } catch (e) {
+    await conn.execute(`
+        CREATE DATABASE IF NOT EXISTS ${defaultEnv.ADMIN_DATABASE_NAME};
+    `)
+    await conn.execute(`
+        CREATE TABLE ${defaultEnv.ADMIN_DATABASE_NAME}._migrations
+        (
+            name        VARCHAR(255) PRIMARY KEY NOT NULL,
+            migrated_at DATETIME                 NOT NULL DEFAULT CURRENT_TIMESTAMP()
+        );
+    `)
+  }
+
+  try {
     const [rows] = await conn.execute('SELECT name FROM _migrations ORDER BY migrated_at DESC, name DESC LIMIT 1');
     if (rows.length !== 0) {
       lastName = rows[0].name
@@ -116,4 +132,5 @@ function parsePlaceholders(sql) {
 
 const defaultEnv = {
   INITIAL_PASSWORD: hashSync(process.env.SITE_INITIAL_PASSWORD || 'tidbcloud', 1),
+  ADMIN_DATABASE_NAME: process.env.NEXT_PUBLIC_SITE_DATABASE || 'ossinsight_lite_admin'
 }

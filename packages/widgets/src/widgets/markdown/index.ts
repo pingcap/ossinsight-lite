@@ -10,7 +10,6 @@ export const defaultProps = {
   markdown: '# Hello OSSInsight Lite!',
 };
 
-// defaultRect?: Rect;
 // defaultProps?: Partial<P>,
 
 // export const category = '';

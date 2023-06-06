@@ -1,10 +1,5 @@
-import { GridLayoutType } from '@ossinsight-lite/layout/src/core/layout/grid';
-import { Rect, Size } from '@ossinsight-lite/layout/src/core/types';
 import { CSSProperties } from 'react';
-
-export type LayoutItem = LibraryItem & {
-  rect: Rect
-}
+import { Layout } from 'react-grid-layout';
 
 export interface CustomLibraryItemProps {
 }
@@ -24,14 +19,13 @@ export type LibraryItem = {
 
 export type ItemReference = {
   id: string
-  rect: Rect
+  layout: { [p: string]: Pick<Layout, 'x' | 'y' | 'w' | 'h' | 'minW' | 'minH' | 'maxW' | 'maxH'> }
   zIndex?: number
 }
 
 export type Dashboard = {
   layout: {
-    type: `gird:${GridLayoutType}`
-    size: Size
+    size: [number, number]
     gap: number
   }
   items: ItemReference[]

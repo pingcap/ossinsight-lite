@@ -1,5 +1,3 @@
-USE ossinsight_lite_admin;
-
 INSERT INTO dashboards (name, properties)
 VALUES ('default', '{"layout": {"gap": 8, "size": [40, 16], "type": "gird:responsive"}}');
 

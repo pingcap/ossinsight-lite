@@ -1,130 +1,110 @@
 'use client';
 
-import { withSuspense } from '@/packages/ui/utils/suspense';
-import Components from '@ossinsight-lite/layout/src/components/Components';
-import GridLayout from '@ossinsight-lite/layout/src/components/GridLayout';
-import { equals, Rect } from '@ossinsight-lite/layout/src/core/types';
-import { readItem, useCollectionKeys } from '@ossinsight-lite/ui/hooks/bind';
-import { useOptionalSingleton, useWatchReactiveValueField } from '@ossinsight-lite/ui/hooks/bind/hooks';
-import { memo, useCallback, useEffect, useRef, useState } from 'react';
+import useRefCallback from '@/packages/ui/hooks/ref-callback';
+import { useCollectionKeys } from '@ossinsight-lite/ui/hooks/bind';
+import { useOptionalSingleton } from '@ossinsight-lite/ui/hooks/bind/hooks';
+import { useEffect, useRef, useState } from 'react';
+import { Layout, Layouts, Responsive, WidthProvider } from 'react-grid-layout';
+import 'react-grid-layout/css/styles.css';
 import { DashboardContext } from './context';
-import { WidgetComponent, WidgetStateProps } from './createWidgetComponent';
+import { WidgetComponent } from './createWidgetComponent';
+
+const defaultWidth = typeof window === 'undefined' ? 1920 : window.innerWidth;
+
+const ResponsiveGridLayout = WidthProvider(Responsive);
+
+const breakpointNames = ['xl', 'lg', 'md', 'sm', 'xs', 'xxs'];
+const breakpoints = { xl: 1600, lg: 1200, md: 960, sm: 768, xs: 480, xxs: 0 };
+const cols = { xl: 40, lg: 32, md: 24, sm: 16, xs: 12, xxs: 8 };
 
 function Dashboard ({ dashboardName, editMode }: { dashboardName: string, editMode: boolean }) {
-  /// ========
-  /// This component have dirty works.
-  /// ========
-
-  // Activated widget id for rendering cards.
-  const [active, setActive] = useState<string>();
-
-  // Mapping layout id (usually react useId()) with widget id.
-  const map = useMap<string, string>();
   const dashboard = useOptionalSingleton('dashboard')?.current;
   const items = dashboard?.items;
-  const itemIds = useCollectionKeys(items) as string[];
+  const ids = useCollectionKeys(items) as string[];
 
-  const useRect = useCallback((id: string) => {
-    const last = useRef<Rect>([0, 0, 0, 0]);
-    if (!items?.has(id)) {
-      // IMPORTANT
-      //
-      // Mock hook order
-      // - readItem(items, id): no hooks, only on context
-      // - useReadItem(items, id): useState, useEffect
-      useState();
-      useEffect(() => {}, [null]);
-      return last.current;
-    } else {
-      const item = readItem(items, id);
-      const rect = useWatchReactiveValueField(item, 'rect', equals);
-      return last.current = rect;
-    }
-  }, [items]);
+  const [layouts, setLayouts] = useState<Layouts>({});
+  const breakpointRef = useRef<string>();
 
-  const updateRect = useCallback((id: string, rect: Rect) => {
-    if (items?.has(id)) {
-      items.update(id, (props, ctx) => {
-        if ((ctx.changed = !equals(props.rect, rect))) {
-          ctx.changedKeys = [`rect:${props.rect} => ${rect}`];
-          props.rect = rect;
+  useEffect(() => {
+    if (items) {
+      const layouts = breakpointNames.reduce((layouts, breakpoint) => {
+        const layout = items.values.flatMap(item => {
+          if (item.layout[breakpoint]) {
+            return [{
+              ...item.layout[breakpoint],
+              i: item.id,
+            }];
+          } else {
+            return [];
+          }
+        });
+        if (layout.length === items.keys.length) {
+          layouts[breakpoint] = layout;
         }
-        return props;
-      });
+        return layouts;
+      }, {} as Layouts);
+      setLayouts(layouts);
     }
-  }, [items]);
+  }, [dashboard, editMode]);
 
-  const handleDrag = useCallback(async (id: string, rect: Rect) => {
-    const externalId = map.get(id);
-    if (!externalId) {
-      return;
-    }
-    items?.update(externalId, (props, ctx) => {
-      if ((ctx.changed = !equals(props.rect, rect))) {
-        ctx.changedKeys = [`rect:${props.rect} => ${rect}`];
-        props.rect = rect;
+  const handleLayoutChange = useRefCallback((currentLayout: Layout[], allLayouts: Layouts) => {
+    setLayouts(allLayouts);
+    if (items) {
+      const breakpoint = breakpointRef.current ?? breakpointNames.find(name => !!allLayouts[name]);
+      if (breakpoint) {
+        const layout = allLayouts[breakpoint];
+        for (let { i, x, y, w, h } of layout) {
+          items.update(i, (item, ctx) => {
+            const prev = item.layout[breakpoint];
+            if (prev) {
+              if (prev.x === x && prev.y === y && prev.w === w && prev.h === h) {
+                ctx.changed = false;
+                return item;
+              }
+            }
+            ctx.changedKeys = [`layout`];
+            return {
+              ...item,
+              layout: {
+                ...item.layout,
+                [breakpoint]: { ...prev, x, y, w, h },
+              },
+            };
+          });
+        }
       }
-      return props;
-    });
-  }, [items]);
+    }
+  });
+
+  const handleBreakpointChange = useRefCallback((breakpoint) => {
+    breakpointRef.current = breakpoint;
+  });
 
   return (
     <DashboardContext.Provider value={{ dashboardName }}>
-      <GridLayout gridSize={[40, 40]} gap={8} className="relative w-screen h-screen overflow-x-hidden" guideUi={editMode} onDrag={handleDrag}>
-        <Components<WidgetStateProps>
-          itemIds={itemIds}
-          draggable={editMode}
-          idMap={map}
-          useRect={useRect}
-          updateRect={updateRect}
-          commonProps={id => ({
-            editMode,
-            dashboardName,
-            active: active === id,
-            wrapperClassName: active === id ? 'active' : undefined,
-            onActiveChange: (open) => {
-              setActive(active => {
-                if (open) {
-                  return id;
-                } else if (active === id) {
-                  return undefined;
-                }
-              });
-            },
-          })}
-          Component={WidgetComponentMemo}
-        />
-      </GridLayout>
+      <ResponsiveGridLayout
+        className="relative w-screen h-min-screen overflow-x-hidden"
+        layouts={layouts}
+        breakpoints={breakpoints}
+        cols={cols}
+        margin={[8, 8]}
+        containerPadding={[32, 32]}
+        rowHeight={46}
+        onLayoutChange={handleLayoutChange}
+        onBreakpointChange={handleBreakpointChange}
+      >
+        {ids.map(id => (
+          <div key={id}>
+            <WidgetComponent
+              id={id}
+              editMode={editMode}
+              dashboardName={dashboardName}
+            />
+          </div>
+        ))}
+      </ResponsiveGridLayout>
     </DashboardContext.Provider>
   );
 }
 
-export function useMap<K, V> () {
-  const [map] = useState(() => new Map<K, V>());
-  return map;
-}
-
 export default Dashboard;
-
-const isPropsEquals = <T extends Record<string, any>> (ignores: (keyof T)[] = []) => {
-  const ignoresSet = new Set(ignores);
-  return (a: T, b: T) => {
-    const aKeys = Object.keys(a).filter(k => !ignoresSet.has(k));
-    const bKeys = Object.keys(b).filter(k => !ignoresSet.has(k));
-
-    if (aKeys.length !== bKeys.length) {
-      return false;
-    }
-    for (let aKey of aKeys) {
-      if (a[aKey] !== b[aKey]) {
-        return false;
-      }
-    }
-    return true;
-  };
-};
-
-const WidgetComponentMemo = memo(
-  WidgetComponent,
-  isPropsEquals(['onActiveChange', 'draggableProps']),
-);

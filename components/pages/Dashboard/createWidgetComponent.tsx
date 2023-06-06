@@ -1,37 +1,35 @@
 import { EditingLayer } from '@/components/pages/Dashboard/EditingLayer';
 import ExploreLayer from '@/components/pages/Dashboard/ExploreLayer';
 import widgetsManifest from '@/core/widgets-manifest';
-import { ComponentProps } from '@ossinsight-lite/layout/src/components/Components';
 import LoadingIndicator from '@ossinsight-lite/ui/components/loading-indicator';
 import { useWatchItemFields } from '@ossinsight-lite/ui/hooks/bind';
-import { Consume } from '@ossinsight-lite/ui/hooks/bind/types';
 import clsx from 'clsx';
 import { forwardRef, ReactElement, Suspense } from 'react';
 import { WidgetCoordinator } from './WidgetCoordinator';
 
-export interface WidgetComponentProps extends ComponentProps, WidgetStateProps {
+export interface WidgetComponentProps extends WidgetStateProps {
+  id: string;
   className?: string;
   dashboardName?: string;
+  children?: any;
 }
 
 export interface WidgetStateProps {
   editMode: boolean,
-  active: boolean,
-  onActiveChange: Consume<boolean>
 }
 
 export const WidgetComponent = forwardRef<HTMLDivElement, WidgetComponentProps>(({ ...componentProps }, ref) => {
   let el: ReactElement;
 
-  const { id, draggable, dragging, draggableProps, editMode, active, onActiveChange, className, dashboardName, ...rest } = componentProps;
+  const { id, editMode, className, dashboardName, children, ...rest } = componentProps;
 
   const { props: itemProps, name } = useWatchItemFields('library', id, ['name', 'props']);
-  const props = { ...rest, ...itemProps };
+  const props = itemProps;
 
   if (!name.startsWith('internal:') && !widgetsManifest[name]) {
     el = <div className="text-sm text-gray-400">Unknown widget {name}, check your repository version.</div>;
   } else {
-    el = <WidgetCoordinator dashboardName={dashboardName} name={name} _id={id} editMode={editMode} draggable={draggable} props={{ ...props, className: clsx('w-full h-full', props.className) }} ref={ref} />;
+    el = <WidgetCoordinator dashboardName={dashboardName} name={name} _id={id} editMode={editMode} props={{ ...props, className: clsx('w-full h-full', props.className) }} ref={ref} />;
   }
 
   el = (
@@ -46,7 +44,6 @@ export const WidgetComponent = forwardRef<HTMLDivElement, WidgetComponentProps>(
         {el}
         <EditingLayer
           id={id}
-          draggableProps={draggableProps}
         />
       </div>
     );
@@ -60,8 +57,9 @@ export const WidgetComponent = forwardRef<HTMLDivElement, WidgetComponentProps>(
   }
 
   return (
-    <div className={clsx('widget relative rounded-lg bg-white bg-opacity-60 overflow-hidden', className)} {...rest}>
+    <div className={clsx('w-full h-full rounded-lg border bg-white bg-opacity-60 overflow-hidden', className)} {...rest}>
       {el}
+      {children}
     </div>
   );
 });

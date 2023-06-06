@@ -96,10 +96,10 @@ export class ReactiveDashboardInstance implements DashboardInstance {
   }
 }
 
-function clone ({ id, rect, zIndex }: ItemReference): ItemReference {
+function clone ({ id, layout, zIndex }: ItemReference): ItemReference {
   return {
     id,
-    rect: [...rect],
+    layout: Object.entries(layout).reduce((res, [k, v]) => Object.assign(res, { [k]: { ...v } }), {}),
     zIndex,
   };
 }
