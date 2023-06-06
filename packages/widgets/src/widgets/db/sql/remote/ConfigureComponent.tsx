@@ -3,7 +3,8 @@
 import { Field, Form } from '@ossinsight-lite/ui/components/form';
 import WidgetContext from '@ossinsight-lite/ui/context/widget';
 import { forwardRef, useCallback, useContext } from 'react';
-import { RemoteInfo, WidgetProps } from './Widget';
+import { RemoteInfo } from './utils';
+import { WidgetProps } from './Widget';
 
 const ConfigureComponent = forwardRef<HTMLDivElement, WidgetProps>(function ConfigureComponent ({ owner, repo, branch, name, forwardedRef, ...props }, ref) {
   const { onPropChange, configuring } = useContext(WidgetContext);

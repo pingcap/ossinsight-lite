@@ -1,6 +1,6 @@
 'use client';
 import { widgets } from '@/core/bind-client';
-import WidgetContext from '@/packages/ui/context/widget';
+import WidgetContext, { noDataOptions } from '@/packages/ui/context/widget';
 import { readItem } from '@/packages/ui/hooks/bind';
 import { useVisible } from '@/packages/ui/hooks/visible';
 import clientOnly from '@/utils/clientOnly';
@@ -29,6 +29,7 @@ function WidgetDetails ({ id, name, className, props }: WidgetPreviewProps) {
       onPropChange: () => {},
       configuring: false,
       creating: false,
+      ...noDataOptions,
     }}>
       <Details
         {...props}

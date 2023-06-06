@@ -21,12 +21,14 @@ type WidgetModuleMeta<P = any> = {
 
   createPngThumbnail?: () => Promise<{ default: (server: ServerContext, props: P, ctx: CanvasRenderingContext2D, width: number, height: number) => void | Promise<void> }>,
 
+  getData?: () => Promise<{ default (server: ServerContext, props: P): Promise<any> }>,
+
   category?: string
   displayName?: string
 }
 
 export type ServerContext = {
-  runSql (db: string, sql: string): Promise<any[]>;
+  runSql (db: string, sql: string): Promise<{ data: any[], columns: { name: string, type: number }[] }>;
 }
 
 type WidgetModule<P = any> = {

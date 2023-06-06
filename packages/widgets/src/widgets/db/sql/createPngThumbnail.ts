@@ -19,7 +19,7 @@ export default async function (server: ServerContext, props: WidgetProps, ctx: C
     throw new Error(`Rendering gauge to PNG is not support yet`);
   }
 
-  const data = await server.runSql(props.currentDb, props.sql);
+  const { data } = await server.runSql(props.currentDb, props.sql);
 
   const { x, y, title } = props.visualize;
 

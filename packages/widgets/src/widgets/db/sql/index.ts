@@ -8,6 +8,8 @@ export const Icon = () => import('./Icon');
 
 export const createPngThumbnail = () => import('./createPngThumbnail');
 
+export const getData = () => import('./getData');
+
 export const preferredSize = {
   width: 1024,
   height: 768,

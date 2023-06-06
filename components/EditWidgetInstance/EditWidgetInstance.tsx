@@ -3,7 +3,7 @@ import { readItem } from '@/packages/ui/hooks/bind';
 import useRefCallback from '@/packages/ui/hooks/ref-callback';
 import { useVisible } from '@/packages/ui/hooks/visible';
 import { LibraryItemProps } from '@/utils/types/config';
-import WidgetContext from '@ossinsight-lite/ui/context/widget';
+import WidgetContext, { noDataOptions } from '@ossinsight-lite/ui/context/widget';
 import clsx from 'clsx';
 import { ChangeEvent } from 'react';
 
@@ -35,6 +35,7 @@ export default function EditWidgetInstance ({ name, props, onPropsChange, creati
         creating,
         onPropChange: onPropsChange,
         props: { ...props, ...widget.configurablePropsOverwrite },
+        ...noDataOptions,
       }}
     >
       <div className="w-full h-full">

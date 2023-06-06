@@ -1,13 +1,10 @@
-import config from '@/.osswrc.json';
 import { createServerContext } from '@/app/(share)/widgets/[id]/utils';
 import widgetsManifest from '@/core/widgets-manifest';
 import { VisualizeType } from '@/packages/widgets/src/components/visualize/common';
-import { getDatabaseUri, sql, withConnection } from '@/utils/mysql';
+import { sql } from '@/utils/mysql';
 import { isReadonly } from '@/utils/server/auth';
-import { createCanvas, GlobalFonts, Path2D } from '@napi-rs/canvas';
+import { GlobalFonts } from '@napi-rs/canvas';
 import { defaults } from 'chart.js';
-import { patchContext2D } from 'chartjs-plugin-roughness';
-import { RowDataPacket } from 'mysql2/promise';
 import { notFound } from 'next/navigation';
 import { NextRequest, NextResponse } from 'next/server';
 import path from 'node:path';
@@ -32,13 +29,13 @@ export async function GET (req: NextRequest, { params: { id } }: any) {
              visibility  AS visibility
       FROM library_items
       WHERE id = ${id}
+        AND widget_name IN ('db/sql', 'db/sql/remote')
   `;
   if (!item) {
     notFound();
   }
 
   if (isReadonly(req) && item.visibility !== 'public') {
-    // todo unauthorized image
     return new NextResponse(null, {
       status: 401,
     });
@@ -50,26 +47,15 @@ export async function GET (req: NextRequest, { params: { id } }: any) {
     notFound();
   }
 
-  if (!widget.createPngThumbnail) {
+  if (!widget.getData) {
     notFound();
   }
 
-  const createPngThumbnail = (await widget.createPngThumbnail()).default;
+  const getData = (await widget.getData()).default;
 
-  const canvas = createCanvas(800, 418);
-  const ctx = canvas.getContext('2d');
-  if (!patched) {
-    // @ts-ignore
-    patchContext2D(ctx.__proto__.constructor, Path2D);
-    patched = true;
-  }
-  await createPngThumbnail(createServerContext(), props, ctx as any, 800, 418);
+  const data = await getData(createServerContext(), props);
 
-  return new NextResponse(canvas.toBuffer('image/png'), {
-    headers: {
-      'Content-Type': 'image/png',
-    },
-  });
+  return NextResponse.json(data);
 }
 
 export const dynamic = 'force-dynamic';
