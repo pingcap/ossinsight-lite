@@ -1,0 +1,7 @@
+{
+  "min-ossl-version": 0,
+  "database": "github_personal",
+  "title": "Contribution time distribution",
+  "description": "This chart show the time distribution of contribution (include issues, pull requests and comments) with a heatmap.",
+  "vis": "chart.js"
+}
