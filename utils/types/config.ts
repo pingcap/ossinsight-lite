@@ -35,7 +35,7 @@ export type Dashboard = {
 export type Store = 'tidb';
 
 export type LayoutConfigV1 = {
-  version: 1
+  version: 1 | 2
   library: LibraryItem[]
   dashboard: Record<string, Dashboard>
   libraryStore?: Store

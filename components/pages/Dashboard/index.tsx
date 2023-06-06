@@ -27,29 +27,47 @@ function Dashboard ({ dashboardName, editMode }: { dashboardName: string, editMo
 
   useEffect(() => {
     if (items) {
-      const layouts = breakpointNames.reduce((layouts, breakpoint) => {
-        const layout = items.values.flatMap(item => {
-          if (item.layout[breakpoint]) {
-            return [{
-              ...item.layout[breakpoint],
-              i: item.id,
-            }];
-          } else {
-            return [];
-          }
-        });
-        if (layout.length === items.keys.length) {
-          layouts[breakpoint] = layout;
-        }
-        return layouts;
-      }, {} as Layouts);
-      setLayouts(layouts);
+
     }
-  }, [dashboard, editMode]);
+  }, [ids.length > 0, editMode]);
+
+  useEffect(() => {
+    if (dashboard) {
+      const items = dashboard.items;
+      const update = () => {
+        const layouts = breakpointNames.reduce((layouts, breakpoint) => {
+          const layout = items.values.flatMap(item => {
+            if (item.layout[breakpoint]) {
+              return [{
+                ...item.layout[breakpoint],
+                i: item.id,
+              }];
+            } else {
+              return [];
+            }
+          });
+          if (layout.length === items.keys.length) {
+            layouts[breakpoint] = layout;
+          }
+          return layouts;
+        }, {} as Layouts);
+        setLayouts(layouts);
+      };
+
+      if (dashboard.syncVersion.current > 0) {
+        update();
+      }
+
+      const sub = dashboard.syncVersion.subscribe(update);
+      return () => {
+        sub.unsubscribe();
+      };
+    }
+  }, [dashboard]);
 
   const handleLayoutChange = useRefCallback((currentLayout: Layout[], allLayouts: Layouts) => {
     setLayouts(allLayouts);
-    if (items) {
+    if (editMode && items) {
       const breakpoint = breakpointRef.current ?? breakpointNames.find(name => !!allLayouts[name]);
       if (breakpoint) {
         const layout = allLayouts[breakpoint];
