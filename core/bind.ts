@@ -12,6 +12,8 @@ declare module '@ossinsight-lite/ui/hooks/bind' {
       saving: boolean
       loading: number
       fetchingConfig: boolean
+      authenticated: boolean,
+      playground: boolean,
     };
 
     currentDashboard: DashboardInstance | null;
@@ -22,6 +24,8 @@ export const appState = singletons.add('appState', {
   saving: false,
   loading: 0,
   fetchingConfig: false,
+  authenticated: false,
+  playground: false,
 });
 
 export function startAppStateLoadingTransition (cb: TransitionFunction) {
@@ -34,6 +38,19 @@ export function startAppStateLoadingTransition (cb: TransitionFunction) {
     ...appState.current,
     loading: appState.current.loading - 1,
   });
+}
+
+export function withAppStateLoadingState (promise: Promise<any>) {
+  appState.update({
+    ...appState.current,
+    loading: appState.current.loading + 1,
+  });
+  promise.finally(() => {
+    appState.update({
+      ...appState.current,
+      loading: appState.current.loading - 1,
+    });
+  })
 }
 
 export const dashboards = collections.add('dashboards');
