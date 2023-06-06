@@ -1,18 +1,14 @@
-import config from '@/.osswrc.json';
 import { createServerContext } from '@/app/(share)/widgets/[id]/utils';
+import '@/core/chart-defaults';
 import widgetsManifest from '@/core/widgets-manifest';
 import { VisualizeType } from '@/packages/widgets/src/components/visualize/common';
-import { getDatabaseUri, sql, withConnection } from '@/utils/mysql';
+import { sql } from '@/utils/mysql';
 import { isReadonly } from '@/utils/server/auth';
 import { createCanvas, GlobalFonts, Path2D } from '@napi-rs/canvas';
-import { defaults } from 'chart.js';
 import { patchContext2D } from 'chartjs-plugin-roughness';
-import { RowDataPacket } from 'mysql2/promise';
 import { notFound } from 'next/navigation';
 import { NextRequest, NextResponse } from 'next/server';
 import path from 'node:path';
-
-defaults.font.family = 'CabinSketch';
 
 let patched = false;
 
