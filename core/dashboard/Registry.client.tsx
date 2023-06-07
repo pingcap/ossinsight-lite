@@ -1,5 +1,5 @@
 'use client';
-import { currentDashboard, dashboards, library } from '@/core/bind';
+import { dashboards, library } from '@/core/bind';
 import { ReactiveDashboardInstance } from '@/core/dashboard/reactive-dashboard-instance';
 import { singletons } from '@/packages/ui/hooks/bind/context';
 import clientOnly from '@/utils/clientOnly';
