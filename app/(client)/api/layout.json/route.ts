@@ -1,6 +1,6 @@
 import { getAllDashboards, getLibrary } from '@/app/(client)/api/layout/operations';
 import { isReadonly } from '@/utils/server/auth';
-import { LayoutConfigV1 } from '@/utils/types/config';
+import { LayoutConfig } from '@/utils/types/config';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET (req: NextRequest) {
@@ -8,7 +8,7 @@ export async function GET (req: NextRequest) {
   const library = await getLibrary(readonly);
   const dashboard = await getAllDashboards(readonly);
 
-  const config: LayoutConfigV1 = {
+  const config: LayoutConfig = {
     version: 2,
     library,
     dashboard,
