@@ -67,7 +67,6 @@ function Dashboard ({ dashboardName, editMode }: { dashboardName: string, editMo
 
   const handleLayoutChange = useRefCallback((currentLayout: Layout[], layouts: Layouts) => {
     setLayouts(layouts);
-    console.log('layout changes', breakpoint, currentLayout);
     const items = dashboard?.items;
     if (editMode && items) {
       if (breakpoint) {
@@ -128,8 +127,6 @@ function Dashboard ({ dashboardName, editMode }: { dashboardName: string, editMo
       </div>
     ));
   }, [ids.join(','), editMode, ref.current]);
-
-  console.log(breakpoint, layouts, ids);
 
   return (
     <DashboardContext.Provider value={{ dashboardName }}>
