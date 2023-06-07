@@ -83,13 +83,13 @@ export function syncDashboardChanges (dashboardName: string, dashboard: Reactive
 
 
 export const DEFAULT_ROW_HEIGHT = 46;
-export const MIN_ROW_HEIGHT = 46;
-export const MAX_ROW_HEIGHT = 123.5;
-export const COLS = 16;
+export const MIN_ROW_HEIGHT = 36.5; // 768px
+export const MAX_ROW_HEIGHT = 123.5; // 2190px
+export const ROWS = 16;
 export const MARGIN = 8;
 export const PADDING = 32;
 
 export const computeRowHeight = (containerHeight: number) => {
-  const expectedHeight = (containerHeight - PADDING * 2 - MARGIN * (COLS - 1)) / COLS;
+  const expectedHeight = (containerHeight - PADDING * 2 - MARGIN * (ROWS - 1)) / ROWS;
   return Math.min(MAX_ROW_HEIGHT, Math.max(MIN_ROW_HEIGHT, expectedHeight));
 };
