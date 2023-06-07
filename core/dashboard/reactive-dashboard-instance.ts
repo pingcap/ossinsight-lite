@@ -1,5 +1,5 @@
 import { DashboardInstance } from '@/core/dashboard/type';
-import { ReactiveValue } from '@/packages/ui/hooks/bind/ReactiveValueSubject';
+import { ReactiveValue, ReactiveValueSubject } from '@/packages/ui/hooks/bind/ReactiveValueSubject';
 import { Dashboard, ItemReference } from '@/utils/types/config';
 import { GeneralEvent } from '@ossinsight-lite/ui/hooks/bind/BindBase';
 import { ReactBindCollection } from '@ossinsight-lite/ui/hooks/bind/ReactBindCollection';
@@ -9,6 +9,7 @@ import { Subscription } from 'rxjs';
 export class ReactiveDashboardInstance implements DashboardInstance {
   layout: Dashboard['layout'];
   readonly items: ReactBindCollection<ItemReference>;
+  readonly syncVersion: ReactiveValue<number>;
   private _subscription: Subscription | undefined;
   private _syncSubscriptions: Subscription | undefined;
   private _syncTarget: DashboardInstance | undefined;
@@ -16,6 +17,7 @@ export class ReactiveDashboardInstance implements DashboardInstance {
   constructor (readonly name: string, config: Dashboard) {
     this.layout = config.layout;
     const items = this.items = new ReactBindCollection<ItemReference>();
+    this.syncVersion = new ReactiveValueSubject(0);
     items._key = `${name}.items`;
 
     config.items.forEach(item => {
@@ -93,13 +95,15 @@ export class ReactiveDashboardInstance implements DashboardInstance {
     this.addSyncDisposeDependency(new Subscription(() => {
       console.debug(`[layout:${this.name}] exit`, source.name);
     }));
+
+    this.syncVersion.update(this.syncVersion.current + 1);
   }
 }
 
-function clone ({ id, rect, zIndex }: ItemReference): ItemReference {
+function clone ({ id, layout, zIndex }: ItemReference): ItemReference {
   return {
     id,
-    rect: [...rect],
+    layout: Object.entries(layout).reduce((res, [k, v]) => Object.assign(res, { [k]: { ...v } }), {}),
     zIndex,
   };
 }

@@ -9,7 +9,7 @@ export async function GET (req: NextRequest) {
   const dashboard = await getAllDashboards(readonly);
 
   const config: LayoutConfigV1 = {
-    version: 1,
+    version: 2,
     library,
     dashboard,
   };

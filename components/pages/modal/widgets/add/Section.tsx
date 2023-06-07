@@ -49,7 +49,14 @@ function Item ({ item, dashboardName }: { dashboardName: string, item: LibraryIt
       if (!dashboard.items.has(id)) {
         dashboard.items.add(id, {
           id,
-          rect: widget.defaultRect ?? [0, 0, 8, 3],
+          layout: {
+            xl: {
+              x: 0,
+              y: 0,
+              w: 4,
+              h: 2
+            }
+          }
         });
       }
     }

@@ -1,6 +1,7 @@
 import LoadingIndicator from '@ossinsight-lite/ui/components/loading-indicator';
 import * as Accordion from '@radix-ui/react-accordion';
 import { useEffect, useMemo, useState } from 'react';
+import { ADMIN_DATABASE_NAME } from '../../../../../../utils/common';
 import { Alert } from '../../../components/alert';
 import { doDbSqlQuery } from '../../../utils/query';
 import { AccordionContent, AccordionItem, AccordionTrigger } from './Accordion';
@@ -44,7 +45,7 @@ function DatabaseList ({ db }: { db: string }) {
     return result?.data.filter(item => ![
       'mysql',
       'test',
-      'ossinsight_lite_admin',
+      ADMIN_DATABASE_NAME,
       'sample_data',
       'INFORMATION_SCHEMA',
       'PERFORMANCE_SCHEMA',

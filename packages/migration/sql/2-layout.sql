@@ -1,5 +1,3 @@
-USE `ossinsight_lite_admin`;
-
 CREATE TABLE library_items
 (
   id          VARCHAR(255) PRIMARY KEY NOT NULL,

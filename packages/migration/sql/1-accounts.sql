@@ -1,5 +1,3 @@
-USE `ossinsight_lite_admin`;
-
 CREATE TABLE site_accounts
 (
   username VARCHAR(255) PRIMARY KEY NOT NULL,

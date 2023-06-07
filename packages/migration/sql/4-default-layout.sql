@@ -1,5 +1,3 @@
-USE ossinsight_lite_admin;
-
 INSERT INTO dashboards (name, properties)
 VALUES ('default', '{"layout": {"gap": 8, "size": [40, 16], "type": "gird:responsive"}}');
 
@@ -21,8 +19,6 @@ VALUES ('db/sql-1684253466319', 'db/sql',
 
 INSERT INTO dashboard_items (dashboard_name, item_id, properties)
 VALUES ('default', 'free-editor', '{"rect": [-1, -7, 18, 13]}'),
-       ('default', 'internal:Navigator', '{"rect": [-12, -11, 3, 2]}'),
-       ('default', 'internal:Title', '{"rect": [-16, -11, 4, 2]}'),
        ('default', 'oh-my-github/me-1683797454', '{"rect": [-17, -8, 6, 3]}'),
        ('default', 'oh-my-github/personal-overview', '{"rect": [-17, 0, 16, 8]}'),
        ('default', 'oh-my-github/stats-1683797498', '{"rect": [-17, -4, 7, 4]}'),

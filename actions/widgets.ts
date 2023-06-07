@@ -21,8 +21,26 @@ export async function addLibraryItem (item: LibraryItem) {
 export async function uploadLayoutJsonAction (formData: FormData) {
   const config: LayoutConfigV1 = JSON.parse(await (formData.get('layout.json') as File).text());
 
-  if (config.version !== 1) {
-    throw new Error('Only support layout.json version 1');
+  if (config.version === 1) {
+    Object.values(config.dashboard).forEach(dashboard => {
+      dashboard.items.forEach(item => {
+        const rect = (item as any).rect;
+        delete (item as any).rect;
+        item.layout = {
+          xl: {
+            x: rect[0] + 20,
+            y: rect[1] + 8,
+            w: rect[2],
+            h: rect[3],
+          },
+        };
+      });
+    });
+    config.version = 2;
+  }
+
+  if (config.version !== 2) {
+    throw new Error(`Unsupported layout.json version ${config.version}`);
   }
 
   await withConnection(getDatabaseUri(ADMIN_DATABASE_NAME), async ({ sql, beginTransaction }) => {

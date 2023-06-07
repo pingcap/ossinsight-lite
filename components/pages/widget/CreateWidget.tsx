@@ -33,7 +33,14 @@ export default function CreateWidget ({ name }: CreateWidgetProps) {
     if (currentDashboard.current) {
       currentDashboard.current.items.add(id, {
         id,
-        rect: widget.current.defaultRect ?? [0, 0, 8, 3],
+        layout: {
+          xl: {
+            x: 0,
+            y: 0,
+            w: 4,
+            h: 2,
+          },
+        },
       });
     }
     closeModal();
