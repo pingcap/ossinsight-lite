@@ -1,3 +1,4 @@
+import { ItemReferenceLayout } from '@/utils/layout';
 import { CSSProperties } from 'react';
 import { Layout } from 'react-grid-layout';
 
@@ -19,7 +20,7 @@ export type LibraryItem = {
 
 export type ItemReference = {
   id: string
-  layout: { [p: string]: Pick<Layout, 'x' | 'y' | 'w' | 'h' | 'minW' | 'minH' | 'maxW' | 'maxH'> }
+  layout: ItemReferenceLayout
   zIndex?: number
 }
 

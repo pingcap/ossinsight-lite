@@ -1,9 +1,11 @@
 import { DashboardInstance } from '@/core/dashboard/type';
 import { ReactiveValue, ReactiveValueSubject } from '@/packages/ui/hooks/bind/ReactiveValueSubject';
+import { BreakpointName, breakpointNames, getFirstBreakpointValue } from '@/utils/layout';
 import { Dashboard, ItemReference } from '@/utils/types/config';
 import { GeneralEvent } from '@ossinsight-lite/ui/hooks/bind/BindBase';
 import { ReactBindCollection } from '@ossinsight-lite/ui/hooks/bind/ReactBindCollection';
 import { BindingTypeEvent, KeyType } from '@ossinsight-lite/ui/hooks/bind/types';
+import { Layouts } from 'react-grid-layout';
 import { Subscription } from 'rxjs';
 
 export class ReactiveDashboardInstance implements DashboardInstance {
@@ -97,6 +99,26 @@ export class ReactiveDashboardInstance implements DashboardInstance {
     }));
 
     this.syncVersion.update(this.syncVersion.current + 1);
+  }
+
+  computeLayout () {
+    return breakpointNames.reduce((layouts, breakpoint) => {
+      const layout = this.items.values.flatMap(item => {
+        const layout = item.layout[breakpoint];
+        if (layout) {
+          return [{
+            ...layout,
+            i: item.id,
+          }];
+        } else {
+          return [];
+        }
+      });
+      if (layout.length === this.items.keys.length) {
+        layouts[breakpoint] = layout;
+      }
+      return layouts;
+    }, {} as Layouts);
   }
 }
 
