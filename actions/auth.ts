@@ -29,6 +29,13 @@ async function authenticate ({ sql }: SqlExecutor, username: string, password: s
 
 export async function loginAction (form: FormData) {
   'use server';
+  await coreLoginAction(form);
+  const redirectUri = form.get('redirect_uri') as string;
+  redirect(redirectUri);
+}
+
+export async function coreLoginAction (form: FormData) {
+  'use server';
   const username = form.get('username') || 'admin';
   const password = form.get('password');
   const redirectUri = form.get('redirect_uri') as string;
@@ -53,7 +60,6 @@ export async function loginAction (form: FormData) {
   } as ResponseCookie);
 
   revalidatePath(redirectUri);
-  redirect(redirectUri);
 }
 
 export async function resetPasswordAction (formData: FormData) {
@@ -132,7 +138,7 @@ export async function deleteReadonlyUser () {
   const readonlyUsername = username.replace(/\.[^.]*$/, '.osslreadonly');
 
   await withConnection(getDatabaseUri(), async ({ sql }) => {
-    console.log(`DROP USER IF EXISTS ${readonlyUsername}@'%';`)
+    console.log(`DROP USER IF EXISTS ${readonlyUsername}@'%';`);
     await sql`
         DROP USER IF EXISTS ${readonlyUsername}@'%';
     `;

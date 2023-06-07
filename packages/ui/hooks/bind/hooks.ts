@@ -1,6 +1,5 @@
-import { DependencyList, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
+import { DependencyList, SetStateAction, useCallback, useEffect, useState } from 'react';
 import { filter, map, Subscription, Unsubscribable } from 'rxjs';
-import useRefCallback from '../ref-callback';
 import { BindBase } from './BindBase';
 import { collection, collections, readBind, singletons } from './context';
 import { BindKeyDuplicatedError } from './error';
@@ -238,22 +237,4 @@ export function useUpdater<K extends CollectionBindKey> (type: K, id: KeyType) {
   return useCallback((value: SetStateAction<CollectionBindValue<K>>) => {
     bind.update(id, value);
   }, [bind, id]);
-}
-
-export function useSafeUpdater<K extends CollectionBindKey> (type: K, id: KeyType) {
-  const bindRef = useRef<ReactBindCollection<CollectionBindValue<K>>>();
-
-  useWhenReady(collections, type, (bind, sub) => {
-    bindRef.current = bind;
-
-    sub.add(() => {
-      bindRef.current = undefined;
-    });
-  }, [type, id]);
-
-  return useRefCallback((newValue: SetStateAction<CollectionBindValue<K>>) => {
-    if (bindRef.current) {
-      bindRef.current.update(id, newValue);
-    }
-  });
 }

@@ -25,7 +25,7 @@ export default function StyleEditor ({ id }: { id: string }) {
         </div>
       </div>
       <div className="border-b my-4" />
-      <WidgetCoordinator name={name} props={{ ...props, className: clsx(props.className, 'h-[320px] rounded-lg border font-sketch') }} _id={id} editMode={false} />
+      <WidgetCoordinator name={name} props={{ ...props, className: clsx(props.className, 'h-[320px] rounded-lg border font-sketch') }} _id={id} />
     </div>
   );
 }

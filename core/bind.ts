@@ -15,8 +15,6 @@ declare module '@ossinsight-lite/ui/hooks/bind' {
       authenticated: boolean,
       playground: boolean,
     };
-
-    currentDashboard: DashboardInstance | null;
   }
 }
 
@@ -58,8 +56,6 @@ export const dashboards = collections.add('dashboards');
 export const library = collections.add('library');
 
 export const commands = new BatchCommands();
-
-export const currentDashboard = singletons.add('currentDashboard', null);
 
 // Auto save library items
 library.subscribeAll(([item, id, ev]) => {

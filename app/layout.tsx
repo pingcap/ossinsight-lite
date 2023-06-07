@@ -11,7 +11,6 @@ import '@/static/CabinSketch.css';
 export default function RootLayout ({
   children,
   modal,
-  top,
   bottom,
 }: any) {
 
@@ -19,11 +18,6 @@ export default function RootLayout ({
     <html lang="en">
     <body>
     <App>
-      <NavMenu
-        position="top"
-        className="h-[40px] p-[4px] min-w-[250px]"
-        items={<><MenuItem id="sep" order={-1} separator />{top}</>}
-      />
       <NavMenu
         position="bottom"
         className="h-[40px] p-[4px] min-w-[250px]"

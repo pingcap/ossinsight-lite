@@ -3,17 +3,23 @@ import LayoutWtfIcon from '@/components/icons/layout-wtf.svg';
 import LockIcon from '@/components/icons/lock.svg';
 import PlusIcon from '@/components/icons/plus.svg';
 import UnlockIcon from '@/components/icons/unlock.svg';
+import { DashboardContext } from '@/components/pages/Dashboard/context';
 import { appState, startAppStateLoadingTransition } from '@/core/bind';
 import { widgets } from '@/core/bind-client';
 import { MenuItem } from '@/packages/ui/components/menu';
+import { NavMenu } from '@/packages/ui/components/nav-menu';
 import { useWatchReactiveValueField } from '@/packages/ui/hooks/bind/hooks';
+import { isSSR } from '@/packages/ui/utils/ssr';
 import { useRouter } from 'next/navigation';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useContext, useMemo } from 'react';
 
-export default function DashboardMenu ({ dashboardName, dashboardNames, editMode }: { dashboardName: string, dashboardNames: string[], editMode: boolean }) {
+export default function DashboardMenu ({ dashboardNames }: { dashboardNames: string[] }) {
   const router = useRouter();
   const loading = useWatchReactiveValueField(appState, 'loading');
   const saving = useWatchReactiveValueField(appState, 'saving');
+
+  const { dashboardName, editing, toggleEditing } = useContext(DashboardContext);
+
   const configurableWidgets = useMemo(() => {
     return widgets.values.filter(widget => !!widget.ConfigureComponent);
   }, []);
@@ -25,7 +31,8 @@ export default function DashboardMenu ({ dashboardName, dashboardNames, editMode
   }, [dashboardName]);
 
   return (
-    <>
+    <NavMenu position="top" className="h-[40px] p-[4px] min-w-[250px]">
+      <MenuItem id='sep' order={0} separator />
       <MenuItem id="Dashboards" order={60} text={<LayoutWtfIcon />} parent>
         {dashboardNames.map((dashboard, index) => (
           <MenuItem
@@ -33,14 +40,14 @@ export default function DashboardMenu ({ dashboardName, dashboardNames, editMode
             id={dashboard}
             order={index}
             text={dashboard}
-            disabled={loading > 0}
+            disabled={isSSR ? true : loading > 0}
             prefetch={false}
-            href={dashboardHref(dashboard, editMode)}
+            href={dashboardHref(dashboard)}
           />
         ))}
       </MenuItem>
-      {editMode && (
-        <MenuItem text={<PlusIcon width={20} height={20} />} id="new" order={40} disabled={loading > 0} parent>
+      {editing && (
+        <MenuItem text={<PlusIcon width={20} height={20} />} id="new" order={40} disabled={isSSR ? true : loading > 0} parent>
           {configurableWidgets.map(({ name, displayName, Icon }, index) => (
             <MenuItem
               id={name}
@@ -60,15 +67,12 @@ export default function DashboardMenu ({ dashboardName, dashboardNames, editMode
           <MenuItem id={'new'} order={999} action={handleClickNew} text={<span className="inline-block min-w-[180px] text-sm text-left text-gray-600">Browse library</span>} />
         </MenuItem>
       )}
-      <MenuItem id="EditModeSwitch" order={50} disabled={loading > 0 || saving} text={editMode ? <UnlockIcon /> : <LockIcon />} action={() => startAppStateLoadingTransition(() => router.push(dashboardHref(dashboardName, !editMode)))} />
-    </>
+      <MenuItem id="switch-editing" order={50} disabled={isSSR ? true : (loading > 0 || saving)} text={editing ? <UnlockIcon /> : <LockIcon />} action={toggleEditing} />
+    </NavMenu>
   );
 }
 
-function dashboardHref (name: string, edit: boolean) {
-  if (edit) {
-    return `/dashboards/${name}/edit` as const;
-  }
+function dashboardHref (name: string) {
   if (name === 'default') {
     return `/` as const;
   } else {

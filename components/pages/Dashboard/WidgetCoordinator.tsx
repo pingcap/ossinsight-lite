@@ -13,10 +13,9 @@ export interface WidgetCoordinator {
   name: string;
   props: any;
   _id: string;
-  editMode: boolean;
 }
 
-export const WidgetCoordinator = forwardRef<HTMLDivElement, WidgetCoordinator>(({ name, _id: id, editMode, props: passInProps }, ref) => {
+export const WidgetCoordinator = forwardRef<HTMLDivElement, WidgetCoordinator>(({ name, _id: id, props: passInProps }, ref) => {
   const { dashboardName } = useContext(DashboardContext)
   const widget = readItem(widgets, name).current;
 

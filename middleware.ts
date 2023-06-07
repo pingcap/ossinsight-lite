@@ -73,10 +73,6 @@ function needAuth (req: NextRequest) {
     return true;
   }
 
-  if (/\/dashboards\/.*\/edit/.test(req.nextUrl.pathname)) {
-    return true;
-  }
-
   if (/\/widgets\/create\//.test(req.nextUrl.pathname)) {
     return true;
   }

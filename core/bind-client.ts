@@ -1,5 +1,6 @@
 import { Alert } from '@/components/Alert';
 import * as internals from '@/components/internal-widgets';
+import { appState, withAppStateLoadingState } from '@/core/bind';
 // import { appState, startAppStateLoadingTransition, withAppStateLoadingState } from '@/core/bind';
 import widgetsManifest, { ResolvedWidgetModule } from '@/core/widgets-manifest';
 import { collections } from '@/packages/ui/hooks/bind';
@@ -64,3 +65,17 @@ if (typeof window !== 'undefined') {
     }
   }, 5 * 60 * 1000);
 }
+
+export const reloadAuth = (): Promise<{ authenticated: boolean, playground: boolean }> => {
+  const promise = fetch('/api/auth').then(res => res.json())
+    .then((res) => {
+      appState.update({
+        ...appState.current,
+        authenticated: !!res?.authenticated,
+        playground: !!res?.playground,
+      });
+      return res;
+    });
+  withAppStateLoadingState(promise);
+  return promise;
+};

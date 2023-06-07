@@ -16,7 +16,7 @@ export interface MenuRenderers {
 }
 
 export interface DirectItemsProps {
-  items: ReactNode;
+  items?: ReactNode;
 }
 
 export function renderAny (item: MenuItemProps, renderers: MenuRenderers) {
