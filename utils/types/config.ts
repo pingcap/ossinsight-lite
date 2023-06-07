@@ -1,6 +1,5 @@
 import { ItemReferenceLayout } from '@/utils/layout';
 import { CSSProperties } from 'react';
-import { Layout } from 'react-grid-layout';
 
 export interface CustomLibraryItemProps {
 }
@@ -29,13 +28,15 @@ export type Dashboard = {
     size: [number, number]
     gap: number
   }
+  upstream?: string
+  lastSyncedAt?: number
   items: ItemReference[]
   visibility?: string
 }
 
 export type Store = 'tidb';
 
-export type LayoutConfigV1 = {
+export type LayoutConfig = {
   version: 1 | 2
   library: LibraryItem[]
   dashboard: Record<string, Dashboard>

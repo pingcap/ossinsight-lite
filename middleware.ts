@@ -54,6 +54,9 @@ function anonymousAuth (req: NextRequest) {
   if (req.nextUrl.pathname === 'layout.json') {
     return true;
   }
+  if (/^\/dashboards\/[^/]+\/layout.json$/.test(req.nextUrl.pathname)) {
+    return true;
+  }
   if (/^\/api\/(refresh-token|auth)$/.test(req.nextUrl.pathname)) {
     return true;
   }
