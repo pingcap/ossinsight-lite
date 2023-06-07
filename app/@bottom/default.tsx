@@ -1,8 +1,7 @@
 'use client';
-import CloudDownloadIcon from '@/components/icons/cloud-download.svg';
-import GearIcon from '@/components/icons/gear.svg';
-import AdminMenu from '@/components/menu/AdminMenu';
-import { MenuItem } from '@/packages/ui/components/menu';
+import AdminBottomMenu from '@/components/menu/AdminBottomMenu';
+import CommonBottomMenu from '@/components/menu/CommonBottomMenu';
+import DashboardBottomMenu from '@/components/menu/DashboardBottomMenu';
 import { usePathname } from 'next/navigation';
 
 export default function Default () {
@@ -13,36 +12,20 @@ export default function Default () {
   }
 
   if (path?.startsWith('/admin/')) {
-    return <AdminMenu />;
+    return <AdminBottomMenu />;
   }
 
   if (path === '/') {
-    return dashboardsItems();
+    return <DashboardBottomMenu />;
   }
 
   const [dashboards, name, edit, ...rest] = path.replace(/^\//, '').split('/');
 
   if (rest.length === 0) {
     if (dashboards === 'dashboards') {
-      if (edit === 'edit') {
-        return dashboardsItems();
-      }
-      if (!edit) {
-        return dashboardsItems();
-      }
+      return <DashboardBottomMenu />;
     }
   }
 
-  return null;
+  return <CommonBottomMenu />;
 }
-
-const dashboardsItems = () => (
-  <>
-    <MenuItem id="Admin" order={-9999} href="/admin/dashboards" prefetch={false} text={<GearIcon />} />
-    <MenuItem id="DownloadLayoutJSON" order={100} custom>
-      <a href="/api/layout.json" download="layout.json">
-        <CloudDownloadIcon />
-      </a>
-    </MenuItem>
-  </>
-);

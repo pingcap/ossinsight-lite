@@ -1,9 +1,9 @@
 'use client';
 import { ModalContext } from '@/app/@modal/(all)/context';
 import EditWidgetInstance from '@/components/EditWidgetInstance';
-import { currentDashboard, library } from '@/core/bind';
+import { library } from '@/core/bind';
 import { widgets } from '@/core/bind-client';
-import { readItem } from '@/packages/ui/hooks/bind';
+import { readItem, singletons } from '@/packages/ui/hooks/bind';
 import useRefCallback from '@/packages/ui/hooks/ref-callback';
 import { useCallback, useContext, useState } from 'react';
 
@@ -12,6 +12,7 @@ export interface CreateWidgetProps {
 }
 
 export default function CreateWidget ({ name }: CreateWidgetProps) {
+  const canvas = singletons.getNullable('dashboard');
   const widget = readItem(widgets, name);
   const { closeModal } = useContext(ModalContext);
 
@@ -30,8 +31,8 @@ export default function CreateWidget ({ name }: CreateWidgetProps) {
       name,
       props,
     });
-    if (currentDashboard.current) {
-      currentDashboard.current.items.add(id, {
+    if (canvas?.current) {
+      canvas.current.items.add(id, {
         id,
         layout: {
           xl: {

@@ -5,7 +5,7 @@ import { MenuItem } from '@ossinsight-lite/ui/components/menu';
 import { useRouter } from 'next/navigation';
 import { useTransition } from 'react';
 
-export default function AdminMenu () {
+export default function AdminBottomMenu () {
   const router = useRouter();
   const [, startTransition] = useTransition();
 

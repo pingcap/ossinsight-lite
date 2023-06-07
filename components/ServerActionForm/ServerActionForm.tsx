@@ -3,13 +3,14 @@ import { ServerActionFormState } from '@/components/ServerActionForm/type';
 import useRefCallback from '@/packages/ui/hooks/ref-callback';
 import clsx from 'clsx';
 import { isNextRouterError } from 'next/dist/client/components/is-next-router-error';
-import { FormHTMLAttributes, useState, useTransition } from 'react';
+import { FormHTMLAttributes, useEffect, useState, useTransition } from 'react';
 
 interface ServerActionFormProps extends Omit<FormHTMLAttributes<HTMLFormElement>, 'action'> {
   action: (formData: FormData) => Promise<void>;
+  afterAction?: () => void;
 }
 
-export function ServerActionForm ({ action, ...props }: ServerActionFormProps) {
+export function ServerActionForm ({ action, afterAction, ...props }: ServerActionFormProps) {
   const [state, setState] = useState(ServerActionFormState.RESET);
   const [error, setError] = useState<Error>();
   const [, startTransition] = useTransition();
@@ -30,6 +31,12 @@ export function ServerActionForm ({ action, ...props }: ServerActionFormProps) {
       }
     });
   });
+
+  useEffect(() => {
+    if (state === ServerActionFormState.SUCCEED) {
+      afterAction?.();
+    }
+  }, [state])
 
   return (
     <ServerActionFormContext.Provider

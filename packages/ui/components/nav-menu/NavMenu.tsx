@@ -24,6 +24,7 @@ export function NavMenu ({ children, className, items, position = 'in-place', ..
         )}
       >
         {items}
+        {children}
       </MenuBar.Root>
     </Menu>
   );
