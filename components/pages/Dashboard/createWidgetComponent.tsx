@@ -39,24 +39,24 @@ export const WidgetComponent = forwardRef<HTMLDivElement, WidgetComponentProps>(
 
   if (editing) {
     el = (
-      <div className="relative w-full h-full">
+      <>
         {el}
         <EditingLayer
           id={id}
         />
-      </div>
+      </>
     );
   } else {
     el = (
-      <div className="relative w-full h-full">
+      <>
         {el}
         <ExploreLayer id={id} />
-      </div>
+      </>
     );
   }
 
   return (
-    <div className={clsx('w-full h-full rounded-lg border bg-white bg-opacity-60 overflow-hidden', className)} {...rest}>
+    <div className={clsx('w-full h-full relative rounded-lg border bg-white bg-opacity-80 overflow-hidden', className)} {...rest}>
       {el}
       {children}
     </div>

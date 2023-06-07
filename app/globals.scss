@@ -168,3 +168,15 @@
     width: 160px;
   }
 }
+
+.react-resizable-handle {
+  z-index: 40;
+}
+
+.react-draggable {
+  @apply outline-2 outline-dashed outline-gray-200 rounded-lg;
+
+  &-dragging {
+    @apply outline-gray-400;
+  }
+}
