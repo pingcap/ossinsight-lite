@@ -1,4 +1,4 @@
-import { MARGIN, PADDING } from '@/components/pages/Dashboard/utils';
+import { MARGIN, PADDING, ROWS } from '@/components/pages/Dashboard/utils';
 import { BreakpointName, cols } from '@/utils/layout';
 import { Layout } from 'react-grid-layout';
 
@@ -9,7 +9,7 @@ interface GridGuideProps {
 }
 
 export default function GridGuide ({ rowHeight, breakpoint, layout }: GridGuideProps) {
-  const rowsCount = layout?.reduce((r, item) => Math.max(r, item.y + item.h), 0) ?? 0;
+  const rowsCount = ROWS;
   const colsCount = cols[breakpoint];
 
   return (

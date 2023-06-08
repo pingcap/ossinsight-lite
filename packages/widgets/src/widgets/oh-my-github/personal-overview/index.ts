@@ -7,5 +7,7 @@ export const preferredSize = {
   height: 418,
 };
 
+export const styleConfigurable = ['showBorder'];
+
 export const category = 'Github Personal';
 export const displayName = 'Monthly activity trends';

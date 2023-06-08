@@ -22,7 +22,10 @@ export const defaultProps = {
     type: 'gauge',
     title: 'Greeting',
   },
+  showBorder: true,
 };
+
+export const styleConfigurable = ['showBorder'];
 
 export const duplicable = true;
 

@@ -4,14 +4,13 @@
 import { ButtonHTMLAttributes, ComponentType, CSSProperties, ForwardRefExoticComponent, HTMLProps } from 'react';
 
 type Widgets = Record<string, WidgetModule>
+export type ConfigurableStyle = 'backgroundColor' | 'justifyContent' | 'alignItems' | 'textAlign' | 'showBorder';
 type WidgetModuleMeta<P = any> = {
   /** @deprecated */
   preferredSize?: CSSProperties,
   defaultProps?: Partial<P>,
   duplicable?: boolean,
-  styleConfigurable?: boolean,
-  /** @deprecated */
-  styleFlexLayout?: 'col' | 'row',
+  styleConfigurable?: ConfigurableStyle[],
   /** @deprecated */
   configurablePropsOverwrite?: Partial<P>,
   /** @deprecated */

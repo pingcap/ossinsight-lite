@@ -1,15 +1,23 @@
 .btn {
-  @apply inline-flex text-sm gap-2 items-center transition-colors px-2 py-1 rounded;
+  @apply inline-flex text-sm gap-2 items-center justify-center transition-colors px-4 py-2 rounded;
 
   &-link {
-    @apply px-1 text-gray-500 hover:text-gray-900;
+    @apply px-1 text-secondary hover:text-primary;
   }
 
   &-default {
-    @apply text-gray-700 bg-gray-100;
+    @apply text-primary bg-gray-100;
 
     &:hover, &:active {
       @apply bg-gray-200;
+    }
+  }
+
+  &-primary {
+    @apply text-white bg-gray-950;
+
+    &:hover, &:active {
+      @apply bg-gray-800;
     }
   }
 
@@ -27,5 +35,9 @@
     &:hover, &:active {
       @apply bg-red-100;
     }
+  }
+
+  &-sm {
+    @apply py-1;
   }
 }

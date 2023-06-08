@@ -1,0 +1,7 @@
+.form-control {
+  @apply flex flex-col items-start gap-1;
+
+  label {
+    @apply text-sm text-gray-700;
+  }
+}

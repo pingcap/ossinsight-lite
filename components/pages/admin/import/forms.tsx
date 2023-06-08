@@ -17,7 +17,7 @@ export const ImportLayoutForm = ({}) => {
           }}
         />
         <FormControl label="Upload layout.json" name="layout.json">
-          <Input type="file" />
+          <Input type="file" accept="application/json" />
         </FormControl>
         <div className="form-control">
           <Button>

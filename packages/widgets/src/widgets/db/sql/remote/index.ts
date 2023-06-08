@@ -12,7 +12,10 @@ export const defaultProps = {
   repo: 'ossinsight-lite',
   branch: 'main',
   name: 'contribution-monthly',
+  showBorder: true,
 };
+
+export const styleConfigurable = ['showBorder'];
 
 export const duplicable = true;
 

@@ -41,7 +41,7 @@ export default function EditWidgetInstance ({ name, props, onPropsChange, creati
       <div className="w-full h-full">
         {!disableTitle && <div className="mb-[8px]">
           <input
-            className="text-input border-b"
+            className="text-input text-input-underline w-full"
             placeholder="Input a title"
             value={props.title ?? ''}
             onChange={handleTitleChange}

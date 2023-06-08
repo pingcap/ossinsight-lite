@@ -1,3 +1,23 @@
 .text-input {
-  @apply outline-none w-full h-[32px] px-2 py-1 text-gray-700
+  @apply border-gray-300 text-primary text-lg px-2 py-0.5 outline-none focus:border-gray-950 transition-colors;
+
+  &:not(.text-input-underline) {
+    @apply border rounded;
+  }
+
+  &-underline {
+    @apply border-b;
+  }
+
+  &::placeholder {
+    @apply text-gray-300;
+  }
+
+  &::file-selector-button {
+    display: none;
+  }
+
+  &::placeholder {
+    display: none;
+  }
 }

@@ -9,6 +9,10 @@ module.exports = {
   ],
   theme: {
     extend: {
+      textColor: utils => ({
+        primary: utils.colors.gray["700"],
+        secondary: utils.colors.gray["500"],
+      }),
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic':

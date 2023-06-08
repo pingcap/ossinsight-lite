@@ -49,7 +49,6 @@ for (let [name, module] of Object.entries(widgetsManifest)) {
 for (let [name, render] of Object.entries(internals)) {
   widgets.add(`internal:${name}`, {
     Widget: forwardRef(render),
-    styleConfigurable: true,
     category: 'built-in',
     name,
     displayName: name + ' (Deprecated)',

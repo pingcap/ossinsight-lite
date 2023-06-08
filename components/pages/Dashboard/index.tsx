@@ -12,7 +12,8 @@ import { memo, useContext, useMemo, useRef, useState } from 'react';
 import { Layout, Layouts, Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import { WidgetComponent } from './createWidgetComponent';
-import { MARGIN, PADDING, syncDashboardChanges, syncLayoutChanges } from './utils';
+import './style.scss';
+import { MARGIN, PADDING, ROWS, syncDashboardChanges, syncLayoutChanges } from './utils';
 
 function Dashboard () {
   const { dashboardName, editing } = useContext(DashboardContext);
@@ -33,7 +34,7 @@ function Dashboard () {
     setLayouts(layouts);
     const items = dashboard?.items;
     if (editing && items && breakpoint) {
-      syncLayoutChanges(items, breakpoint, currentLayout);
+      syncLayoutChanges(items, layouts);
     }
   });
 
@@ -68,10 +69,10 @@ function Dashboard () {
 
   return (
     <>
-      {editing && <GridGuide rowHeight={rowHeight} breakpoint={breakpoint ?? 'xl'} layout={layouts[breakpoint ?? 'xl'] ?? []} />}
+      {editing && <GridGuide rowHeight={rowHeight} breakpoint={breakpoint ?? 'lg'} layout={layouts[breakpoint ?? 'xl'] ?? []} />}
       <ResponsiveGridLayout
         ref={ref}
-        className="relative w-screen h-min-screen overflow-x-hidden"
+        className="grid-layout"
         layouts={layouts}
         breakpoints={breakpoints}
         cols={cols}
@@ -84,6 +85,7 @@ function Dashboard () {
         isResizable={editing}
         isDraggable={editing}
         isDroppable={editing}
+        maxRows={ROWS}
       >
         {children}
       </ResponsiveGridLayout>
