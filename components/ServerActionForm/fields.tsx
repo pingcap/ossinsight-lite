@@ -7,7 +7,7 @@ export const Input = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputE
   const { pending } = useFormStatus();
 
   return (
-    <input {...props} disabled={pending || disabled} ref={ref} />
+    <input {...props} className={clsx(props.className, 'text-input')} disabled={pending || disabled} ref={ref} />
   );
 });
 
@@ -15,7 +15,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaHTMLAttributes<H
   const { pending } = useFormStatus();
 
   return (
-    <textarea {...props} disabled={pending || disabled} ref={ref} />
+    <textarea {...props} className={clsx(props.className, 'text-input')} disabled={pending || disabled} ref={ref} />
   );
 });
 
@@ -23,11 +23,11 @@ export const Button = forwardRef<HTMLButtonElement, ButtonHTMLAttributes<HTMLBut
   const { pending } = useFormStatus();
 
   return (
-    <button {...props} disabled={pending || disabled} ref={ref}>
+    <button {...props} className={clsx(props.className, 'btn', { 'btn-primary': props.type !== 'button' })} disabled={pending || disabled} ref={ref}>
       <span>
         {children}
       </span>
-      <LoadingIndicator className={clsx('transition-all', pending ? 'w-[1em] opacity-100' : 'w-0 opacity-0')} />
+      <LoadingIndicator className={clsx('transition-all', pending ? 'w-[1em] opacity-100 mx-0' : 'mx-[-4px] w-0 opacity-0')} />
     </button>
   );
 });
@@ -36,7 +36,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectHTMLAttributes<HTMLSel
   const { pending } = useFormStatus();
 
   return (
-    <select {...props} disabled={pending || disabled} ref={ref} />
+    <select {...props} className={clsx(props.className, 'text-input')} disabled={pending || disabled} ref={ref} />
   );
 });
 

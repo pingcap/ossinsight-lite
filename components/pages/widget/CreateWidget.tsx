@@ -35,7 +35,7 @@ export default function CreateWidget ({ name }: CreateWidgetProps) {
       canvas.current.items.add(id, {
         id,
         layout: {
-          xl: {
+          lg: {
             x: 0,
             y: 0,
             w: 4,

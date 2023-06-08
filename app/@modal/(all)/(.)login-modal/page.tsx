@@ -14,7 +14,7 @@ export default function Page ({ searchParams }: any) {
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center">
-      <h2 className="mb-2 text-lg">Login to continue</h2>
+      <h2 className="mb-4 text-primary">Login to continue</h2>
       <LoginForm
         loginAction={coreLoginAction}
         redirectUri={redirectUri}

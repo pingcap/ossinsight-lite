@@ -50,7 +50,7 @@ function Item ({ item, dashboardName }: { dashboardName: string, item: LibraryIt
         dashboard.items.add(id, {
           id,
           layout: {
-            xl: {
+            lg: {
               x: 0,
               y: 0,
               w: 4,

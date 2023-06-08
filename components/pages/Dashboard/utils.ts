@@ -1,28 +1,22 @@
 import { DashboardInstance } from '@/core/dashboard/type';
 import { BindingTypeEvent, ReactBindCollection } from '@/packages/ui/hooks/bind';
 import { ReactiveValue } from '@/packages/ui/hooks/bind/ReactiveValueSubject';
-import { BreakpointName, compareLayoutShape } from '@/utils/layout';
+import { compareLayoutShape, eachBreakpointCompare, extractLayoutItem } from '@/utils/layout';
 import { ItemReference } from '@/utils/types/config';
 import { Dispatch, SetStateAction } from 'react';
-import { Layout, Layouts } from 'react-grid-layout';
+import { Layouts } from 'react-grid-layout';
 import { Subscription } from 'rxjs';
 
-export function syncLayoutChanges (items: ReactBindCollection<ItemReference>, breakpoint: BreakpointName, layout: Layout[]) {
-  for (let shape of layout) {
-    items.update(shape.i, (item, ctx) => {
-      const prev = item.layout[breakpoint];
-      if (prev) {
-        if (compareLayoutShape(prev, shape)) {
-          ctx.changed = false;
-          return item;
-        }
+export function syncLayoutChanges (items: ReactBindCollection<ItemReference>, layouts: Layouts) {
+  for (let id of items.keys) {
+    const layout = extractLayoutItem(layouts, id as string);
+    items.update(id, (item, ctx) => {
+      if (eachBreakpointCompare(item.layout, layout, compareLayoutShape)) {
+        ctx.changed = false;
+      } else {
+        ctx.changedKeys = ['layout'];
+        item.layout = layout;
       }
-      ctx.changedKeys = [`layout`];
-      const { x, y, w, h } = shape;
-      item.layout = {
-        ...item.layout,
-        [breakpoint]: { ...prev, x, y, w, h },
-      };
       return item;
     });
   }
@@ -81,11 +75,10 @@ export function syncDashboardChanges (dashboardName: string, dashboard: Reactive
   sub.add(dashboard.subscribe(switchToDashboard));
 }
 
-
 export const DEFAULT_ROW_HEIGHT = 46;
-export const MIN_ROW_HEIGHT = 36.5; // 768px
-export const MAX_ROW_HEIGHT = 123.5; // 2190px
-export const ROWS = 16;
+export const MIN_ROW_HEIGHT = 46; // 768px
+export const MAX_ROW_HEIGHT = 154; // 2190px
+export const ROWS = 13;
 export const MARGIN = 8;
 export const PADDING = 32;
 

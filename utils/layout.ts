@@ -1,12 +1,11 @@
-import { ItemReference } from '@/utils/types/config';
 import { Layout, Layouts } from 'react-grid-layout';
 
-export const breakpointNames = ['xl', 'lg', 'md', 'sm', 'xs', 'xxs'] as const;
+export const breakpointNames = ['lg', 'md', 'sm'] as const;
 
 export type BreakpointName = typeof breakpointNames[number];
 
-export const breakpoints: Responsive<number> = { xl: 1600, lg: 1200, md: 960, sm: 768, xs: 480, xxs: 0 };
-export const cols: Responsive<number> = { xl: 40, lg: 32, md: 24, sm: 16, xs: 12, xxs: 8 };
+export const breakpoints: Responsive<number> = { lg: 1200, md: 768, sm: 0 };
+export const cols: Responsive<number> = { lg: 24, md: 12, sm: 6 };
 
 export type Responsive<T> = Record<BreakpointName, T>
 
@@ -43,6 +42,24 @@ export function comparePersistedLayout (a: PersistedLayout, b: PersistedLayout) 
   return true;
 }
 
+export function eachBreakpointCompare<T> (a: Partial<Responsive<T>>, b: Partial<Responsive<T>>, compare: (a: T, b: T) => boolean): boolean {
+  for (const breakpointName of breakpointNames) {
+    const ab = a[breakpointName];
+    const bb = b[breakpointName];
+    if (ab == null && bb == null) {
+      continue;
+    }
+    if (ab && bb) {
+      if (!compare(ab, bb)) {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+  return true;
+}
+
 export function extractLayoutItem (layouts: Layouts, id: string): Responsive<Layout> {
   return breakpointNames.reduce((res, breakpoint) => {
     const layout = layouts[breakpoint];
@@ -55,7 +72,6 @@ export function extractLayoutItem (layouts: Layouts, id: string): Responsive<Lay
     return res;
   }, {} as Responsive<Layout>);
 }
-
 
 export function getFirstBreakpointValue<T> (responsive: Partial<Responsive<T>>) {
   const bp = breakpointNames.find(breakpoint => !!responsive[breakpoint]);

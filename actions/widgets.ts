@@ -27,7 +27,7 @@ export async function uploadLayoutJsonAction (formData: FormData) {
         const rect = (item as any).rect;
         delete (item as any).rect;
         item.layout = {
-          xl: {
+          lg: {
             x: rect[0] + 20,
             y: rect[1] + 8,
             w: rect[2],

@@ -24,22 +24,22 @@ const ConfigureComponent = forwardRef<HTMLDivElement, WidgetProps>(function Conf
         </p>
         <Field
           label="Owner"
-          control={<input className="outline-none flex-1 border-b px-2 py-1" placeholder="Input a remote markdown href" />}
+          control={<input className="text-input" placeholder="Input a remote markdown href" />}
           name="owner"
         />
         <Field
           label="Repo"
-          control={<input className="outline-none flex-1 border-b px-2 py-1" placeholder="Input a remote markdown href" />}
+          control={<input className="text-input" placeholder="Input a remote markdown href" />}
           name="repo"
         />
         <Field
           label="Branch"
-          control={<input className="outline-none flex-1 border-b px-2 py-1" placeholder="Input a remote markdown href" />}
+          control={<input className="text-input" placeholder="Input a remote markdown href" />}
           name="branch"
         />
         <Field
           label="Name"
-          control={<input className="outline-none flex-1 border-b px-2 py-1" placeholder="Input a remote markdown href" />}
+          control={<input className="text-input" placeholder="Input a remote markdown href" />}
           name="name"
         />
       </Form>
