@@ -1,0 +1,7 @@
+{
+  "min-ossl-version": 0,
+  "database": "github_repos",
+  "title": "Opened Issues Monthly",
+  "description": "A line chart used to display the monthly open issues of the repository.",
+  "vis": "chart.js"
+}
