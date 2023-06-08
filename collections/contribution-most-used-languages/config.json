@@ -1,0 +1,7 @@
+{
+  "min-ossl-version": 0,
+  "database": "github_personal",
+  "title": "Most Used Languages In Contributions",
+  "description": "A pie chart showing the most commonly used languages when contributing. (Note: programming languages are determined based on the primary language of the repository.)",
+  "vis": "chart.js"
+}
