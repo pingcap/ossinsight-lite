@@ -2,6 +2,6 @@
   @apply relative w-screen;
 
   @media screen and (min-width: 769px) and (min-height: 769px) {
-    @apply max-h-screen overflow-hidden;
+    @apply min-h-screen max-h-screen overflow-hidden;
   }
 }
