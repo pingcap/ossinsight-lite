@@ -30,7 +30,7 @@ const store = configureStore({
 
 setupListeners(store.dispatch);
 
-type Store = typeof store;
+export type Store = typeof store;
 export type State = ReturnType<Store['getState']>
 export type Action = Parameters<Store['dispatch']>[0]
 
