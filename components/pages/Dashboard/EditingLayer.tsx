@@ -11,7 +11,7 @@ import { MenuItem } from '@/packages/ui/components/menu';
 import { ToolbarMenu } from '@/packages/ui/components/toolbar-menu';
 import { useWatchItemField } from '@/packages/ui/hooks/bind';
 import useRefCallback from '@/packages/ui/hooks/ref-callback';
-import { getConfigurable, getDuplicable, getStyleConfigurable } from '@/utils/widgets';
+import { getConfigurable, getDuplicable } from '@/utils/widgets';
 import EyeSlashIcon from 'bootstrap-icons/icons/eye-slash.svg';
 import EyeIcon from 'bootstrap-icons/icons/eye.svg';
 import clsx from 'clsx';
@@ -28,13 +28,12 @@ export function EditingLayer ({ id }: EditLayerProps) {
   const router = useRouter();
   const name = useWatchItemField('library', id, 'name');
 
-  const { configurable, duplicable, styleConfigurable } = useMemo(() => {
+  const { configurable, duplicable } = useMemo(() => {
     const widget = widgets[name];
 
     const configurable = widget ? getConfigurable(widget) : false;
     const duplicable = widget ? getDuplicable(widget) : false;
-    const styleConfigurable = widget ? getStyleConfigurable(widget) : false;
-    return { configurable, duplicable, styleConfigurable };
+    return { configurable, duplicable };
   }, [name]);
 
   const configureAction = useRefCallback(() => {
@@ -98,14 +97,12 @@ export function EditingLayer ({ id }: EditLayerProps) {
                   order={0}
                 />
               )}
-              {styleConfigurable && (
-                <MenuItem
-                  id="styles"
-                  text={<PaletteIcon />}
-                  action={styleConfigureAction}
-                  order={99}
-                />
-              )}
+              <MenuItem
+                id="styles"
+                text={<PaletteIcon />}
+                action={styleConfigureAction}
+                order={99}
+              />
               {configurable && (
                 <MenuItem
                   id="configure"

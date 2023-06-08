@@ -9,6 +9,7 @@ type WidgetModuleMeta<P = any> = {
   preferredSize?: CSSProperties,
   defaultProps?: Partial<P>,
   duplicable?: boolean,
+  /** @deprecated */
   styleConfigurable?: boolean,
   /** @deprecated */
   configurablePropsOverwrite?: Partial<P>,

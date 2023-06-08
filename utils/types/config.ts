@@ -9,6 +9,7 @@ export interface LibraryItemProps extends CustomLibraryItemProps {
   title?: string;
   className?: string;
   style?: CSSProperties;
+  showBorder?: boolean;
 }
 
 export type LibraryItem = {
