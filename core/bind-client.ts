@@ -1,12 +1,10 @@
-import { Alert } from '@/components/Alert';
-import * as internals from '@/components/internal-widgets';
-import { appState, withAppStateLoadingState } from '@/core/bind';
-// import { appState, startAppStateLoadingTransition, withAppStateLoadingState } from '@/core/bind';
-import widgetsManifest, { ResolvedWidgetModule } from '@/core/widgets-manifest';
-import { collections } from '@/packages/ui/hooks/bind';
-import { ReactiveValueSubject } from '@/packages/ui/hooks/bind/ReactiveValueSubject';
-import { createElement, forwardRef } from 'react';
-import { resolveWidgetComponents } from './dynamic-widget';
+import { commit } from '@/app/(client)/api/layout/operations.client';
+import { commands } from '@/core/bind';
+import { ResolvedWidgetModule } from '@/core/widgets-manifest';
+import app from '@/store/features/app';
+import store from '@/store/store';
+import { startTransition, TransitionFunction } from 'react';
+import { debounceTime } from 'rxjs';
 
 if (typeof window !== 'undefined') {
   if (!window.requestIdleCallback) {
@@ -17,42 +15,10 @@ if (typeof window !== 'undefined') {
   }
 }
 
-declare module '@ossinsight-lite/ui/hooks/bind' {
-  interface CollectionsBindMap {
-    widgets: ResolvedWidgetModule;
-  }
-}
-
-export const widgets = collections.add('widgets');
-
-widgets.rejectUnknownKey = true;
-widgets.fallback = ((name: string) => new ReactiveValueSubject({
-  default: function ({}) {
-    return createElement(Alert, { type: 'error', title: 'Failed to load widget, check your repo version.' });
-  } as any,
-  name: name,
-  displayName: name,
-  category: 'Error',
-})) as any;
-
-for (let [name, module] of Object.entries(widgetsManifest)) {
-  const { Widget, ConfigureComponent, NewButton, category, displayName, ...rest } = module;
-  widgets.add(name, {
-    name,
-    ...rest,
-    ...resolveWidgetComponents(module),
-    category: category ?? 'Common',
-    displayName: displayName ?? name,
-  });
-}
-
-for (let [name, render] of Object.entries(internals)) {
-  widgets.add(`internal:${name}`, {
-    Widget: forwardRef(render),
-    category: 'built-in',
-    name,
-    displayName: name + ' (Deprecated)',
-  } satisfies ResolvedWidgetModule);
+export function startAppStateLoadingTransition (cb: TransitionFunction) {
+  store.dispatch(app.actions.startLoading());
+  startTransition(cb);
+  store.dispatch(app.actions.stopLoading());
 }
 
 if (typeof window !== 'undefined') {
@@ -65,16 +31,34 @@ if (typeof window !== 'undefined') {
   }, 5 * 60 * 1000);
 }
 
-export const reloadAuth = (): Promise<{ authenticated: boolean, playground: boolean }> => {
-  const promise = fetch('/api/auth').then(res => res.json())
-    .then((res) => {
-      appState.update({
-        ...appState.current,
-        authenticated: !!res?.authenticated,
-        playground: !!res?.playground,
+// Auto save changes in batch
+commands.changed
+  .pipe(debounceTime(1000))
+  .subscribe(() => {
+    store.dispatch(app.actions.startSaving());
+    const cmds = commands.merge();
+
+    commands.pause();
+    console.debug('[config] start saving', cmds);
+    commit(cmds)
+      .then(store => {
+        const succeed = Object.values(store).findIndex(val => Object.is(val, true)) !== -1;
+        if (succeed) {
+          console.debug('[config] saved', store);
+        } else {
+          console.warn('[config] save failed', store);
+        }
+      })
+      .catch(err => {
+        console.error('[config] save failed', err);
+        // Reset commands state, wait for next save action.
+        commands.insert(cmds);
+      })
+      .finally(() => {
+        store.dispatch(app.actions.stopSaving());
+        commands.resume();
+        if (commands.dirty) {
+          commands.changed.next();
+        }
       });
-      return res;
-    });
-  withAppStateLoadingState(promise);
-  return promise;
-};
+  });

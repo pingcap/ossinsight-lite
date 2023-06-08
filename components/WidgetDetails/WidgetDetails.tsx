@@ -1,8 +1,7 @@
 'use client';
-import { widgets } from '@/core/bind-client';
 import WidgetContext, { noDataOptions } from '@/packages/ui/context/widget';
-import { readItem } from '@/packages/ui/hooks/bind';
 import { useVisible } from '@/packages/ui/hooks/visible';
+import { useResolvedWidget } from '@/store/features/widgets';
 import clientOnly from '@/utils/clientOnly';
 import { LibraryItem } from '@/utils/types/config';
 import clsx from 'clsx';
@@ -15,7 +14,7 @@ export interface WidgetPreviewProps extends LibraryItem {
 }
 
 function WidgetDetails ({ id, name, className, props }: WidgetPreviewProps) {
-  const widget = readItem(widgets, name).current;
+  const widget = useResolvedWidget(name);
   const Details = widget.WidgetDetails;
   if (!Details) {
     return <></>;

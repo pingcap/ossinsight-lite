@@ -1,7 +1,6 @@
-import { widgets } from '@/core/bind-client';
-import { readItem } from '@/packages/ui/hooks/bind';
 import useRefCallback from '@/packages/ui/hooks/ref-callback';
 import { useVisible } from '@/packages/ui/hooks/visible';
+import { useResolvedWidget } from '@/store/features/widgets';
 import { LibraryItemProps } from '@/utils/types/config';
 import WidgetContext, { noDataOptions } from '@ossinsight-lite/ui/context/widget';
 import clsx from 'clsx';
@@ -16,7 +15,7 @@ export interface EditWidgetInstanceProps {
 }
 
 export default function EditWidgetInstance ({ name, props, onPropsChange, creating = false, disableTitle = false }: EditWidgetInstanceProps) {
-  const widget = readItem(widgets, name).current;
+  const widget = useResolvedWidget(name);
   const Widget = widget.ConfigureComponent;
   if (!Widget) {
     throw new Error(`Widget ${widget.displayName} is not configurable.`);

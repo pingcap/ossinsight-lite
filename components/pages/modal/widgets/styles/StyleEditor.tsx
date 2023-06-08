@@ -1,8 +1,8 @@
 import { WidgetCoordinator } from '@/components/pages/Dashboard/WidgetCoordinator';
 import Border from '@/components/pages/modal/widgets/styles/border';
-import { widgets } from '@/core/bind-client';
 import { ConfigurableStyle } from '@/core/widgets-manifest';
-import { readItem, useWatchItemFields } from '@/packages/ui/hooks/bind';
+import { useWatchItemFields } from '@/packages/ui/hooks/bind';
+import { useWidget } from '@/store/features/widgets';
 import clsx from 'clsx';
 import { useMemo } from 'react';
 import { horizontal, vertical } from './alignIcons';
@@ -16,9 +16,9 @@ type ConfigurableStyles = Partial<Record<ConfigurableStyle, true>>;
 
 export default function StyleEditor ({ id }: { id: string }) {
   const { name, props } = useWatchItemFields('library', id, ['name', 'props']);
-  const widget = readItem(widgets, name);
+  const widget = useWidget(name);
   const configurableStyles: ConfigurableStyles = useMemo(() => {
-    const styleConfigurable = widget.current.styleConfigurable;
+    const styleConfigurable = widget.styleConfigurable;
     if (!styleConfigurable) {
       return {
         'backgroundColor': true,

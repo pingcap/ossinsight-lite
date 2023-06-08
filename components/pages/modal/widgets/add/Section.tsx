@@ -2,8 +2,6 @@
 import { ModalContext } from '@/app/@modal/(all)/context';
 import WidgetPreview from '@/components/WidgetPreview';
 import { dashboards, library } from '@/core/bind';
-import { widgets } from '@/core/bind-client';
-import { readItem } from '@/packages/ui/hooks/bind';
 import useRefCallback from '@/packages/ui/hooks/ref-callback';
 import { LibraryItem } from '@/utils/types/config';
 import LoadingIndicator from '@ossinsight-lite/ui/components/loading-indicator';
@@ -32,7 +30,6 @@ export default function Section ({ dashboardName, name, items }: { dashboardName
 }
 
 function Item ({ item, dashboardName }: { dashboardName: string, item: LibraryItem }) {
-  const widget = readItem(widgets, item.name).current;
   const { closeModal } = useContext(ModalContext);
 
   const handleAdd = useRefCallback(() => {
@@ -43,7 +40,7 @@ function Item ({ item, dashboardName }: { dashboardName: string, item: LibraryIt
       if (!library.has(id)) {
         library.inactiveScope(() => {
           library.add(id, item);
-        })
+        });
       }
 
       if (!dashboard.items.has(id)) {
@@ -54,9 +51,9 @@ function Item ({ item, dashboardName }: { dashboardName: string, item: LibraryIt
               x: 0,
               y: 0,
               w: 4,
-              h: 2
-            }
-          }
+              h: 2,
+            },
+          },
         });
       }
     }

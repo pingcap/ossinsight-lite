@@ -1,6 +1,5 @@
 'use client';
-import { appState } from '@/core/bind';
-import { reloadAuth } from '@/core/bind-client';
+import authApi from '@/store/features/auth';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useId } from 'react';
 
@@ -12,6 +11,8 @@ export function useAuthGuard<T> (cb: () => T, forceCheck: boolean = false): () =
   const params = useSearchParams();
   const id = useId();
 
+  const authState = authApi.useReloadQuery()
+
   useEffect(() => {
     if (!currentGuards[id]) {
       currentGuards[id] = [];
@@ -22,12 +23,12 @@ export function useAuthGuard<T> (cb: () => T, forceCheck: boolean = false): () =
   }, []);
 
   return async function () {
-    if (appState.current.authenticated) {
+    if (authState.data?.authenticated) {
       if (!forceCheck) {
         return cb();
       }
-      const auth = await reloadAuth();
-      if (auth.authenticated) {
+      const auth = await authState.refetch();
+      if (auth.data?.authenticated) {
         return cb();
       }
     }

@@ -3,14 +3,15 @@ import PaletteIcon from '@/components/icons/palette.svg';
 import PencilIcon from '@/components/icons/pencil.svg';
 import TrashIcon from '@/components/icons/trash.svg';
 import { DashboardContext } from '@/components/pages/Dashboard/context';
-import { library, startAppStateLoadingTransition } from '@/core/bind';
+import { library } from '@/core/bind';
+import { startAppStateLoadingTransition } from '@/core/bind-client';
 import { useNullableDashboardItems } from '@/core/dashboard';
 import { duplicateItem } from '@/core/helpers/items';
-import widgets from '@/core/widgets-manifest';
 import { MenuItem } from '@/packages/ui/components/menu';
 import { ToolbarMenu } from '@/packages/ui/components/toolbar-menu';
 import { useWatchItemField } from '@/packages/ui/hooks/bind';
 import useRefCallback from '@/packages/ui/hooks/ref-callback';
+import { useWidget } from '@/store/features/widgets';
 import { getConfigurable, getDuplicable } from '@/utils/widgets';
 import EyeSlashIcon from 'bootstrap-icons/icons/eye-slash.svg';
 import EyeIcon from 'bootstrap-icons/icons/eye.svg';
@@ -27,14 +28,13 @@ export function EditingLayer ({ id }: EditLayerProps) {
   const items = useNullableDashboardItems(dashboardName);
   const router = useRouter();
   const name = useWatchItemField('library', id, 'name');
+  const widget = useWidget(name);
 
   const { configurable, duplicable } = useMemo(() => {
-    const widget = widgets[name];
-
     const configurable = widget ? getConfigurable(widget) : false;
     const duplicable = widget ? getDuplicable(widget) : false;
     return { configurable, duplicable };
-  }, [name]);
+  }, [widget]);
 
   const configureAction = useRefCallback(() => {
     startAppStateLoadingTransition(() => {

@@ -2,9 +2,9 @@
 import { ModalContext } from '@/app/@modal/(all)/context';
 import EditWidgetInstance from '@/components/EditWidgetInstance';
 import { library } from '@/core/bind';
-import { widgets } from '@/core/bind-client';
-import { readItem, singletons } from '@/packages/ui/hooks/bind';
+import { singletons } from '@/packages/ui/hooks/bind';
 import useRefCallback from '@/packages/ui/hooks/ref-callback';
+import { useResolvedWidget } from '@/store/features/widgets';
 import { useCallback, useContext, useState } from 'react';
 
 export interface CreateWidgetProps {
@@ -13,11 +13,11 @@ export interface CreateWidgetProps {
 
 export default function CreateWidget ({ name }: CreateWidgetProps) {
   const canvas = singletons.getNullable('dashboard');
-  const widget = readItem(widgets, name);
+  const widget = useResolvedWidget(name);
   const { closeModal } = useContext(ModalContext);
 
   const [props, setProps] = useState(() => {
-    return { ...widget.current.defaultProps };
+    return { ...widget.defaultProps };
   });
 
   const handlePropsChange = useCallback((key: string, value: any) => {

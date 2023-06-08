@@ -1,7 +1,7 @@
 import { DashboardContext } from '@/components/pages/Dashboard/context';
 import { EditingLayer } from '@/components/pages/Dashboard/EditingLayer';
 import ExploreLayer from '@/components/pages/Dashboard/ExploreLayer';
-import widgetsManifest from '@/core/widgets-manifest';
+import { useWidget } from '@/store/features/widgets';
 import LoadingIndicator from '@ossinsight-lite/ui/components/loading-indicator';
 import { useWatchItemFields } from '@ossinsight-lite/ui/hooks/bind';
 import clsx from 'clsx';
@@ -14,7 +14,6 @@ export interface WidgetComponentProps {
   children?: any;
 }
 
-
 export const WidgetComponent = forwardRef<HTMLDivElement, WidgetComponentProps>(({ ...componentProps }, ref) => {
   let el: ReactElement;
 
@@ -24,12 +23,9 @@ export const WidgetComponent = forwardRef<HTMLDivElement, WidgetComponentProps>(
 
   const { props: itemProps, name } = useWatchItemFields('library', id, ['name', 'props']);
   const { showBorder, ...props } = itemProps;
+  const widget = useWidget(name);
 
-  if (!name.startsWith('internal:') && !widgetsManifest[name]) {
-    el = <div className="text-sm text-gray-400">Unknown widget {name}, check your repository version.</div>;
-  } else {
-    el = <WidgetCoordinator name={name} _id={id} props={{ ...props, className: clsx('w-full h-full', props.className) }} ref={ref} />;
-  }
+  el = <WidgetCoordinator name={name} _id={id} props={{ ...props, className: clsx('w-full h-full', props.className) }} ref={ref} />;
 
   el = (
     <Suspense fallback={<div className="w-full h-full flex items-center justify-center text-xl text-gray-400" ref={ref}><LoadingIndicator /> Loading...</div>}>

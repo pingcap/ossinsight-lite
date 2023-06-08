@@ -4,25 +4,26 @@ import LockIcon from '@/components/icons/lock.svg';
 import PlusIcon from '@/components/icons/plus.svg';
 import UnlockIcon from '@/components/icons/unlock.svg';
 import { DashboardContext } from '@/components/pages/Dashboard/context';
-import { appState, startAppStateLoadingTransition } from '@/core/bind';
-import { widgets } from '@/core/bind-client';
+import { startAppStateLoadingTransition } from '@/core/bind-client';
 import { MenuItem } from '@/packages/ui/components/menu';
 import { NavMenu } from '@/packages/ui/components/nav-menu';
-import { useWatchReactiveValueField } from '@/packages/ui/hooks/bind/hooks';
 import { isSSR } from '@/packages/ui/utils/ssr';
+import { useApp } from '@/store/features/app';
+import { useResolvedWidgets } from '@/store/features/widgets';
 import { useRouter } from 'next/navigation';
 import { useCallback, useContext, useMemo } from 'react';
 
 export default function DashboardMenu ({ dashboardNames }: { dashboardNames: string[] }) {
   const router = useRouter();
-  const loading = useWatchReactiveValueField(appState, 'loading');
-  const saving = useWatchReactiveValueField(appState, 'saving');
+  const { loading, saving } = useApp();
 
   const { dashboardName, editing, toggleEditing } = useContext(DashboardContext);
 
+  const widgets = useResolvedWidgets();
+
   const configurableWidgets = useMemo(() => {
-    return widgets.values.filter(widget => !!widget.ConfigureComponent);
-  }, []);
+    return Object.values(widgets).filter(widget => !!widget.ConfigureComponent);
+  }, [widgets]);
 
   const handleClickNew = useCallback(() => {
     startAppStateLoadingTransition(() => {
@@ -32,7 +33,7 @@ export default function DashboardMenu ({ dashboardNames }: { dashboardNames: str
 
   return (
     <NavMenu position="top" className="h-[40px] p-[4px] min-w-[250px]">
-      <MenuItem id='sep' order={0} separator />
+      <MenuItem id="sep" order={0} separator />
       <MenuItem id="Dashboards" order={60} text={<LayoutWtfIcon />} parent>
         {dashboardNames.map((dashboard, index) => (
           <MenuItem
@@ -40,14 +41,14 @@ export default function DashboardMenu ({ dashboardNames }: { dashboardNames: str
             id={dashboard}
             order={index}
             text={dashboard}
-            disabled={isSSR ? true : loading > 0}
+            disabled={isSSR ? false : loading}
             prefetch={false}
             href={dashboardHref(dashboard)}
           />
         ))}
       </MenuItem>
       {editing && (
-        <MenuItem text={<PlusIcon width={20} height={20} />} id="new" order={40} disabled={isSSR ? true : loading > 0} parent>
+        <MenuItem text={<PlusIcon width={20} height={20} />} id="new" order={40} disabled={isSSR ? false : loading} parent>
           {configurableWidgets.map(({ name, displayName, Icon }, index) => (
             <MenuItem
               id={name}
@@ -67,7 +68,7 @@ export default function DashboardMenu ({ dashboardNames }: { dashboardNames: str
           <MenuItem id={'new'} order={999} action={handleClickNew} text={<span className="inline-block min-w-[180px] text-sm text-left text-gray-600">Browse library</span>} />
         </MenuItem>
       )}
-      <MenuItem id="switch-editing" order={50} disabled={isSSR ? true : (loading > 0 || saving)} text={editing ? <UnlockIcon /> : <LockIcon />} action={toggleEditing} />
+      <MenuItem id="switch-editing" order={50} disabled={isSSR ? false : (loading || saving)} text={editing ? <UnlockIcon /> : <LockIcon />} action={toggleEditing} />
     </NavMenu>
   );
 }
