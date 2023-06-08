@@ -12,7 +12,7 @@ import { TextAlignSwitch } from './textAlign';
 export default function StyleEditor ({ id }: { id: string }) {
   const { name, props } = useWatchItemFields('library', id, ['name', 'props']);
   const widget = readItem(widgets, name);
-  const isFlexCol = widget.current.styleFlexLayout === 'col';
+  const isFlexCol = false;
 
   return (
     <div>

@@ -11,8 +11,6 @@ type WidgetModuleMeta<P = any> = {
   duplicable?: boolean,
   styleConfigurable?: boolean,
   /** @deprecated */
-  styleFlexLayout?: 'col' | 'row',
-  /** @deprecated */
   configurablePropsOverwrite?: Partial<P>,
   /** @deprecated */
   widgetListItemPropsOverwrite?: Partial<P>,

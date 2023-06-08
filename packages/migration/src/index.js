@@ -21,8 +21,9 @@ async function main() {
     console.warn("unable to connect database", e)
     process.exit(0)
   }
-  const files = glob.globSync('sql/*.sql').sort();
-
+  const files = glob.globSync('sql/*.sql').sort((a, b) => {
+    return parseInt(a.substring(4)) - parseInt(b.substring(4));
+  });
   let lastName
 
   await conn.execute(`
@@ -40,7 +41,12 @@ async function main() {
   `);
 
   try {
-    const [rows] = await conn.execute('SELECT name FROM _migrations ORDER BY migrated_at DESC, name DESC LIMIT 1');
+    const [rows] = await conn.execute(`
+        SELECT name, CAST(REGEXP_SUBSTR(name, '\\\\d+') AS UNSIGNED ) AS order_id
+        FROM _migrations
+        ORDER BY 2 DESC
+        LIMIT 1
+    `);
     if (rows.length !== 0) {
       lastName = rows[0].name
     }
