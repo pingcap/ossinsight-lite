@@ -138,7 +138,6 @@ export async function deleteReadonlyUser () {
   const readonlyUsername = username.replace(/\.[^.]*$/, '.osslreadonly');
 
   await withConnection(getDatabaseUri(), async ({ sql }) => {
-    console.log(`DROP USER IF EXISTS ${readonlyUsername}@'%';`);
     await sql`
         DROP USER IF EXISTS ${readonlyUsername}@'%';
     `;

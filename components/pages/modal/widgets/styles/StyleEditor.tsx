@@ -35,8 +35,6 @@ export default function StyleEditor ({ id }: { id: string }) {
     }
   }, [widget]);
 
-  console.log(widget.current.styleConfigurable, configurableStyles)
-
   return (
     <div>
       <div className="flex gap-2">

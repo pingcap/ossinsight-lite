@@ -17,8 +17,6 @@ export default async function ({ params }: any) {
     notFound();
   }
 
-  console.log('readonly', isReadonly());
-
   if (isReadonly() && item.visibility !== 'public') {
     return (
       <Unauthorized />
