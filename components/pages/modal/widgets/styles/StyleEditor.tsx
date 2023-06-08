@@ -1,10 +1,13 @@
+'use client';
 import { WidgetCoordinator } from '@/components/pages/Dashboard/WidgetCoordinator';
 import Border from '@/components/pages/modal/widgets/styles/border';
 import { ConfigurableStyle } from '@/core/widgets-manifest';
-import { useWatchItemFields } from '@/packages/ui/hooks/bind';
+import { useInitialLoadLibraryItems, useLibraryItemField } from '@/store/features/library';
 import { useWidget } from '@/store/features/widgets';
+import { LibraryItem } from '@/utils/types/config';
 import clsx from 'clsx';
 import { useMemo } from 'react';
+import { useStore } from 'react-redux';
 import { horizontal, vertical } from './alignIcons';
 import { AlignItemsSwitch } from './alignItems';
 import BackgroundColorPicker from './backgroundColor';
@@ -14,8 +17,12 @@ import { TextAlignSwitch } from './textAlign';
 
 type ConfigurableStyles = Partial<Record<ConfigurableStyle, true>>;
 
-export default function StyleEditor ({ id }: { id: string }) {
-  const { name, props } = useWatchItemFields('library', id, ['name', 'props']);
+export default function StyleEditor ({ id, item }: { id: string, item?: LibraryItem }) {
+  useInitialLoadLibraryItems(useStore(), item ? [item] : []);
+  const { name, props } = useLibraryItemField(id, ({ name, props }) => ({
+    name, props,
+  }));
+
   const widget = useWidget(name);
   const configurableStyles: ConfigurableStyles = useMemo(() => {
     const styleConfigurable = widget.styleConfigurable;

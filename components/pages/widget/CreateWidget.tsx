@@ -1,9 +1,9 @@
 'use client';
 import { ModalContext } from '@/app/@modal/(all)/context';
 import EditWidgetInstance from '@/components/EditWidgetInstance';
-import { library } from '@/core/bind';
 import { singletons } from '@/packages/ui/hooks/bind';
 import useRefCallback from '@/packages/ui/hooks/ref-callback';
+import { useAddLibraryItem } from '@/store/features/library';
 import { useResolvedWidget } from '@/store/features/widgets';
 import { useCallback, useContext, useState } from 'react';
 
@@ -12,11 +12,12 @@ export interface CreateWidgetProps {
 }
 
 export default function CreateWidget ({ name }: CreateWidgetProps) {
+  const addLibraryItem = useAddLibraryItem();
   const canvas = singletons.getNullable('dashboard');
   const widget = useResolvedWidget(name);
   const { closeModal } = useContext(ModalContext);
 
-  const [props, setProps] = useState(() => {
+  const [{ showBorder, ...props }, setProps] = useState(() => {
     return { ...widget.defaultProps };
   });
 
@@ -26,7 +27,7 @@ export default function CreateWidget ({ name }: CreateWidgetProps) {
 
   const handleSave = useRefCallback(() => {
     const id = `${name}-${Date.now()}`;
-    library.add(id, {
+    addLibraryItem({
       id,
       name,
       props,

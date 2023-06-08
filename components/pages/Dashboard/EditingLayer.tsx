@@ -3,14 +3,13 @@ import PaletteIcon from '@/components/icons/palette.svg';
 import PencilIcon from '@/components/icons/pencil.svg';
 import TrashIcon from '@/components/icons/trash.svg';
 import { DashboardContext } from '@/components/pages/Dashboard/context';
-import { library } from '@/core/bind';
 import { startAppStateLoadingTransition } from '@/core/bind-client';
 import { useNullableDashboardItems } from '@/core/dashboard';
 import { duplicateItem } from '@/core/helpers/items';
 import { MenuItem } from '@/packages/ui/components/menu';
 import { ToolbarMenu } from '@/packages/ui/components/toolbar-menu';
-import { useWatchItemField } from '@/packages/ui/hooks/bind';
 import useRefCallback from '@/packages/ui/hooks/ref-callback';
+import { useLibraryItemField, useUpdateLibraryItem } from '@/store/features/library';
 import { useWidget } from '@/store/features/widgets';
 import { getConfigurable, getDuplicable } from '@/utils/widgets';
 import EyeSlashIcon from 'bootstrap-icons/icons/eye-slash.svg';
@@ -27,7 +26,12 @@ export function EditingLayer ({ id }: EditLayerProps) {
   const { dashboardName } = useContext(DashboardContext);
   const items = useNullableDashboardItems(dashboardName);
   const router = useRouter();
-  const name = useWatchItemField('library', id, 'name');
+  const { name, isPrivate } = useLibraryItemField(id, ({ name, visibility }) => ({
+    name,
+    isPrivate: visibility !== 'public',
+  }));
+
+  const updateLibraryItem = useUpdateLibraryItem();
   const widget = useWidget(name);
 
   const { configurable, duplicable } = useMemo(() => {
@@ -60,7 +64,7 @@ export function EditingLayer ({ id }: EditLayerProps) {
   });
 
   const handleVisibilityChange = useRefCallback(() => {
-    library.update(id, (item, ctx) => {
+    updateLibraryItem(id, (item, ctx) => {
       if (item.visibility === 'public') {
         item.visibility = 'private';
       } else {
@@ -70,8 +74,6 @@ export function EditingLayer ({ id }: EditLayerProps) {
       return item;
     });
   });
-
-  const isPrivate = useWatchItemField('library', id, 'visibility') !== 'public';
 
   return (
     <div

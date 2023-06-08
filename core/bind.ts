@@ -4,29 +4,7 @@ import { BindingTypeEvent } from '@/packages/ui/hooks/bind/types';
 
 export const dashboards = collections.add('dashboards');
 
-export const library = collections.add('library');
-
 export const commands = new BatchCommands();
-
-// Auto save library items
-library.subscribeAll(([item, id, ev]) => {
-  switch (ev) {
-    case BindingTypeEvent.CREATED:
-    case BindingTypeEvent.UPDATED:
-      commands.add({
-        type: 'update-library-item',
-        id: id as string,
-        payload: item,
-      });
-      break;
-    case BindingTypeEvent.DELETED:
-      commands.add({
-        type: 'delete-library-item',
-        id: id as string,
-      });
-      break;
-  }
-});
 
 // Auto save dashboard items
 dashboards.subscribeAll(([dashboard, id, ev]) => {

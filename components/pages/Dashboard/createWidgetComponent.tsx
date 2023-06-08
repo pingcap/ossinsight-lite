@@ -1,9 +1,9 @@
 import { DashboardContext } from '@/components/pages/Dashboard/context';
 import { EditingLayer } from '@/components/pages/Dashboard/EditingLayer';
 import ExploreLayer from '@/components/pages/Dashboard/ExploreLayer';
+import { useLibraryItemField } from '@/store/features/library';
 import { useWidget } from '@/store/features/widgets';
 import LoadingIndicator from '@ossinsight-lite/ui/components/loading-indicator';
-import { useWatchItemFields } from '@ossinsight-lite/ui/hooks/bind';
 import clsx from 'clsx';
 import { forwardRef, ReactElement, Suspense, useContext } from 'react';
 import { WidgetCoordinator } from './WidgetCoordinator';
@@ -21,7 +21,10 @@ export const WidgetComponent = forwardRef<HTMLDivElement, WidgetComponentProps>(
 
   const { id, className, children, ...rest } = componentProps;
 
-  const { props: itemProps, name } = useWatchItemFields('library', id, ['name', 'props']);
+  const { name, props: itemProps } = useLibraryItemField(id, ({ name, props }) => ({
+    name, props,
+  }));
+
   const { showBorder, ...props } = itemProps;
   const widget = useWidget(name);
 

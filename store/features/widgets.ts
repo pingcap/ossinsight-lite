@@ -6,7 +6,7 @@ import { createElement, forwardRef, useMemo } from 'react';
 import { useDispatch, useSelector, useStore } from 'react-redux';
 import manifest, { ResolvedWidgetModule, WidgetModule } from '../../core/widgets-manifest';
 
-type WidgetsState = {
+export type WidgetsState = {
   pending: Record<string, WidgetModule>;
   resolved: Record<string, ResolvedWidgetModule>;
 }

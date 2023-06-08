@@ -1,7 +1,7 @@
 import { commit } from '@/app/(client)/api/layout/operations.client';
 import { commands } from '@/core/bind';
-import { ResolvedWidgetModule } from '@/core/widgets-manifest';
 import app from '@/store/features/app';
+import library from '@/store/features/library';
 import store from '@/store/store';
 import { startTransition, TransitionFunction } from 'react';
 import { debounceTime } from 'rxjs';
@@ -30,6 +30,15 @@ if (typeof window !== 'undefined') {
     }
   }, 5 * 60 * 1000);
 }
+
+// TODO: use middleware?
+store.subscribe(() => {
+  const { commands: dirtyCommands } = store.getState().library;
+  if (dirtyCommands.length > 0) {
+    commands.addAll(dirtyCommands);
+    store.dispatch(library.actions.clearCommands());
+  }
+});
 
 // Auto save changes in batch
 commands.changed

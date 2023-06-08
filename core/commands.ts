@@ -14,12 +14,12 @@ type CommandPayload<P> = { payload: P }
 type UpdateLibraryItem = BaseCommand<'update-library-item'> & CommandPayload<LibraryItem>;
 type DeleteLibraryItem = BaseCommand<'delete-library-item'>
 
-type LibraryItemCommand = UpdateLibraryItem | DeleteLibraryItem;
+export type LibraryItemCommand = UpdateLibraryItem | DeleteLibraryItem;
 
 type UpdateDashboardItem = BaseCommand<'update-dashboard-item'> & { dashboard: string } & CommandPayload<ItemReference>;
 type DeleteDashboardItem = BaseCommand<'delete-dashboard-item'> & { dashboard: string }
 
-type DashboardItemCommand = UpdateDashboardItem | DeleteDashboardItem;
+export type DashboardItemCommand = UpdateDashboardItem | DeleteDashboardItem;
 
 export type Command = UpdateLibraryItem | DeleteLibraryItem | UpdateDashboardItem | DeleteDashboardItem
 
@@ -49,7 +49,11 @@ export class BatchCommands {
     this.observed = true;
   }
 
-  add (command: Command) {
+  addAll (commands: Command[]) {
+    commands.forEach(command => this.add(command));
+  }
+
+  add ({ ...command }: Command) {
     if (!this.active) {
       return false;
     }

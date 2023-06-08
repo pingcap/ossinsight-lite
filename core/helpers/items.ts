@@ -1,4 +1,6 @@
-import { dashboards, library } from '@/core/bind';
+import { dashboards } from '@/core/bind';
+import libraryFeature from '@/store/features/library';
+import store from '@/store/store';
 
 function cloneJson<T> (val: T): T {
   if (val && typeof val === 'object') {
@@ -8,14 +10,15 @@ function cloneJson<T> (val: T): T {
 }
 
 export function duplicateItem (dashboardName: string, id: string, props?: (props: any) => any) {
+  const { library } = store.getState();
   const dashboard = dashboards.getNullable(dashboardName)?.current.items;
   if (!dashboard) {
     return;
   }
-  const item = library.getNullable(id);
+  const item = library.items[id];
   const itemReference = dashboard.getNullable(id);
   if (item && itemReference) {
-    const prev = item.current;
+    const prev = item;
     const prevProps = cloneJson(prev.props);
     const newItem = {
       id: `${prev.name}-${Math.round(Date.now() / 1000)}`,
@@ -26,7 +29,7 @@ export function duplicateItem (dashboardName: string, id: string, props?: (props
       id: newItem.id,
       layout: cloneJson(itemReference.current.layout),
     };
-    library.add(newItem.id, newItem);
+    store.dispatch(libraryFeature.actions.add({ item: newItem }));
     dashboard.add(newItem.id, newPosition);
   }
 }

@@ -1,8 +1,9 @@
 'use client';
 import { ModalContext } from '@/app/@modal/(all)/context';
 import WidgetPreview from '@/components/WidgetPreview';
-import { dashboards, library } from '@/core/bind';
+import { dashboards } from '@/core/bind';
 import useRefCallback from '@/packages/ui/hooks/ref-callback';
+import { useAddLibraryItem } from '@/store/features/library';
 import { LibraryItem } from '@/utils/types/config';
 import LoadingIndicator from '@ossinsight-lite/ui/components/loading-indicator';
 import { Suspense, useContext } from 'react';
@@ -31,17 +32,14 @@ export default function Section ({ dashboardName, name, items }: { dashboardName
 
 function Item ({ item, dashboardName }: { dashboardName: string, item: LibraryItem }) {
   const { closeModal } = useContext(ModalContext);
+  const addLibraryItem = useAddLibraryItem();
 
   const handleAdd = useRefCallback(() => {
     const dashboard = dashboards.getNullable(dashboardName)?.current;
     if (dashboard) {
       const id = item.id ?? item.name;
 
-      if (!library.has(id)) {
-        library.inactiveScope(() => {
-          library.add(id, item);
-        });
-      }
+      addLibraryItem(item);
 
       if (!dashboard.items.has(id)) {
         dashboard.items.add(id, {
