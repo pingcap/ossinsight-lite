@@ -28,14 +28,25 @@ const Widget = forwardRef<HTMLDivElement, WidgetProps>(function Widget ({ forwar
   return (
     <div ref={forwardedRef} className={clsx(className, 'overflow-y-auto overflow-x-hidden p-2')} {...props}>
       {error && (
-        <Alert title='Failed to load data'>
+        <Alert title="Failed to load data">
           {(error as any).message || String(error)}
         </Alert>
       )}
-      {(loading || !result) ? (<LoadingIndicator />) : <Chart type={result.type} data={result.data} options={result.options} />}
+      {(loading || !result) ? <Loading /> : <Chart type={result.type} data={result.data} options={result.options} />}
     </div>
   );
 });
+
+function Loading () {
+  return (
+    <div className="w-full h-full flex items-center justify-center">
+      <span className='flex gap-2 items-center'>
+        <LoadingIndicator />
+        Loading...
+      </span>
+    </div>
+  );
+}
 
 function useRemoteCollection (info: RemoteInfo) {
   const { data: result, requestDataError: error, requestingData: loading, onRequestData } = useContext(WidgetContext);
