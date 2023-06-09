@@ -19,7 +19,7 @@ type ConfigurableStyles = Partial<Record<ConfigurableStyle, true>>;
 
 export default function StyleEditor ({ id, item }: { id: string, item?: LibraryItem }) {
   useInitialLoadLibraryItems(useStore(), item ? [item] : []);
-  const { name, props } = useLibraryItemField(id, ({ name, props }) => ({
+  const { name, props: { showBorder, ...props } } = useLibraryItemField(id, ({ name, props }) => ({
     name, props,
   }));
 

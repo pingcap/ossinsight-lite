@@ -18,6 +18,8 @@ export function useStyle<K extends keyof Style> (id: string, prop: K, defaultVal
           item.props.style[prop] = nv;
           ctx.changedKeys = [`props:style.${prop}`];
         }
+      } else {
+        item.props.style = { [prop]: nextValue(defaultValue, payload, void 0) };
       }
       return item;
     });

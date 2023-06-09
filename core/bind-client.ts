@@ -17,6 +17,9 @@ if (typeof window !== 'undefined') {
   }
 }
 
+/**
+ * @deprecated
+ */
 export function startAppStateLoadingTransition (cb: TransitionFunction) {
   store.dispatch(app.actions.startLoading());
   startTransition(cb);
@@ -53,7 +56,6 @@ store.subscribe(() => {
   }
 });
 
-let pause = false;
 dirtySubject
   .pipe(debounceTime(1000))
   .subscribe(() => {
@@ -67,19 +69,14 @@ dirtySubject
     const commands = merge(state.draft.dirty);
     store.dispatch(draft.actions.startCommitting());
 
-    console.debug('[config] start saving', commands);
+    console.debug('[ossl] start committing chages', commands);
     commit(commands)
       .then((result) => {
-        const succeed = Object.values(result).findIndex(val => Object.is(val, true)) !== -1;
-        if (succeed) {
-          console.debug('[config] saved', result);
-        } else {
-          console.warn('[config] save failed', result);
-        }
+        console.debug('[ossl] committed', result);
         store.dispatch(draft.actions.commit());
       })
       .catch(error => {
-        console.error('[config] save failed', error);
+        console.error('[ossl] rollback', error);
         store.dispatch(draft.actions.rollback());
       })
       .finally(() => {
