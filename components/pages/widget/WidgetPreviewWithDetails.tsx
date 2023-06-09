@@ -15,6 +15,8 @@ interface WidgetPreviewWithDetailsProps {
 }
 
 function WidgetPreviewWithDetails ({ item }: WidgetPreviewWithDetailsProps) {
+  const { showBorder, ...props } = item.props;
+
   return (
     <div className="flex mx-auto max-w-[480px] flex-col gap-2 justify-center items-stretch p-2 overflow-hidden">
       <Url title={item.props.title ?? ''} />
