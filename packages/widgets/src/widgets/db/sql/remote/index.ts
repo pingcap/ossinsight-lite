@@ -7,6 +7,8 @@ export const Icon = () => import('./Icon');
 
 export const getData = () => import('./getData');
 
+export const createPngThumbnail = () => import('./createPngThumbnail');
+
 export const defaultProps = {
   owner: 'pingcap',
   repo: 'ossinsight-lite',

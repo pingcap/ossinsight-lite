@@ -1,4 +1,5 @@
 import { Chart as ChartJs, registerables } from 'chart.js';
+import 'chartjs-adapter-luxon';
 import { ServerContext } from '../../../../../../core/widgets-manifest';
 import { getCartesianScaleOption } from '../../../components/visualize/chartjs/getCartesianScaleOption';
 import { barDataset } from '../../../components/visualize/chartjs/getXYData';
