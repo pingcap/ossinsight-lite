@@ -48,7 +48,7 @@ export default function (rawData, theme) {
     scales: {
       x: {
         type: 'category',
-        labels: hours,
+        labels: hours.map(hour => String(hour)),
         title: {
           display: true,
           text: 'Hour',
