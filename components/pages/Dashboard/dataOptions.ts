@@ -1,6 +1,7 @@
 import { noDataOptions, WidgetContextDataOptionsValues } from '@/packages/ui/context/widget';
 import useRefCallback from '@/packages/ui/hooks/ref-callback';
 import { useWidgetGetData } from '@/store/features/widgets';
+import { requestAppIdle } from '@/store/utils/app';
 import { useState } from 'react';
 
 export function useDataOptions (name: string, id: string): WidgetContextDataOptionsValues {
@@ -17,21 +18,23 @@ export function useDataOptions (name: string, id: string): WidgetContextDataOpti
     data,
     requestingData: loading,
     onRequestData: useRefCallback(async (abort) => {
-      setError(null);
       setLoading(true);
-      try {
-        const res = await fetch(`/widgets/${encodeURIComponent(id)}/data.json`, {
-          signal: abort?.signal,
-        });
-        if (!res.ok) {
-          throw new Error(`${res.status} ${res.statusText}`);
+      setError(null);
+      requestAppIdle(async () => {
+        try {
+          const res = await fetch(`/widgets/${encodeURIComponent(id)}/data.json`, {
+            signal: abort?.signal,
+          });
+          if (!res.ok) {
+            throw new Error(`${res.status} ${res.statusText}`);
+          }
+          setData(await res.json());
+        } catch (e) {
+          setError(e);
+        } finally {
+          setLoading(false);
         }
-        setData(await res.json());
-      } catch (e) {
-        setError(e);
-      } finally {
-        setLoading(false);
-      }
+      })
     }),
     requestDataError: error,
   };

@@ -1,4 +1,4 @@
-import { State } from '@/store/store';
+import type { State } from '@/store/store';
 import { createSlice } from '@reduxjs/toolkit';
 import { useSelector } from 'react-redux';
 
@@ -28,13 +28,15 @@ const app = createSlice({
   },
 });
 
-export function useAppBusy () {
-  return useSelector<State, boolean>(state => (
-    state.app.loadingNumber
+export function isAppBusy (state: State) {
+  return state.app.loadingNumber
     + state.app.loadingNumber
     + state.draft.dirty.length
     + state.draft.committing.length > 0
-  ));
+}
+
+export function useAppBusy () {
+  return useSelector<State, boolean>(isAppBusy);
 }
 
 export function useAppLoading () {
