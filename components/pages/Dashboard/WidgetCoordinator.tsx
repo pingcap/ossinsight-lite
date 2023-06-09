@@ -1,10 +1,10 @@
 'use client';
 import { useDataOptions } from '@/components/pages/Dashboard/dataOptions';
 import WidgetContext from '@/packages/ui/context/widget';
-import { useVisible } from '@/packages/ui/hooks/visible';
 import mergeRefs from '@/packages/ui/utils/merge-refs';
 import { useLibraryItemField, useUpdateLibraryItem } from '@/store/features/library';
 import { useResolvedWidget } from '@/store/features/widgets';
+import { useVisible } from '@/utils/visible';
 import useRefCallback from '@ossinsight-lite/ui/hooks/ref-callback';
 import { forwardRef } from 'react';
 

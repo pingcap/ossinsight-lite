@@ -15,7 +15,7 @@ export function getDuplicable (module: WidgetModuleMeta) {
   return module.duplicable ?? false;
 }
 
-export async function groupItemsByCategory (items: LibraryItem[]) {
+export function groupItemsByCategory (items: LibraryItem[]) {
   const widgetsMap = useResolvedWidgets();
 
   return items.reduce((map, item) => {

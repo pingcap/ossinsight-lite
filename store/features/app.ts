@@ -5,40 +5,38 @@ import { useSelector } from 'react-redux';
 const app = createSlice({
   name: 'app',
   initialState: () => ({
+    visible: true,
     savingNumber: 0,
     loadingNumber: 0,
   }),
   reducers: {
-    startSaving: state => ({
-      ...state,
-      savingNumber: state.savingNumber + 1,
-    }),
-    stopSaving: state => ({
-      ...state,
-      savingNumber: state.savingNumber - 1,
-    }),
-    startLoading: state => ({
-      ...state,
-      loadingNumber: state.loadingNumber + 1,
-    }),
-    stopLoading: state => ({
-      ...state,
-      loadingNumber: state.loadingNumber - 1,
-    }),
+    startSaving: state => {
+      state.savingNumber++;
+    },
+    stopSaving: state => {
+      state.savingNumber--;
+    },
+    startLoading: state => {
+      state.loadingNumber++;
+    },
+    stopLoading: state => {
+      state.loadingNumber--;
+    },
+    updateVisible (state, { payload: { visible } }: { payload: { visible: boolean } }) {
+      state.visible = visible;
+    },
   },
 });
 
-export function useApp () {
-  return useSelector<State, { loading: boolean, saving: boolean }>(state => ({
-    loading: state.app.loadingNumber > 0,
-    saving: state.app.savingNumber > 0,
-  }));
+export function useAppBusy () {
+  return useSelector<State, boolean>(state => (
+    state.app.loadingNumber + state.app.loadingNumber > 0 || state.draft.length > 0
+  ));
 }
 
 export function useAppLoading () {
   return useSelector<State, boolean>(state => state.app.loadingNumber > 0);
 }
-
 
 export function useAppSaving () {
   return useSelector<State, boolean>(state => state.app.savingNumber > 0);

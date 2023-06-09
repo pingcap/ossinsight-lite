@@ -1,10 +1,12 @@
 import { commit } from '@/app/(client)/api/layout/operations.client';
-import { commands } from '@/core/bind';
+import { Command, merge } from '@/core/commands';
 import app from '@/store/features/app';
+import dashboards from '@/store/features/dashboards';
+import draft from '@/store/features/draft';
 import library from '@/store/features/library';
 import store from '@/store/store';
 import { startTransition, TransitionFunction } from 'react';
-import { debounceTime } from 'rxjs';
+import { debounceTime, Subject } from 'rxjs';
 
 if (typeof window !== 'undefined') {
   if (!window.requestIdleCallback) {
@@ -31,43 +33,56 @@ if (typeof window !== 'undefined') {
   }, 5 * 60 * 1000);
 }
 
+const dirtySubject = new Subject<void>();
+
 // TODO: use middleware?
 store.subscribe(() => {
-  const { commands: dirtyCommands } = store.getState().library;
-  if (dirtyCommands.length > 0) {
-    commands.addAll(dirtyCommands);
+  const { library: { commands: libraryCommands }, dashboards: { commands: dashboardCommands } } = store.getState();
+  let commands: Command[] = [];
+  if (libraryCommands.length > 0) {
+    commands.push(...libraryCommands);
     store.dispatch(library.actions.clearCommands());
+  }
+  if (dashboardCommands.length > 0) {
+    commands.push(...dashboardCommands);
+    store.dispatch(dashboards.actions.clearCommands());
+  }
+  if (commands.length > 0) {
+    store.dispatch(draft.actions.add({ command: commands }));
+    dirtySubject.next();
   }
 });
 
-// Auto save changes in batch
-commands.changed
+let pause = false;
+dirtySubject
   .pipe(debounceTime(1000))
   .subscribe(() => {
+    const state = store.getState();
+    if (state.draft.committing.length > 0) {
+      // if committing, schedule next run
+      dirtySubject.next();
+      return;
+    }
     store.dispatch(app.actions.startSaving());
-    const cmds = commands.merge();
+    const commands = merge(state.draft.dirty);
+    store.dispatch(draft.actions.startCommitting());
 
-    commands.pause();
-    console.debug('[config] start saving', cmds);
-    commit(cmds)
-      .then(store => {
-        const succeed = Object.values(store).findIndex(val => Object.is(val, true)) !== -1;
+    console.debug('[config] start saving', commands);
+    commit(commands)
+      .then((result) => {
+        const succeed = Object.values(result).findIndex(val => Object.is(val, true)) !== -1;
         if (succeed) {
-          console.debug('[config] saved', store);
+          console.debug('[config] saved', result);
         } else {
-          console.warn('[config] save failed', store);
+          console.warn('[config] save failed', result);
         }
+        store.dispatch(draft.actions.commit());
       })
-      .catch(err => {
-        console.error('[config] save failed', err);
-        // Reset commands state, wait for next save action.
-        commands.insert(cmds);
+      .catch(error => {
+        console.error('[config] save failed', error);
+        store.dispatch(draft.actions.rollback());
       })
       .finally(() => {
         store.dispatch(app.actions.stopSaving());
-        commands.resume();
-        if (commands.dirty) {
-          commands.changed.next();
-        }
       });
   });

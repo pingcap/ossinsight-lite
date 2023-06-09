@@ -11,7 +11,6 @@ import { WidgetCoordinator } from './WidgetCoordinator';
 export interface WidgetComponentProps {
   id: string;
   className?: string;
-  children?: any;
 }
 
 export const WidgetComponent = forwardRef<HTMLDivElement, WidgetComponentProps>(({ ...componentProps }, ref) => {
@@ -19,7 +18,7 @@ export const WidgetComponent = forwardRef<HTMLDivElement, WidgetComponentProps>(
 
   const { editing } = useContext(DashboardContext);
 
-  const { id, className, children, ...rest } = componentProps;
+  const { id, className, ...rest } = componentProps;
 
   const { name, props: itemProps } = useLibraryItemField(id, ({ name, props }) => ({
     name, props,
@@ -57,7 +56,6 @@ export const WidgetComponent = forwardRef<HTMLDivElement, WidgetComponentProps>(
   return (
     <div className={clsx('w-full h-full relative rounded-lg border-opacity-0 border border-gray-200 bg-white bg-opacity-80 overflow-hidden', !editing && 'hover:border-dashed hover:border-opacity-100', !editing && showBorder && 'border-opacity-100', className)} {...rest}>
       {el}
-      {children}
     </div>
   );
 });

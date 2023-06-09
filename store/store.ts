@@ -1,8 +1,10 @@
 import { isDev } from '@/packages/ui/utils/dev';
+import draft from '@/store/features/draft';
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import app from './features/app';
 import authApi from './features/auth';
+import dashboards from './features/dashboards';
 import library from './features/library';
 import widgets from './features/widgets';
 
@@ -12,13 +14,15 @@ const store = configureStore({
     [app.name]: app.reducer,
     [widgets.name]: widgets.reducer,
     [library.name]: library.reducer,
+    [dashboards.name]: dashboards.reducer,
+    [draft.name]: draft.reducer,
   },
   devTools: isDev,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
         // Ignore these action types
-        ignoredActions: ['widgets/resolve', 'library/update'],
+        ignoredActions: ['widgets/resolve', 'library/update', 'dashboards/update'],
         // Ignore these field paths in all actions
         // Ignore these paths in the state
         ignoredPaths: [/^widgets\./],

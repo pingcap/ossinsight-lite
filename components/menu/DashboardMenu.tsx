@@ -8,14 +8,14 @@ import { startAppStateLoadingTransition } from '@/core/bind-client';
 import { MenuItem } from '@/packages/ui/components/menu';
 import { NavMenu } from '@/packages/ui/components/nav-menu';
 import { isSSR } from '@/packages/ui/utils/ssr';
-import { useApp } from '@/store/features/app';
+import { useAppBusy } from '@/store/features/app';
 import { useResolvedWidgets } from '@/store/features/widgets';
 import { useRouter } from 'next/navigation';
 import { useCallback, useContext, useMemo } from 'react';
 
 export default function DashboardMenu ({ dashboardNames }: { dashboardNames: string[] }) {
   const router = useRouter();
-  const { loading, saving } = useApp();
+  const busy = useAppBusy();
 
   const { dashboardName, editing, toggleEditing } = useContext(DashboardContext);
 
@@ -31,24 +31,26 @@ export default function DashboardMenu ({ dashboardNames }: { dashboardNames: str
     });
   }, [dashboardName]);
 
+  const disabled = isSSR ? false : busy;
+
   return (
     <NavMenu position="top" className="h-[40px] p-[4px] min-w-[250px]">
       <MenuItem id="sep" order={0} separator />
-      <MenuItem id="Dashboards" order={60} text={<LayoutWtfIcon />} parent>
+      {!editing && <MenuItem id="Dashboards" order={60} text={<LayoutWtfIcon />} parent>
         {dashboardNames.map((dashboard, index) => (
           <MenuItem
             key={dashboard}
             id={dashboard}
             order={index}
             text={dashboard}
-            disabled={isSSR ? false : loading}
+            disabled={disabled}
             prefetch={false}
             href={dashboardHref(dashboard)}
           />
         ))}
-      </MenuItem>
+      </MenuItem>}
       {editing && (
-        <MenuItem text={<PlusIcon width={20} height={20} />} id="new" order={40} disabled={isSSR ? false : loading} parent>
+        <MenuItem text={<PlusIcon width={20} height={20} />} id="new" order={40} disabled={disabled} parent>
           {configurableWidgets.map(({ name, displayName, Icon }, index) => (
             <MenuItem
               id={name}
@@ -68,7 +70,7 @@ export default function DashboardMenu ({ dashboardNames }: { dashboardNames: str
           <MenuItem id={'new'} order={999} action={handleClickNew} text={<span className="inline-block min-w-[180px] text-sm text-left text-gray-600">Browse library</span>} />
         </MenuItem>
       )}
-      <MenuItem id="switch-editing" order={50} disabled={isSSR ? false : (loading || saving)} text={editing ? <UnlockIcon /> : <LockIcon />} action={toggleEditing} />
+      <MenuItem id="switch-editing" order={50} disabled={disabled} text={editing ? <UnlockIcon /> : <LockIcon />} action={toggleEditing} />
     </NavMenu>
   );
 }

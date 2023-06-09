@@ -2,7 +2,7 @@ import { Alert } from '@/components/Alert';
 import * as internals from '@/components/internal-widgets';
 import { resolveWidgetComponents } from '@/core/dynamic-widget';
 import { createSlice } from '@reduxjs/toolkit';
-import { createElement, forwardRef, useMemo } from 'react';
+import { createElement, forwardRef, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector, useStore } from 'react-redux';
 import manifest, { ResolvedWidgetModule, WidgetModule } from '../../core/widgets-manifest';
 
@@ -63,9 +63,11 @@ export function useResolvedWidgets () {
   const store = useStore<{ widgets: WidgetsState }>();
   const dispatch = useDispatch();
 
-  if (Object.keys(store.getState().widgets.pending).length > 0) {
-    dispatch(widgets.actions.resolve({ name: Object.keys(store.getState().widgets.pending) }));
-  }
+  useEffect(() => {
+    if (Object.keys(store.getState().widgets.pending).length > 0) {
+      dispatch(widgets.actions.resolve({ name: Object.keys(store.getState().widgets.pending) }));
+    }
+  }, [])
 
   return useSelector<{ widgets: WidgetsState }, Record<string, ResolvedWidgetModule>>(state => {
     return state.widgets.resolved;
@@ -92,8 +94,9 @@ export function useResolvedWidget (name: string) {
 
   if (!widget) {
     // always will resolve in next render
-    dispatch(widgets.actions.resolve({ name }));
-    throw Promise.resolve();
+    throw Promise.resolve().then(() => {
+      dispatch(widgets.actions.resolve({ name }));
+    });
   }
 
   return widget;

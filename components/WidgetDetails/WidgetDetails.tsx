@@ -1,9 +1,9 @@
 'use client';
 import WidgetContext, { noDataOptions } from '@/packages/ui/context/widget';
-import { useVisible } from '@/packages/ui/hooks/visible';
 import { useResolvedWidget } from '@/store/features/widgets';
 import clientOnly from '@/utils/clientOnly';
 import { LibraryItem } from '@/utils/types/config';
+import { useVisible } from '@/utils/visible';
 import clsx from 'clsx';
 
 export interface WidgetPreviewProps extends LibraryItem {

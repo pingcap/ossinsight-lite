@@ -1,4 +1,4 @@
-import { dashboards } from '@/core/bind';
+import dashboardsFeature from '@/store/features/dashboards';
 import libraryFeature from '@/store/features/library';
 import store from '@/store/store';
 
@@ -9,15 +9,16 @@ function cloneJson<T> (val: T): T {
   return val;
 }
 
-export function duplicateItem (dashboardName: string, id: string, props?: (props: any) => any) {
-  const { library } = store.getState();
-  const dashboard = dashboards.getNullable(dashboardName)?.current.items;
-  if (!dashboard) {
+export function duplicateItem (id: string, props?: (props: any) => any) {
+  const { library, dashboards } = store.getState();
+
+  const item = library.items[id];
+  if (!dashboards.current) {
     return;
   }
-  const item = library.items[id];
-  const itemReference = dashboard.getNullable(id);
-  if (item && itemReference) {
+  const dashboard = dashboards.dashboards[dashboards.current];
+  const oldItem = dashboard.items[id];
+  if (dashboard && item && oldItem) {
     const prev = item;
     const prevProps = cloneJson(prev.props);
     const newItem = {
@@ -25,11 +26,11 @@ export function duplicateItem (dashboardName: string, id: string, props?: (props
       name: prev.name,
       props: cloneJson(props?.(prevProps) ?? prevProps),
     };
-    const newPosition = {
+    const newReference = {
       id: newItem.id,
-      layout: cloneJson(itemReference.current.layout),
+      layout: cloneJson(oldItem.layout),
     };
     store.dispatch(libraryFeature.actions.add({ item: newItem }));
-    dashboard.add(newItem.id, newPosition);
+    store.dispatch(dashboardsFeature.actions.add({ item: newReference }));
   }
 }

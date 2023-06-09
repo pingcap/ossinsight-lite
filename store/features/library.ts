@@ -7,25 +7,24 @@ import { createSlice } from '@reduxjs/toolkit';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useSelector, useStore } from 'react-redux';
 
-type LibraryState = {
+export type LibraryState = {
   items: Record<string, LibraryItem>
   commands: LibraryItemCommand[]
   recording: boolean
 }
 
-let ssrLibraryState: LibraryState | undefined;
-
 const library = createSlice({
   name: 'library',
-  initialState: () => (ssrLibraryState ?? {
+  initialState: () => ({
     items: {},
     commands: [],
     recording: true,
-  }),
+  } as LibraryState),
   reducers: {
     load ({ items }, { payload: { library } }: { payload: { library: LibraryItem[] } }) {
       library.forEach(item => {
-        items[item.id ?? item.name] = item;
+        const id = item.id ?? item.name;
+        items[id] ??= item;
       });
     },
     update ({ items, commands, recording }, { payload: { id, item } }: { payload: { id: string, item: UpdateAction<LibraryItem> } }) {
@@ -90,17 +89,6 @@ const library = createSlice({
     },
   },
 });
-
-export function setSSRLibraryItems (library: LibraryItem[]) {
-  ssrLibraryState = {
-    recording: false,
-    commands: [],
-    items: library.reduce((res, item) => {
-      res[item.id ?? item.name] = item;
-      return res;
-    }, {} as Record<string, LibraryItem>),
-  };
-}
 
 export function useLibraryItem (id: string) {
   const libraryItem = useSelector<{ library: LibraryState }, LibraryItem | undefined>(state => state.library.items[id]);

@@ -1,7 +1,7 @@
 import useRefCallback from '@/packages/ui/hooks/ref-callback';
-import { useVisible } from '@/packages/ui/hooks/visible';
 import { useResolvedWidget } from '@/store/features/widgets';
 import { LibraryItemProps } from '@/utils/types/config';
+import { useVisible } from '@/utils/visible';
 import WidgetContext, { noDataOptions } from '@ossinsight-lite/ui/context/widget';
 import clsx from 'clsx';
 import { ChangeEvent } from 'react';

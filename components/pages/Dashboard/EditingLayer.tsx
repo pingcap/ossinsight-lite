@@ -4,11 +4,11 @@ import PencilIcon from '@/components/icons/pencil.svg';
 import TrashIcon from '@/components/icons/trash.svg';
 import { DashboardContext } from '@/components/pages/Dashboard/context';
 import { startAppStateLoadingTransition } from '@/core/bind-client';
-import { useNullableDashboardItems } from '@/core/dashboard';
 import { duplicateItem } from '@/core/helpers/items';
 import { MenuItem } from '@/packages/ui/components/menu';
 import { ToolbarMenu } from '@/packages/ui/components/toolbar-menu';
 import useRefCallback from '@/packages/ui/hooks/ref-callback';
+import { useDeleteDashboardItem } from '@/store/features/dashboards';
 import { useLibraryItemField, useUpdateLibraryItem } from '@/store/features/library';
 import { useWidget } from '@/store/features/widgets';
 import { getConfigurable, getDuplicable } from '@/utils/widgets';
@@ -24,7 +24,7 @@ export interface EditLayerProps {
 
 export function EditingLayer ({ id }: EditLayerProps) {
   const { dashboardName } = useContext(DashboardContext);
-  const items = useNullableDashboardItems(dashboardName);
+  const deleteDashboardItem = useDeleteDashboardItem();
   const router = useRouter();
   const { name, isPrivate } = useLibraryItemField(id, ({ name, visibility }) => ({
     name,
@@ -53,14 +53,12 @@ export function EditingLayer ({ id }: EditLayerProps) {
   });
 
   const deleteAction = useRefCallback(() => {
-    items?.del(id);
+    deleteDashboardItem(id);
   });
 
   const handleDuplicate = useRefCallback(() => {
-    if (!dashboardName) {
-      return;
-    }
-    duplicateItem(dashboardName, id);
+  
+    duplicateItem(id);
   });
 
   const handleVisibilityChange = useRefCallback(() => {

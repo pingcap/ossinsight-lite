@@ -1,40 +1,42 @@
 'use client';
 
 import { DashboardContext } from '@/components/pages/Dashboard/context';
+import DebugInfo from '@/components/pages/Dashboard/DebugInfo';
 import GridGuide from '@/components/pages/Dashboard/GridGuide';
 import { use_unstableBreakpoint, useRowHeight } from '@/components/pages/Dashboard/hooks';
 import useRefCallback from '@/packages/ui/hooks/ref-callback';
+import { useDashboardItemIds, useSwitchCurrentDashboard } from '@/store/features/dashboards';
+import store from '@/store/store';
 import { breakpoints, cols, getFirstBreakpointValue, PersistedLayout } from '@/utils/layout';
-import { ItemReference } from '@/utils/types/config';
-import { singletons, useCollectionKeys } from '@ossinsight-lite/ui/hooks/bind';
-import { useOptionalSingleton, useWhenReady } from '@ossinsight-lite/ui/hooks/bind/hooks';
 import { memo, useContext, useMemo, useRef, useState } from 'react';
 import { Layout, Layouts, Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import { WidgetComponent } from './createWidgetComponent';
 import './style.scss';
-import { MARGIN, PADDING, ROWS, syncDashboardChanges, syncLayoutChanges } from './utils';
+import { computeItemsLayout, MARGIN, PADDING, ROWS, syncLayoutChanges } from './utils';
 
 function Dashboard () {
   const { dashboardName, editing } = useContext(DashboardContext);
 
-  const dashboard = useOptionalSingleton('dashboard')?.current;
-  const ids = useCollectionKeys(dashboard?.items) as string[];
-
+  const ids = useDashboardItemIds();
   const [layouts, setLayouts] = useState<Layouts>({});
   const rowHeight = useRowHeight();
   const ref = useRef<any>();
   const [breakpoint, setBreakpoint] = use_unstableBreakpoint(ref);
 
-  useWhenReady(singletons, 'dashboard', (dashboard, sub) => {
-    syncDashboardChanges(dashboardName, dashboard, setLayouts, sub);
-  }, []);
+  const switchingDashboard = useRef(false);
+
+  useSwitchCurrentDashboard(dashboardName, (name, dashboard) => {
+    switchingDashboard.current = true;
+    setLayouts(computeItemsLayout(dashboard.items));
+  });
 
   const handleLayoutChange = useRefCallback((currentLayout: Layout[], layouts: Layouts) => {
     setLayouts(layouts);
-    const items = dashboard?.items;
-    if (editing && items && breakpoint) {
-      syncLayoutChanges(items, layouts);
+    if (switchingDashboard.current) {
+      switchingDashboard.current = false;
+    } else if (editing && breakpoint) {
+      syncLayoutChanges(layouts);
     }
   });
 
@@ -44,28 +46,32 @@ function Dashboard () {
   });
 
   const children = useMemo(() => {
-    function getInitialLayout (item: ItemReference | undefined) {
+    function getInitialLayout (id: string) {
       if (!breakpoint) {
         return;
       }
+      const { dashboards, current } = store.getState().dashboards;
+      const dashboard = dashboards[dashboardName];
       let layout: PersistedLayout | undefined;
-      if (item) {
-        layout = item.layout[breakpoint];
-        if (!layout) {
-          layout = getFirstBreakpointValue(item.layout);
+      if (dashboard) {
+        const item = dashboard.items[id];
+        if (item) {
+          layout = item.layout[breakpoint];
+          if (!layout) {
+            layout = getFirstBreakpointValue(item.layout);
+          }
         }
       }
+
       return layout;
     }
 
-    return ids.map(id => (
-      <div key={id} data-grid={getInitialLayout(dashboard?.items.getNullable(id)?.current)}>
-        <WidgetComponentMeno
-          id={id}
-        />
+    return [...ids].map((id) => (
+      <div ref={ref} key={id} data-grid={getInitialLayout(id)}>
+        <WidgetComponentMeno id={id} />
       </div>
     ));
-  }, [ids.join(','), editing, ref.current]);
+  }, [ids, editing, dashboardName, ref.current]);
 
   return (
     <>
@@ -89,6 +95,7 @@ function Dashboard () {
       >
         {children}
       </ResponsiveGridLayout>
+      <DebugInfo />
     </>
   );
 }
