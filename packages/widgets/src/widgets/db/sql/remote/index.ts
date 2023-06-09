@@ -7,6 +7,8 @@ export const Icon = () => import('./Icon');
 
 export const getData = () => import('./getData');
 
+export const createPngThumbnail = () => import('./createPngThumbnail');
+
 export const defaultProps = {
   owner: 'pingcap',
   repo: 'ossinsight-lite',
@@ -17,6 +19,7 @@ export const defaultProps = {
 
 export const styleConfigurable = ['showBorder'];
 
+export const shareable = true;
 export const duplicable = true;
 
 export const category = 'SQL';

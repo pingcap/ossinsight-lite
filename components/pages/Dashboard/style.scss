@@ -5,3 +5,22 @@
     @apply min-h-screen max-h-screen overflow-hidden;
   }
 }
+
+.widget {
+  &-layer {
+    @apply absolute left-0 top-0 w-full h-full z-10 flex flex-col transition-colors pointer-events-none;
+
+    &.editing-layer {
+      @apply cursor-move pointer-events-auto;
+    }
+  }
+
+  &-toolbar-container {
+    @apply text-primary opacity-40 hover:opacity-100 transition-all pointer-events-auto;
+  }
+
+  &-toolbar {
+    @apply flex justify-end items-center;
+  }
+}
+

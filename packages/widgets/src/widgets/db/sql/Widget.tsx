@@ -5,11 +5,6 @@ import { ForwardedRef, forwardRef, HTMLProps, RefAttributes, useContext, useEffe
 import { VisualizeType } from '../../../components/visualize/common';
 import ResultDisplay from './ResultDisplay';
 
-export enum WidgetMode {
-  EDITOR = 'editor',
-  VISUALIZATION = 'visualization',
-}
-
 export interface WidgetProps extends HTMLProps<HTMLDivElement> {
   // See https://github.com/vercel/next.js/issues/40769
   forwardedRef?: RefAttributes<HTMLDivElement>['ref'];
@@ -24,8 +19,6 @@ export interface WidgetProps extends HTMLProps<HTMLDivElement> {
 function Widget ({ defaultSql, defaultDb, sql, currentDb, visualize, forwardedRef, ...props }: WidgetProps, _forwardedRef: ForwardedRef<HTMLDivElement>) {
   const { visible, requestingData: running, data: result, onRequestData: execute, requestDataError: error } = useContext(WidgetContext);
   const firstExecuted = useRef(false);
-
-
 
   useEffect(() => {
     if ((sql || defaultSql) && currentDb && visible && !firstExecuted.current) {
