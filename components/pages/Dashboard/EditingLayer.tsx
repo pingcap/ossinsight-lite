@@ -74,12 +74,10 @@ export function EditingLayer ({ id }: EditLayerProps) {
   });
 
   return (
-    <div
-      className={clsx('absolute left-0 top-0 w-full h-full z-10 text-white flex flex-col transition-colors')}
-    >
-      <div className="text-black transition-all">
+    <div className='widget-layer editing-layer'>
+      <div className="widget-toolbar-container">
         <ToolbarMenu
-          className="flex justify-end items-center"
+          className="widget-toolbar"
           data-layer-item
           items={(
             <>
@@ -123,7 +121,6 @@ export function EditingLayer ({ id }: EditLayerProps) {
         >
         </ToolbarMenu>
       </div>
-      <div className="flex-1 justify-stretch cursor-pointer" />
     </div>
   );
 }

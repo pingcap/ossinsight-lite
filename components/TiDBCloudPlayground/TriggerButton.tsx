@@ -15,7 +15,7 @@ export function TiDBCloudPlaygroundButton () {
   }, []);
   if (playgroundEnabled) {
     return (
-      <button className="btn btn-playground" onClick={handleClick}>
+      <button className="btn btn-sm btn-playground" onClick={handleClick}>
         <Logo width={16} />
         <span>
         &gt;_ SQL

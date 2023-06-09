@@ -11,3 +11,4 @@ export const styleConfigurable = ['showBorder'];
 
 export const category = 'Github Personal';
 export const displayName = 'Monthly activity trends';
+export const shareable = true;

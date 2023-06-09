@@ -27,6 +27,8 @@ export const defaultProps = {
 
 export const styleConfigurable = ['showBorder'];
 
+export const shareable = true;
+
 export const duplicable = true;
 
 export const category = 'SQL';
