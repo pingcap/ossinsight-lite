@@ -5,6 +5,7 @@ import WidgetDetails from '@/components/WidgetDetails/WidgetDetails';
 import WidgetPreview from '@/components/WidgetPreview/WidgetPreview';
 import clientOnly from '@/utils/clientOnly';
 import { LibraryItem } from '@/utils/types/config';
+import TwitterIcon from 'bootstrap-icons/icons/twitter.svg';
 import { usePathname } from 'next/navigation';
 import { useCallback, useState } from 'react';
 
@@ -15,7 +16,7 @@ interface WidgetPreviewWithDetailsProps {
 function WidgetPreviewWithDetails ({ item }: WidgetPreviewWithDetailsProps) {
   return (
     <div className="flex mx-auto max-w-[480px] flex-col gap-2 justify-center items-stretch p-2 overflow-hidden">
-      <Url />
+      <Url title={item.props.title ?? ''} />
       <div className="w-full min-h-[320px] max-h-[320px] flex-1 flex flex-col">
         <WidgetPreview id={item.id} name={item.name} props={item.props} />
       </div>
@@ -26,7 +27,7 @@ function WidgetPreviewWithDetails ({ item }: WidgetPreviewWithDetailsProps) {
   );
 }
 
-function Url () {
+function Url ({ title }: { title: string }) {
   const pathname = usePathname();
   const [copied, setCopied] = useState(false);
   const url = `${location.origin}${pathname}`;
@@ -43,10 +44,15 @@ function Url () {
       <span className="overflow-hidden text-ellipsis whitespace-nowrap">
         {url}
       </span>
-      <button onClick={handleCopy} className="flex gap-1 text-sm text-gray-400 items-center">
+      <span className="flex gap-2 items-center">
+        <button onClick={handleCopy} className="flex gap-1 text-sm text-gray-400 items-center">
         {copied && 'Copied!'}
-        <CopyIcon />
+          <CopyIcon />
       </button>
+      <a href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`} target="_blank">
+        <TwitterIcon />
+      </a>
+      </span>
     </div>
   );
 }
