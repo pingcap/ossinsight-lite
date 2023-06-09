@@ -7,7 +7,7 @@ import { groupItemsByCategory } from '@/utils/widgets';
 import { Suspense, use } from 'react';
 
 function Items ({ items }: { items: LibraryItem[] }) {
-  const groups = use(groupItemsByCategory(items));
+  const groups = groupItemsByCategory(items);
 
   return (
     <>

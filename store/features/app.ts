@@ -30,7 +30,10 @@ const app = createSlice({
 
 export function useAppBusy () {
   return useSelector<State, boolean>(state => (
-    state.app.loadingNumber + state.app.loadingNumber > 0 || state.draft.length > 0
+    state.app.loadingNumber
+    + state.app.loadingNumber
+    + state.draft.dirty.length
+    + state.draft.committing.length > 0
   ));
 }
 
