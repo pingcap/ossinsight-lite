@@ -1,10 +1,11 @@
 'use client';
 
-import CopyIcon from '@/components/icons/copy.svg';
 import WidgetDetails from '@/components/WidgetDetails/WidgetDetails';
 import WidgetPreview from '@/components/WidgetPreview/WidgetPreview';
 import clientOnly from '@/utils/clientOnly';
 import { LibraryItem } from '@/utils/types/config';
+import ClipboardCheckIcon from 'bootstrap-icons/icons/clipboard-check-fill.svg';
+import ClipboardIcon from 'bootstrap-icons/icons/clipboard.svg';
 import TwitterIcon from 'bootstrap-icons/icons/twitter.svg';
 import { usePathname } from 'next/navigation';
 import { useCallback, useState } from 'react';
@@ -45,13 +46,12 @@ function Url ({ title }: { title: string }) {
         {url}
       </span>
       <span className="flex gap-2 items-center">
-        <button onClick={handleCopy} className="flex gap-1 text-sm text-gray-400 items-center">
-        {copied && 'Copied!'}
-          <CopyIcon />
-      </button>
-      <a href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`} target="_blank">
-        <TwitterIcon />
-      </a>
+        <button onClick={handleCopy} className="btn btn-sm btn-link">
+          {copied ? <ClipboardCheckIcon className='text-green-500' /> : <ClipboardIcon />}
+        </button>
+        <a className="btn btn-sm btn-link" href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`} target="_blank">
+          <TwitterIcon />
+        </a>
       </span>
     </div>
   );
