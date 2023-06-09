@@ -1,7 +1,7 @@
 /// IMPORTANT:
 /// This file is a slot, will be actually loaded by buildtool/webpack/loaders/widgets-manifest
 
-import { ButtonHTMLAttributes, ComponentType, CSSProperties, ForwardRefExoticComponent, HTMLProps } from 'react';
+import { ComponentType, CSSProperties, ForwardRefExoticComponent, HTMLProps } from 'react';
 
 type Widgets = Record<string, WidgetModule>
 export type ConfigurableStyle = 'backgroundColor' | 'justifyContent' | 'alignItems' | 'textAlign' | 'showBorder';

@@ -26,6 +26,9 @@ export type ItemReference = {
 }
 
 export type Dashboard = {
+  /**
+   * @deprecated
+   */
   layout: {
     size: [number, number]
     gap: number

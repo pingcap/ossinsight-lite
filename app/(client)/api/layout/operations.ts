@@ -1,6 +1,5 @@
 import * as db from '@/app/(client)/api/layout/sql';
 import { getLibraryItems, getPublicLibraryItems } from '@/app/(client)/api/layout/sql';
-import { defaultLayoutConfig } from '@/core/layout/defaults';
 import { ADMIN_DATABASE_NAME } from '@/utils/common';
 import { getDatabaseUri, sql, withConnection } from '@/utils/mysql';
 import { Dashboard, ItemReference, LibraryItem } from '@/utils/types/config';
@@ -16,7 +15,7 @@ export async function getDashboard (name: string, readonly: boolean) {
   try {
     const res = await withConnection(uri, async ({ sql }) => {
       let dashboard: Dashboard;
-      dashboard = { layout: defaultLayoutConfig, items: [] };
+      dashboard = { layout: { size: [40, 16], gap: 8 }, items: [] };
       const res = await (readonly ? db.getPublicDashboard : db.getDashboard)(sql, name);
       if (!res[0]) {
         return;

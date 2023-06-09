@@ -1,6 +1,5 @@
 import { Command } from '@/core/commands';
-import { defaultLayoutConfig } from '@/core/layout/defaults';
-import { Dashboard, ItemReference, LibraryItem, Store } from '@/utils/types/config';
+import { Store } from '@/utils/types/config';
 
 export async function commit (commands: Command[]) {
   const store: Partial<Record<Store, boolean>> = {};
