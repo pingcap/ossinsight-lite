@@ -1,3 +1,4 @@
+import DefaultMenu from '@/components/menu/DefaultMenu';
 import EnvironmentStatus from '@/components/pages/status/EnvironmentStatus';
 import GithubPersonalStatus from '@/components/pages/status/GithubPersonalStatus';
 import GithubRepoStatus from '@/components/pages/status/GithubRepoStatus';
@@ -10,6 +11,7 @@ export default function () {
       <EnvironmentStatus />
       <GithubPersonalStatus />
       <GithubRepoStatus />
+      <DefaultMenu />
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { loginAction } from '@/actions/auth';
+import DefaultMenu from '@/components/menu/DefaultMenu';
 import LoginForm from '@/components/pages/login/LoginForm';
 
 export default function Page ({ searchParams }: any) {
@@ -10,6 +11,7 @@ export default function Page ({ searchParams }: any) {
         <h2 className="mb-2 text-lg">Login to continue</h2>
         <LoginForm loginAction={loginAction} redirectUri={redirectUri} />
       </div>
+      <DefaultMenu />
     </div>
   );
 }

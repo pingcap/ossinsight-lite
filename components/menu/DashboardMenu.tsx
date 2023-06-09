@@ -1,4 +1,8 @@
 'use client';
+import { logout } from '@/actions/auth';
+import BoxArrowRightIcon from '@/components/icons/box-arrow-right.svg';
+import CloudDownloadIcon from '@/components/icons/cloud-download.svg';
+import GearIcon from '@/components/icons/gear.svg';
 import LayoutWtfIcon from '@/components/icons/layout-wtf.svg';
 import LockIcon from '@/components/icons/lock.svg';
 import PlusIcon from '@/components/icons/plus.svg';
@@ -9,13 +13,17 @@ import { MenuItem } from '@/packages/ui/components/menu';
 import { NavMenu } from '@/packages/ui/components/nav-menu';
 import { isSSR } from '@/packages/ui/utils/ssr';
 import { useAppBusy } from '@/store/features/app';
+import authApi from '@/store/features/auth';
 import { useResolvedWidgets } from '@/store/features/widgets';
+import BoxArrowInRightIcon from 'bootstrap-icons/icons/box-arrow-in-right.svg';
 import { useRouter } from 'next/navigation';
-import { useCallback, useContext, useMemo } from 'react';
+import { startTransition, useCallback, useContext, useMemo } from 'react';
 
-export default function DashboardMenu ({ dashboardNames }: { dashboardNames: string[] }) {
+export default function DashboardMenu ({ dashboardNames, readonly }: { dashboardNames: string[], readonly: boolean }) {
   const router = useRouter();
   const busy = useAppBusy();
+
+  const { data: { authenticated = !readonly } = {}, refetch } = authApi.useReloadQuery();
 
   const { dashboardName, editing, toggleEditing } = useContext(DashboardContext);
 
@@ -36,41 +44,61 @@ export default function DashboardMenu ({ dashboardNames }: { dashboardNames: str
   return (
     <NavMenu position="top" className="h-[40px] p-[4px] min-w-[250px]">
       <MenuItem id="sep" order={0} separator />
-      {!editing && <MenuItem id="Dashboards" order={60} text={<LayoutWtfIcon />} parent>
-        {dashboardNames.map((dashboard, index) => (
-          <MenuItem
-            key={dashboard}
-            id={dashboard}
-            order={index}
-            text={dashboard}
-            disabled={disabled}
-            prefetch={false}
-            href={dashboardHref(dashboard)}
-          />
-        ))}
-      </MenuItem>}
-      {editing && (
-        <MenuItem text={<PlusIcon width={20} height={20} />} id="new" order={40} disabled={disabled} parent>
-          {configurableWidgets.map(({ name, displayName, Icon }, index) => (
-            <MenuItem
-              id={name}
-              key={name}
-              order={index}
-              action={() => router.push(`/widgets/create/${encodeURIComponent(name)}`)}
-              text={(
-                <div className="flex justify-between items-center min-w-[180px] text-sm text-gray-600">
-                  <span>{displayName}</span>
-                  {Icon && <Icon />}
-                </div>
-              )}
-            >
+      {!authenticated
+        ? (<>
+          <MenuItem id="Login" order={1} text={<BoxArrowInRightIcon />} href={`/login-modal`} prefetch={false} />
+        </>)
+        : (<>
+          {!editing && <MenuItem id="Dashboards" order={60} text={<LayoutWtfIcon />} parent>
+            {dashboardNames.map((dashboard, index) => (
+              <MenuItem
+                key={dashboard}
+                id={dashboard}
+                order={index}
+                text={dashboard}
+                disabled={disabled}
+                prefetch={false}
+                href={dashboardHref(dashboard)}
+              />
+            ))}
+          </MenuItem>}
+          {editing && (
+            <MenuItem text={<PlusIcon width={20} height={20} />} id="new" order={40} disabled={disabled} parent>
+              {configurableWidgets.map(({ name, displayName, Icon }, index) => (
+                <MenuItem
+                  id={name}
+                  key={name}
+                  order={index}
+                  action={() => router.push(`/widgets/create/${encodeURIComponent(name)}`)}
+                  text={(
+                    <div className="flex justify-between items-center min-w-[180px] text-sm text-gray-600">
+                      <span>{displayName}</span>
+                      {Icon && <Icon />}
+                    </div>
+                  )}
+                >
+                </MenuItem>
+              ))}
+              <MenuItem id="sep" order={998} separator />
+              <MenuItem id={'new'} order={999} action={handleClickNew} text={<span className="inline-block min-w-[180px] text-sm text-left text-gray-600">Browse library</span>} />
             </MenuItem>
-          ))}
-          <MenuItem id="sep" order={998} separator />
-          <MenuItem id={'new'} order={999} action={handleClickNew} text={<span className="inline-block min-w-[180px] text-sm text-left text-gray-600">Browse library</span>} />
-        </MenuItem>
-      )}
-      <MenuItem id="switch-editing" order={50} disabled={disabled} text={editing ? <UnlockIcon /> : <LockIcon />} action={toggleEditing} />
+          )}
+          <MenuItem id="switch-editing" order={50} disabled={disabled} text={editing ? <UnlockIcon /> : <LockIcon />} action={toggleEditing} />
+
+          <MenuItem id="DownloadLayoutJSON" order={9997} custom>
+            <a href="/api/layout.json" download="layout.json">
+              <CloudDownloadIcon />
+            </a>
+          </MenuItem>
+          <MenuItem id="Admin" order={9998} href="/admin/dashboards" prefetch={false} text={<GearIcon />} />
+          <MenuItem id="Logout" order={9999} text={<BoxArrowRightIcon />} action={() => startTransition(() => {
+            logout().then(() => {
+              refetch();
+              router.refresh();
+            });
+          })} />
+        </>)
+      }
     </NavMenu>
   );
 }

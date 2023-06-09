@@ -1,3 +1,4 @@
+import AdminMenu from '@/components/menu/AdminMenu';
 import Nav from '@/components/pages/admin/nav';
 import './layout.scss';
 
@@ -9,6 +10,7 @@ export default async function ({ children }: any) {
       </aside>
       <main className="flex-1 p-2 pt-[40px]">
         {children}
+        <AdminMenu />
       </main>
     </div>
   );
