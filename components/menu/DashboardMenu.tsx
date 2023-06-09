@@ -46,10 +46,15 @@ export default function DashboardMenu ({ dashboardNames, readonly }: { dashboard
       <MenuItem id="sep" order={0} separator />
       {!authenticated
         ? (<>
-          <MenuItem id="Login" order={1} text={<BoxArrowInRightIcon />} href={`/login-modal`} prefetch={false} />
+          <MenuItem id="Login" order={9999} text={<BoxArrowInRightIcon />} href={`/login-modal`} prefetch={false} />
+          <MenuItem id="DownloadLayoutJSON" order={9997} custom>
+            <a href="/api/layout.json" download="layout.json">
+              <CloudDownloadIcon />
+            </a>
+          </MenuItem>
         </>)
         : (<>
-          {!editing && <MenuItem id="Dashboards" order={60} text={<LayoutWtfIcon />} parent>
+          {!editing && <MenuItem id="Dashboards" order={20} text={<LayoutWtfIcon />} parent>
             {dashboardNames.map((dashboard, index) => (
               <MenuItem
                 key={dashboard}
