@@ -1,10 +1,10 @@
 'use client';
 import { ModalContext } from '@/app/@modal/(all)/context';
 import EditWidgetInstance from '@/components/EditWidgetInstance';
-import { library } from '@/core/bind';
-import { widgets } from '@/core/bind-client';
-import { readItem, singletons } from '@/packages/ui/hooks/bind';
 import useRefCallback from '@/packages/ui/hooks/ref-callback';
+import { useAddDashboardItem } from '@/store/features/dashboards';
+import { useAddLibraryItem } from '@/store/features/library';
+import { useResolvedWidget } from '@/store/features/widgets';
 import { useCallback, useContext, useState } from 'react';
 
 export interface CreateWidgetProps {
@@ -12,12 +12,13 @@ export interface CreateWidgetProps {
 }
 
 export default function CreateWidget ({ name }: CreateWidgetProps) {
-  const canvas = singletons.getNullable('dashboard');
-  const widget = readItem(widgets, name);
+  const addLibraryItem = useAddLibraryItem();
+  const addDashboardItem = useAddDashboardItem();
+  const widget = useResolvedWidget(name);
   const { closeModal } = useContext(ModalContext);
 
-  const [props, setProps] = useState(() => {
-    return { ...widget.current.defaultProps };
+  const [{ showBorder, ...props }, setProps] = useState(() => {
+    return { ...widget.defaultProps };
   });
 
   const handlePropsChange = useCallback((key: string, value: any) => {
@@ -26,24 +27,22 @@ export default function CreateWidget ({ name }: CreateWidgetProps) {
 
   const handleSave = useRefCallback(() => {
     const id = `${name}-${Date.now()}`;
-    library.add(id, {
+    addLibraryItem({
       id,
       name,
       props,
     });
-    if (canvas?.current) {
-      canvas.current.items.add(id, {
-        id,
-        layout: {
-          lg: {
-            x: 0,
-            y: 0,
-            w: 4,
-            h: 2,
-          },
+    addDashboardItem({
+      id,
+      layout: {
+        lg: {
+          x: 0,
+          y: 0,
+          w: 4,
+          h: 2,
         },
-      });
-    }
+      },
+    });
     closeModal();
   });
 

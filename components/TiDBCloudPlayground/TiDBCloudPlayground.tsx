@@ -1,16 +1,15 @@
 'use client';
 
 import EditWidgetInstance from '@/components/EditWidgetInstance';
-import { widgets } from '@/core/bind-client';
-import { readItem } from '@/packages/ui/hooks/bind';
+import { useResolvedWidget } from '@/store/features/widgets';
 import clientOnly from '@/utils/clientOnly';
 import { useCallback, useState } from 'react';
 
 function TiDBCloudPlayground () {
-  const widget = readItem(widgets, 'db/sql');
+  const widget = useResolvedWidget('db/sql');
 
   const [props, setProps] = useState<any>(() => {
-    return widget.current.defaultProps;
+    return widget.defaultProps;
   });
 
   const handleChange = useCallback((key: string, value: any) => {

@@ -1,7 +1,6 @@
 'use client';
 
-import { appState } from '@/core/bind';
-import { useWatchReactiveValueField } from '@/packages/ui/hooks/bind/hooks';
+import authApi from '@/store/features/auth';
 import { useRouter } from 'next/navigation';
 import { useCallback } from 'react';
 import './style.scss';
@@ -9,7 +8,7 @@ import Logo from './tidbcloud.svg';
 
 export function TiDBCloudPlaygroundButton () {
   const router = useRouter();
-  const playgroundEnabled = useWatchReactiveValueField(appState, 'playground');
+  const { data: { playground: playgroundEnabled } = { playground: false } } = authApi.useReloadQuery();
 
   const handleClick = useCallback(() => {
     router.push('/playground');

@@ -1,7 +1,7 @@
 import ShareIcon from '@/components/icons/share.svg';
 import { MenuItem } from '@/packages/ui/components/menu';
 import { ToolbarMenu } from '@/packages/ui/components/toolbar-menu';
-import { useWatchItemField } from '@/packages/ui/hooks/bind';
+import { useLibraryItemField } from '@/store/features/library';
 import clsx from 'clsx';
 import { useRouter } from 'next/navigation';
 import { useCallback } from 'react';
@@ -12,7 +12,7 @@ export interface EditLayerProps {
 
 export default function ExploreLayer ({ id }: EditLayerProps) {
   const router = useRouter();
-  const visibility = useWatchItemField('library', id, 'visibility');
+  const visibility = useLibraryItemField(id, item => item.visibility);
 
   const isPublic = visibility === 'public';
 

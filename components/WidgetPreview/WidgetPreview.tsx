@@ -1,10 +1,9 @@
 'use client';
-import { widgets } from '@/core/bind-client';
 import WidgetContext, { noDataOptions } from '@/packages/ui/context/widget';
-import { readItem } from '@/packages/ui/hooks/bind';
-import { useVisible } from '@/packages/ui/hooks/visible';
+import { useResolvedWidget } from '@/store/features/widgets';
 import clientOnly from '@/utils/clientOnly';
 import { LibraryItem } from '@/utils/types/config';
+import { useVisible } from '@/utils/visible';
 import clsx from 'clsx';
 
 export interface WidgetPreviewProps extends LibraryItem {
@@ -16,7 +15,7 @@ export interface WidgetPreviewProps extends LibraryItem {
 }
 
 function WidgetPreview ({ id, name, className, onClick, props }: WidgetPreviewProps) {
-  const widget = readItem(widgets, name).current;
+  const widget = useResolvedWidget(name);
   const { Widget, Icon } = widget;
   const { ref: visibleRef, visible } = useVisible();
 

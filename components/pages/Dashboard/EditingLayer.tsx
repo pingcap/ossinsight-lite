@@ -3,14 +3,14 @@ import PaletteIcon from '@/components/icons/palette.svg';
 import PencilIcon from '@/components/icons/pencil.svg';
 import TrashIcon from '@/components/icons/trash.svg';
 import { DashboardContext } from '@/components/pages/Dashboard/context';
-import { library, startAppStateLoadingTransition } from '@/core/bind';
-import { useNullableDashboardItems } from '@/core/dashboard';
-import { duplicateItem } from '@/core/helpers/items';
-import widgets from '@/core/widgets-manifest';
+import { startAppStateLoadingTransition } from '@/core/bind-client';
 import { MenuItem } from '@/packages/ui/components/menu';
 import { ToolbarMenu } from '@/packages/ui/components/toolbar-menu';
-import { useWatchItemField } from '@/packages/ui/hooks/bind';
 import useRefCallback from '@/packages/ui/hooks/ref-callback';
+import dashboardsFeature, { useDeleteDashboardItem } from '@/store/features/dashboards';
+import libraryFeature, { useLibraryItemField, useUpdateLibraryItem } from '@/store/features/library';
+import { useWidget } from '@/store/features/widgets';
+import store from '@/store/store';
 import { getConfigurable, getDuplicable } from '@/utils/widgets';
 import EyeSlashIcon from 'bootstrap-icons/icons/eye-slash.svg';
 import EyeIcon from 'bootstrap-icons/icons/eye.svg';
@@ -24,17 +24,21 @@ export interface EditLayerProps {
 
 export function EditingLayer ({ id }: EditLayerProps) {
   const { dashboardName } = useContext(DashboardContext);
-  const items = useNullableDashboardItems(dashboardName);
+  const deleteDashboardItem = useDeleteDashboardItem();
   const router = useRouter();
-  const name = useWatchItemField('library', id, 'name');
+  const { name, isPrivate } = useLibraryItemField(id, ({ name, visibility }) => ({
+    name,
+    isPrivate: visibility !== 'public',
+  }));
+
+  const updateLibraryItem = useUpdateLibraryItem();
+  const widget = useWidget(name);
 
   const { configurable, duplicable } = useMemo(() => {
-    const widget = widgets[name];
-
     const configurable = widget ? getConfigurable(widget) : false;
     const duplicable = widget ? getDuplicable(widget) : false;
     return { configurable, duplicable };
-  }, [name]);
+  }, [widget]);
 
   const configureAction = useRefCallback(() => {
     startAppStateLoadingTransition(() => {
@@ -49,18 +53,16 @@ export function EditingLayer ({ id }: EditLayerProps) {
   });
 
   const deleteAction = useRefCallback(() => {
-    items?.del(id);
+    deleteDashboardItem(id);
   });
 
   const handleDuplicate = useRefCallback(() => {
-    if (!dashboardName) {
-      return;
-    }
-    duplicateItem(dashboardName, id);
+
+    duplicateItem(id);
   });
 
   const handleVisibilityChange = useRefCallback(() => {
-    library.update(id, (item, ctx) => {
+    updateLibraryItem(id, (item, ctx) => {
       if (item.visibility === 'public') {
         item.visibility = 'private';
       } else {
@@ -70,8 +72,6 @@ export function EditingLayer ({ id }: EditLayerProps) {
       return item;
     });
   });
-
-  const isPrivate = useWatchItemField('library', id, 'visibility') !== 'public';
 
   return (
     <div
@@ -127,3 +127,37 @@ export function EditingLayer ({ id }: EditLayerProps) {
     </div>
   );
 }
+
+function cloneJson<T> (val: T): T {
+  if (val && typeof val === 'object') {
+    return JSON.parse(JSON.stringify(val));
+  }
+  return val;
+}
+
+function duplicateItem (id: string, props?: (props: any) => any) {
+  const { library, dashboards } = store.getState();
+
+  const item = library.items[id];
+  if (!dashboards.current) {
+    return;
+  }
+  const dashboard = dashboards.dashboards[dashboards.current];
+  const oldItem = dashboard.items[id];
+  if (dashboard && item && oldItem) {
+    const prev = item;
+    const prevProps = cloneJson(prev.props);
+    const newItem = {
+      id: `${prev.name}-${Math.round(Date.now() / 1000)}`,
+      name: prev.name,
+      props: cloneJson(props?.(prevProps) ?? prevProps),
+    };
+    const newReference = {
+      id: newItem.id,
+      layout: cloneJson(oldItem.layout),
+    };
+    store.dispatch(libraryFeature.actions.add({ item: newItem }));
+    store.dispatch(dashboardsFeature.actions.add({ item: newReference }));
+  }
+}
+

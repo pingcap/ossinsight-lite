@@ -1,23 +1,27 @@
-'use client'
+'use client';
 import EditWidgetInstance from '@/components/EditWidgetInstance';
-import { library } from '@/core/bind';
-import { useWatchItemFields } from '@/packages/ui/hooks/bind';
+import { useInitialLoadLibraryItems, useLibraryItemField, useUpdateLibraryItem } from '@/store/features/library';
 import clientOnly from '@/utils/clientOnly';
+import { LibraryItem } from '@/utils/types/config';
 import { useCallback } from 'react';
+import { useStore } from 'react-redux';
 
 export interface EditWidgetProps {
   id: string;
+  item?: LibraryItem;
 }
 
-function EditWidget ({ id }: EditWidgetProps) {
-  const { name, props } = useWatchItemFields('library', id, ['name', 'props']);
+function EditWidget ({ id, item }: EditWidgetProps) {
+  useInitialLoadLibraryItems(useStore(), item ? [item] : []);
+  const { name, props: { showBorder, ...props } } = useLibraryItemField(id, ({ name, props }) => ({ name, props }));
+  const updateLibraryItem = useUpdateLibraryItem();
 
   return (
     <EditWidgetInstance
       name={name}
       props={props}
       onPropsChange={useCallback((key, value) => {
-        library.update(id, (item, ctx) => {
+        updateLibraryItem(id, (item, ctx) => {
           if (item.props[key] !== value) {
             item.props = { ...item.props, [key]: value };
             ctx.changedKeys = [`props:${key}`];
@@ -31,4 +35,4 @@ function EditWidget ({ id }: EditWidgetProps) {
   );
 }
 
-export default clientOnly(EditWidget)
+export default clientOnly(EditWidget);

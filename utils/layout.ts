@@ -20,7 +20,13 @@ export type PersistedLayout = Pick<Layout, PersistedLayoutKey>;
 
 export type ItemReferenceLayout = Partial<Responsive<PersistedLayout>>
 
-export function compareLayoutShape (a: LayoutShape, b: LayoutShape) {
+export function compareLayoutShape (a: LayoutShape | undefined, b: LayoutShape | undefined) {
+  if (a == null && b == null) {
+    return true;
+  }
+  if (a == null || b == null) {
+    return false;
+  }
   let key: LayoutShapeKey;
   for (let i = 0; i < layoutShapeKeys.length; i++) {
     key = layoutShapeKeys[i];

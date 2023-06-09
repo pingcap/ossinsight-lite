@@ -1,17 +1,12 @@
 'use client';
 
-import { appState, withAppStateLoadingState } from '@/core/bind';
-import { reloadAuth } from '@/core/bind-client';
-import { ReactNode, useEffect } from 'react';
+import { StoreProvider } from '@/store/provider';
+import { ReactNode } from 'react';
 
 export default function App ({ children }: { children: ReactNode }) {
-  useEffect(() => {
-    reloadAuth();
-  }, []);
-
   return (
-    <>
+    <StoreProvider>
       {children}
-    </>
+    </StoreProvider>
   );
 }

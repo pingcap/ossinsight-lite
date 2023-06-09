@@ -1,10 +1,10 @@
-import widgetsManifest from '@/core/widgets-manifest';
 import { noDataOptions, WidgetContextDataOptionsValues } from '@/packages/ui/context/widget';
 import useRefCallback from '@/packages/ui/hooks/ref-callback';
+import { useWidgetGetData } from '@/store/features/widgets';
 import { useState } from 'react';
 
 export function useDataOptions (name: string, id: string): WidgetContextDataOptionsValues {
-  const hasGetData = !!widgetsManifest[name]?.getData;
+  const hasGetData = useWidgetGetData(name);
   if (!hasGetData) {
     return noDataOptions;
   }

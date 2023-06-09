@@ -4,7 +4,6 @@ export const ConfigureComponent = () => import('./MarkdownEditor');
 export const Icon = () => import('./Icon');
 
 export const duplicable = true;
-export const styleConfigurable = true;
 
 export const defaultProps = {
   markdown: '# Hello OSSInsight Lite!',

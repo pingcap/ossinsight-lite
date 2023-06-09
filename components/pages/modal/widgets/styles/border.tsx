@@ -1,13 +1,13 @@
-import { library } from '@/core/bind';
-import { useWatchItemField } from '@/packages/ui/hooks/bind';
 import useRefCallback from '@/packages/ui/hooks/ref-callback';
+import { useLibraryItemField, useUpdateLibraryItem } from '@/store/features/library';
 import { ChangeEvent } from 'react';
 
 export default function Border ({ id }: { id: string }) {
-  const { showBorder } = useWatchItemField('library', id, 'props');
+  const showBorder = useLibraryItemField(id, item => item.props.showBorder);
+  const updateLibraryItem = useUpdateLibraryItem();
 
   const handleChange = useRefCallback((event: ChangeEvent<HTMLInputElement>) => {
-    library.update(id, (item, ctx) => {
+    updateLibraryItem(id, (item, ctx) => {
       const checked = event.target.checked;
       if (checked) {
         if (!item.props.showBorder) {

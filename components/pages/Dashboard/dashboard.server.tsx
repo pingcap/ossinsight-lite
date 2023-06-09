@@ -1,5 +1,5 @@
 import { getDashboard } from '@/app/(client)/api/layout/operations';
-import DashboardRegistry from '@/core/dashboard/Registry';
+import DashboardRegistry from './dashboard.registry';
 import React, { use } from 'react';
 
 export default function DashboardServer ({ name, readonly }: { name: string, readonly: boolean }) {

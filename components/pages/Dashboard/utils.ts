@@ -1,78 +1,101 @@
-import { DashboardInstance } from '@/core/dashboard/type';
-import { BindingTypeEvent, ReactBindCollection } from '@/packages/ui/hooks/bind';
-import { ReactiveValue } from '@/packages/ui/hooks/bind/ReactiveValueSubject';
-import { compareLayoutShape, eachBreakpointCompare, extractLayoutItem } from '@/utils/layout';
+import dashboardsFeature from '@/store/features/dashboards';
+import store, { State } from '@/store/store';
+import { breakpointNames, compareLayoutShape, eachBreakpointCompare, extractLayoutItem, ItemReferenceLayout } from '@/utils/layout';
 import { ItemReference } from '@/utils/types/config';
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useEffect, useRef } from 'react';
 import { Layouts } from 'react-grid-layout';
-import { Subscription } from 'rxjs';
+import { useSelector } from 'react-redux';
 
-export function syncLayoutChanges (items: ReactBindCollection<ItemReference>, layouts: Layouts) {
-  for (let id of items.keys) {
-    const layout = extractLayoutItem(layouts, id as string);
-    items.update(id, (item, ctx) => {
-      if (eachBreakpointCompare(item.layout, layout, compareLayoutShape)) {
-        ctx.changed = false;
-      } else {
-        ctx.changedKeys = ['layout'];
-        item.layout = layout;
-      }
-      return item;
-    });
+export function syncLayoutChanges (layouts: Layouts) {
+  const { dashboards: { dashboards, current } } = store.getState();
+  if (!current) {
+    return;
+  }
+  const dashboard = dashboards[current];
+  if (!dashboard) {
+    return;
+  }
+  for (let id of Object.keys(dashboard.items)) {
+    const layout = extractLayoutItem(layouts, id);
+    store.dispatch(dashboardsFeature.actions.update({
+      id,
+      item: (item, ctx) => {
+        if (eachBreakpointCompare(item.layout, layout, compareLayoutShape)) {
+          ctx.changed = false;
+        } else {
+          ctx.changedKeys = ['layout'];
+          item.layout = layout;
+        }
+        return item;
+      },
+    }));
   }
 }
 
-export function syncDashboardChanges (dashboardName: string, dashboard: ReactiveValue<DashboardInstance>, setLayouts: Dispatch<SetStateAction<Layouts>>, sub: Subscription) {
-  function switchToDashboard (dashboard: DashboardInstance) {
-    setLayouts(dashboard.computeLayout());
-    // subscribe dashboard changes and update layouts
-    sub.add(dashboard.items.subscribeAll(([item, key, ev]) => {
-      switch (ev) {
-        case BindingTypeEvent.CREATED:
-          setLayouts(layouts => {
-            Object.entries(item.layout).forEach(([breakpoint, layout]) => {
-              layouts[breakpoint] ??= [];
-              layouts[breakpoint].push({
-                i: key as string,
-                ...layout,
-              });
-            });
-            return { ...layouts };
-          });
-          break;
-        case BindingTypeEvent.DELETED:
-          setLayouts(layouts => {
-            Object.values(layouts).forEach(items => {
-              const index = items.findIndex(item => item.i === key);
-              if (index !== -1) {
-                items.splice(index, 1);
-              }
-            });
-            return { ...layouts };
-          });
-          break;
-        case BindingTypeEvent.UPDATED:
-          setLayouts(layouts => {
-            Object.entries(item.layout).forEach(([breakpoint, layout]) => {
-              const items = layouts[breakpoint] ??= [];
-              const index = items.findIndex(item => item.i === key);
-              if (index !== -1) {
-                Object.assign(items[index], layout);
-              }
-            });
-            return { ...layouts };
-          });
-          break;
+export function computeItemsLayout (items: Record<string, ItemReference>) {
+  const itemsArray = Object.values(items);
+  return breakpointNames.reduce((layouts, breakpoint) => {
+    const layout = itemsArray.flatMap(item => {
+      const layout = item.layout[breakpoint];
+      if (layout) {
+        return [{
+          ...layout,
+          i: item.id,
+        }];
+      } else {
+        return [];
       }
-    }));
+    });
+    if (layout.length === itemsArray.length) {
+      layouts[breakpoint] = layout;
+    }
+    return layouts;
+  }, {} as Layouts);
+}
 
-    console.log('listening', dashboardName);
-    sub.add(() => console.log('stop listening', dashboardName));
-  }
+export function useSyncItemLayoutChange (id: string, setLayouts: Dispatch<SetStateAction<Layouts>>) {
+  const initialized = useRef(false);
+  const layout = useSelector<State, ItemReferenceLayout | undefined>(({ dashboards: { dashboards, current } }) => {
+    if (!current) {
+      return undefined;
+    }
+    return dashboards[current].items[id].layout;
+  });
 
-  switchToDashboard(dashboard.current);
+  useEffect(() => {
+    if (!layout) {
+      return;
+    }
+    if (!initialized.current) {
+      setLayouts(layouts => {
+        Object.entries(layout).forEach(([breakpoint, layout]) => {
+          const items = Array.from(layouts[breakpoint] ??= []);
+          const index = items.findIndex(item => item.i === id);
+          if (index !== -1) {
+            items[index] = Object.assign({}, items[index], layout);
+          }
+        });
+        return { ...layouts };
+      });
+    }
+  }, [id, layout]);
 
-  sub.add(dashboard.subscribe(switchToDashboard));
+  useEffect(() => {
+    if (!layout) {
+      return;
+    }
+    setLayouts(layouts => {
+      Object.entries(layout).forEach(([breakpoint, layout]) => {
+        layouts[breakpoint] ??= [];
+        layouts[breakpoint].push({
+          i: id,
+          ...layout,
+        });
+      });
+      return { ...layouts };
+    });
+    initialized.current = true;
+  }, [id]);
 }
 
 export const DEFAULT_ROW_HEIGHT = 46;

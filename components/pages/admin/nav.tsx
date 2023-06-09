@@ -1,5 +1,6 @@
 'use client';
-import { startAppStateLoadingTransition } from '@/core/bind';
+
+import { startAppStateLoadingTransition } from '@/core/bind-client';
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import { useRouter, useSelectedLayoutSegments } from 'next/navigation';
 

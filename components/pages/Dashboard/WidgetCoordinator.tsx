@@ -1,13 +1,12 @@
 'use client';
-import { DashboardContext } from '@/components/pages/Dashboard/context';
 import { useDataOptions } from '@/components/pages/Dashboard/dataOptions';
-import { widgets } from '@/core/bind-client';
 import WidgetContext from '@/packages/ui/context/widget';
-import { useVisible } from '@/packages/ui/hooks/visible';
 import mergeRefs from '@/packages/ui/utils/merge-refs';
-import { readItem, useUpdater, useWatchItemFields } from '@ossinsight-lite/ui/hooks/bind';
+import { useLibraryItemField, useUpdateLibraryItem } from '@/store/features/library';
+import { useResolvedWidget } from '@/store/features/widgets';
+import { useVisible } from '@/utils/visible';
 import useRefCallback from '@ossinsight-lite/ui/hooks/ref-callback';
-import { forwardRef, useContext } from 'react';
+import { forwardRef } from 'react';
 
 export interface WidgetCoordinator {
   name: string;
@@ -16,16 +15,15 @@ export interface WidgetCoordinator {
 }
 
 export const WidgetCoordinator = forwardRef<HTMLDivElement, WidgetCoordinator>(({ name, _id: id, props: passInProps }, ref) => {
-  const { dashboardName } = useContext(DashboardContext)
-  const widget = readItem(widgets, name).current;
+  const widget = useResolvedWidget(name);
 
-  const { props: watchingProps } = useWatchItemFields('library', id, ['props']);
-  const updater = useUpdater('library', id);
+  const { showBorder, ...watchingProps } = useLibraryItemField(id, item => item.props);
+  const updateLibraryItem = useUpdateLibraryItem();
 
   const props = { ...passInProps, ...watchingProps };
 
   const onPropChange = useRefCallback((key: string, value: any) => {
-    updater((item) => {
+    updateLibraryItem(id, (item) => {
       item.props = { ...item.props, [key]: value };
       return item;
     });

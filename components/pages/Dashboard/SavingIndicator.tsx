@@ -1,13 +1,12 @@
 'use client';
-import { appState } from '@/core/bind';
+import { useAppSaving } from '@/store/features/app';
 import LoadingIndicator from '@ossinsight-lite/ui/components/loading-indicator';
-import { useWatchReactiveValueField } from '@/packages/ui/hooks/bind/hooks';
 import { useRef } from 'react';
 import { CSSTransition } from 'react-transition-group';
 
 export default function () {
   const ref = useRef<HTMLDivElement>(null);
-  const saving = useWatchReactiveValueField(appState, 'saving');
+  const saving = useAppSaving();
 
   return (
     <CSSTransition key="saving" classNames="fade" timeout={400} unmountOnExit mountOnEnter in={saving} nodeRef={ref}>

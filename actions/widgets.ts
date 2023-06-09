@@ -1,5 +1,4 @@
 'use server';
-import { defaultLayoutConfig } from '@/core/layout/defaults';
 import { getDatabaseUri, sql, withConnection } from '@/utils/mysql';
 import { ADMIN_DATABASE_NAME } from '@/utils/server/auth';
 import { LayoutConfigV1, LibraryItem } from '@/utils/types/config';
@@ -116,7 +115,7 @@ export async function toggleDashboardVisibilityAction (name: string, visibility:
 export async function addDashboard (name: string) {
   await sql`
       INSERT INTO dashboards (name, properties)
-      VALUES (${name}, ${JSON.stringify({ layout: defaultLayoutConfig })})
+      VALUES (${name}, ${JSON.stringify({ layout: { size: [40, 16], gap: 8 } })})
   `;
 }
 

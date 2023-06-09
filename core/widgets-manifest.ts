@@ -1,7 +1,7 @@
 /// IMPORTANT:
 /// This file is a slot, will be actually loaded by buildtool/webpack/loaders/widgets-manifest
 
-import { ButtonHTMLAttributes, ComponentType, CSSProperties, ForwardRefExoticComponent, HTMLProps } from 'react';
+import { ComponentType, CSSProperties, ForwardRefExoticComponent, HTMLProps } from 'react';
 
 type Widgets = Record<string, WidgetModule>
 export type ConfigurableStyle = 'backgroundColor' | 'justifyContent' | 'alignItems' | 'textAlign' | 'showBorder';
@@ -32,8 +32,6 @@ type WidgetModule<P = any> = {
   Widget: () => Promise<{ default: ForwardRefExoticComponent<P & HTMLProps<HTMLDivElement>> }>
   WidgetDetails?: () => Promise<{ default: ForwardRefExoticComponent<P & HTMLProps<HTMLDivElement>> }>
   ConfigureComponent?: () => Promise<{ default: ForwardRefExoticComponent<P & HTMLProps<HTMLDivElement>> }>
-  /** @deprecated */
-  NewButton?: () => Promise<{ default: ComponentType<ButtonHTMLAttributes<HTMLButtonElement>> }>
   Icon?: () => Promise<{ default: ComponentType }>
 } & WidgetModuleMeta<P>
 
@@ -42,8 +40,6 @@ type ResolvedWidgetModule<P = any> = {
   Widget: ComponentType<P & HTMLProps<HTMLDivElement>>
   WidgetDetails?: ComponentType<P & HTMLProps<HTMLDivElement>>
   ConfigureComponent?: ComponentType<P & HTMLProps<HTMLDivElement>>
-  /** @deprecated */
-  NewButton?: ComponentType<ButtonHTMLAttributes<HTMLButtonElement>>
   Icon?: ComponentType
 } & WidgetModuleMeta<P> & {
   category: string
