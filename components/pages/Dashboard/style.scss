@@ -1,8 +1,10 @@
 .grid-layout {
   @apply relative w-screen;
 
-  @media screen and (min-width: 769px) and (min-height: 769px) {
-    @apply min-h-screen max-h-screen overflow-hidden;
+  &:not(.compact) {
+    @media screen and (min-width: 769px) and (min-height: 769px) {
+      @apply min-h-screen max-h-screen overflow-hidden;
+    }
   }
 }
 

@@ -8,6 +8,7 @@ import useRefCallback from '@/packages/ui/hooks/ref-callback';
 import { useDashboardItemIds, useSwitchCurrentDashboard } from '@/store/features/dashboards';
 import store from '@/store/store';
 import { breakpoints, cols, getFirstBreakpointValue, PersistedLayout } from '@/utils/layout';
+import clsx from 'clsx';
 import { memo, useContext, useMemo, useRef, useState } from 'react';
 import { Layout, Layouts, Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
@@ -78,7 +79,7 @@ function Dashboard () {
       {editing && <GridGuide rowHeight={rowHeight} breakpoint={breakpoint ?? 'lg'} layout={layouts[breakpoint ?? 'xl'] ?? []} />}
       <ResponsiveGridLayout
         ref={ref}
-        className="grid-layout"
+        className={clsx('grid-layout', breakpoint === 'lg' ? undefined : 'compact')}
         layouts={layouts}
         breakpoints={breakpoints}
         cols={cols}
@@ -91,7 +92,7 @@ function Dashboard () {
         isResizable={editing}
         isDraggable={editing}
         isDroppable={editing}
-        maxRows={ROWS}
+        maxRows={breakpoint === 'lg' ? ROWS : undefined}
       >
         {children}
       </ResponsiveGridLayout>
