@@ -5,10 +5,10 @@ import { RefObject, useEffect, useLayoutEffect, useState } from 'react';
 export function useRowHeight () {
   const [rowHeight, setRowHeight] = useState(DEFAULT_ROW_HEIGHT);
   useLayoutEffect(() => {
-    setRowHeight(computeRowHeight(window.innerHeight));
+    setRowHeight(computeRowHeight(window.innerHeight - 56));
 
     const handleResize = () => {
-      setRowHeight(computeRowHeight(window.innerHeight));
+      setRowHeight(computeRowHeight(window.innerHeight - 56));
     };
 
     window.addEventListener('resize', handleResize);
