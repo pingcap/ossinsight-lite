@@ -3,7 +3,7 @@ import LoadingIndicator from '@/packages/ui/components/loading-indicator/Icon';
 import { LibraryItem } from '@/utils/types/config';
 import { Suspense } from 'react';
 
-export default function Item ({ item: { name, id, props } }: { item: LibraryItem }) {
+export default function Item ({ item: { name, id, props: { showBorder, ...props } } }: { item: LibraryItem }) {
   return (
     <li className="border border-gray bg-white rounded text-gray-700 flex flex-col gap-4 p-2" key={name}>
       <div className="h-[239px] flex flex-col justify-stretch overflow-hidden">

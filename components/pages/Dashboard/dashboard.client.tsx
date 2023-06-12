@@ -2,15 +2,16 @@
 
 import Dashboard from '@/components/pages/Dashboard';
 import { DashboardContext } from '@/components/pages/Dashboard/context';
-import { TiDBCloudPlaygroundButton } from '@/components/TiDBCloudPlayground';
+import { isDemoSite } from '@/components/SiteHeader/utils';
 import { useAuthGuard } from '@/utils/useAuth';
 import { useSelectedLayoutSegments } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 export default function DashboardClient ({ top }: { top: any }) {
   const [, name = 'default'] = useSelectedLayoutSegments();
   const [editing, setEditing] = useState(false);
-  const toggleEditing = useAuthGuard(() => setEditing(editing => !editing), !editing);
+  const toggleEditing = useAuthGuard(() => setEditing(editing => !editing), isDemoSite(), !editing);
+  const exitEditing = useCallback(() => setEditing(false), []);
 
   return (
     <DashboardContext.Provider
@@ -18,10 +19,10 @@ export default function DashboardClient ({ top }: { top: any }) {
         dashboardName: name,
         editing,
         toggleEditing,
+        exitEditing,
       }}
     >
       {top}
-      {!editing && <TiDBCloudPlaygroundButton />}
       <Dashboard />
     </DashboardContext.Provider>
   );

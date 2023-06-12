@@ -1,4 +1,5 @@
 .ossl {
+  padding-top: 56px;
   min-height: 100vh;
   font-family: CabinSketch, sans-serif;
 }

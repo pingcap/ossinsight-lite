@@ -3,7 +3,9 @@
 
   &:not(.compact) {
     @media screen and (min-width: 769px) and (min-height: 769px) {
-      @apply min-h-screen max-h-screen overflow-hidden;
+      @apply overflow-hidden;
+      min-height: calc(100vh - 56px);
+      max-height: calc(100vh - 56px);
     }
   }
 }

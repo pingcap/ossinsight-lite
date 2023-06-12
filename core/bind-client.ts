@@ -66,14 +66,21 @@ dirtySubject
       return;
     }
     store.dispatch(app.actions.startSaving());
-    const commands = merge(state.draft.dirty);
+    const commands = merge([...state.draft.localStorageUncommittedChanges, ...state.draft.dirty]);
     store.dispatch(draft.actions.startCommitting());
 
     console.debug('[ossl] start committing chages', commands);
     commit(commands)
       .then((result) => {
         console.debug('[ossl] committed', result);
-        store.dispatch(draft.actions.commit());
+        if (result.tidb) {
+          store.dispatch(draft.actions.commit({ clearUncommitted: true }));
+        } else if (result.localStorage) {
+          store.dispatch(draft.actions.addLocalStorageUncommittedChanges({ commands }));
+          store.dispatch(draft.actions.commit({ clearUncommitted: false }));
+        } else {
+          return Promise.reject('save failed.');
+        }
       })
       .catch(error => {
         console.error('[ossl] rollback', error);

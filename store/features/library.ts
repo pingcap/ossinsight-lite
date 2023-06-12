@@ -1,4 +1,4 @@
-import { LibraryItemCommand } from '@/core/commands';
+import { Command, LibraryItemCommand } from '@/core/commands';
 import { nextValue, UpdateAction, UpdateContext } from '@/packages/ui/hooks/bind/utils';
 import { WidgetsState } from '@/store/features/widgets';
 import type { Store } from '@/store/store';
@@ -21,10 +21,22 @@ const library = createSlice({
     recording: true,
   } as LibraryState),
   reducers: {
-    load ({ items }, { payload: { library } }: { payload: { library: LibraryItem[] } }) {
+    load ({ items }, { payload: { library, restoreCommands = [] } }: { payload: { library: LibraryItem[], restoreCommands?: Command[] } }) {
       library.forEach(item => {
         const id = item.id ?? item.name;
         items[id] ??= item;
+      });
+      restoreCommands.forEach(command => {
+        switch (command.type) {
+          case 'update-library-item':
+            Object.assign(items[command.id], command.payload);
+            break;
+          case 'delete-library-item':
+            delete items[command.id];
+            break;
+          default:
+            break;
+        }
       });
     },
     update ({ items, commands, recording }, { payload: { id, item } }: { payload: { id: string, item: UpdateAction<LibraryItem> } }) {
@@ -147,14 +159,20 @@ export function useUpdateLibraryItem () {
   }, []);
 }
 
-export function useInitialLoadLibraryItems (store: Store, items: LibraryItem[]) {
-  const init = useRef(false);
-  if (!init.current) {
-    store.dispatch(library.actions.load({ library: items }));
+export function useInitialLoadLibraryItems (store: Store, items: LibraryItem[], effect = false) {
+  if (effect) {
+    useEffect(() => {
+      store.dispatch(library.actions.load({ library: items, restoreCommands: store.getState().draft.localStorageUncommittedChanges }));
+    }, []);
+  } else {
+    const init = useRef(false);
+    if (!init.current) {
+      store.dispatch(library.actions.load({ library: items, restoreCommands: store.getState().draft.localStorageUncommittedChanges }));
+    }
+    useEffect(() => {
+      init.current = true;
+    }, []);
   }
-  useEffect(() => {
-    init.current = true;
-  }, []);
 }
 
 export default library;

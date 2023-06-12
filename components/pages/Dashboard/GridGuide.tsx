@@ -14,7 +14,7 @@ export default function GridGuide ({ rowHeight, breakpoint, layout }: GridGuideP
 
   return (
     <div
-      className={`absolute left-0 top-0 z-0 w-full pointer-events-none`}
+      className={`absolute left-0 top-[56px] z-0 w-full pointer-events-none`}
       style={{
         padding: PADDING,
         // @ts-ignore

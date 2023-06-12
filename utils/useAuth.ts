@@ -5,13 +5,13 @@ import { useEffect, useId } from 'react';
 
 const currentGuards: Record<string, (() => void)[]> = {};
 
-export function useAuthGuard<T> (cb: () => T, forceCheck: boolean = false): () => Promise<T> {
+export function useAuthGuard<T> (cb: () => T, allowBypass: boolean, forceCheck: boolean = false): () => Promise<T> {
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
   const id = useId();
 
-  const authState = authApi.useReloadQuery()
+  const authState = authApi.useReloadQuery();
 
   useEffect(() => {
     if (!currentGuards[id]) {
@@ -23,6 +23,9 @@ export function useAuthGuard<T> (cb: () => T, forceCheck: boolean = false): () =
   }, []);
 
   return async function () {
+    if (allowBypass) {
+      return cb();
+    }
     if (authState.data?.authenticated) {
       if (!forceCheck) {
         return cb();

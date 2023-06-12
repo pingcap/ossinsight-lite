@@ -1,10 +1,10 @@
 import { getDashboardNames } from '@/app/(client)/api/layout/operations';
-import DashboardMenu from '@/components/menu/DashboardMenu';
+import { SiteHeader } from '@/components/SiteHeader';
 import { isReadonly } from '@/utils/server/auth';
+import React from 'react';
 
 export default async function Default () {
-  const readonly = isReadonly();
   const names = await getDashboardNames(isReadonly());
 
-  return <DashboardMenu dashboardNames={names} readonly={readonly} />;
+  return <SiteHeader dashboardNames={names} />;
 }

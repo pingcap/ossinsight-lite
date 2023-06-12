@@ -65,7 +65,7 @@ function needAuth (req: NextRequest) {
     return false;
   }
 
-  if (/^\/api\/layout\/route$/.test(req.nextUrl.pathname)) {
+  if (/^\/api\/layout$/.test(req.nextUrl.pathname)) {
     return true;
   }
 

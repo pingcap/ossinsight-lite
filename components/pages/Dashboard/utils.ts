@@ -103,7 +103,7 @@ export const MIN_ROW_HEIGHT = 46; // 768px
 export const MAX_ROW_HEIGHT = 154; // 2190px
 export const ROWS = 13;
 export const MARGIN = 8;
-export const PADDING = 32;
+export const PADDING = 8;
 
 export const computeRowHeight = (containerHeight: number) => {
   const expectedHeight = (containerHeight - PADDING * 2 - MARGIN * (ROWS - 1)) / ROWS;

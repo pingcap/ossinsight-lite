@@ -4,14 +4,31 @@ import { Command } from '../../core/commands';
 export type DraftState = {
   dirty: Command[]
   committing: Command[]
+  localStorageUncommittedChanges: Command[]
 }
+
+const LOCAL_STORAGE_KEY_DATA = 'ossinsight-lite.uncommitted-changes';
+const LOCAL_STORAGE_KEY_TS = 'ossinsight-lite.uncommitted-changes-last-updated';
 
 export const draft = createSlice({
   name: 'draft',
-  initialState: () => ({
-    dirty: [],
-    committing: [],
-  } as DraftState),
+  initialState: () => {
+    let localStorageUncommittedChanges: Command[] = [];
+    if (typeof localStorage !== 'undefined') {
+      try {
+        const data = localStorage.getItem(LOCAL_STORAGE_KEY_DATA);
+        if (data) {
+          localStorageUncommittedChanges = JSON.parse(data);
+        }
+      } catch (e) {
+      }
+    }
+    return {
+      dirty: [],
+      committing: [],
+      localStorageUncommittedChanges,
+    } as DraftState;
+  },
   reducers: {
     add (state, { payload: { command } }: { payload: { command: Command | Command[] } }) {
       if (command instanceof Array) {
@@ -27,12 +44,22 @@ export const draft = createSlice({
       state.committing = state.dirty;
       state.dirty = [];
     },
-    commit (state) {
+    commit (state, { payload: { clearUncommitted } }: { payload: { clearUncommitted: boolean } }) {
       state.committing = [];
+      if (clearUncommitted) {
+        localStorage.removeItem(LOCAL_STORAGE_KEY_DATA);
+        localStorage.removeItem(LOCAL_STORAGE_KEY_TS);
+        state.localStorageUncommittedChanges = [];
+      }
     },
     rollback (state) {
       state.dirty.splice(0, 0, ...state.committing);
       state.committing = [];
+    },
+    addLocalStorageUncommittedChanges (state, { payload: { commands } }: { payload: { commands: Command[] } }) {
+      state.localStorageUncommittedChanges.push(...commands);
+      localStorage.setItem(LOCAL_STORAGE_KEY_DATA, JSON.stringify(state.localStorageUncommittedChanges));
+      localStorage.setItem(LOCAL_STORAGE_KEY_TS, String(Date.now()));
     },
   },
 });
