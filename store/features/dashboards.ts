@@ -39,9 +39,9 @@ const dashboards = createSlice({
       restoreCommands.forEach(command => {
         switch (command.type) {
           case 'update-dashboard-item': {
-            const target = state.dashboards[command.dashboard]?.items?.[command.id];
-            if (target) {
-              Object.assign(target, command.payload);
+            const dashboard = state.dashboards[command.dashboard];
+            if (dashboard) {
+              dashboard.items[command.id] = command.payload;
             }
           }
             break;
