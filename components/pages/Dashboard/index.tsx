@@ -4,12 +4,14 @@ import { DashboardContext } from '@/components/pages/Dashboard/context';
 import DebugInfo from '@/components/pages/Dashboard/DebugInfo';
 import GridGuide from '@/components/pages/Dashboard/GridGuide';
 import { use_unstableBreakpoint, useRowHeight } from '@/components/pages/Dashboard/hooks';
+import LoadingIndicator from '@/packages/ui/components/loading-indicator';
 import useRefCallback from '@/packages/ui/hooks/ref-callback';
+import { withSuspense } from '@/packages/ui/utils/suspense';
 import { useDashboardItemIds, useSwitchCurrentDashboard } from '@/store/features/dashboards';
 import store from '@/store/store';
 import { breakpoints, cols, getFirstBreakpointValue, PersistedLayout } from '@/utils/layout';
 import clsx from 'clsx';
-import { memo, useContext, useMemo, useRef, useState } from 'react';
+import { ForwardedRef, memo, useContext, useMemo, useRef, useState } from 'react';
 import { Layout, Layouts, Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import { WidgetComponent } from './createWidgetComponent';
@@ -102,6 +104,6 @@ function Dashboard () {
 }
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
-const WidgetComponentMeno = memo(WidgetComponent);
+const WidgetComponentMeno = memo(withSuspense(WidgetComponent, (ref: ForwardedRef<HTMLDivElement>) => <div className="w-full h-full flex items-center justify-center text-xl text-gray-400 gap-2" ref={ref}><LoadingIndicator /> Loading...</div>));
 
 export default Dashboard;

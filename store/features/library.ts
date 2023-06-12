@@ -2,13 +2,16 @@ import { Command, LibraryItemCommand } from '@/core/commands';
 import { nextValue, UpdateAction, UpdateContext } from '@/packages/ui/hooks/bind/utils';
 import { WidgetsState } from '@/store/features/widgets';
 import type { Store } from '@/store/store';
+import store from '@/store/store';
 import { LibraryItem } from '@/utils/types/config';
 import { createSlice } from '@reduxjs/toolkit';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useSelector, useStore } from 'react-redux';
 
 export type LibraryState = {
   items: Record<string, LibraryItem>
+  pendingItems: Record<string, Promise<void>>
+  errorItems: Record<string, unknown>
   commands: LibraryItemCommand[]
   recording: boolean
 }
@@ -17,6 +20,8 @@ const library = createSlice({
   name: 'library',
   initialState: () => ({
     items: {},
+    pendingItems: {},
+    errorItems: {},
     commands: [],
     recording: true,
   } as LibraryState),
@@ -29,7 +34,9 @@ const library = createSlice({
       restoreCommands.forEach(command => {
         switch (command.type) {
           case 'update-library-item':
-            Object.assign(items[command.id], command.payload);
+            if (items[command.id]) {
+              Object.assign(items[command.id], command.payload);
+            }
             break;
           case 'delete-library-item':
             delete items[command.id];
@@ -99,16 +106,42 @@ const library = createSlice({
     clearCommands (state) {
       state.commands = [];
     },
+
+    startLoadRemoteItem (state, { payload: { id, promise } }: { payload: { id: string, promise: Promise<void> } }) {
+      if (state.items[id]) {
+        console.warn(`Library item ${id} was already loaded.`);
+        return;
+      }
+      if (!!state.pendingItems[id]) {
+        console.warn(`Library item ${id} was already requested to load.`);
+        return;
+      }
+      if (!!state.errorItems[id]) {
+        return;
+      }
+      state.pendingItems[id] = promise;
+    },
+    loadRemoteItem (state, { payload: { id, item } }: { payload: { id: string, item: LibraryItem } }) {
+      if (state.items[id]) {
+        console.warn(`Library item ${id} was already loaded.`);
+        return;
+      }
+      delete state.pendingItems[id];
+      delete state.errorItems[id];
+      state.items[id] = item;
+    },
+    loadRemoteItemFailed (state, { payload: { id, error } }: { payload: { id: string, error: unknown } }) {
+      if (state.items[id]) {
+        console.warn(`Library item ${id} was already loaded.`);
+        return;
+      }
+      delete state.pendingItems[id];
+      state.errorItems[id] = error;
+    },
   },
 });
 
-export function useLibraryItem (id: string) {
-  const libraryItem = useSelector<{ library: LibraryState }, LibraryItem | undefined>(state => state.library.items[id]);
-
-  return useMemo(() => {
-    return libraryItem ?? ({ id, name: 'internal:NotFound', props: {} } as LibraryItem);
-  }, [libraryItem, id]);
-}
+let promise = new Promise(() => {});
 
 export function useLibraryItemField<T> (id: string, select: (item: LibraryItem) => T) {
   return useSelector<{ library: LibraryState }, T>(state => {
@@ -116,7 +149,7 @@ export function useLibraryItemField<T> (id: string, select: (item: LibraryItem) 
     if (item) {
       return select(item);
     } else {
-      throw new Error(`Item ${id} not found`);
+      throw scheduleLoadLibraryItem(id);
     }
   });
 }
@@ -143,14 +176,6 @@ export function useAddLibraryItem () {
   }, []);
 }
 
-export function useRemoveLibraryItem () {
-  const store = useStore();
-
-  return useCallback((id: string) => {
-    store.dispatch(library.actions.delete({ id }));
-  }, []);
-}
-
 export function useUpdateLibraryItem () {
   const store = useStore();
 
@@ -173,6 +198,41 @@ export function useInitialLoadLibraryItems (store: Store, items: LibraryItem[], 
       init.current = true;
     }, []);
   }
+}
+
+function scheduleLoadLibraryItem (id: string): Promise<void> {
+  const pendingItem = store.getState().library.pendingItems[id];
+  if (!!pendingItem) {
+    return pendingItem;
+  }
+
+  const promise = new Promise<LibraryItem>(async (resolve, reject) => {
+    setTimeout(() => {
+      store.dispatch(library.actions.startLoadRemoteItem({
+        id,
+        promise,
+      }));
+    }, 0);
+
+    try {
+      const res = await fetch(`/api/library/${encodeURIComponent(id)}`);
+      if (!res.ok) {
+        reject(new Error(`${res.status} ${res.statusText}`));
+        return;
+      }
+      const data = await res.json();
+      resolve(data);
+    } catch (e) {
+      reject(e);
+    }
+  })
+    .then((item) => {
+      store.dispatch(library.actions.loadRemoteItem({ id, item }));
+    })
+    .catch((error) => {
+      store.dispatch(library.actions.loadRemoteItemFailed({ id, error }));
+    });
+  return promise;
 }
 
 export default library;
