@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { Command } from '../../core/commands';
+import { Command, merge } from '../../core/commands';
 
 export type DraftState = {
   dirty: Command[]
@@ -57,8 +57,9 @@ export const draft = createSlice({
       state.committing = [];
     },
     addLocalStorageUncommittedChanges (state, { payload: { commands } }: { payload: { commands: Command[] } }) {
-      state.localStorageUncommittedChanges.push(...commands);
-      localStorage.setItem(LOCAL_STORAGE_KEY_DATA, JSON.stringify(state.localStorageUncommittedChanges));
+      const mergedCommands = merge([...state.localStorageUncommittedChanges, ...commands]);
+      state.localStorageUncommittedChanges = mergedCommands;
+      localStorage.setItem(LOCAL_STORAGE_KEY_DATA, JSON.stringify(mergedCommands));
       localStorage.setItem(LOCAL_STORAGE_KEY_TS, String(Date.now()));
     },
   },
