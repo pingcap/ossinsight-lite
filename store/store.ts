@@ -22,10 +22,10 @@ const store = configureStore({
     getDefaultMiddleware({
       serializableCheck: {
         // Ignore these action types
-        ignoredActions: ['widgets/resolve', 'library/update', 'dashboards/update'],
+        ignoredActions: ['widgets/resolve', 'library/update', 'dashboards/update', 'library/startLoadRemoteItem'],
         // Ignore these field paths in all actions
         // Ignore these paths in the state
-        ignoredPaths: [/^widgets\./],
+        ignoredPaths: [/^widgets\./, /^library\.pendingItems\./],
       },
     }).concat(authApi.middleware),
   enhancers: [],

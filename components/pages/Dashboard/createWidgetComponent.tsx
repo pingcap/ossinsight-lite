@@ -47,7 +47,7 @@ export const WidgetComponent = forwardRef<HTMLDivElement, WidgetComponentProps>(
   }
 
   return (
-    <div className={clsx('w-full h-full relative rounded-lg border-opacity-0 border border-gray-200 bg-white bg-opacity-80 overflow-hidden', !editing && 'hover:border-dashed hover:border-opacity-100', !editing && showBorder && 'border-opacity-100', className)} {...rest}>
+    <div className={clsx('widget-wrapper', { 'show-border': showBorder }, className)} {...rest}>
       {el}
     </div>
   );

@@ -70,7 +70,7 @@ function Dashboard () {
     }
 
     return [...ids].map((id) => (
-      <div ref={ref} key={id} data-grid={getInitialLayout(id)}>
+      <div className='grid-item' ref={ref} key={id} data-grid={getInitialLayout(id)}>
         <WidgetComponentMeno id={id} />
       </div>
     ));
@@ -81,7 +81,7 @@ function Dashboard () {
       {editing && <GridGuide rowHeight={rowHeight} breakpoint={breakpoint ?? 'lg'} layout={layouts[breakpoint ?? 'xl'] ?? []} />}
       <ResponsiveGridLayout
         ref={ref}
-        className={clsx('grid-layout', breakpoint === 'lg' ? undefined : 'compact')}
+        className={clsx('grid-layout', breakpoint === 'lg' ? undefined : 'compact', { editing })}
         layouts={layouts}
         breakpoints={breakpoints}
         cols={cols}

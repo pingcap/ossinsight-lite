@@ -48,7 +48,11 @@
   }
 
   .site-header-item {
-    @apply flex gap-2 items-center;
+    @apply flex gap-2 items-center text-gray-700;
+
+    &:hover, &:focus {
+      @apply text-gray-950;
+    }
   }
 
   .site-demo-deploy {

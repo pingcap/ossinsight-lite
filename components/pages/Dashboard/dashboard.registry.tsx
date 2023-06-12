@@ -1,7 +1,7 @@
 'use client';
 import dashboards, { useInitialLoadDashboards } from '@/store/features/dashboards';
 import { useInitialLoadLibraryItems } from '@/store/features/library';
-import { Store } from '@/store/store';
+import type { Store } from '@/store/store';
 import { Dashboard, LibraryItem } from '@/utils/types/config';
 import { useEffect } from 'react';
 import { useDispatch, useStore } from 'react-redux';

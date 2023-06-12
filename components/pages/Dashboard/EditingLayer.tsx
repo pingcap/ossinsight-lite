@@ -1,12 +1,11 @@
 import DuplicateIcon from '@/components/icons/copy.svg';
 import PaletteIcon from '@/components/icons/palette.svg';
 import PencilIcon from '@/components/icons/pencil.svg';
-import TrashIcon from '@/components/icons/trash.svg';
-import { DashboardContext } from '@/components/pages/Dashboard/context';
 import { startAppStateLoadingTransition } from '@/core/bind-client';
 import { MenuItem } from '@/packages/ui/components/menu';
 import { ToolbarMenu } from '@/packages/ui/components/toolbar-menu';
 import useRefCallback from '@/packages/ui/hooks/ref-callback';
+import { useAuth } from '@/store/features/auth';
 import dashboardsFeature, { useDeleteDashboardItem } from '@/store/features/dashboards';
 import libraryFeature, { useLibraryItemField, useUpdateLibraryItem } from '@/store/features/library';
 import { useWidget } from '@/store/features/widgets';
@@ -14,16 +13,15 @@ import store from '@/store/store';
 import { getConfigurable, getDuplicable } from '@/utils/widgets';
 import EyeSlashIcon from 'bootstrap-icons/icons/eye-slash.svg';
 import EyeIcon from 'bootstrap-icons/icons/eye.svg';
-import clsx from 'clsx';
+import CloseIcon from 'bootstrap-icons/icons/x.svg';
 import { useRouter } from 'next/navigation';
-import { useContext, useMemo } from 'react';
+import { useMemo } from 'react';
 
 export interface EditLayerProps {
   id: string;
 }
 
 export function EditingLayer ({ id }: EditLayerProps) {
-  const { dashboardName } = useContext(DashboardContext);
   const deleteDashboardItem = useDeleteDashboardItem();
   const router = useRouter();
   const { name, isPrivate } = useLibraryItemField(id, ({ name, visibility }) => ({
@@ -33,6 +31,7 @@ export function EditingLayer ({ id }: EditLayerProps) {
 
   const updateLibraryItem = useUpdateLibraryItem();
   const widget = useWidget(name);
+  const { authenticated } = useAuth();
 
   const { configurable, duplicable } = useMemo(() => {
     const configurable = widget ? getConfigurable(widget) : false;
@@ -74,7 +73,7 @@ export function EditingLayer ({ id }: EditLayerProps) {
   });
 
   return (
-    <div className='widget-layer editing-layer'>
+    <div className="widget-layer editing-layer">
       <div className="widget-toolbar-container">
         <ToolbarMenu
           className="widget-toolbar"
@@ -83,11 +82,11 @@ export function EditingLayer ({ id }: EditLayerProps) {
             <>
               <MenuItem
                 id="delete"
-                text={<TrashIcon className="text-red-500" />}
+                text={<CloseIcon className="text-red-500" />}
                 action={deleteAction}
                 order={10000}
               />
-              {duplicable && (
+              {authenticated && duplicable && (
                 <MenuItem
                   id="duplicate"
                   text={<DuplicateIcon fill="currentColor" />}
@@ -95,13 +94,13 @@ export function EditingLayer ({ id }: EditLayerProps) {
                   order={0}
                 />
               )}
-              <MenuItem
+              {authenticated && (<MenuItem
                 id="styles"
                 text={<PaletteIcon />}
                 action={styleConfigureAction}
                 order={99}
-              />
-              {configurable && (
+              />)}
+              {authenticated && configurable && (
                 <MenuItem
                   id="configure"
                   text={<PencilIcon fill="currentColor" />}
@@ -110,12 +109,12 @@ export function EditingLayer ({ id }: EditLayerProps) {
                   disabled={!configurable}
                 />
               )}
-              <MenuItem
+              {authenticated && (<MenuItem
                 id="visibility"
                 text={isPrivate ? <EyeSlashIcon /> : <EyeIcon className="text-green-500" />}
                 action={handleVisibilityChange}
                 order={100}
-              />
+              />)}
             </>
           )}
         >
