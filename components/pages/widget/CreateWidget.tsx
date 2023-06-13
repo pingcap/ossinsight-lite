@@ -5,6 +5,7 @@ import useRefCallback from '@/packages/ui/hooks/ref-callback';
 import { useAddDashboardItem } from '@/store/features/dashboards';
 import { useAddLibraryItem } from '@/store/features/library';
 import { useResolvedWidget } from '@/store/features/widgets';
+import { deepCloneJson } from '@/utils/common';
 import { useCallback, useContext, useState } from 'react';
 
 export interface CreateWidgetProps {
@@ -18,7 +19,7 @@ export default function CreateWidget ({ name }: CreateWidgetProps) {
   const { closeModal } = useContext(ModalContext);
 
   const [{ showBorder, ...props }, setProps] = useState(() => {
-    return { ...widget.defaultProps };
+    return deepCloneJson({ ...widget.defaultProps });
   });
 
   const handlePropsChange = useCallback((key: string, value: any) => {

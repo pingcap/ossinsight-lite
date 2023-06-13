@@ -2,7 +2,6 @@ import { Command, LibraryItemCommand } from '@/core/commands';
 import { nextValue, UpdateAction, UpdateContext } from '@/packages/ui/hooks/bind/utils';
 import { WidgetsState } from '@/store/features/widgets';
 import type { Store } from '@/store/store';
-import store from '@/store/store';
 import { LibraryItem } from '@/utils/types/config';
 import { createSlice } from '@reduxjs/toolkit';
 import { useCallback, useEffect, useRef } from 'react';
@@ -144,12 +143,13 @@ const library = createSlice({
 let promise = new Promise(() => {});
 
 export function useLibraryItemField<T> (id: string, select: (item: LibraryItem) => T) {
+  const store: Store = useStore();
   return useSelector<{ library: LibraryState }, T>(state => {
     const item = state.library.items[id];
     if (item) {
       return select(item);
     } else {
-      throw scheduleLoadLibraryItem(id);
+      throw scheduleLoadLibraryItem(store, id);
     }
   });
 }
@@ -200,7 +200,7 @@ export function useInitialLoadLibraryItems (store: Store, items: LibraryItem[], 
   }
 }
 
-function scheduleLoadLibraryItem (id: string): Promise<void> {
+function scheduleLoadLibraryItem (store: Store, id: string): Promise<void> {
   const libraryState = store.getState().library;
   const pendingItem = libraryState.pendingItems[id];
   if (!!pendingItem) {

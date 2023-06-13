@@ -6,7 +6,7 @@ import WidgetContext from '@ossinsight-lite/ui/context/widget';
 import useRefCallback from '@ossinsight-lite/ui/hooks/ref-callback';
 import updatePartial from '@ossinsight-lite/ui/utils/update-partial';
 import clsx from 'clsx';
-import { ForwardedRef, forwardRef, HTMLProps, RefAttributes, Suspense, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { ForwardedRef, forwardRef, HTMLProps, RefAttributes, Suspense, useCallback, useContext, useEffect, useMemo } from 'react';
 import { SQLEditor, SQLEditorHeader } from '../../../components/editor/sql';
 import ChartTypeToggle from '../../../components/visualize/ChartTypeToggle';
 import { VisualizeType } from '../../../components/visualize/common';
@@ -31,8 +31,6 @@ export interface WidgetProps extends HTMLProps<HTMLDivElement> {
 
 function Editor ({ defaultSql, defaultDb, sql, currentDb, visualize, forwardedRef, ...props }: WidgetProps, _forwardedRef: ForwardedRef<HTMLDivElement>) {
   const { onPropChange, configuring } = useContext(WidgetContext);
-
-  const [openVisualizeDialog, setOpenVisualizeDialog] = useState(false);
 
   const onSqlChange = useCallback((sql: string) => {
     onPropChange?.('sql', sql);
@@ -112,9 +110,6 @@ function Editor ({ defaultSql, defaultDb, sql, currentDb, visualize, forwardedRe
                 editing
                 configuring={configuring}
                 visualize={visualize}
-                onClickVisualizeOptions={() => {
-                  setOpenVisualizeDialog(true);
-                }}
                 running={running}
                 result={result}
                 error={error}

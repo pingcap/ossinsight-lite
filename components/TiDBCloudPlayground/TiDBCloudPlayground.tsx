@@ -3,13 +3,14 @@
 import EditWidgetInstance from '@/components/EditWidgetInstance';
 import { useResolvedWidget } from '@/store/features/widgets';
 import clientOnly from '@/utils/clientOnly';
+import { deepCloneJson } from '@/utils/common';
 import { useCallback, useState } from 'react';
 
 function TiDBCloudPlayground () {
   const widget = useResolvedWidget('db/sql');
 
   const [props, setProps] = useState<any>(() => {
-    return widget.defaultProps;
+    return deepCloneJson({ ...widget.defaultProps });
   });
 
   const handleChange = useCallback((key: string, value: any) => {

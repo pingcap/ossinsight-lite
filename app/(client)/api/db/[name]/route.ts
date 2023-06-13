@@ -4,6 +4,7 @@ import { getDatabaseUri } from '@/utils/mysql';
 import { Connection, createConnection } from 'mysql2/promise';
 import { NextRequest, NextResponse } from 'next/server';
 import * as process from 'process';
+console.log(config);
 
 // TODO: use config
 const db = config.db;
@@ -18,6 +19,7 @@ export async function POST (req: NextRequest, { params: { name } }: any) {
   }
 
   const target = db.find(db => db.name === name);
+  console.log(name, db);
 
   if (!target) {
     return NextResponse.json({
