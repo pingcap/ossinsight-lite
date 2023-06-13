@@ -54,7 +54,7 @@
     "chart.js": "^4.3.0",
     "clsx": "^1.2.1",
     "eslint": "8.40.0",
-    "eslint-config-next": "^13.4.4",
+    "eslint-config-next": "^13.4.5",
     "glob": "^10.2.5",
     "immer": "^10.0.2",
     "mysql2": "^3.3.1",
