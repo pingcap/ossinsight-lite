@@ -31,7 +31,6 @@ export async function loginAction (form: FormData) {
   'use server';
   await coreLoginAction(form);
   const redirectUri = (form.get('redirect_uri') as string) ?? '/';
-  console.log(redirectUri);
   redirect(redirectUri);
 }
 
