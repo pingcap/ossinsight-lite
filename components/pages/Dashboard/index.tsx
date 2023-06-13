@@ -78,7 +78,7 @@ function Dashboard () {
     ));
   }, [ids, editing, dashboardName, ref.current]);
 
-  const compact = breakpoint === 'lg' ? undefined : 'compact';
+  const compact = breakpoint !== 'lg';
 
   return (
     <div className={clsx('dashboard', { compact })}>
@@ -101,7 +101,7 @@ function Dashboard () {
         isResizable={editing}
         isDraggable={editing}
         isDroppable={editing}
-        maxRows={breakpoint === 'lg' ? ROWS : undefined}
+        maxRows={compact ? undefined : ROWS}
       >
         {children}
       </ResponsiveGridLayout>
