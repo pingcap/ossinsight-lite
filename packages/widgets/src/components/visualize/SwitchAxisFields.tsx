@@ -9,8 +9,11 @@ export default function SwitchAxisFields () {
   const handleSwitchAxis = useRefCallback(() => {
     const [x, y] = getValues(['x', 'y']);
 
-    setValue('x', deepCloneJson(y), { shouldTouch: false, shouldDirty: false, shouldValidate: false });
-    setValue('y', deepCloneJson(x), { shouldTouch: true });
+    const newX = deepCloneJson(y);
+    const newY = deepCloneJson(x);
+
+    setValue('x', newX, { shouldTouch: false, shouldDirty: false, shouldValidate: false });
+    setValue('y', newY, { shouldTouch: true });
   });
 
   return (
