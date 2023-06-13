@@ -38,7 +38,8 @@
     "app/**/*.ts",
     "app/**/*.tsx",
     ".next/types/**/*.ts",
-    "env.d.ts"
+    "env.d.ts",
+    ".osswrc.json"
   ],
   "exclude": ["node_modules"]
 }
