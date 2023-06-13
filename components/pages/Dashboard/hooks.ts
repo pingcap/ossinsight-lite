@@ -1,14 +1,15 @@
-import { computeRowHeight, DEFAULT_ROW_HEIGHT } from '@/components/pages/Dashboard/utils';
-import { BreakpointName, cols } from '@/utils/layout';
+import { computeRowHeight, DEFAULT_ROW_HEIGHT, ROWS } from '@/components/pages/Dashboard/utils';
+import { BreakpointName } from '@/utils/layout';
 import { RefObject, useEffect, useLayoutEffect, useState } from 'react';
+import { Layout } from 'react-grid-layout';
 
 export function useRowHeight () {
   const [rowHeight, setRowHeight] = useState(DEFAULT_ROW_HEIGHT);
   useLayoutEffect(() => {
-    setRowHeight(computeRowHeight(window.innerHeight));
+    setRowHeight(computeRowHeight(window.innerHeight - 56));
 
     const handleResize = () => {
-      setRowHeight(computeRowHeight(window.innerHeight));
+      setRowHeight(computeRowHeight(window.innerHeight - 56));
     };
 
     window.addEventListener('resize', handleResize);

@@ -3,7 +3,7 @@ import DefaultMenu from '@/components/menu/DefaultMenu';
 import LoginForm from '@/components/pages/login/LoginForm';
 
 export default function Page ({ searchParams }: any) {
-  const redirectUri = decodeURIComponent(searchParams.redirect_uri) ?? '/';
+  const redirectUri = decodeURIComponent(searchParams.redirect_uri ?? '/');
 
   return (
     <div className="h-screen flex items-center justify-center bg-gray-50">

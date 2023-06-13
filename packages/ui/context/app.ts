@@ -14,9 +14,9 @@ const AppContext = createContext<AppContextValues>({
   getDatabaseByName: (name: string) => {
     const db = config.db.find(db => db.name === name);
     if (!db) {
-      return '__UNKNOWN__'
+      return '__UNKNOWN__';
     }
-    return process.env[db.env] || db.database
+    return process.env[db.env] || db.database;
   },
 });
 

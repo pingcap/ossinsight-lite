@@ -31,7 +31,7 @@ export async function middleware (req: NextRequest) {
       }
 
       let redirectUri = req.url.replace(/^https?:\/\/[^/]+/, '');
-      return NextResponse.redirect(req.nextUrl.origin + `/login?redirect_uri=${encodeURIComponent(redirectUri)}`, {
+      return NextResponse.redirect(req.nextUrl.origin + `/login?redirect_uri=${encodeURIComponent(redirectUri ?? '/')}`, {
         headers: {
           'X-Auth-Error': error,
         },
@@ -43,6 +43,9 @@ export async function middleware (req: NextRequest) {
 
 function anonymousAuth (req: NextRequest) {
   if (/^\/api\/db\//.test(req.nextUrl.pathname)) {
+    return true;
+  }
+  if (/^\/api\/library\/[^\/]$/.test(req.nextUrl.pathname)) {
     return true;
   }
   if (req.nextUrl.pathname === '/' || /^\/dashboards\/[^/]*\/?$/.test(req.nextUrl.pathname)) {
@@ -65,7 +68,7 @@ function needAuth (req: NextRequest) {
     return false;
   }
 
-  if (/^\/api\/layout\/route$/.test(req.nextUrl.pathname)) {
+  if (/^\/api\/layout$/.test(req.nextUrl.pathname)) {
     return true;
   }
 

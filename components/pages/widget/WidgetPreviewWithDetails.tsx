@@ -49,7 +49,7 @@ function Url ({ title }: { title: string }) {
       </span>
       <span className="flex gap-2 items-center">
         <button onClick={handleCopy} className="btn btn-sm btn-link">
-          {copied ? <ClipboardCheckIcon className='text-green-500' /> : <ClipboardIcon />}
+          {copied ? <ClipboardCheckIcon className="text-green-500" /> : <ClipboardIcon />}
         </button>
         <a className="btn btn-sm btn-link" href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`} target="_blank">
           <TwitterIcon />

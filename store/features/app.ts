@@ -1,3 +1,4 @@
+import { isDemoSite } from '@/components/SiteHeader/utils';
 import type { State } from '@/store/store';
 import { createSlice } from '@reduxjs/toolkit';
 import { useSelector } from 'react-redux';
@@ -5,6 +6,7 @@ import { useSelector } from 'react-redux';
 const app = createSlice({
   name: 'app',
   initialState: () => ({
+    demoSite: isDemoSite(),
     visible: true,
     savingNumber: 0,
     loadingNumber: 0,

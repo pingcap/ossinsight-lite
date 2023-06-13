@@ -13,6 +13,9 @@ module.exports = {
         primary: utils.colors.gray["700"],
         secondary: utils.colors.gray["500"],
       }),
+      borderColor: {
+        editing: '#C5AC8F',
+      },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic':

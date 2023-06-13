@@ -19,4 +19,12 @@ const authApi = createApi({
   }),
 });
 
+export function useAuth () {
+  const { data: authData, isUninitialized, isLoading, isFetching } = authApi.useReloadQuery();
+  return {
+    authenticated: authData?.authenticated ?? false,
+    pending: isUninitialized || isLoading || isFetching,
+  };
+}
+
 export default authApi;

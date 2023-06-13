@@ -1,16 +1,45 @@
-.grid-layout {
-  @apply relative w-screen;
+.dashboard {
+  @apply relative;
+  min-height: calc(100vh - 56px);
 
-  &:not(.compact) {
-    @media screen and (min-width: 769px) and (min-height: 769px) {
-      @apply min-h-screen max-h-screen overflow-hidden;
+  @media screen and (min-width: 769px) and (min-height: 769px) {
+    &:not(.compact) {
+      @apply overflow-hidden;
+      max-height: calc(100vh - 56px);
     }
   }
 }
 
+.grid-layout {
+  @apply relative w-screen z-0;
+  min-height: calc(100vh - 56px);
+
+  &.editing {
+  }
+}
+
 .widget {
+  &-wrapper {
+    @apply transition-colors w-full h-full relative rounded-lg border-opacity-0 border border-gray-200 bg-transparent overflow-hidden;
+
+    &.show-border {
+      @apply border-opacity-100;
+    }
+
+    &:hover {
+      .widget-toolbar {
+        opacity: 0.7;
+        transform: scale(1);
+
+        &:hover {
+          opacity: 1;
+        }
+      }
+    }
+  }
+
   &-layer {
-    @apply absolute left-0 top-0 w-full h-full z-10 flex flex-col transition-colors pointer-events-none;
+    @apply absolute left-0 top-0 w-full h-full z-10 flex flex-col pointer-events-none;
 
     &.editing-layer {
       @apply cursor-move pointer-events-auto;
@@ -18,11 +47,32 @@
   }
 
   &-toolbar-container {
-    @apply text-primary opacity-40 hover:opacity-100 transition-all pointer-events-auto;
+    @apply text-primary pointer-events-auto p-2;
   }
 
   &-toolbar {
-    @apply flex justify-end items-center;
+    @apply transition-all flex justify-end items-center bg-white w-max ml-auto border rounded;
+    opacity: 0;
+    transform-origin: top right;
+    transform: scale(0.3);
+    transition-duration: 300ms;
   }
 }
 
+
+.editing {
+  .widget-wrapper {
+    @apply border-editing border-opacity-50 border-dashed;
+
+    &:hover {
+      @apply border-opacity-100;
+    }
+  }
+}
+
+
+.grid-guide {
+  @apply absolute left-0 w-full h-full pointer-events-none;
+
+  background-color: #FEFBF9;
+}

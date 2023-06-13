@@ -37,12 +37,12 @@ export type Dashboard = {
   visibility?: string
 }
 
-export type Store = 'tidb';
+export type LayoutStore = 'tidb' | 'localStorage';
 
 export type LayoutConfigV1 = {
   version: 1 | 2
   library: LibraryItem[]
   dashboard: Record<string, Dashboard>
-  libraryStore?: Store
-  dashboardsStore?: Store
+  libraryStore?: LayoutStore
+  dashboardsStore?: LayoutStore
 }

@@ -1,0 +1,131 @@
+.site-header {
+  @apply h-14 py-2 px-4 flex items-center fixed top-0 left-0 w-full z-10 gap-4 font-sans;
+
+  background-color: #FFFBF780;
+  border-bottom: 1px solid #F8F1EB;
+  font-size: 14px;
+
+
+  .spacer {
+    @apply ml-auto;
+  }
+
+  .site-title {
+    @apply font-sketch;
+    font-size: 24px;
+    font-weight: 700;
+  }
+
+  .site-dashboard {
+    @apply flex items-center justify-between gap-2 bg-white border;
+    border-radius: 7px;
+    padding-right: 4px;
+
+    &-editing-button {
+      @apply bg-gray-950 text-white flex items-center justify-center rounded-md;
+      width: 30px;
+      height: 30px;
+      margin: 1px;
+    }
+
+    &-select {
+      @apply flex gap-2 items-center justify-end;
+      min-width: 80px;
+      height: 32px;
+
+      &-indicator {
+        width: 12px;
+        height: 12px;
+        transition: rotate .2s ease;
+      }
+
+      &[data-state="open"] {
+        .site-dashboard-select-indicator {
+          rotate: 180deg;
+        }
+      }
+    }
+  }
+
+  .site-header-item {
+    @apply flex gap-2 items-center text-gray-700;
+
+    &:hover, &:focus {
+      @apply text-gray-950;
+    }
+  }
+
+  .site-demo-deploy {
+    @apply rounded bg-gray-950 text-white p-2 transition-colors;
+
+    &:hover, &:focus {
+      @apply bg-gray-800 text-white;
+    }
+  }
+}
+
+.site-header-submenu-content {
+  @apply bg-white py-2 rounded shadow-lg text-sm text-gray-700;
+
+  animation-duration: 0.6s;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: var(--radix-menubar-content-transform-origin);
+  z-index: 11;
+
+  &[data-state='open'] {
+    animation-name: SiteHeader-slideIn;
+  }
+
+  &[data-state='closed'] {
+    animation-name: SiteHeader-slideOut;
+    animation-duration: 300ms;
+  }
+
+  .menuitem {
+    @apply py-1 px-2 border-l-2 border-transparent transition-all outline-none;
+
+    &.active {
+      @apply border-gray-950 bg-gray-50;
+    }
+
+    &:not(.active) {
+      @apply cursor-pointer;
+
+      &:hover, &:active {
+        @apply bg-gray-100;
+      }
+    }
+
+    &-widget {
+      @apply flex justify-between items-center text-sm text-gray-600;
+      min-width: 180px;
+    }
+  }
+
+  .menuseparator {
+    @apply my-2 border-b;
+  }
+}
+
+
+@keyframes SiteHeader-slideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes SiteHeader-slideOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+}

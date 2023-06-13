@@ -1,3 +1,4 @@
+import type { Store } from '@/store/store';
 import { createSlice } from '@reduxjs/toolkit';
 import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -25,7 +26,7 @@ const dashboards = createSlice({
     recording: true,
   } as DashboardsState),
   reducers: {
-    load (state, { payload: { dashboards } }: { payload: { dashboards: Record<string, Dashboard> } }) {
+    load (state, { payload: { dashboards, restoreCommands = [] } }: { payload: { dashboards: Record<string, Dashboard>, restoreCommands?: Command[] } }) {
       Object.entries(dashboards).forEach(([name, { items, ...dashboard }]) => {
         state.dashboards[name] ??= {
           ...dashboard,
@@ -34,6 +35,26 @@ const dashboards = createSlice({
             return res;
           }, {} as Record<string, ItemReference>),
         };
+      });
+      restoreCommands.forEach(command => {
+        switch (command.type) {
+          case 'update-dashboard-item': {
+            const dashboard = state.dashboards[command.dashboard];
+            if (dashboard) {
+              dashboard.items[command.id] = command.payload;
+            }
+          }
+            break;
+          case 'delete-dashboard-item': {
+            const dashboard = state.dashboards[command.dashboard];
+            if (dashboard) {
+              delete dashboard.items[command.id];
+            }
+          }
+            break;
+          default:
+            break;
+        }
       });
     },
     update ({ current, dashboards, commands, recording }, { payload: { id, item } }: { payload: { id: string, item: UpdateAction<ItemReference> } }) {
@@ -178,6 +199,12 @@ export function useSwitchCurrentDashboard (name: string, onEnter: (name: string,
       onEnter(name, dashboard);
     }
   }, [current, dashboard !== undefined]);
+}
+
+export function useInitialLoadDashboards (store: Store, initialDashboards: Record<string, Dashboard>) {
+  useEffect(() => {
+    store.dispatch(dashboards.actions.load({ dashboards: initialDashboards, restoreCommands: store.getState().draft.localStorageUncommittedChanges }));
+  }, []);
 }
 
 export function useAddDashboardItem () {
