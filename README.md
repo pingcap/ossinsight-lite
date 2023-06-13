@@ -11,7 +11,7 @@ Demo: https://ossinsight-lite.vercel.app/
 ## Requirements
 
 - **[GitHub](https://github.com.)** account for fork and run your own data pipeline to fetch your GitHub activities.
-- **[TiDB Serverless](https://tidbcloud.com/?utm_source=github&utm_medium=ossinsight_lite)** account to store your personal data for FREE.
+- **[TiDB Serverless](https://tidbcloud.com/?utm_source=ossinsight&utm_medium=lite)** account to store your personal data for FREE.
 - **[Vercel](https://vercel.com/)** account to deploy your dashboards.
 
 ## How to deploy your own (10mins)
