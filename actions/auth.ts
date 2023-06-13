@@ -59,7 +59,9 @@ export async function coreLoginAction (form: FormData) {
     maxAge: parseInt(process.env.JWT_MAX_AGE || '1800') + 300,
   } as ResponseCookie);
 
-  revalidatePath(redirectUri);
+  if (redirectUri) {
+    revalidatePath(redirectUri);
+  }
 }
 
 export async function resetPasswordAction (formData: FormData) {
