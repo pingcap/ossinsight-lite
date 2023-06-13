@@ -19,7 +19,7 @@ function WidgetPreview ({ id, name, className, onClick, props }: WidgetPreviewPr
   const widget = useResolvedWidget(name);
   const { Widget, Icon } = widget;
   const { ref: visibleRef, visible } = useVisible();
-  const dataOptions = useDataOptions(name, id);
+  const dataOptions = useDataOptions(name, id ?? name);
 
   return (
     <>
