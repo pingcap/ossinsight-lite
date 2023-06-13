@@ -2,7 +2,7 @@ import { noDataOptions, WidgetContextDataOptionsValues } from '@/packages/ui/con
 import useRefCallback from '@/packages/ui/hooks/ref-callback';
 import { useWidgetGetData } from '@/store/features/widgets';
 import { requestAppIdle } from '@/store/utils/app';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export function useDataOptions (name: string, id: string): WidgetContextDataOptionsValues {
   const hasGetData = useWidgetGetData(name);
@@ -13,11 +13,19 @@ export function useDataOptions (name: string, id: string): WidgetContextDataOpti
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<unknown>(null);
+  const lastAbort = useRef<AbortController>();
+
+  useEffect(() => {
+    return () => {
+      lastAbort.current?.abort('unmounted');
+    };
+  }, [name, id]);
 
   return {
     data,
     requestingData: loading,
     onRequestData: useRefCallback(async (abort) => {
+      lastAbort.current = abort;
       setLoading(true);
       setError(null);
       requestAppIdle(async () => {
@@ -34,7 +42,7 @@ export function useDataOptions (name: string, id: string): WidgetContextDataOpti
         } finally {
           setLoading(false);
         }
-      })
+      });
     }),
     requestDataError: error,
   };

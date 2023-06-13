@@ -1,5 +1,6 @@
 'use client';
-import WidgetContext, { noDataOptions } from '@/packages/ui/context/widget';
+import { useDataOptions } from '@/components/pages/Dashboard/dataOptions';
+import WidgetContext from '@/packages/ui/context/widget';
 import { useResolvedWidget } from '@/store/features/widgets';
 import clientOnly from '@/utils/clientOnly';
 import { LibraryItem } from '@/utils/types/config';
@@ -18,6 +19,7 @@ function WidgetPreview ({ id, name, className, onClick, props }: WidgetPreviewPr
   const widget = useResolvedWidget(name);
   const { Widget, Icon } = widget;
   const { ref: visibleRef, visible } = useVisible();
+  const dataOptions = useDataOptions(name, id ?? name);
 
   return (
     <>
@@ -32,7 +34,7 @@ function WidgetPreview ({ id, name, className, onClick, props }: WidgetPreviewPr
           onPropChange: () => {},
           configuring: false,
           creating: false,
-          ...noDataOptions,
+          ...dataOptions,
         }}>
           <Widget
             {...props}
