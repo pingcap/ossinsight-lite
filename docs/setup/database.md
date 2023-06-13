@@ -1,6 +1,6 @@
 # Create TiDB Serverless cluster
 
-1. Click [here](https://tidbcloud.com/console/clusters/create-cluster?utm_source=github&utm_medium=ossinsight_lite) to create a TiDB Cloud Serverless cluster.
+1. Click [here](https://tidbcloud.com/console/clusters/create-cluster?utm_source=ossinsight&utm_medium=lite) to create a TiDB Cloud Serverless cluster.
 
    <div align="center">
       <img src="images/create-cluster.png" width="1000px" alt="Create TiDB Serverless cluster page"/>

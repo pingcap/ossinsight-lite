@@ -1,28 +1,32 @@
 import AppLoading from '@/components/AppLoading';
 import AppLoadingIndicator from '@/components/AppLoadingIndicator';
 import App from '@/core/App';
-import { MenuItem } from '@/packages/ui/components/menu';
-import { NavMenu } from '@/packages/ui/components/nav-menu';
+import '@/static/CabinSketch.css';
+import Script from 'next/script';
 import { Suspense } from 'react';
 import './client-entry';
 import './globals.scss';
-import '@/static/CabinSketch.css';
 
 export default function RootLayout ({
   children,
   modal,
-  bottom,
 }: any) {
 
   return (
     <html lang="en">
+    <head>
+      <Script id="gtag">{`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-PRPSXZS');`}</Script>
+    </head>
     <body>
+    <noscript>
+      <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PRPSXZS"
+              height="0" width="0" style={{ display: 'none', visibility: 'hidden' }} />
+    </noscript>
     <App>
-      <NavMenu
-        position="bottom"
-        className="h-[40px] p-[4px] min-w-[250px]"
-        items={<><MenuItem id="sep" order={-1} separator />{bottom}</>}
-      />
       <Suspense fallback={<AppLoading />}>
         {children}
       </Suspense>
