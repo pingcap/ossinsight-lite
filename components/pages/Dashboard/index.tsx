@@ -78,12 +78,14 @@ function Dashboard () {
     ));
   }, [ids, editing, dashboardName, ref.current]);
 
+  const compact = breakpoint === 'lg' ? undefined : 'compact';
+
   return (
-    <div className="dashboard">
+    <div className={clsx('dashboard', { compact })}>
       <GridGuideCanvas rows={rows} breakpoint={breakpoint ?? 'lg'} editing={editing} />
       <ResponsiveGridLayout
         ref={ref}
-        className={clsx('grid-layout', breakpoint === 'lg' ? undefined : 'compact', { editing })}
+        className={clsx('grid-layout', { editing, compact })}
         style={{
           minHeight: rows * rowHeight + ((rows - 1) * MARGIN) + PADDING * 2,
         }}

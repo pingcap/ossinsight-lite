@@ -1,17 +1,18 @@
 .dashboard {
   @apply relative;
+  min-height: calc(100vh - 56px);
+
+  @media screen and (min-width: 769px) and (min-height: 769px) {
+    &:not(.compact) {
+      @apply overflow-hidden;
+      max-height: calc(100vh - 56px);
+    }
+  }
 }
 
 .grid-layout {
   @apply relative w-screen z-0;
   min-height: calc(100vh - 56px);
-
-  &:not(.compact) {
-    @media screen and (min-width: 769px) and (min-height: 769px) {
-      @apply overflow-hidden;
-      max-height: calc(100vh - 56px);
-    }
-  }
 
   &.editing {
   }
