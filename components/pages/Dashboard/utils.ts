@@ -3,7 +3,7 @@ import store, { State } from '@/store/store';
 import { breakpointNames, compareLayoutShape, eachBreakpointCompare, extractLayoutItem, ItemReferenceLayout } from '@/utils/layout';
 import { ItemReference } from '@/utils/types/config';
 import { Dispatch, SetStateAction, useEffect, useRef } from 'react';
-import { Layouts } from 'react-grid-layout';
+import { Layout, Layouts } from 'react-grid-layout';
 import { useSelector } from 'react-redux';
 
 export function syncLayoutChanges (layouts: Layouts) {
@@ -109,3 +109,7 @@ export const computeRowHeight = (containerHeight: number) => {
   const expectedHeight = (containerHeight - PADDING * 2 - MARGIN * (ROWS - 1)) / ROWS;
   return Math.min(MAX_ROW_HEIGHT, Math.max(MIN_ROW_HEIGHT, expectedHeight));
 };
+
+export function computeRows (layouts: Layout[]) {
+  return layouts.reduce((rows, l) => (Math.max(rows, l.y + l.h)), ROWS);
+}

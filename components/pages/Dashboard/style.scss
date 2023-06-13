@@ -1,3 +1,7 @@
+.dashboard {
+  @apply relative;
+}
+
 .grid-layout {
   @apply relative w-screen z-0;
   min-height: calc(100vh - 56px);
@@ -67,8 +71,7 @@
 
 
 .grid-guide {
-  @apply absolute left-0 w-full pointer-events-none;
+  @apply absolute left-0 w-full h-full pointer-events-none;
 
-  top: 56px;
   background-color: #FEFBF9;
 }

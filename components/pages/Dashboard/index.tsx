@@ -2,7 +2,7 @@
 
 import { DashboardContext } from '@/components/pages/Dashboard/context';
 import DebugInfo from '@/components/pages/Dashboard/DebugInfo';
-import GridGuide from '@/components/pages/Dashboard/GridGuide';
+import GridGuideCanvas from '@/components/pages/Dashboard/GridGuideCanvas';
 import { use_unstableBreakpoint, useRowHeight } from '@/components/pages/Dashboard/hooks';
 import LoadingIndicator from '@/packages/ui/components/loading-indicator';
 import useRefCallback from '@/packages/ui/hooks/ref-callback';
@@ -16,7 +16,7 @@ import { Layout, Layouts, Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import { WidgetComponent } from './createWidgetComponent';
 import './style.scss';
-import { computeItemsLayout, MARGIN, PADDING, ROWS, syncLayoutChanges } from './utils';
+import { computeItemsLayout, computeRows, MARGIN, PADDING, ROWS, syncLayoutChanges } from './utils';
 
 function Dashboard () {
   const { dashboardName, editing } = useContext(DashboardContext);
@@ -24,6 +24,7 @@ function Dashboard () {
   const ids = useDashboardItemIds();
   const [layouts, setLayouts] = useState<Layouts>({});
   const rowHeight = useRowHeight();
+  const [rows, setRows] = useState(ROWS);
   const ref = useRef<any>();
   const [breakpoint, setBreakpoint] = use_unstableBreakpoint(ref);
 
@@ -36,6 +37,7 @@ function Dashboard () {
 
   const handleLayoutChange = useRefCallback((currentLayout: Layout[], layouts: Layouts) => {
     setLayouts(layouts);
+    setRows(computeRows(currentLayout));
     if (switchingDashboard.current) {
       switchingDashboard.current = false;
     } else if (editing && breakpoint) {
@@ -70,18 +72,21 @@ function Dashboard () {
     }
 
     return [...ids].map((id) => (
-      <div className='grid-item' ref={ref} key={id} data-grid={getInitialLayout(id)}>
+      <div className="grid-item" ref={ref} key={id} data-grid={getInitialLayout(id)}>
         <WidgetComponentMeno id={id} />
       </div>
     ));
   }, [ids, editing, dashboardName, ref.current]);
 
   return (
-    <>
-      {editing && <GridGuide rowHeight={rowHeight} breakpoint={breakpoint ?? 'lg'} layout={layouts[breakpoint ?? 'xl'] ?? []} />}
+    <div className="dashboard">
+      <GridGuideCanvas rows={rows} breakpoint={breakpoint ?? 'lg'} editing={editing} />
       <ResponsiveGridLayout
         ref={ref}
         className={clsx('grid-layout', breakpoint === 'lg' ? undefined : 'compact', { editing })}
+        style={{
+          minHeight: rows * rowHeight + ((rows - 1) * MARGIN) + PADDING * 2,
+        }}
         layouts={layouts}
         breakpoints={breakpoints}
         cols={cols}
@@ -99,7 +104,7 @@ function Dashboard () {
         {children}
       </ResponsiveGridLayout>
       <DebugInfo />
-    </>
+    </div>
   );
 }
 
