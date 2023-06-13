@@ -17,7 +17,7 @@ export function UserMenuItems () {
   const { exitEditing } = useContext(DashboardContext);
   const [transitioning, startTransition] = useTransition();
 
-  if (isDemoSite()) {
+  if (isDemoSite() && !data?.authenticated) {
     return (
       <a className="site-header-item site-demo-deploy" href="https://github.com/pingcap/ossinsight-lite#how-to-deploy-your-own-10mins" target="_blank">
         ✨ Deploy your own
