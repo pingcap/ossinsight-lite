@@ -31,7 +31,7 @@ export async function middleware (req: NextRequest) {
       }
 
       let redirectUri = req.url.replace(/^https?:\/\/[^/]+/, '');
-      return NextResponse.redirect(req.nextUrl.origin + `/login?redirect_uri=${encodeURIComponent(redirectUri)}`, {
+      return NextResponse.redirect(req.nextUrl.origin + `/login?redirect_uri=${encodeURIComponent(redirectUri ?? '/')}`, {
         headers: {
           'X-Auth-Error': error,
         },

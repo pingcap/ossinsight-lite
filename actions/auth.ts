@@ -30,7 +30,8 @@ async function authenticate ({ sql }: SqlExecutor, username: string, password: s
 export async function loginAction (form: FormData) {
   'use server';
   await coreLoginAction(form);
-  const redirectUri = (form.get('redirect_uri') as string) || '/';
+  const redirectUri = (form.get('redirect_uri') as string) ?? '/';
+  console.log(redirectUri);
   redirect(redirectUri);
 }
 

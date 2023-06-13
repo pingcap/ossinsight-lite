@@ -42,7 +42,7 @@ export function useAuthGuard<T> (cb: () => T, allowBypass: boolean, forceCheck: 
       if (paramsString) {
         redirect += '?' + paramsString;
       }
-      loginUrl += `?redirect_uri=${encodeURIComponent(redirect)}`;
+      loginUrl += `?redirect_uri=${encodeURIComponent(redirect ?? '/')}`;
     }
 
     await new Promise<void>((resolve) => {
