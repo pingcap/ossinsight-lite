@@ -18,7 +18,7 @@ export default function (rawData, theme) {
       {
         data: rawData.map(({dayofweek, hour, cnt}) => {
           return {
-            x: hour,
+            x: String(hour),
             y: getDayofweek(dayofweek),
             cnt,
             r: cnt * (1/ maxRadius) * 15,
