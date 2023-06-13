@@ -6,7 +6,7 @@ import { RowDataPacket } from 'mysql2/promise';
 export function createServerContext (): ServerContext {
   return {
     async runSql (dbName: string, sql: string): Promise<{ data: any[]; columns: { name: string; type: number }[] }> {
-      const db = config.db.find(db => db.name === dbName);
+      const db = config.db.find(db => db.name === dbName || db.database === dbName);
       if (!db) {
         throw new Error(`Unknown datasource ${dbName}`);
       }
