@@ -33,7 +33,10 @@ export function Select<T> ({ forwardedButtonRef, value, onValueChange, options, 
 
   const handleValueChange = useRefCallback((key: string) => {
     setSelected(key);
-    onValueChange(optionsMap.get(key) ?? null);
+    const newValue = optionsMap.get(key) ?? null;
+    if (newValue !== optionsMap.get(selected)) {
+      onValueChange(newValue);
+    }
   });
 
   return (

@@ -46,7 +46,6 @@ function Dashboard () {
   });
 
   const handleBreakpointChange = useRefCallback((breakpoint) => {
-    console.log('breakpoint change', breakpoint);
     setBreakpoint(breakpoint);
   });
 

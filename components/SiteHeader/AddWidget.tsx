@@ -1,6 +1,7 @@
 import { DashboardContext } from '@/components/pages/Dashboard/context';
 import { isDemoSite } from '@/components/SiteHeader/utils';
 import { startAppStateLoadingTransition } from '@/core/bind-client';
+import authApi from '@/store/features/auth';
 import { useResolvedWidgets } from '@/store/features/widgets';
 import * as Menubar from '@radix-ui/react-menubar';
 import PlusIcon from 'bootstrap-icons/icons/plus.svg';
@@ -11,6 +12,7 @@ export function AddWidget () {
   const { dashboardName, editing } = useContext(DashboardContext);
   const router = useRouter();
   const widgets = useResolvedWidgets();
+  const { data } = authApi.useReloadQuery();
 
   const configurableWidgets = useMemo(() => {
     return Object.values(widgets).filter(widget => !!widget.ConfigureComponent);
@@ -26,7 +28,7 @@ export function AddWidget () {
     return null;
   }
 
-  if (isDemoSite()) {
+  if (isDemoSite() && !data?.authenticated) {
     return (
       <button className="site-header-item" onClick={handleClickNew}>
         <PlusIcon className="site-header-item" />

@@ -11,11 +11,10 @@ export interface ResultDisplayProps {
   error?: unknown;
   configuring?: boolean;
   visualize?: VisualizeType;
-  onClickVisualizeOptions?: () => void;
   portal?: HTMLDivElement | null;
 }
 
-export default function ResultDisplay ({ title, editing = false, configuring, portal, visualize, onClickVisualizeOptions, result, running, error }: ResultDisplayProps) {
+export default function ResultDisplay ({ title, editing = false, configuring, portal, visualize, result, running, error }: ResultDisplayProps) {
   if (error) {
     return (
       <div className="w-full h-full flex items-center justify-center p-4">
