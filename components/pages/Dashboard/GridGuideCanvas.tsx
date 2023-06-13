@@ -50,8 +50,6 @@ function drawExploreGuide (ctx: CanvasRenderingContext2D, width: number, height:
   const contentWidth = width - padding * 2;
   const contentHeight = height - padding * 2;
 
-  console.log(contentWidth, contentHeight, rows, cols);
-
   const rowSize = contentHeight / (rows);
   const colSize = contentWidth / (cols);
   const colGuideLines = Math.round(8 * colSize / rowSize);
