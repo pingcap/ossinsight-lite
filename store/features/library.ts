@@ -201,9 +201,15 @@ export function useInitialLoadLibraryItems (store: Store, items: LibraryItem[], 
 }
 
 function scheduleLoadLibraryItem (id: string): Promise<void> {
-  const pendingItem = store.getState().library.pendingItems[id];
+  const libraryState = store.getState().library;
+  const pendingItem = libraryState.pendingItems[id];
   if (!!pendingItem) {
     return pendingItem;
+  }
+
+  const errorItem = libraryState.errorItems[id];
+  if (!!errorItem) {
+    return Promise.reject(errorItem);
   }
 
   const promise = new Promise<LibraryItem>(async (resolve, reject) => {
