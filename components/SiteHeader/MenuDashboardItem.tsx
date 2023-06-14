@@ -11,7 +11,7 @@ export function MenuDashboardItem ({ dashboardNames }: { dashboardNames: string[
   const { editing, toggleEditing, dashboardName } = useContext(DashboardContext);
 
   return (
-    <span className="site-dashboard">
+    <span className="site-dashboard site-header-item-optional">
       <button className="site-dashboard-editing-button" onClick={toggleEditing}>
         {editing ? <UnlockIcon /> : <LockIcon />}
       </button>

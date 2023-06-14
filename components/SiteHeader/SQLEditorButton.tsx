@@ -15,7 +15,7 @@ export function SQLEditorButton () {
   }, []);
   if (playgroundEnabled) {
     return (
-      <button className="site-header-item" onClick={handleClick}>
+      <button className="site-header-item site-header-item-optional" onClick={handleClick}>
         <TerminalIcon width={16} />
         <span>
           SQL Editor

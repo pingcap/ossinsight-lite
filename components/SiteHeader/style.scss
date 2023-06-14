@@ -58,6 +58,12 @@
     &:hover, &:focus {
       @apply text-gray-950;
     }
+
+    &-optional {
+      @media screen and (max-width: 768px) {
+        display: none;
+      }
+    }
   }
 
   .site-demo-deploy {

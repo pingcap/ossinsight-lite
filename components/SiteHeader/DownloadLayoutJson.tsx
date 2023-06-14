@@ -11,7 +11,7 @@ export default function DownloadLayoutJson () {
         </>
       )}
     >
-      <a className="site-header-item" href="/api/layout.json" download="layout.json">
+      <a className="site-header-item site-header-item-optional" href="/api/layout.json" download="layout.json">
         <CloudDownloadIcon />
       </a>
     </Tooltip>
