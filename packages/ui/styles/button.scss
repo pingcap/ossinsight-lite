@@ -30,10 +30,18 @@
   }
 
   &-red {
-    @apply text-red-500 bg-red-50;
+    @apply text-red-500;
+
+    &:not(.btn-link) {
+      @apply bg-red-50;
+
+      &:hover, &:active {
+        @apply bg-red-100;
+      }
+    }
 
     &:hover, &:active {
-      @apply bg-red-100;
+      @apply text-red-600;
     }
   }
 

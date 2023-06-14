@@ -3,11 +3,11 @@ import clsx from 'clsx';
 import { ButtonHTMLAttributes, cloneElement, forwardRef, InputHTMLAttributes, ReactElement, ReactNode, SelectHTMLAttributes, TextareaHTMLAttributes, useId } from 'react';
 import { experimental_useFormStatus as useFormStatus } from 'react-dom';
 
-export const Input = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>>(({ disabled, ...props }, ref) => {
+export const Input = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>>(({ disabled, type, ...props }, ref) => {
   const { pending } = useFormStatus();
 
   return (
-    <input {...props} className={clsx(props.className, 'text-input')} disabled={pending || disabled} ref={ref} />
+    <input {...props} className={clsx(props.className, 'text-input')} disabled={pending || disabled} ref={ref} type={type === 'button' ? undefined : type}/>
   );
 });
 
@@ -41,16 +41,17 @@ export const Select = forwardRef<HTMLSelectElement, SelectHTMLAttributes<HTMLSel
 });
 
 export interface FormControlProps {
+  className?: string;
   label?: ReactNode;
   name: string;
   children: ReactElement;
 }
 
-export const FormControl = function ({ label, name, children }: FormControlProps) {
+export const FormControl = function ({ className, label, name, children }: FormControlProps) {
   const id = `name-${useId()}`;
 
   return (
-    <div className="form-control">
+    <div className={clsx('form-control', className)}>
       {label && <label htmlFor={children.props.id ?? id}>{label}</label>}
       {cloneElement(children, { id: children.props.id ?? id, name })}
     </div>
