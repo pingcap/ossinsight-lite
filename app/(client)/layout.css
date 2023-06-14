@@ -2,4 +2,6 @@
   /*box-sizing: border-box;*/
   /*padding-top: 56px;*/
   font-family: CabinSketch, sans-serif;
+  position: relative;
+  overflow-x: hidden;
 }
