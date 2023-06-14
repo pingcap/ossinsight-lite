@@ -1,0 +1,38 @@
+.tooltip-content {
+  @apply p-2 rounded shadow-lg bg-white text-sm text-primary z-30;
+
+  transform-origin: var(--radix-tooltip-content-transform-origin);
+  animation-duration: 0.4s;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+
+
+  &[data-state=delayed-open] {
+    animation-name: tooltip-show;
+  }
+
+  &[data-state=closed] {
+    animation-name: tooltip-hide;
+  }
+}
+
+@keyframes tooltip-show {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes tooltip-hide {
+  to {
+    opacity: 0;
+    transform: scale(0);
+  }
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
