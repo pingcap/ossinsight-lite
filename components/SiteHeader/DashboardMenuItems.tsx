@@ -6,7 +6,6 @@ export function DashboardMenuItems () {
   return (
     <>
       <AddWidget />
-      <SQLEditorButton />
       <a className="site-header-item" href="/api/layout.json" download="layout.json">
         <CloudDownloadIcon />
         <span>layout.json</span>
