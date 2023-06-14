@@ -1,11 +1,12 @@
 .dashboard {
   @apply relative;
-  min-height: calc(100vh - 56px);
+  min-height: calc(100vh);
+  padding-top: 56px;
 
   @media screen and (min-width: 769px) and (min-height: 769px) {
     &:not(.compact) {
       @apply overflow-hidden;
-      max-height: calc(100vh - 56px);
+      max-height: calc(100vh);
     }
   }
 }
@@ -72,7 +73,15 @@
 
 
 .grid-guide {
-  @apply absolute left-0 w-full h-full pointer-events-none;
+  @apply absolute left-0 w-full pointer-events-none;
 
   background-color: #FEFBF9;
+
+  height: calc(100% + 56px);
+  top: -56px;
+
+  &.compact {
+    height: calc(100% + 112px);
+    top: -112px;
+  }
 }

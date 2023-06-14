@@ -1,10 +1,11 @@
 .site-header {
-  @apply h-14 py-2 px-4 flex items-center fixed top-0 left-0 w-full z-10 gap-4 font-sans;
+  @apply h-14 py-2 px-4 flex items-center fixed top-0 left-0 w-full z-10 gap-4 font-sans transition-all pointer-events-none;
 
-  background-color: #FFFBF780;
-  border-bottom: 1px solid #F8F1EB;
   font-size: 14px;
 
+  &.scrolling {
+    @apply bg-white bg-opacity-90;
+  }
 
   .spacer {
     @apply ml-auto;
@@ -47,11 +48,21 @@
     }
   }
 
+  > * {
+    @apply pointer-events-auto;
+  }
+
   .site-header-item {
     @apply flex gap-2 items-center text-gray-700;
 
     &:hover, &:focus {
       @apply text-gray-950;
+    }
+
+    &-optional {
+      @media screen and (max-width: 768px) {
+        display: none;
+      }
     }
   }
 
