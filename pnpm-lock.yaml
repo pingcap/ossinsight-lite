@@ -108,6 +108,9 @@ importers:
         specifier: ^3.3.2
         version: 3.3.2
     devDependencies:
+      '@primer/octicons-react':
+        specifier: ^19.2.0
+        version: 19.2.0(react@18.2.0)
       '@radix-ui/react-menubar':
         specifier: ^1.0.3
         version: 1.0.3(@types/react-dom@18.2.4)(@types/react@18.2.6)(react-dom@18.2.0)(react@18.2.0)
@@ -2558,6 +2561,15 @@ packages:
       picocolors: 1.0.0
       tslib: 2.5.1
     dev: false
+
+  /@primer/octicons-react@19.2.0(react@18.2.0):
+    resolution: {integrity: sha512-cqjqCmrMrFr2TUVXcUmpjfMPAxK4XA2PizU8preVtLnxi2LMX8cDBSQ0RaAAsXFSvtoC5G1xT20oxUn32P+cUA==}
+    engines: {node: '>=8'}
+    peerDependencies:
+      react: '>=16.3'
+    dependencies:
+      react: 18.2.0
+    dev: true
 
   /@radix-ui/number@1.0.0:
     resolution: {integrity: sha512-Ofwh/1HX69ZfJRiRBMTy7rgjAzHmwe4kW9C9Y99HTRUcYLUuVT0KESFj15rPjRgKJs20GPq8Bm5aEDJ8DuA3vA==}

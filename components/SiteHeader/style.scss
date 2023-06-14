@@ -1,5 +1,5 @@
 .site-header {
-  @apply h-14 py-2 px-4 flex items-center fixed top-0 left-0 w-full z-10 gap-4 font-sans transition-all;
+  @apply h-14 py-2 px-4 flex items-center fixed top-0 left-0 w-full z-10 gap-4 font-sans transition-all pointer-events-none;
 
   font-size: 14px;
 
@@ -46,6 +46,10 @@
         }
       }
     }
+  }
+
+  > * {
+    @apply pointer-events-auto;
   }
 
   .site-header-item {

@@ -23,6 +23,7 @@
     "pnpm": "~8"
   },
   "devDependencies": {
+    "@primer/octicons-react": "^19.2.0",
     "@radix-ui/react-menubar": "^1.0.3",
     "@radix-ui/react-tooltip": "^1.0.5",
     "@types/bcrypt": "^5.0.0",

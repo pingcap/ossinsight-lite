@@ -1,0 +1,22 @@
+
+.site-fork-me {
+  @apply flex gap-2 text-white absolute z-10 right-0 top-0 items-center justify-center px-24 py-1 select-none cursor-pointer;
+  font-size: 14px;
+  background: linear-gradient(46.24deg, #9F6F38 44.8%, #9D2D2D 141.2%);
+  transform-origin: center center;
+  transform: rotate(45deg) translate3d(30%, -150%, 0);
+
+  &::before, &::after {
+    @apply absolute left-0 w-full border-b-2 border-white border-dashed;
+  }
+
+  &::before {
+    content: ' ';
+    top: 2px;
+  }
+
+  &::after {
+    content: ' ';
+    bottom: 2px;
+  }
+}

@@ -1,5 +1,6 @@
 'use client';
-import { DashboardMenuItems } from '@/components/SiteHeader/DashboardMenuItems';
+import { AddWidget } from '@/components/SiteHeader/AddWidget';
+import DownloadLayoutJson from '@/components/SiteHeader/DownloadLayoutJson';
 import { MenuDashboardItem } from '@/components/SiteHeader/MenuDashboardItem';
 import { SQLEditorButton } from '@/components/SiteHeader/SQLEditorButton';
 import { UserMenuItems } from '@/components/SiteHeader/UserMenuItems';
@@ -21,10 +22,11 @@ export function SiteHeader ({ dashboardNames }: SiteHeaderProps) {
         <span className="site-title">
           {`${cu.login}'s Dashboard`}
         </span>
+        <DownloadLayoutJson />
         <MenuDashboardItem dashboardNames={dashboardNames} />
         <SQLEditorButton />
         <span className="spacer" />
-        <DashboardMenuItems />
+        <AddWidget />
         <UserMenuItems />
       </header>
     </Menubar.Root>
