@@ -81,7 +81,7 @@ function Dashboard () {
 
   return (
     <div className={clsx('dashboard', { compact })}>
-      <GridGuideCanvas rows={rows} breakpoint={breakpoint ?? 'lg'} editing={editing} />
+      <GridGuideCanvas rows={rows} cols={cols[breakpoint ?? 'lg']} rowHeight={rowHeight} editing={editing} />
       <ResponsiveGridLayout
         ref={ref}
         className={clsx('grid-layout', { editing, compact })}
