@@ -1,9 +1,10 @@
 'use client';
+import { ModalContext } from '@/app/@modal/(all)/context';
 import EditWidgetInstance from '@/components/EditWidgetInstance';
 import { useInitialLoadLibraryItems, useLibraryItemField, useUpdateLibraryItem } from '@/store/features/library';
 import clientOnly from '@/utils/clientOnly';
 import { LibraryItem } from '@/utils/types/config';
-import { useCallback } from 'react';
+import { useCallback, useContext } from 'react';
 import { useStore } from 'react-redux';
 
 export interface EditWidgetProps {
@@ -15,6 +16,8 @@ function EditWidget ({ id, item }: EditWidgetProps) {
   useInitialLoadLibraryItems(useStore(), item ? [item] : []);
   const { name, props: { showBorder, ...props } } = useLibraryItemField(id, ({ name, props }) => ({ name, props }));
   const updateLibraryItem = useUpdateLibraryItem();
+  const { useCompactMode } = useContext(ModalContext);
+  useCompactMode(!name.startsWith('db/sql'));
 
   return (
     <EditWidgetInstance

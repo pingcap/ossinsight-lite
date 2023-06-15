@@ -5,7 +5,7 @@ const DialogLayout = dynamic(() => import('@/components/pages/modal/DialogLayout
 
 export default function ({ children }: any) {
   return (
-    <DialogLayout>
+    <DialogLayout compact>
       {children}
     </DialogLayout>
   );
