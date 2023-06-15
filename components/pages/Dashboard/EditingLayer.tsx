@@ -21,11 +21,12 @@ export interface EditLayerProps {
   id: string;
   movable?: boolean;
 
+  deletable?: boolean;
   onDelete: () => void;
   DeleteIcon: ComponentType<SVGAttributes<SVGSVGElement>>
 }
 
-export function EditingLayer ({ id, movable = true, onDelete, DeleteIcon }: EditLayerProps) {
+export function EditingLayer ({ id, movable = true, deletable = true, onDelete, DeleteIcon }: EditLayerProps) {
   const router = useRouter();
   const { name, isPrivate } = useLibraryItemField(id, ({ name, visibility }) => ({
     name,
@@ -78,12 +79,12 @@ export function EditingLayer ({ id, movable = true, onDelete, DeleteIcon }: Edit
           data-layer-item
           items={(
             <>
-              <MenuItem
+              {deletable && (<MenuItem
                 id="delete"
                 text={<DeleteIcon className="text-red-500" />}
                 action={onDelete}
                 order={10000}
-              />
+              />)}
               {authenticated && duplicable && (
                 <MenuItem
                   id="duplicate"

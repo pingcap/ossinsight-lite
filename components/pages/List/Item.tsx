@@ -4,6 +4,7 @@ import WidgetPreview from '@/components/WidgetPreview';
 import LoadingIndicator from '@/packages/ui/components/loading-indicator/Icon';
 import dashboards from '@/store/features/dashboards';
 import library from '@/store/features/library';
+import { useWidget } from '@/store/features/widgets';
 import { LibraryItem } from '@/utils/types/config';
 import TrashIcon from 'bootstrap-icons/icons/trash.svg';
 import { Suspense, useCallback } from 'react';
@@ -12,6 +13,8 @@ import { useDispatch } from 'react-redux';
 export default function Item ({ item: { name, id, props: { showBorder, ...props }, referencedDashboards = [] } }: { item: LibraryItem }) {
   const dispatch = useDispatch();
   const confirm = useConfirm();
+
+  const widget = useWidget(name);
 
   const deleteLibraryItem = useCallback((id: string) => {
     confirm({
@@ -56,6 +59,7 @@ export default function Item ({ item: { name, id, props: { showBorder, ...props 
           <EditingLayer
             id={id ?? name}
             movable={false}
+            deletable={widget.deletable !== false}
             onDelete={() => handleDelete(id ?? name)}
             DeleteIcon={TrashIcon}
           />
