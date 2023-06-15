@@ -90,17 +90,32 @@ export function getLibraryItem (sql: SqlInterface, id: string) {
 }
 
 export function getLibraryItems (sql: SqlInterface) {
-  return sql<{ id: string, widget_name: string, properties: object, visibility: 'public' | 'private' }>`
-      SELECT id, widget_name, properties, visibility
-      FROM library_items
+  return sql<{ id: string, widget_name: string, properties: object, visibility: 'public' | 'private', dashboards: string[] }>`
+      SELECT id,
+             widget_name,
+             li.properties                                                                    AS properties,
+             visibility,
+             IF(COUNT(di.dashboard_name) = 0, JSON_ARRAY(), JSON_ARRAYAGG(di.dashboard_name)) AS dashboards
+      FROM library_items li
+               LEFT JOIN dashboard_items di ON li.id = di.item_id
+      GROUP BY 1, 2, 3, 4
   `;
 }
 
 export function getPublicLibraryItems (sql: SqlInterface) {
-  return sql<{ id: string, widget_name: string, properties: object, visibility: 'public' | 'private' }>`
-      SELECT id, widget_name, properties, visibility
-      FROM library_items
-      WHERE visibility = 'public'
+  return sql<{ id: string, widget_name: string, properties: object, visibility: 'public' | 'private', dashboards: string[] }>`
+      SELECT id,
+             widget_name,
+             li.properties                                                                    AS properties,
+             li.visibility                                                                    AS visibility,
+             IF(COUNT(di.dashboard_name) = 0, JSON_ARRAY(), JSON_ARRAYAGG(di.dashboard_name)) AS dashboards
+      FROM library_items li
+               LEFT JOIN dashboard_items di ON li.id = di.item_id
+               LEFT JOIN dashboards d ON d.name = di.dashboard_name
+      WHERE li.visibility = 'public'
+        AND d.visibility = 'public'
+      GROUP BY 1, 2, 3, 4
+
   `;
 }
 

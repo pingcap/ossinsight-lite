@@ -1,8 +1,11 @@
 import { DashboardContext } from '@/components/pages/Dashboard/context';
 import { EditingLayer } from '@/components/pages/Dashboard/EditingLayer';
 import ExploreLayer from '@/components/pages/Dashboard/ExploreLayer';
+import useRefCallback from '@/packages/ui/hooks/ref-callback';
+import { useDeleteDashboardItem } from '@/store/features/dashboards';
 import { useLibraryItemField } from '@/store/features/library';
 import { useWidget } from '@/store/features/widgets';
+import CloseIcon from 'bootstrap-icons/icons/x.svg';
 import clsx from 'clsx';
 import { forwardRef, ReactElement, useContext } from 'react';
 import { WidgetCoordinator } from './WidgetCoordinator';
@@ -24,7 +27,12 @@ export const WidgetComponent = forwardRef<HTMLDivElement, WidgetComponentProps>(
   }));
 
   const { showBorder, ...props } = itemProps;
-  const widget = useWidget(name);
+
+  const deleteDashboardItem = useDeleteDashboardItem();
+
+  const deleteAction = useRefCallback(() => {
+    deleteDashboardItem(id);
+  });
 
   el = <WidgetCoordinator name={name} _id={id} props={{ ...props, className: clsx('w-full h-full', props.className) }} ref={ref} />;
 
@@ -34,6 +42,8 @@ export const WidgetComponent = forwardRef<HTMLDivElement, WidgetComponentProps>(
         {el}
         <EditingLayer
           id={id}
+          onDelete={deleteAction}
+          DeleteIcon={CloseIcon}
         />
       </>
     );

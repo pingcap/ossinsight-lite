@@ -103,6 +103,7 @@ export async function getLibrary (readonly: boolean) {
           name: item.widget_name,
           props: item.properties,
           visibility: item.visibility,
+          referencedDashboards: item.dashboards,
         };
       });
     });

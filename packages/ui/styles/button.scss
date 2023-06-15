@@ -45,6 +45,22 @@
     }
   }
 
+  &-yellow {
+    @apply text-yellow-500;
+
+    &:not(.btn-link) {
+      @apply bg-yellow-50;
+
+      &:hover, &:active {
+        @apply bg-yellow-100;
+      }
+    }
+
+    &:hover, &:active {
+      @apply text-yellow-600;
+    }
+  }
+
   &-sm {
     @apply py-1;
   }

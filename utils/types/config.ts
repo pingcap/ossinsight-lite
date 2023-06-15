@@ -17,6 +17,9 @@ export type LibraryItem = {
   name: string
   props: LibraryItemProps
   visibility?: 'public' | 'private'
+
+  // admin page only
+  referencedDashboards?: string[]
 }
 
 export type ItemReference = {

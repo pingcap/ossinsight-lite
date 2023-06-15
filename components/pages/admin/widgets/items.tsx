@@ -1,21 +1,27 @@
 'use client';
-import { addLibraryItemAction } from '@/actions/widgets';
 import Section from '@/components/pages/List/Section';
+import { useInitialLoadLibraryItems } from '@/store/features/library';
+import { State } from '@/store/store';
 import clientOnly from '@/utils/clientOnly';
 import { LibraryItem } from '@/utils/types/config';
-import { groupItemsByCategory } from '@/utils/widgets';
-import { Suspense, use } from 'react';
+import { Suspense } from 'react';
+import { shallowEqual, useSelector, useStore } from 'react-redux';
 
-function Items ({ items }: { items: LibraryItem[] }) {
-  const groups = groupItemsByCategory(items);
+function Items ({ items: serverItems }: { items: LibraryItem[] }) {
+  useInitialLoadLibraryItems(useStore(), serverItems, true);
+
+  const categories = useSelector<State, string[]>(({ library, widgets }) => {
+    const categories = new Set(Object.values(library.items).map(item => widgets.resolved[item.name]?.category).filter(Boolean));
+    return [...categories].sort();
+  }, shallowEqual);
 
   return (
     <>
-      {Object.entries(groups).map(([name, items]) => (
+      {categories.map((name) => (
         <section key={name} className="mt-8">
           <h2 className="text-lg">{name}</h2>
           <Suspense>
-            <Section name={name} items={items} onAdd={addLibraryItemAction} />
+            <Section name={name} />
           </Suspense>
         </section>
       ))}

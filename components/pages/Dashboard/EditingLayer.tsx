@@ -13,16 +13,19 @@ import store from '@/store/store';
 import { getConfigurable, getDuplicable } from '@/utils/widgets';
 import EyeSlashIcon from 'bootstrap-icons/icons/eye-slash.svg';
 import EyeIcon from 'bootstrap-icons/icons/eye.svg';
-import CloseIcon from 'bootstrap-icons/icons/x.svg';
+import clsx from 'clsx';
 import { useRouter } from 'next/navigation';
-import { useMemo } from 'react';
+import { ComponentType, SVGAttributes, useMemo } from 'react';
 
 export interface EditLayerProps {
   id: string;
+  movable?: boolean;
+
+  onDelete: () => void;
+  DeleteIcon: ComponentType<SVGAttributes<SVGSVGElement>>
 }
 
-export function EditingLayer ({ id }: EditLayerProps) {
-  const deleteDashboardItem = useDeleteDashboardItem();
+export function EditingLayer ({ id, movable = true, onDelete, DeleteIcon }: EditLayerProps) {
   const router = useRouter();
   const { name, isPrivate } = useLibraryItemField(id, ({ name, visibility }) => ({
     name,
@@ -51,12 +54,7 @@ export function EditingLayer ({ id }: EditLayerProps) {
     });
   });
 
-  const deleteAction = useRefCallback(() => {
-    deleteDashboardItem(id);
-  });
-
   const handleDuplicate = useRefCallback(() => {
-
     duplicateItem(id);
   });
 
@@ -73,7 +71,7 @@ export function EditingLayer ({ id }: EditLayerProps) {
   });
 
   return (
-    <div className="widget-layer editing-layer">
+    <div className={clsx("widget-layer editing-layer", { movable })}>
       <div className="widget-toolbar-container">
         <ToolbarMenu
           className="widget-toolbar"
@@ -82,8 +80,8 @@ export function EditingLayer ({ id }: EditLayerProps) {
             <>
               <MenuItem
                 id="delete"
-                text={<CloseIcon className="text-red-500" />}
-                action={deleteAction}
+                text={<DeleteIcon className="text-red-500" />}
+                action={onDelete}
                 order={10000}
               />
               {authenticated && duplicable && (
@@ -135,25 +133,30 @@ function duplicateItem (id: string, props?: (props: any) => any) {
   const { library, dashboards } = store.getState();
 
   const item = library.items[id];
-  if (!dashboards.current) {
-    return;
-  }
-  const dashboard = dashboards.dashboards[dashboards.current];
-  const oldItem = dashboard.items[id];
-  if (dashboard && item && oldItem) {
+
+  if (item) {
     const prev = item;
     const prevProps = cloneJson(prev.props);
     const newItem = {
       id: `${prev.name}-${Math.round(Date.now() / 1000)}`,
       name: prev.name,
       props: cloneJson(props?.(prevProps) ?? prevProps),
+      visibility: prev.visibility,
     };
-    const newReference = {
-      id: newItem.id,
-      layout: cloneJson(oldItem.layout),
-    };
+
     store.dispatch(libraryFeature.actions.add({ item: newItem }));
-    store.dispatch(dashboardsFeature.actions.add({ item: newReference }));
+
+    if (dashboards.current) {
+      const dashboard = dashboards.dashboards[dashboards.current];
+      if (dashboard) {
+        const oldItem = dashboard.items[id];
+        const newReference = {
+          id: newItem.id,
+          layout: cloneJson(oldItem.layout),
+        };
+        store.dispatch(dashboardsFeature.actions.add({ item: newReference }));
+      }
+    }
   }
 }
 

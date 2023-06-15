@@ -3,6 +3,7 @@ import Items from '@/components/pages/admin/widgets/items';
 
 export default async function Page () {
   const items = await getLibrary(false);
+  console.log(items);
 
   return (
     <div className="container m-auto py-4">

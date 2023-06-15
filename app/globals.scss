@@ -31,11 +31,18 @@
     @apply z-20 bg-white p-2;
     overflow-y: auto;
 
-    max-height: 85vh;
-    max-width: calc(100vw - 16px);
-    min-width: 600px;
-    height: 100%;
-    width: min-content;
+    &:not(.compact) {
+      max-height: 85vh;
+      max-width: calc(100vw - 16px);
+      min-width: 600px;
+      height: 100%;
+      width: min-content;
+    }
+
+    &.compact {
+      @apply max-w-screen-sm p-4;
+    }
+
     position: fixed;
     top: 50%;
     left: 50%;
