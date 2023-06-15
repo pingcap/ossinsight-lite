@@ -10,6 +10,7 @@ import { useSelector, useStore } from 'react-redux';
 export type LibraryState = {
   items: Record<string, LibraryItem>
   pendingItems: Record<string, Promise<void>>
+  deletedItems: Record<string, boolean>
   errorItems: Record<string, unknown>
   commands: LibraryItemCommand[]
   recording: boolean
@@ -20,12 +21,13 @@ const library = createSlice({
   initialState: () => ({
     items: {},
     pendingItems: {},
+    deletedItems: {},
     errorItems: {},
     commands: [],
     recording: true,
   } as LibraryState),
   reducers: {
-    load ({ items }, { payload: { library, restoreCommands = [] } }: { payload: { library: LibraryItem[], restoreCommands?: Command[] } }) {
+    load ({ items, deletedItems }, { payload: { library, restoreCommands = [] } }: { payload: { library: LibraryItem[], restoreCommands?: Command[] } }) {
       library.forEach(item => {
         const id = item.id ?? item.name;
         items[id] ??= item;
@@ -39,6 +41,7 @@ const library = createSlice({
             break;
           case 'delete-library-item':
             delete items[command.id];
+            deletedItems[command.id] = true;
             break;
           default:
             break;
@@ -82,9 +85,10 @@ const library = createSlice({
         addInternal(item);
       }
     },
-    delete ({ items, commands, recording }, { payload: { id } }: { payload: { id: string } }) {
+    delete ({ items, deletedItems, commands, recording }, { payload: { id } }: { payload: { id: string } }) {
       if (items[id]) {
         delete items[id];
+        deletedItems[id] = true;
         if (recording) {
           commands.push({
             type: 'delete-library-item',
@@ -140,11 +144,15 @@ const library = createSlice({
   },
 });
 
-let promise = new Promise(() => {});
+const DELETED_PROMISE = new Promise(() => {});
 
 export function useLibraryItemField<T> (id: string, select: (item: LibraryItem) => T) {
   const store: Store = useStore();
   return useSelector<{ library: LibraryState }, T>(state => {
+    const deleted = state.library.deletedItems[id];
+    if (deleted) {
+      throw DELETED_PROMISE;
+    }
     const item = state.library.items[id];
     if (item) {
       return select(item);
@@ -171,6 +179,7 @@ export function useAddLibraryItem () {
           ...widget?.defaultProps,
           ...item.props,
         },
+        visibility: 'public',
       },
     }));
   }, []);
@@ -201,6 +210,7 @@ export function useInitialLoadLibraryItems (store: Store, items: LibraryItem[], 
 }
 
 function scheduleLoadLibraryItem (store: Store, id: string): Promise<void> {
+  console.trace('schedule');
   const libraryState = store.getState().library;
   const pendingItem = libraryState.pendingItems[id];
   if (!!pendingItem) {

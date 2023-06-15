@@ -1,3 +1,4 @@
+'use client';
 import * as RuiTooltip from '@radix-ui/react-tooltip';
 import { ReactElement, ReactNode } from 'react';
 

@@ -1,12 +1,19 @@
 'use client';
 
+import ConfirmDialog from '@/components/ConfirmDialog';
 import { StoreProvider } from '@/store/provider';
-import { ReactNode } from 'react';
+import dynamic from 'next/dynamic';
+import React, { ReactNode } from 'react';
+
+const SavingIndicator = dynamic(() => import('@/components/pages/Dashboard/SavingIndicator'), { ssr: false });
 
 export default function App ({ children }: { children: ReactNode }) {
   return (
     <StoreProvider>
-      {children}
+      <SavingIndicator />
+      <ConfirmDialog>
+        {children}
+      </ConfirmDialog>
     </StoreProvider>
   );
 }

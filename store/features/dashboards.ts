@@ -119,6 +119,20 @@ const dashboards = createSlice({
         addInternal(item);
       }
     },
+    deleteLibraryItems ({ commands, recording, dashboards }, { payload: { id }}: { payload: { id: string }}) {
+      Object.entries(dashboards).forEach(([name, dashboard]) => {
+        if (dashboard.items[id]) {
+          delete dashboard.items[id];
+          if (recording) {
+            commands.push({
+              type: 'delete-dashboard-item',
+              dashboard: name,
+              id,
+            })
+          }
+        }
+      })
+    },
     delete ({ current, commands, recording, dashboards }, { payload: { id } }: { payload: { id: string } }) {
       if (!current) {
         console.warn(`Current dashboard not set.`);

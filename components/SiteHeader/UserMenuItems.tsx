@@ -11,7 +11,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useContext, useTransition } from 'react';
 
-export function UserMenuItems () {
+export function UserMenuItems ({ contentGroup }: { contentGroup: string }) {
   const router = useRouter();
   const { refetch, data, isLoading } = authApi.useReloadQuery();
   const { exitEditing } = useContext(DashboardContext);
@@ -32,9 +32,9 @@ export function UserMenuItems () {
   if (data?.authenticated) {
     return (
       <>
-        <Link className="site-header-item" href="/admin/dashboards" prefetch={false}>
+        {contentGroup !== 'admin' && <Link className="site-header-item" href="/admin/dashboards" prefetch={false}>
           <GearIcon />
-        </Link>
+        </Link>}
         <button className="site-header-item" onClick={() => startTransition(() => {
           return logout().then(async () => {
             exitEditing();

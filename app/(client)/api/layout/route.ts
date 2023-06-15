@@ -1,7 +1,6 @@
 import { merge } from '@/core/commands';
 import { getDatabaseUri, withConnection } from '@/utils/mysql';
 import { ADMIN_DATABASE_NAME } from '@/utils/server/auth';
-import { revalidatePath } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST (req: NextRequest) {
@@ -58,7 +57,8 @@ export async function POST (req: NextRequest) {
       }
     });
     success = true;
-  } catch {
+  } catch (e) {
+    console.error(e);
     success = false;
   }
 

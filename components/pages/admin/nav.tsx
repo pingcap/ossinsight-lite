@@ -1,63 +1,97 @@
 'use client';
 
 import { startAppStateLoadingTransition } from '@/core/bind-client';
-import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import { useRouter, useSelectedLayoutSegments } from 'next/navigation';
 
-const navs = [
+type NavItem = {
+  key: string
+  title: string
+  href: string
+  public: boolean
+  group: string
+}
+
+const navs: NavItem[] = [
   {
-    key: 'repositories',
-    title: 'Tracking Repos',
-    href: '/admin/repositories',
+    key: 'widgets',
+    title: 'Widgets',
+    href: '/admin/widgets',
     public: false,
+    group: 'Management',
   },
   {
     key: 'dashboards',
     title: 'Dashboards',
     href: '/admin/dashboards',
     public: false,
+    group: 'Management',
   },
   {
-    key: 'widgets',
-    title: 'Widgets',
-    href: '/admin/widgets',
+    key: 'repositories',
+    title: 'Watching Repos',
+    href: '/admin/repositories',
     public: false,
+    group: 'Management',
   },
   {
     key: 'import',
     title: 'Import layout',
     href: '/admin/import',
     public: false,
+    group: 'Management',
   },
   {
     key: 'account',
     title: 'Account',
     href: '/admin/account',
     public: false,
+    group: 'Settings',
   },
   {
     key: 'status',
     title: 'Status',
     href: '/status',
     public: true,
+    group: 'Settings',
   },
-] as const;
+];
+
+const groups = navs.reduce((groups, item) => {
+  const gi = groups.findIndex(group => group.group === item.group);
+  if (gi !== -1) {
+    groups[gi].items.push(item);
+  } else {
+    groups.push({
+      group: item.group,
+      items: [item],
+    });
+  }
+  return groups;
+}, [] as {
+  group: string
+  items: NavItem[]
+}[]);
 
 export default function Nav () {
   const [first] = useSelectedLayoutSegments();
   const router = useRouter();
 
   return (
-    <NavigationMenu.Root orientation="vertical" className="nav-menu">
-      <NavigationMenu.List>
-        {navs.map(nav => (
-          <NavigationMenu.Item key={nav.key}>
-            <NavigationMenu.Link className="cursor-pointer" onSelect={() => startAppStateLoadingTransition(() => router.push(nav.href))} active={first === nav.key}>
-              {nav.title}
-            </NavigationMenu.Link>
-          </NavigationMenu.Item>
-        ))}
-      </NavigationMenu.List>
-    </NavigationMenu.Root>
+    <menu className="nav-menu">
+      {groups.map(({ group, items }) => [
+          <h6 key={`group-${group}`} className="nav-menu-group-title">{group}</h6>,
+          <ul key={`group-items-${group}`}>
+            {items.map(nav => (
+              <li className="nav-menu-item" key={nav.key} data-active={first === nav.key}>
+                <span className="indicator" />
+                <button className="cursor-pointer" onClick={() => startAppStateLoadingTransition(() => router.push(nav.href))}>
+                  {nav.title}
+                </button>
+              </li>
+            ))}
+          </ul>,
+        ],
+      )}
+    </menu>
   );
 }

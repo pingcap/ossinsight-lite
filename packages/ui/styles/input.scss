@@ -1,12 +1,16 @@
 .text-input {
   @apply border-gray-300 text-primary text-lg px-2 py-0.5 outline-none focus:border-gray-950 transition-colors;
 
-  &:not(.text-input-underline) {
+  &:not(.text-input-underline, .text-input-borderless) {
     @apply border rounded;
   }
 
   &-underline {
     @apply border-b;
+  }
+
+  &-borderless {
+    @apply p-0;
   }
 
   &::placeholder {

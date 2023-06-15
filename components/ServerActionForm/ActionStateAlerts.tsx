@@ -4,7 +4,7 @@ import { ActionPending } from '@/components/ServerActionForm/ActionPending';
 import { ActionSucceed } from '@/components/ServerActionForm/ActionSucceed';
 import { ReactNode } from 'react';
 
-export interface ActionStateProps {
+export interface ActionStateAlertsProps {
   pending?: {
     title?: ReactNode
     message?: ReactNode
@@ -15,7 +15,7 @@ export interface ActionStateProps {
   };
 }
 
-export function ActionStateAlerts ({ success, pending }: ActionStateProps) {
+export function ActionStateAlerts ({ success, pending }: ActionStateAlertsProps) {
   return (
     <>
       <ActionError />

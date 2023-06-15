@@ -2,6 +2,7 @@
 import './style.scss';
 
 export * from './ServerActionForm';
+export * from './ActionState';
 export * from './ActionError';
 export * from './ActionSucceed';
 export * from './ActionPending';

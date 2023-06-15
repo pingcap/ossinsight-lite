@@ -1,29 +1,30 @@
 'use client';
 import { addDashboardAction, deleteDashboardAction, toggleDashboardVisibilityAction } from '@/actions/widgets';
-import { ActionStateAlerts, Button, FormControl, Input, ServerActionForm } from '@/components/ServerActionForm';
+import { ActionState, ActionStateAlerts, FormControl, Input, ServerActionForm } from '@/components/ServerActionForm';
+import Tooltip from '@/components/Tooltip';
 import LoadingIndicator from '@ossinsight-lite/ui/components/loading-indicator';
 import EyeSlashIcon from 'bootstrap-icons/icons/eye-slash.svg';
 import EyeIcon from 'bootstrap-icons/icons/eye.svg';
+import PlusIcon from 'bootstrap-icons/icons/plus.svg';
 import TrashIcon from 'bootstrap-icons/icons/trash.svg';
 import { useTransition } from 'react';
 
 export const AddDashboardForm = function NewTrackingRepoForm () {
   return (
-    <section className="mt-4">
-      <h2>Create new dashboard</h2>
-      <ServerActionForm action={addDashboardAction}>
-        <ActionStateAlerts
-          success={{ title: 'New dashboard created' }}
-          pending={{ title: 'Creating dashboard', message: 'Please don\'t leave this page.' }}
-        />
-        <FormControl label="Dashboard name" name="name">
-          <Input name="name" />
-        </FormControl>
-        <div className="form-control">
-          <Button type="submit">Create Dashboard</Button>
-        </div>
-      </ServerActionForm>
-    </section>
+    <ServerActionForm action={addDashboardAction} className="in-list flex items-center justify-between gap-2 column w-full">
+      <FormControl name="name">
+        <Input name="name" className="text-input-borderless" placeholder="New dashboard" minLength={1} />
+      </FormControl>
+      <div className="form-control">
+        <ActionState>
+          {(pending) => (
+            <button className="btn btn-link" type="submit" disabled={pending}>
+              {pending ? <LoadingIndicator /> : <PlusIcon width={18} height={18} />}
+            </button>
+          )}
+        </ActionState>
+      </div>
+    </ServerActionForm>
   );
 };
 
@@ -32,7 +33,7 @@ export const DeleteDashboardButton = function ({ name }: { name: string }) {
 
   return (
     <button
-      className="btn btn-red"
+      className="btn btn-sm btn-link btn-red"
       onClick={() => startTransition(() => deleteDashboardAction(name))}
       disabled={isPending}
     >
@@ -46,12 +47,14 @@ export const ChangeVisibleButton = function ({ name, visibility }: { name: strin
   const isPrivate = visibility !== 'public';
 
   return (
-    <button
-      className="btn btn-link"
-      onClick={() => startTransition(() => toggleDashboardVisibilityAction(name, visibility))}
-      disabled={isPending}
-    >
-      {isPending ? <LoadingIndicator /> : isPrivate ? <EyeSlashIcon /> : <EyeIcon className="text-green-500" />}
-    </button>
+    <Tooltip label="Change visibility">
+      <button
+        className="btn btn-sm btn-link"
+        onClick={() => startTransition(() => toggleDashboardVisibilityAction(name, visibility))}
+        disabled={isPending}
+      >
+        {isPending ? <LoadingIndicator /> : isPrivate ? <EyeSlashIcon /> : <EyeIcon className="text-green-500" />}
+      </button>
+    </Tooltip>
   );
 };

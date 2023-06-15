@@ -43,7 +43,11 @@
     @apply absolute left-0 top-0 w-full h-full z-10 flex flex-col pointer-events-none;
 
     &.editing-layer {
-      @apply cursor-move pointer-events-auto;
+      @apply pointer-events-auto;
+
+      &.movable {
+        @apply cursor-move;
+      }
     }
   }
 

@@ -1,6 +1,8 @@
 .ossl-admin {
   font-family: -apple-system, system, sans-serif;
 
+  background-color: #FEFBF9;
+
   @apply text-gray-900;
 
   h2 {
@@ -12,19 +14,46 @@
   }
 
   .nav-menu {
-    li {
-      @apply flex items-center;
+    ul + .nav-menu-group-title {
+      @apply border-t;
+      margin-top: 16px;
+      padding-top: 16px;
     }
 
-    a {
-      @apply inline-block w-full p-2 transition-colors font-bold text-gray-400 border-gray-400;
+    .nav-menu-group-title {
+      @apply text-xs font-bold text-gray-400;
+      padding-left: 16px;
+      margin-bottom: 6px;
+    }
 
-      &:focus, &:hover {
-        @apply text-gray-500 bg-gray-200 bg-opacity-70 outline-none;
+    .nav-menu-item {
+      @apply flex items-stretch;
+
+      .indicator {
+        @apply block bg-orange-600 opacity-0 transition-colors;
+        margin-right: 2px;
+        min-width: 6px;
+        max-width: 6px;
+        border-radius: 3px;
       }
 
-      &[data-active] {
-        @apply text-gray-900 border-r-2 bg-gray-200;
+      button {
+        @apply inline-block w-full p-2 transition-colors font-bold text-secondary rounded text-left;
+        font-size: 16px;
+
+        &:focus, &:hover {
+          @apply text-primary bg-orange-50 bg-opacity-70 outline-none;
+        }
+      }
+
+      &[data-active=true] {
+        .indicator {
+          @apply opacity-100;
+        }
+
+        button {
+          @apply text-gray-950 bg-orange-50;
+        }
       }
     }
   }

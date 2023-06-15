@@ -6,6 +6,7 @@ import './style.scss';
 
 export type SelectProps<T> = {
   className?: string
+  name?: string
   style?: CSSProperties
   options: T[]
   value: T | null
@@ -19,7 +20,7 @@ export type SelectProps<T> = {
 }
 
 // TODO: <select hidden> ref for standard html forms
-export function Select<T> ({ forwardedButtonRef, value, onValueChange, options, getDisabled, getKey, renderOptionLabel, renderOption, selectItemProps, className, style }: SelectProps<T>) {
+export function Select<T> ({ forwardedButtonRef, value, onValueChange, options, getDisabled, getKey, renderOptionLabel, renderOption, selectItemProps, className, style, name }: SelectProps<T>) {
   const [selected, setSelected] = useState(() => getKey(value));
   const [open, setOpen] = useState(false);
 
@@ -40,7 +41,7 @@ export function Select<T> ({ forwardedButtonRef, value, onValueChange, options, 
   });
 
   return (
-    <RuiSelect.Root value={selected} onValueChange={handleValueChange} open={open} onOpenChange={setOpen}>
+    <RuiSelect.Root value={selected} onValueChange={handleValueChange} open={open} onOpenChange={setOpen} name={name}>
       <RuiSelect.Trigger className={clsx('select-trigger', className)} style={style} ref={forwardedButtonRef}>
         {renderOptionLabel?.(value, open) ?? renderOption(value, false)}
       </RuiSelect.Trigger>

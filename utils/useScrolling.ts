@@ -5,7 +5,6 @@ export function useWindowVerticallyScrolling () {
 
   useEffect(() => {
     const listener = () => {
-      console.log(window.scrollY > 0);
       setScrolling(window.scrollY > 0);
     };
 
