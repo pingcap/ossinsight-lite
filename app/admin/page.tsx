@@ -1,7 +1,5 @@
 import { redirect } from 'next/navigation';
 
 export default function () {
-  redirect('/');
+  redirect('/admin/dashboards');
 }
-
-export const dynamic = 'force-dynamic';
