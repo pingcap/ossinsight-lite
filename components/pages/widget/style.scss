@@ -1,0 +1,10 @@
+.share-tabs-list {
+  @apply flex gap-2 text-sm text-primary mb-2 items-center;
+
+  &-item {
+    @apply flex items-center p-2 gap-2 border-b-2 border-transparent transition-all text-secondary;
+    &[data-state=active] {
+      @apply border-gray-700 text-primary;
+    }
+  }
+}
