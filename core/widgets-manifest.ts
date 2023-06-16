@@ -12,6 +12,7 @@ type WidgetModuleMeta<P = any> = {
   duplicable?: boolean,
   styleConfigurable?: ConfigurableStyle[],
   shareable?: boolean;
+  deletable?: boolean;
   /** @deprecated */
   configurablePropsOverwrite?: Partial<P>,
   /** @deprecated */
