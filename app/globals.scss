@@ -41,6 +41,12 @@
 
     &.compact {
       @apply max-w-screen-sm p-4;
+
+      min-width: 320px;
+
+      @media screen and (min-width: 500px) {
+        min-width: 480px;
+      }
     }
 
     position: fixed;

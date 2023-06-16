@@ -16,7 +16,9 @@ export default function CreateWidget ({ name }: CreateWidgetProps) {
   const addLibraryItem = useAddLibraryItem();
   const addDashboardItem = useAddDashboardItem();
   const widget = useResolvedWidget(name);
-  const { closeModal } = useContext(ModalContext);
+  const { closeModal, useCompactMode } = useContext(ModalContext);
+
+  useCompactMode(!name.startsWith('db/sql'));
 
   const [{ showBorder, ...props }, setProps] = useState(() => {
     return deepCloneJson({ ...widget.defaultProps });

@@ -4,7 +4,7 @@ import { CSSProperties, SetStateAction, useCallback } from 'react';
 
 type Style = Pick<CSSProperties, 'backgroundColor' | 'justifyContent' | 'alignItems' | 'textAlign'>
 
-export function useStyle<K extends keyof Style> (id: string, prop: K, defaultValue: Style[K]) {
+export function useStyle<K extends keyof Style, D extends Style[K]> (id: string, prop: K, defaultValue: D) {
   const value = useLibraryItemField(id, ({ props }) => props.style?.[prop]);
   const updateLibraryItem = useUpdateLibraryItem();
 

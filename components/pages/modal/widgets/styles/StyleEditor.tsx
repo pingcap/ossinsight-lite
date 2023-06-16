@@ -43,15 +43,14 @@ export default function StyleEditor ({ id, item }: { id: string, item?: LibraryI
   }, [widget]);
 
   return (
-    <div>
-      <div className="flex gap-2">
+    <div className='p-2'>
+      <h2 className='mb-4 text-lg text-primary font-bold'>Widget style configuration</h2>
+      <div className="flex flex-col gap-2 text-sm">
         {configurableStyles.backgroundColor && <BackgroundColorPicker id={id} />}
-        <div className="p-2 flex flex-col gap-2">
-          {configurableStyles.showBorder && <Border id={id} />}
-          {configurableStyles.textAlign && <TextAlignSwitch id={id} />}
-          {configurableStyles.justifyContent && <JustifyContentSwitch title={'Horizontal Align'} icons={horizontal} id={id} />}
-          {configurableStyles.alignItems && <AlignItemsSwitch title={'Vertical Align'} icons={vertical} id={id} />}
-        </div>
+        {configurableStyles.showBorder && <Border id={id} />}
+        {configurableStyles.textAlign && <TextAlignSwitch id={id} />}
+        {configurableStyles.justifyContent && <JustifyContentSwitch title={'Horizontal Align'} icons={horizontal} id={id} />}
+        {configurableStyles.alignItems && <AlignItemsSwitch title={'Vertical Align'} icons={vertical} id={id} />}
       </div>
       <div className="border-b my-4" />
       <WidgetCoordinator name={name} props={{ ...props, className: clsx(props.className, 'h-[320px] rounded-lg border font-sketch') }} _id={id} />

@@ -9,8 +9,10 @@ import { useContext } from 'react';
 
 export default function Page ({ searchParams }: any) {
   const redirectUri = decodeURIComponent(searchParams.redirect_uri) ?? '/';
-  const { closeModal } = useContext(ModalContext);
+  const { closeModal, useCompactMode } = useContext(ModalContext);
   const [trigger, state] = authApi.useLazyReloadQuery();
+
+  useCompactMode(true);
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center">
