@@ -5,6 +5,7 @@ import cu from '@ossinsight-lite/widgets/src/widgets/oh-my-github/curr_user.sql?
 import * as RuiAvatar from '@radix-ui/react-avatar';
 import * as Menubar from '@radix-ui/react-menubar';
 import BoxArrowRightIcon from 'bootstrap-icons/icons/box-arrow-right.svg';
+import ChevronDownIcon from 'bootstrap-icons/icons/chevron-down.svg';
 import GearIcon from 'bootstrap-icons/icons/gear.svg';
 import { useRouter } from 'next/navigation';
 import { startTransition, useCallback, useContext } from 'react';
@@ -25,6 +26,7 @@ export default function UserAvatar ({ contentGroup }: { contentGroup: string }) 
           <RuiAvatar.Image src={cu.avatar_url} className="w-full h-full" />
           <RuiAvatar.Fallback className="w-full h-full bg-gray-200" />
         </RuiAvatar.Root>
+        <ChevronDownIcon className="site-header-item-indicator" width={12} height={12} />
       </Menubar.Trigger>
       <Menubar.Portal>
         <Menubar.Content className="site-header-submenu-content" sideOffset={2} align="end">

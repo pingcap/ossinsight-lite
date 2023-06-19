@@ -1,5 +1,4 @@
 'use client';
-import ExitAdminItem from '@/components/SiteHeader/ExitAdminItem';
 import { useWindowVerticallyScrolling } from '@/utils/useScrolling';
 import cu from '@ossinsight-lite/widgets/src/widgets/oh-my-github/curr_user.sql?unique';
 import * as Menubar from '@radix-ui/react-menubar';
@@ -24,9 +23,6 @@ export function SiteHeader ({ dashboardNames = [], contentGroup = 'dashboard' }:
         <span className="site-title">
           {`${cu.login}'s ${contentGroup === 'admin' ? 'Admin' : 'Dashboard'}`}
         </span>
-        {contentGroup === 'admin' && (
-          <ExitAdminItem />
-        )}
         {contentGroup === 'dashboard' && (
           <>
             <DownloadLayoutJson />

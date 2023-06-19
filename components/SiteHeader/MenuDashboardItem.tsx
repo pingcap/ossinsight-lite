@@ -18,7 +18,7 @@ export function MenuDashboardItem ({ dashboardNames }: { dashboardNames: string[
       <Menubar.Menu>
         <Menubar.Trigger className="site-dashboard-select">
           {dashboardName}
-          <ChevronDownIcon className="site-dashboard-select-indicator" width={12} height={12} />
+          <ChevronDownIcon className="site-header-item-indicator" width={12} height={12} />
           <Menubar.Portal>
             <Menubar.Content className="site-header-submenu-content" sideOffset={2} align="end">
               {dashboardNames.map((name) => (
