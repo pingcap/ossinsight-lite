@@ -56,6 +56,9 @@ function WidgetPreviewWithDetails ({ item }: WidgetPreviewWithDetailsProps) {
             <Code code={createHtmlCode(title, url)} language={'html'} />
           </RuiTabs.Content>
         </RuiTabs.Root>
+        <div className='mt-2 text-xs text-secondary'>
+          Use it wherever you want！e.g. GitHub README.md, personal websites.
+        </div>
       </div>
     </div>
   );
