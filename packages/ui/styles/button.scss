@@ -5,6 +5,10 @@
     @apply px-1 text-secondary hover:text-primary;
   }
 
+  &-no-px {
+    @apply px-0;
+  }
+
   &-default {
     @apply text-primary bg-gray-100;
 

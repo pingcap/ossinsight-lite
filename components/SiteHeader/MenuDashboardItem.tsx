@@ -1,8 +1,8 @@
 import { DashboardContext } from '@/components/pages/Dashboard/context';
 import * as Menubar from '@radix-ui/react-menubar';
 import ChevronDownIcon from 'bootstrap-icons/icons/chevron-down.svg';
-import LockIcon from 'bootstrap-icons/icons/lock-fill.svg';
-import UnlockIcon from 'bootstrap-icons/icons/unlock-fill.svg';
+import LockIcon from 'bootstrap-icons/icons/pencil.svg';
+import UnlockIcon from 'bootstrap-icons/icons/check.svg';
 import clsx from 'clsx';
 import Link from 'next/link';
 import { useContext } from 'react';
@@ -18,7 +18,7 @@ export function MenuDashboardItem ({ dashboardNames }: { dashboardNames: string[
       <Menubar.Menu>
         <Menubar.Trigger className="site-dashboard-select">
           {dashboardName}
-          <ChevronDownIcon className="site-dashboard-select-indicator" width={12} height={12} />
+          <ChevronDownIcon className="site-header-item-indicator" width={12} height={12} />
           <Menubar.Portal>
             <Menubar.Content className="site-header-submenu-content" sideOffset={2} align="end">
               {dashboardNames.map((name) => (

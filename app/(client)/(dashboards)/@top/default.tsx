@@ -6,5 +6,5 @@ import React from 'react';
 export default async function Default () {
   const names = await getDashboardNames(isReadonly());
 
-  return <SiteHeader dashboardNames={names} />;
+  return <SiteHeader contentGroup='dashboard' dashboardNames={names} />;
 }

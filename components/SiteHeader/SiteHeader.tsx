@@ -21,7 +21,7 @@ export function SiteHeader ({ dashboardNames = [], contentGroup = 'dashboard' }:
     <Menubar.Root asChild>
       <header className={clsx('site-header', { scrolling })}>
         <span className="site-title">
-          {`${cu.login}'s Dashboard`}
+          {`${cu.login}'s ${contentGroup === 'admin' ? 'Admin' : 'Dashboard'}`}
         </span>
         {contentGroup === 'dashboard' && (
           <>
