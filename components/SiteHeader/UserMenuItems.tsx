@@ -54,5 +54,7 @@ export function UserMenuItems ({ contentGroup }: { contentGroup: string }) {
         </Link>
       </>
     );
+  } else {
+    return null;
   }
 }
