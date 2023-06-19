@@ -1,12 +1,9 @@
-import { logout } from '@/actions/auth';
 import { DashboardContext } from '@/components/pages/Dashboard/context';
+import UserAvatar from '@/components/SiteHeader/UserAvatar';
 import { isDemoSite } from '@/components/SiteHeader/utils';
 import LoadingIndicator from '@/packages/ui/components/loading-indicator';
 import authApi from '@/store/features/auth';
 import BoxArrowInRightIcon from 'bootstrap-icons/icons/box-arrow-in-right.svg';
-
-import BoxArrowRightIcon from 'bootstrap-icons/icons/box-arrow-right.svg';
-import GearIcon from 'bootstrap-icons/icons/gear.svg';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useContext, useTransition } from 'react';
@@ -18,7 +15,7 @@ export function UserMenuItems ({ contentGroup }: { contentGroup: string }) {
   const [transitioning, startTransition] = useTransition();
 
   if (isDemoSite() && !data?.authenticated) {
-    return null;
+    return <span className='block mr-16 site-header-item-optional'></span>;
   }
 
   if (isLoading || transitioning) {
@@ -31,20 +28,7 @@ export function UserMenuItems ({ contentGroup }: { contentGroup: string }) {
 
   if (data?.authenticated) {
     return (
-      <>
-        {contentGroup !== 'admin' && <Link className="site-header-item" href="/admin/dashboards" prefetch={false}>
-          <GearIcon />
-        </Link>}
-        <button className="site-header-item" onClick={() => startTransition(() => {
-          return logout().then(async () => {
-            exitEditing();
-            await refetch();
-            router.refresh();
-          });
-        })}>
-          <BoxArrowRightIcon />
-        </button>
-      </>
+      <UserAvatar contentGroup={contentGroup} />
     );
   } else {
     return (

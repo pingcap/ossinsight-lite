@@ -1,8 +1,8 @@
 import { DashboardContext } from '@/components/pages/Dashboard/context';
 import * as Menubar from '@radix-ui/react-menubar';
 import ChevronDownIcon from 'bootstrap-icons/icons/chevron-down.svg';
-import LockIcon from 'bootstrap-icons/icons/lock-fill.svg';
-import UnlockIcon from 'bootstrap-icons/icons/unlock-fill.svg';
+import LockIcon from 'bootstrap-icons/icons/pencil.svg';
+import UnlockIcon from 'bootstrap-icons/icons/check.svg';
 import clsx from 'clsx';
 import Link from 'next/link';
 import { useContext } from 'react';

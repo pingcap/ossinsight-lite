@@ -2,6 +2,7 @@ import AppLoading from '@/components/AppLoading';
 import AppLoadingIndicator from '@/components/AppLoadingIndicator';
 import App from '@/core/App';
 import '@/static/CabinSketch.css';
+import cu from '@ossinsight-lite/widgets/src/widgets/oh-my-github/curr_user.sql?unique';
 import Script from 'next/script';
 import { Suspense } from 'react';
 import './client-entry';
@@ -20,6 +21,8 @@ export default function RootLayout ({
         j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
       })(window,document,'script','dataLayer','GTM-PRPSXZS');`}</Script>
+      <link rel="icon" type='image/png' href={cu.avatar_url} />
+      <title>{cu.login}'s Dashboard | OSSInsight lite</title>
     </head>
     <body>
     <noscript>

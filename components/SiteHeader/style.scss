@@ -53,7 +53,7 @@
   }
 
   .site-header-item {
-    @apply flex gap-2 items-center text-gray-700;
+    @apply flex gap-2 items-center text-gray-700 outline-none;
 
     &:hover, &:focus {
       @apply text-gray-950;
@@ -93,7 +93,7 @@
   }
 
   .menuitem {
-    @apply py-1 px-2 border-l-2 border-transparent transition-all outline-none;
+    @apply py-1 px-4 border-l-2 border-transparent transition-all outline-none flex items-center gap-2;
 
     &.active {
       @apply border-gray-950 bg-gray-50;

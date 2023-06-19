@@ -41,6 +41,7 @@
   },
   "dependencies": {
     "@napi-rs/canvas": "^0.1.41",
+    "@radix-ui/react-avatar": "^1.0.3",
     "@radix-ui/react-dialog": "^1.0.3",
     "@radix-ui/react-navigation-menu": "^1.1.2",
     "@radix-ui/react-switch": "^1.0.2",

@@ -46,6 +46,10 @@ export function AddWidget () {
         </span>
         <Menubar.Portal>
           <Menubar.Content className="site-header-submenu-content">
+            <Menubar.Item className="menuitem menuitem-widget" onClick={handleClickNew}>
+              From Saved Widgets
+            </Menubar.Item>
+            {<Menubar.Separator className="menuseparator" />}
             {configurableWidgets.map(({ name, displayName, Icon }, index) => (
               <Menubar.Item
                 className="menuitem menuitem-widget"
@@ -56,10 +60,6 @@ export function AddWidget () {
                 {Icon && <Icon />}
               </Menubar.Item>
             ))}
-            {<Menubar.Separator className="menuseparator" />}
-            <Menubar.Item className="menuitem menuitem-widget" onClick={handleClickNew}>
-              Browse library
-            </Menubar.Item>
           </Menubar.Content>
         </Menubar.Portal>
       </Menubar.Trigger>
