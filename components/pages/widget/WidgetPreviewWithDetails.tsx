@@ -24,16 +24,21 @@ function WidgetPreviewWithDetails ({ item }: WidgetPreviewWithDetailsProps) {
   const { showBorder, ...props } = item.props;
   const pathname = usePathname();
   const url = `${location.origin}${pathname}`;
+  const title = item.props.title ?? 'OSSInsight Lite unnamed widget';
 
   return (
     <div className="flex mx-auto max-w-[480px] flex-col gap-2 justify-center items-stretch p-2 overflow-hidden">
-      <Url title={item.props.title ?? ''} url={url} />
       <div className="w-full min-h-[320px] max-h-[320px] flex-1 flex flex-col">
-        <WidgetPreview id={item.id} name={item.name} props={item.props} />
+        <WidgetPreview id={item.id} name={item.name} props={item.props} noTitle />
       </div>
+      <h2 className='text-xl text-center font-bold text-primary'>Share this widget</h2>
+      <SocialButtons title={title} url={url} />
+      <hr className='my-4' />
+      <Url url={url} />
+      <hr className='my-4' />
       <div className="w-full min-h-[240px] max-h-[240px] flex-1 flex flex-col overflow-hidden">
         <WidgetDetails id={item.id} name={item.name} props={item.props} />
-        <RuiTabs.Root defaultValue="markdown" className="my-4">
+        <RuiTabs.Root defaultValue="markdown">
           <RuiTabs.List className="share-tabs-list">
             <RuiTabs.Trigger className="share-tabs-list-item" value="markdown">
               <MarkdownIcon />
@@ -45,10 +50,10 @@ function WidgetPreviewWithDetails ({ item }: WidgetPreviewWithDetailsProps) {
             </RuiTabs.Trigger>
           </RuiTabs.List>
           <RuiTabs.Content value="markdown" className="relative">
-            <Code code={createMarkdownCode(item.props.title ?? 'OSSInsight Lite unnamed widget', url)} language={'markdown'} />
+            <Code code={createMarkdownCode(title, url)} language={'markdown'} />
           </RuiTabs.Content>
           <RuiTabs.Content value="html" className="relative">
-            <Code code={createHtmlCode(item.props.title ?? 'OSSInsight Lite unnamed widget', url)} language={'html'} />
+            <Code code={createHtmlCode(title, url)} language={'html'} />
           </RuiTabs.Content>
         </RuiTabs.Root>
       </div>
@@ -56,17 +61,25 @@ function WidgetPreviewWithDetails ({ item }: WidgetPreviewWithDetailsProps) {
   );
 }
 
-function Url ({ title, url }: { title: string, url: string }) {
+function Url ({ url }: { url: string }) {
   return (
-    <div className="max-w-[480px] w-full border bg-gray-200 rounded text-sm text-gray-700 px-2 py-1 flex items-center justify-between gap-2">
+    <div className="max-w-[480px] w-full border rounded text-sm text-gray-700 px-2 py-1 flex items-center justify-between gap-2">
       <span className="overflow-hidden text-ellipsis whitespace-nowrap">
         {url}
       </span>
-      <span className="flex gap-2 items-center">
-        <a className="btn btn-sm btn-link" href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`} target="_blank">
-          <TwitterIcon />
-        </a>
+      <span className="flex gap-2 items-center rounded bg-gray-100 border">
+        <CopyButton value={url} />
       </span>
+    </div>
+  );
+}
+
+function SocialButtons ({ title, url }: { title: string, url: string }) {
+  return (
+    <div className='social-section'>
+      <a className="social-circle twitter" href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`} target="_blank">
+        <TwitterIcon width={24} height={24} />
+      </a>
     </div>
   );
 }

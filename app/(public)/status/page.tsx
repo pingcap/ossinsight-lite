@@ -6,12 +6,11 @@ import './style.scss';
 
 export default function () {
   return (
-    <div className="status-page p-4 mx-auto container">
+    <div className="status-page p-4 mx-auto container mt-[56px]">
       <h2>Checklist</h2>
       <EnvironmentStatus />
       <GithubPersonalStatus />
       <GithubRepoStatus />
-      <DefaultMenu />
     </div>
   );
 }

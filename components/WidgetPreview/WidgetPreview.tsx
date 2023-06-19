@@ -12,10 +12,12 @@ export interface WidgetPreviewProps extends LibraryItem {
   name: string;
   props: any;
   className?: string;
+  wrapperClassName?: string;
   onClick?: () => void;
+  noTitle?: boolean;
 }
 
-function WidgetPreview ({ id, name, className, onClick, props }: WidgetPreviewProps) {
+function WidgetPreview ({ id, name, className, onClick, noTitle = false, props, wrapperClassName }: WidgetPreviewProps) {
   const widget = useResolvedWidget(name);
   const { Widget, Icon } = widget;
   const { ref: visibleRef, visible } = useVisible();
@@ -23,11 +25,11 @@ function WidgetPreview ({ id, name, className, onClick, props }: WidgetPreviewPr
 
   return (
     <>
-      <h3 className="text-gray-400 text-sm inline-flex gap-2 items-center">
+      {!noTitle && <h3 className="text-gray-400 text-sm inline-flex gap-2 items-center">
         {Icon && <Icon />}
         {props?.title ?? widget.displayName}
-      </h3>
-      <div className={clsx('flex-1 flex items-stretch overflow-hidden', onClick && 'cursor-pointer')} onClick={onClick}>
+      </h3>}
+      <div className={clsx('flex-1 flex items-stretch overflow-hidden', onClick && 'cursor-pointer', wrapperClassName)} onClick={onClick}>
         <WidgetContext.Provider value={{
           visible,
           props,

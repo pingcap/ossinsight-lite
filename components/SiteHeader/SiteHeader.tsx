@@ -10,7 +10,7 @@ import { SQLEditorButton } from './SQLEditorButton';
 import { UserMenuItems } from './UserMenuItems';
 
 export interface SiteHeaderProps {
-  contentGroup?: 'dashboard' | 'admin';
+  contentGroup?: 'dashboard' | 'admin' | 'public';
   dashboardNames?: string[];
 }
 

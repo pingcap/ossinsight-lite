@@ -46,7 +46,7 @@ export function UserMenuItems ({ contentGroup }: { contentGroup: string }) {
         </button>
       </>
     );
-  } else {
+  } else if (contentGroup !== 'public') {
     return (
       <>
         <Link className="site-header-item" href="/login-modal" prefetch={false}>

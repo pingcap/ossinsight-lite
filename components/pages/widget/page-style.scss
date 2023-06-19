@@ -1,0 +1,29 @@
+.widget-preview-page {
+  @apply w-screen h-screen flex flex-col gap-4 justify-center items-center;
+
+  .widget {
+    @apply relative z-10;
+
+    flex: unset !important;
+    width: min(80vw, 640px);
+    height: min(80vh, 480px);
+  }
+
+  .buttons {
+    @apply flex items-center gap-4 relative z-10;
+  }
+}
+
+.grid-guide {
+  @apply absolute left-0 w-full pointer-events-none z-0;
+
+  background-color: #FEFBF9;
+
+  height: calc(100% + 56px);
+  top: -56px;
+
+  &.compact {
+    height: calc(100% + 112px);
+    top: -112px;
+  }
+}
