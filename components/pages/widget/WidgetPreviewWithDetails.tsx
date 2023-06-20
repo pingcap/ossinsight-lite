@@ -8,6 +8,8 @@ import * as RuiTabs from '@radix-ui/react-tabs';
 import ClipboardCheckIcon from 'bootstrap-icons/icons/clipboard-check-fill.svg';
 import ClipboardIcon from 'bootstrap-icons/icons/clipboard.svg';
 import CodeSlashIcon from 'bootstrap-icons/icons/code-slash.svg';
+import ImageIcon from 'bootstrap-icons/icons/image.svg';
+import LinkIcon from 'bootstrap-icons/icons/link.svg';
 import MarkdownIcon from 'bootstrap-icons/icons/markdown.svg';
 import TwitterIcon from 'bootstrap-icons/icons/twitter.svg';
 import clsx from 'clsx';
@@ -31,11 +33,9 @@ function WidgetPreviewWithDetails ({ item }: WidgetPreviewWithDetailsProps) {
       <div className="w-full min-h-[320px] max-h-[320px] flex-1 flex flex-col">
         <WidgetPreview id={item.id} name={item.name} props={item.props} noTitle />
       </div>
-      <h2 className='text-xl text-center font-bold text-primary'>Share this widget</h2>
+      <h2 className="text-xl text-center font-bold text-primary">Share this widget</h2>
       <SocialButtons title={title} url={url} />
-      <hr className='my-4' />
-      <Url url={url} />
-      <hr className='my-4' />
+      <hr className="my-4" />
       <div className="w-full min-h-[240px] max-h-[240px] flex-1 flex flex-col overflow-hidden">
         <WidgetDetails id={item.id} name={item.name} props={item.props} />
         <RuiTabs.Root defaultValue="markdown">
@@ -48,6 +48,14 @@ function WidgetPreviewWithDetails ({ item }: WidgetPreviewWithDetailsProps) {
               <CodeSlashIcon />
               HTML
             </RuiTabs.Trigger>
+            <RuiTabs.Trigger className="share-tabs-list-item" value="url">
+              <LinkIcon />
+              Link
+            </RuiTabs.Trigger>
+            <RuiTabs.Trigger className="share-tabs-list-item" value="img-url">
+              <ImageIcon />
+              Thumbnail Link
+            </RuiTabs.Trigger>
           </RuiTabs.List>
           <RuiTabs.Content value="markdown" className="relative">
             <Code code={createMarkdownCode(title, url)} language={'markdown'} />
@@ -55,8 +63,14 @@ function WidgetPreviewWithDetails ({ item }: WidgetPreviewWithDetailsProps) {
           <RuiTabs.Content value="html" className="relative">
             <Code code={createHtmlCode(title, url)} language={'html'} />
           </RuiTabs.Content>
+          <RuiTabs.Content value="url" className="relative">
+            <Url url={url} />
+          </RuiTabs.Content>
+          <RuiTabs.Content value="img-url" className="relative">
+            <Url url={`${url}/thumbnail.png`} />
+          </RuiTabs.Content>
         </RuiTabs.Root>
-        <div className='mt-2 text-xs text-secondary'>
+        <div className="mt-2 text-xs text-secondary">
           Use it wherever you want！e.g. GitHub README.md, personal websites.
         </div>
       </div>
@@ -79,7 +93,7 @@ function Url ({ url }: { url: string }) {
 
 function SocialButtons ({ title, url }: { title: string, url: string }) {
   return (
-    <div className='social-section'>
+    <div className="social-section">
       <a className="social-circle twitter" href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`} target="_blank">
         <TwitterIcon width={24} height={24} />
       </a>
