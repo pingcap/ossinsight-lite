@@ -1,12 +1,9 @@
-import { authenticatedWarnings, SiteWarnings } from '@/store/common/warnings';
-import authApi from '@/store/features/auth';
+import { SiteWarnings } from '@/store/common/warnings';
 import * as RuiPopover from '@radix-ui/react-popover';
 import WarningIcon from 'bootstrap-icons/icons/exclamation-triangle-fill.svg';
 import Link from 'next/link';
-import { useMemo } from 'react';
 
 export function Warnings ({ warnings }: { warnings: SiteWarnings[] }) {
-  warnings = useFilteredWarnings(warnings);
 
   return (
     <RuiPopover.Root>
@@ -31,18 +28,6 @@ export function Warnings ({ warnings }: { warnings: SiteWarnings[] }) {
   );
 }
 
-function useFilteredWarnings (warnings: SiteWarnings[]) {
-  const { data } = authApi.useReloadQuery();
-
-  return useMemo(() => {
-    if (!data?.authenticated) {
-      return warnings.filter(warning => !authenticatedWarnings.has(warning));
-    } else {
-      return warnings;
-    }
-  }, [warnings, data?.authenticated ?? false]);
-}
-
 function WarningItem ({ warning }: { warning: SiteWarnings }) {
   return (
     <li>
@@ -58,15 +43,6 @@ function getContent (warning: SiteWarnings) {
         <p>
           <strong>Security: </strong>
           <Link href="/admin/account">Reset password</Link> to protect your site.
-        </p>
-      );
-    case SiteWarnings.NEED_RESET_JWT_SECRET:
-      return (
-        <p>
-          <strong>Security: </strong>
-          Change your <code>JWT_SECRET</code> environment variable on vercel to secure your site.
-          <br />
-          See <a href="https://github.com/pingcap/ossinsight-lite/blob/main/docs/setup/secure-your-site.md" target="_blank">Secure your site</a> for more details.
         </p>
       );
   }

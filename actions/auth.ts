@@ -68,10 +68,6 @@ export async function coreLoginAction (form: FormData) {
     warnings.push(SiteWarnings.NEED_RESET_PASSWORD);
   }
 
-  if (process.env.JWT_SECRET === 'ossinsight-lite') {
-    warnings.push(SiteWarnings.NEED_RESET_JWT_SECRET);
-  }
-
   if (warnings.length > 0) {
     cookies().set({
       name: 'ossinsight-lite.site-warnings',
