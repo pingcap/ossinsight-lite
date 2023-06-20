@@ -1,6 +1,5 @@
 'use client';
 
-import { ModalContext } from '@/app/@modal/(all)/context';
 import WidgetDetails from '@/components/WidgetDetails/WidgetDetails';
 import WidgetPreview from '@/components/WidgetPreview/WidgetPreview';
 import clientOnly from '@/utils/clientOnly';
@@ -16,7 +15,7 @@ import TwitterIcon from 'bootstrap-icons/icons/twitter.svg';
 import clsx from 'clsx';
 import { usePathname } from 'next/navigation';
 import { Highlight, themes } from 'prism-react-renderer';
-import { useCallback, useContext, useState } from 'react';
+import { useCallback, useState } from 'react';
 import './style.scss';
 
 interface WidgetPreviewWithDetailsProps {
@@ -24,8 +23,6 @@ interface WidgetPreviewWithDetailsProps {
 }
 
 function WidgetPreviewWithDetails ({ item }: WidgetPreviewWithDetailsProps) {
-  const { useCompactMode } = useContext(ModalContext);
-  useCompactMode(true);
   const { showBorder, ...props } = item.props;
   const pathname = usePathname();
   const url = `${location.origin}${pathname}`;
