@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { isDev } from './packages/ui/utils/dev';
 
 export async function middleware (req: NextRequest) {
-  if (req.nextUrl.pathname === '/api/auth') {
+  if (req.nextUrl.pathname === '/api/auth' || req.nextUrl.pathname === '/api/refresh-token') {
     return NextResponse.next();
   }
   let allowAnonymous = anonymousAuth(req);
@@ -56,9 +56,6 @@ function anonymousAuth (req: NextRequest) {
     return true;
   }
   if (req.nextUrl.pathname === 'layout.json') {
-    return true;
-  }
-  if (/^\/api\/(refresh-token|auth)$/.test(req.nextUrl.pathname)) {
     return true;
   }
   return false;

@@ -1,18 +1,21 @@
+import { getSiteConfig } from '@/actions/site';
 import { isDev } from '@/packages/ui/utils/dev';
 import { sign } from '@/utils/jwt';
-import { isReadonly } from '@/utils/server/auth';
+import { sql } from '@/utils/mysql';
 import { ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET (req: NextRequest) {
-  if (isReadonly(req)) {
+  const auth = req.cookies.get('auth');
+  if (!auth) {
     return new NextResponse();
   }
+  const siteConfig = await getSiteConfig(sql);
 
   cookies().set({
     name: 'auth',
-    value: await sign({ sub: 'admin' }),
+    value: await sign({ sub: 'admin' }, siteConfig['security.jwt.secret']),
     path: '/',
     secure: !isDev,
     sameSite: 'strict',
