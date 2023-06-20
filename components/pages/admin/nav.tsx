@@ -35,7 +35,7 @@ const navs: NavItem[] = [
   },
   {
     key: 'import',
-    title: 'Import layout',
+    title: 'Import template',
     href: '/admin/import',
     public: false,
     group: 'Management',

@@ -1,5 +1,6 @@
 import CloudDownloadIcon from '@/components/icons/cloud-download.svg';
 import Tooltip from '@/components/Tooltip';
+import cu from '@ossinsight-lite/widgets/src/widgets/oh-my-github/curr_user.sql?unique';
 
 export default function DownloadLayoutJson () {
   return (
@@ -11,7 +12,7 @@ export default function DownloadLayoutJson () {
         </>
       )}
     >
-      <a className="site-header-item site-header-item-optional" href="/api/layout.json" download="layout.json">
+      <a className="site-header-item site-header-item-optional" href="/api/template.json">
         <CloudDownloadIcon />
       </a>
     </Tooltip>

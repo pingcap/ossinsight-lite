@@ -18,7 +18,7 @@ export async function addLibraryItem (item: LibraryItem) {
 }
 
 export async function uploadLayoutJsonAction (formData: FormData) {
-  const config: LayoutConfigV1 = JSON.parse(await (formData.get('layout.json') as File).text());
+  const config: LayoutConfigV1 = JSON.parse(await (formData.get('template.json') as File).text());
 
   if (config.version === 1) {
     Object.values(config.dashboard).forEach(dashboard => {
@@ -39,7 +39,7 @@ export async function uploadLayoutJsonAction (formData: FormData) {
   }
 
   if (config.version !== 2) {
-    throw new Error(`Unsupported layout.json version ${config.version}`);
+    throw new Error(`Unsupported template.json version ${config.version}`);
   }
 
   await withConnection(getDatabaseUri(ADMIN_DATABASE_NAME), async ({ sql, beginTransaction }) => {
