@@ -41,7 +41,7 @@ Suppose you want to know "the programming language you use most", you can:
 
 1. 📋 **Share your awesome dashboard**: Copy URL of the dashboard and share it to your social platform like Twitter, Facebook etc.
 2. 🔗 **Share the individual widget**: Click the share button in the top-right corner of widget to get the share link.
-3. 📥 **Share the layout of dashboard**: Click the download button on bottom-right corner to download the `layout.json`.
+3. 📥 **Share the layout of dashboard**: Click the download button on bottom-right corner to download the `template.json`.
 
 ## 👣 Track repos that interest you
 

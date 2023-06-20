@@ -54,7 +54,7 @@ function anonymousAuth (req: NextRequest) {
   if (/^\/widgets\/[^/]+(?:\/(?:thumbnail\.png)?)?$/.test(req.nextUrl.pathname)) {
     return true;
   }
-  if (req.nextUrl.pathname === 'layout.json') {
+  if (req.nextUrl.pathname === 'template.json') {
     return true;
   }
   if (/^\/api\/(refresh-token|auth)$/.test(req.nextUrl.pathname)) {
