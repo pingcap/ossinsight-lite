@@ -15,7 +15,6 @@
 
 | Name                       | Required | Description                                                                             |
 |----------------------------|----------|-----------------------------------------------------------------------------------------|
-| `JWT_SECRET`               | NO       | Not required but recommended to set to protect your personal data.                      |
 | `JWT_MAX_AGE`              | NO       | Max age (seconds) of your login credential. Defaults to 1800.                           |
 | `SITE_INITIAL_PASSWORD`    | NO       | Your site initial password, only works for the first deployment. Default to `tidbcloud` |
 | `GITHUB_PERSONAL_DATABASE` | NO       | Must be same with github secret `GITHUB_PERSONAL_DATABASE`                              |

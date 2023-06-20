@@ -1,4 +1,5 @@
 'use server';
+import { getSiteConfig } from '@/actions/site';
 import { isDev } from '@/packages/ui/utils/dev';
 import { sign } from '@/utils/jwt';
 import { getDatabaseUri, SqlExecutor, withConnection } from '@/utils/mysql';
@@ -44,15 +45,16 @@ export async function coreLoginAction (form: FormData) {
     throw new Error('Bad credential');
   }
 
-  await withConnection(getDatabaseUri(ADMIN_DATABASE_NAME), async conn => {
+  const siteConfig = await withConnection(getDatabaseUri(ADMIN_DATABASE_NAME), async conn => {
     if (!await authenticate(conn, username, password)) {
       throw new Error('Bad credential');
     }
+    return await getSiteConfig(conn.sql);
   });
 
   cookies().set({
     name: 'auth',
-    value: await sign({ sub: username }),
+    value: await sign({ sub: username }, siteConfig['security.jwt.secret']),
     path: '/',
     secure: !isDev,
     sameSite: 'strict',

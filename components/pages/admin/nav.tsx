@@ -41,6 +41,13 @@ const navs: NavItem[] = [
     group: 'Management',
   },
   {
+    key: 'security',
+    title: 'Security',
+    href: '/admin/security',
+    public: false,
+    group: 'Settings',
+  },
+  {
     key: 'account',
     title: 'Account',
     href: '/admin/account',

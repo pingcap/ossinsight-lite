@@ -1,20 +1,9 @@
-import { ChangePasswordForm, DeleteReadonlyDatabaseUserForm, RecreateReadonlyDatabaseUserForm } from '@/components/pages/admin/account/forms';
-import ReadonlyUserStatus from '@/components/pages/admin/account/ReadonlyUserStatus';
-import LoadingIndicator from '@/packages/ui/components/loading-indicator/Icon';
-import { Suspense } from 'react';
+import { ChangePasswordForm } from '@/components/pages/admin/account/forms';
 
 export default async function () {
   return (
     <>
       <ChangePasswordForm />
-      <RecreateReadonlyDatabaseUserForm
-        status={
-          <Suspense fallback={<LoadingIndicator className="inline-block" />}>
-            <ReadonlyUserStatus />
-          </Suspense>
-        }
-      />
-      <DeleteReadonlyDatabaseUserForm />
     </>
   );
 }

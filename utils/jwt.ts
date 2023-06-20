@@ -3,7 +3,6 @@ import { decodeBase64Url, encodeBase64Url } from '@/utils/encoding/base64';
 import { nonce } from '@/utils/nonce';
 
 const JWT_MAX_AGE = parseInt(process.env.JWT_MAX_AGE || '1800');
-const JWT_SECRET = process.env.JWT_SECRET || 'ossinsight-lite';
 
 export type JwtHeader = {
   alg: 'HS256'
@@ -30,7 +29,7 @@ export type SignedJwt<T> = Jwt<T> & {
 
 const textEncoder = new TextEncoder();
 
-export async function sign<T> ({ ...claims }: JwtClaims & T): Promise<string> {
+export async function sign<T> ({ ...claims }: JwtClaims & T, secret: string): Promise<string> {
   const header: JwtHeader = {
     alg: 'HS256',
     typ: 'JWT',
@@ -42,13 +41,13 @@ export async function sign<T> ({ ...claims }: JwtClaims & T): Promise<string> {
   claims.nonce = nonce(8);
 
   const data = `${encodeBase64Url(JSON.stringify(header))}.${encodeBase64Url(JSON.stringify(claims))}`;
-  const key = await crypto.subtle.importKey('raw', textEncoder.encode(JWT_SECRET), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+  const key = await crypto.subtle.importKey('raw', textEncoder.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
   const signature = await crypto.subtle.sign('HMAC', key, textEncoder.encode(data));
 
   return toString({ header, claims, signature });
 }
 
-export async function verify<T> (jwt: string): Promise<JwtClaims & T> {
+export async function verify<T> (jwt: string, secret: string): Promise<JwtClaims & T> {
   const { header, claims, signature } = await fromString(jwt);
 
   if (header.alg !== 'HS256') {
@@ -60,7 +59,7 @@ export async function verify<T> (jwt: string): Promise<JwtClaims & T> {
   }
 
   const data = jwt.slice(0, jwt.lastIndexOf('.'));
-  const key = await crypto.subtle.importKey('raw', textEncoder.encode(JWT_SECRET), { name: 'HMAC', hash: 'SHA-256' }, false, ['verify']);
+  const key = await crypto.subtle.importKey('raw', textEncoder.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['verify']);
   const verified = await crypto.subtle.verify({ name: 'HMAC', hash: 'SHA-256' }, key, signature, textEncoder.encode(data));
   if (!verified) {
     throw new Error('Invalid signature');

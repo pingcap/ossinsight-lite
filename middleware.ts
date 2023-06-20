@@ -1,22 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verify } from './utils/jwt';
+import { isDev } from './packages/ui/utils/dev';
 
 export async function middleware (req: NextRequest) {
+  if (req.nextUrl.pathname === '/api/auth' || req.nextUrl.pathname === '/api/refresh-token') {
+    return NextResponse.next();
+  }
   let allowAnonymous = anonymousAuth(req);
   if (allowAnonymous || needAuth(req)) {
     let authenticated = false;
     let error: string | undefined = undefined;
     try {
-      const auth = req.cookies.get('auth')?.value;
-      if (auth) {
-        const res = await verify(auth);
-        if (res.exp) {
-          if (res.exp * 1000 < Date.now()) {
-            throw new Error('JWT Token expired.');
-          }
+      const res = await fetch(`${isDev ? 'http' : 'https'}://${isDev ? 'localhost:3000' : process.env.VERCEL_URL}/api/auth`, {
+        headers: {
+          Cookie: req.cookies.toString()
         }
-        authenticated = true;
-      }
+      });
+
+      const { authenticated: authenticatedResp } = await res.json();
+      authenticated = authenticatedResp || false;
     } catch (e) {
       error = String(e?.message ?? e);
     }
@@ -55,9 +56,6 @@ function anonymousAuth (req: NextRequest) {
     return true;
   }
   if (req.nextUrl.pathname === 'template.json') {
-    return true;
-  }
-  if (/^\/api\/(refresh-token|auth)$/.test(req.nextUrl.pathname)) {
     return true;
   }
   return false;
