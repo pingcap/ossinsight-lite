@@ -7,7 +7,7 @@ export default async function Page ({ params }: any) {
 
   return (
     <>
-      <DashboardServer name={params.name} readonly={readonly} />
+      <DashboardServer name={decodeURIComponent(params.name)} readonly={readonly} />
     </>
   );
 }
