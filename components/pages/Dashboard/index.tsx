@@ -4,6 +4,7 @@ import { DashboardContext } from '@/components/pages/Dashboard/context';
 import DebugInfo from '@/components/pages/Dashboard/DebugInfo';
 import GridGuideCanvas from '@/components/pages/Dashboard/GridGuideCanvas';
 import { use_unstableBreakpoint, useRowHeight } from '@/components/pages/Dashboard/hooks';
+import { SiteFooter } from '@/components/SiteFooter';
 import LoadingIndicator from '@/packages/ui/components/loading-indicator';
 import useRefCallback from '@/packages/ui/hooks/ref-callback';
 import { withSuspense } from '@/packages/ui/utils/suspense';
@@ -11,7 +12,7 @@ import { useDashboardItemIds, useSwitchCurrentDashboard } from '@/store/features
 import store from '@/store/store';
 import { breakpoints, cols, getFirstBreakpointValue, PersistedLayout } from '@/utils/layout';
 import clsx from 'clsx';
-import { ForwardedRef, memo, useContext, useMemo, useRef, useState } from 'react';
+import React, { ForwardedRef, memo, useContext, useMemo, useRef, useState } from 'react';
 import { Layout, Layouts, Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import { WidgetComponent } from './createWidgetComponent';
@@ -105,6 +106,7 @@ function Dashboard () {
         {children}
       </ResponsiveGridLayout>
       <DebugInfo />
+      <SiteFooter />
     </div>
   );
 }

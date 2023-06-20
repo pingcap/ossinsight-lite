@@ -1,0 +1,10 @@
+.site-footer {
+  @apply absolute bottom-1 text-xs text-gray-400 w-max z-10 select-none;
+
+  left: 50%;
+  transform: translateX(-50%);
+
+  a {
+    @apply underline font-bold;
+  }
+}
