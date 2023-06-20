@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import React from 'react';
 
 export default async function DashboardLayout ({ top, children }: any) {
+
   return (
     <>
       {children}

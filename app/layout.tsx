@@ -21,7 +21,7 @@ export default function RootLayout ({
         j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
       })(window,document,'script','dataLayer','GTM-PRPSXZS');`}</Script>
-      <link rel="icon" type='image/png' href={cu.avatar_url} />
+      <link rel="icon" type="image/png" href={cu.avatar_url} />
       <title>{cu.login}'s Dashboard | OSSInsight lite</title>
     </head>
     <body>

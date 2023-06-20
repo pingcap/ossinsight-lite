@@ -1,6 +1,8 @@
 'use client';
 
 import ConfirmDialog from '@/components/ConfirmDialog';
+import { SiteStatus } from '@/components/SiteStatus';
+import { InitialWarnings } from '@/core/InitialWarnings';
 import { StoreProvider } from '@/store/provider';
 import dynamic from 'next/dynamic';
 import React, { ReactNode } from 'react';
@@ -13,7 +15,10 @@ export default function App ({ children }: { children: ReactNode }) {
       <SavingIndicator />
       <ConfirmDialog>
         {children}
+        <SiteStatus />
       </ConfirmDialog>
+
+      <InitialWarnings />
     </StoreProvider>
   );
 }

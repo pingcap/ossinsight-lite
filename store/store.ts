@@ -1,5 +1,6 @@
 import { isDev } from '@/packages/ui/utils/dev';
 import draft from '@/store/features/draft';
+import notifications from '@/store/features/notifications';
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import app from './features/app';
@@ -16,6 +17,7 @@ const store = configureStore({
     [library.name]: library.reducer,
     [dashboards.name]: dashboards.reducer,
     [draft.name]: draft.reducer,
+    [notifications.name]: notifications.reducer,
   },
   devTools: isDev,
   middleware: (getDefaultMiddleware) =>
