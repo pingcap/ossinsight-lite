@@ -1,6 +1,5 @@
 import { PADDING } from '@/components/pages/Dashboard/utils';
 import { useSize } from '@/packages/ui/utils/size';
-import { BreakpointName, cols as breakpointCols } from '@/utils/layout';
 import clsx from 'clsx';
 import { useEffect, useRef } from 'react';
 
@@ -13,7 +12,7 @@ export interface GridGuideCanvasProps {
 
 const pixelRatio = typeof devicePixelRatio === 'undefined' ? 1 : devicePixelRatio;
 
-export default function GridGuideCanvas ({ editing, cols, rows, rowHeight, }: GridGuideCanvasProps) {
+export default function GridGuideCanvas ({ editing, cols, rows, rowHeight }: GridGuideCanvasProps) {
   const ref = useRef<HTMLCanvasElement>(null);
   const { size: { width, height }, ref: containerRef } = useSize<HTMLDivElement>();
   const compact = rowHeight < 56;

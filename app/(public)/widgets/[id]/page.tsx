@@ -1,5 +1,6 @@
 import { getLibraryItem } from '@/app/(client)/api/layout/operations';
 import { Unauthorized } from '@/components/Errors';
+import WidgetPreviewPage from '@/components/pages/widget/WidgetPreviewPage';
 import WidgetPreviewWithDetails from '@/components/pages/widget/WidgetPreviewWithDetails';
 import { isReadonly } from '@/utils/server/auth';
 import { Metadata } from 'next';
@@ -24,11 +25,7 @@ export default async function ({ params }: any) {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="p-2 bg-white rounded">
-        <WidgetPreviewWithDetails item={item} />
-      </div>
-    </div>
+    <WidgetPreviewPage item={item} />
   );
 }
 

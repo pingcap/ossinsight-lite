@@ -30,7 +30,7 @@ export function UserMenuItems ({ contentGroup }: { contentGroup: string }) {
     return (
       <UserAvatar contentGroup={contentGroup} />
     );
-  } else {
+  } else if (contentGroup !== 'public') {
     return (
       <>
         <Link className="site-header-item" href="/login-modal" prefetch={false}>
@@ -38,5 +38,7 @@ export function UserMenuItems ({ contentGroup }: { contentGroup: string }) {
         </Link>
       </>
     );
+  } else {
+    return null;
   }
 }

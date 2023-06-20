@@ -8,3 +8,24 @@
     }
   }
 }
+
+.social-section {
+  @apply flex justify-center gap-4 mt-4 w-full;
+
+  .social-circle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 48px;
+    min-height: 48px;
+    max-width: 48px;
+    max-height: 48px;
+    border-radius: 50%;
+
+    &.twitter {
+      background-color: rgba(28, 181, 247, 0.2);
+      color: #1CB5F7;
+    }
+  }
+
+}
