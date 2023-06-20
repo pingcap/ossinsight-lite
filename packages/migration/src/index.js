@@ -51,7 +51,7 @@ async function main() {
       lastName = rows[0].name
       const max_id = parseInt(files[files.length - 1].replace(/^sql\//, '').split('-')[0]);
       if (!(rows[0].order_id <= max_id)) {
-        console.warn(`The migration version maybe too old (source = ${rows[0].order_id}, db = ${max_id}). Update your source code asap.`)
+        console.warn(`The migration version maybe too old (db = ${rows[0].order_id}, source = ${max_id}). Update your source code asap.`)
         process.exit(0);
       }
     }
