@@ -11,13 +11,13 @@ export function SQLEditorButton () {
   const { data: { playground: playgroundEnabled } = { playground: false } } = authApi.useReloadQuery();
 
   const handleClick = useCallback(() => {
-    router.push('/playground');
+    router.push('/query-my-database');
   }, []);
   if (playgroundEnabled) {
     return (
       <button className="site-header-item site-header-item-optional" onClick={handleClick}>
         <TiDBCloudIcon width={16} />
-        <span>
+        <span className='underline'>
           Query my database!
         </span>
       </button>
