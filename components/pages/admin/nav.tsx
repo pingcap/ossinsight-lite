@@ -76,13 +76,15 @@ export default function Nav () {
   const [first] = useSelectedLayoutSegments();
   const router = useRouter();
 
+  const current = decodeURIComponent(first);
+
   return (
     <menu className="nav-menu">
       {groups.map(({ group, items }) => [
           <h6 key={`group-${group}`} className="nav-menu-group-title">{group}</h6>,
           <ul key={`group-items-${group}`}>
             {items.map(nav => (
-              <li className="nav-menu-item" key={nav.key} data-active={first === nav.key}>
+              <li className="nav-menu-item" key={nav.key} data-active={current === nav.key}>
                 <span className="indicator" />
                 <button className="cursor-pointer" onClick={() => startAppStateLoadingTransition(() => router.push(nav.href))}>
                   {nav.title}
