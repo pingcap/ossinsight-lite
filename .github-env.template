@@ -1,4 +1,4 @@
-DATABASE_URL=mysql2://{user}:{password}@{host}:4000
+DATABASE_URL=mysql://{user}:{password}@{host}:4000
 USER_LOGIN=github_login
 
 # Optional
