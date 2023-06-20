@@ -25,7 +25,7 @@ Please follow the steps below to configure the connection information of TiDB cl
 4. In the **Secret** field, enter the value of `DATABASE_URL` of your TiDB Serverless cluster as following format:
 
    ```
-   mysql2://<user>:<password>@<host>:<port>
+   mysql://<user>:<password>@<host>:<port>
    ```
    
    Please use the TiDB Serverless cluster connection information (can be found in the **Connect to** dialog shown in [last step](database.md)) to replace the above `<user>`,`<password>`,`<host>`,`<port>` parts, and please DO NOT type any blank characters.
@@ -47,7 +47,7 @@ Please follow the steps below to configure the connection information of TiDB cl
    The value of `DATABASE_URL` typed in the **Secret** field should be:
 
    ```
-   mysql2://4Budszs5sxiUZ65.root:Us1h2MRraVB4zfpU@gateway01.us-west-2.prod.aws.tidbcloud.com:4000
+   mysql://4Budszs5sxiUZ65.root:Us1h2MRraVB4zfpU@gateway01.us-west-2.prod.aws.tidbcloud.com:4000
    ```
 
    </details>
