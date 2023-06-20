@@ -10,8 +10,8 @@ export interface AxisFieldsProps<Axis extends BaseAxis> {
 
 export default function AxisFields<Axis extends BaseAxis> ({ axis }: AxisFieldsProps<Axis>) {
   return (
-    <fieldset className="p-4 mt-2 border">
-      <legend className="">{axis.toUpperCase()} Axis</legend>
+    <section className="mt-8 w-full overflow-hidden">
+      <h3 className="font-bold mb-2">{axis.toUpperCase()} Axis</h3>
       <Field
         label="Field"
         control={<ColumnSelect />}
@@ -27,7 +27,7 @@ export default function AxisFields<Axis extends BaseAxis> ({ axis }: AxisFieldsP
         control={<AxisTypeSelect />}
         name={`${axis}.type`}
       />
-    </fieldset>
+    </section>
   );
 }
 

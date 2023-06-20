@@ -62,7 +62,7 @@ function Editor ({ defaultSql, defaultDb, sql, currentDb, visualize, forwardedRe
 
   const Visualize = useMemo(() => ({ visualize }: { visualize: VisualizeType }) => {
     return (
-      <Form className="overflow-auto p-2 text-gray-700 max-w-[260px]" values={visualize} onChange={onVisualizeChange}>
+      <Form className="overflow-hidden p-2 text-gray-700 max-w-[260px] horizontal-form-controls" values={visualize} onChange={onVisualizeChange}>
         <Suspense fallback="Loading...">
           <VisualizeConfig {...visualize} />
         </Suspense>
