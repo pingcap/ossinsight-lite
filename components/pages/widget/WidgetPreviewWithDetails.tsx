@@ -1,5 +1,6 @@
 'use client';
 
+import { ModalContext } from '@/app/@modal/(all)/context';
 import WidgetDetails from '@/components/WidgetDetails/WidgetDetails';
 import WidgetPreview from '@/components/WidgetPreview/WidgetPreview';
 import clientOnly from '@/utils/clientOnly';
@@ -15,7 +16,7 @@ import TwitterIcon from 'bootstrap-icons/icons/twitter.svg';
 import clsx from 'clsx';
 import { usePathname } from 'next/navigation';
 import { Highlight, themes } from 'prism-react-renderer';
-import { useCallback, useState } from 'react';
+import { useCallback, useContext, useState } from 'react';
 import './style.scss';
 
 interface WidgetPreviewWithDetailsProps {
@@ -23,20 +24,22 @@ interface WidgetPreviewWithDetailsProps {
 }
 
 function WidgetPreviewWithDetails ({ item }: WidgetPreviewWithDetailsProps) {
+  const { useCompactMode } = useContext(ModalContext);
+  useCompactMode(true);
   const { showBorder, ...props } = item.props;
   const pathname = usePathname();
   const url = `${location.origin}${pathname}`;
   const title = item.props.title ?? 'OSSInsight Lite unnamed widget';
 
   return (
-    <div className="flex mx-auto max-w-[480px] flex-col gap-2 justify-center items-stretch p-2 overflow-hidden">
-      <div className="w-full min-h-[320px] max-h-[320px] flex-1 flex flex-col">
+    <div className="mx-auto max-w-[480px] p-2">
+      <div className="w-full min-h-[320px] max-h-[320px] flex">
         <WidgetPreview id={item.id} name={item.name} props={item.props} noTitle />
       </div>
       <h2 className="text-xl text-center font-bold text-primary">Share this widget</h2>
       <SocialButtons title={title} url={url} />
       <hr className="my-4" />
-      <div className="w-full min-h-[240px] max-h-[240px] flex-1 flex flex-col overflow-hidden">
+      <div className="w-full min-h-[240px] max-h-[240px]">
         <WidgetDetails id={item.id} name={item.name} props={item.props} />
         <RuiTabs.Root defaultValue="markdown">
           <RuiTabs.List className="share-tabs-list">
