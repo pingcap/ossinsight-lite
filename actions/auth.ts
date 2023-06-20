@@ -1,6 +1,7 @@
 'use server';
 import { getSiteConfig } from '@/actions/site';
 import { isDev } from '@/packages/ui/utils/dev';
+import { SiteWarnings } from '@/store/common/warnings';
 import { sign } from '@/utils/jwt';
 import { getDatabaseUri, SqlExecutor, withConnection } from '@/utils/mysql';
 import { ADMIN_DATABASE_NAME, SALT_ROUNDS } from '@/utils/server/auth';
@@ -60,6 +61,29 @@ export async function coreLoginAction (form: FormData) {
     sameSite: 'strict',
     maxAge: parseInt(process.env.JWT_MAX_AGE || '1800') + 300,
   } as ResponseCookie);
+
+  const warnings: SiteWarnings[] = [];
+
+  if (password === 'tidbcloud') {
+    warnings.push(SiteWarnings.NEED_RESET_PASSWORD);
+  }
+
+  if (process.env.JWT_SECRET === 'ossinsight-lite') {
+    warnings.push(SiteWarnings.NEED_RESET_JWT_SECRET);
+  }
+
+  if (warnings.length > 0) {
+    cookies().set({
+      name: 'ossinsight-lite.site-warnings',
+      value: warnings.join(','),
+      path: '/',
+      httpOnly: false,
+      secure: !isDev,
+      sameSite: 'strict',
+    });
+  } else {
+    cookies().delete('ossinsight-lite.site-warnings');
+  }
 
   if (redirectUri) {
     revalidatePath(redirectUri);

@@ -1,0 +1,58 @@
+.site-status {
+  @apply py-1 px-2 flex items-center fixed bottom-0 left-0 w-full z-10 gap-4 font-sans transition-all pointer-events-none;
+}
+
+.status-popper-content {
+  @apply bg-yellow-50 rounded shadow-lg px-2 py-1 text-xs text-yellow-700;
+  transform-origin: var(--radix-popover-content-transform-origin);
+  animation-duration: 0.5s;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+
+  //transition: width .4s cubic-bezier(0.16, 1, 0.3, 1), height .4s cubic-bezier(0.16, 1, 0.3, 1);
+
+  &[data-state="open"] {
+    animation-name: status-popper-show;
+  }
+
+  &[data-state="closed"] {
+    animation-name: status-popper-hide;
+  }
+
+  a {
+    @apply underline;
+  }
+
+  code {
+    @apply rounded text-yellow-800 bg-yellow-200 px-1 py-0.5;
+  }
+
+  li {
+    @apply py-2;
+    &:not(:first-of-type) {
+      @apply border-t border-yellow-200;
+    }
+  }
+}
+
+@keyframes status-popper-show {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
+@keyframes status-popper-hide {
+  to {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
