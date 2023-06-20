@@ -42,13 +42,18 @@ async function main() {
 
   try {
     const [rows] = await conn.execute(`
-        SELECT name, CAST(REGEXP_SUBSTR(name, '\\\\d+') AS UNSIGNED ) AS order_id
+        SELECT name, CAST(REGEXP_SUBSTR(name, '\\\\d+') AS UNSIGNED) AS order_id
         FROM _migrations
         ORDER BY 2 DESC
         LIMIT 1
     `);
     if (rows.length !== 0) {
       lastName = rows[0].name
+      const max_id = parseInt(files[files.length - 1].replace(/^sql\//, '').split('-')[0]);
+      if (!(rows[0].order_id <= max_id)) {
+        console.warn(`The migration version maybe too old (source = ${rows[0].order_id}, db = ${max_id}). Update your source code asap.`)
+        process.exit(0);
+      }
     }
   } catch (e) {
   }
