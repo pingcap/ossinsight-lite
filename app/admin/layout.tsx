@@ -1,7 +1,5 @@
 import Nav from '@/components/pages/admin/nav';
 import { SiteHeader } from '@/components/SiteHeader';
-import ChevronLeftIcon from 'bootstrap-icons/icons/chevron-left.svg';
-import Link from 'next/link';
 import './layout.scss';
 
 export default async function ({ children }: any) {
@@ -11,10 +9,6 @@ export default async function ({ children }: any) {
         <Nav />
       </aside>
       <main className="flex-1 p-2 pt-[64px]">
-        <Link className="btn btn-link btn-no-px" href="/" prefetch={false}>
-          <ChevronLeftIcon />
-          Back to home
-        </Link>
         {children}
         <SiteHeader dashboardNames={[]} contentGroup="admin" />
       </main>
