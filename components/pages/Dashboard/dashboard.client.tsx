@@ -16,7 +16,7 @@ export default function DashboardClient ({ top }: { top: any }) {
   return (
     <DashboardContext.Provider
       value={{
-        dashboardName: name,
+        dashboardName: decodeURIComponent(name),
         editing,
         toggleEditing,
         exitEditing,
