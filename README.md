@@ -8,6 +8,8 @@ Yet another customizable **FREE** github stats dashboard.
 
 Demo: https://ossinsight-lite.vercel.app/
 
+<img width="1440" alt="Default dashboard" src="https://github.com/pingcap/ossinsight-lite/assets/55385323/0eb143bb-abfb-4d31-8bbc-36da87355f2d">
+
 ## Requirements
 
 - **[GitHub](https://github.com.)** account for fork and run your own data pipeline to fetch your GitHub activities.
@@ -40,4 +42,29 @@ configured.
   - manually sync upstream updates if any workflows changed
   - or enable workflow [Sync upstream](.github/workflows/repo-sync.yml) to automatically sync upstream updates, you could set GitHub Action secret `SYNC_GITHUB_TOKEN` to enable auto update workflows. See https://stackoverflow.com/questions/66643917/refusing-to-allow-a-github-app-to-create-or-update-workflow for more
 details.
+
+## Use Case
+
+You can add widgets to **README.md** / **websites** / **reports** / **slides** / **profile** by just 4 steps:
+  1. 🚀 Deploy your own dashboard
+  2. 🔗 Click the share link at the right conner of each widget card
+
+     <img src="https://github.com/pingcap/ossinsight-lite/assets/55385323/c51a2b8e-05f7-4a69-9e0b-414925d6878a" weight="400" />
+     
+  3. 📋 Choose a way to add your widget: Markdown, HTML, Link or use Thumbnail img only
+
+     <img src="https://github.com/pingcap/ossinsight-lite/assets/55385323/128278ad-2b94-421d-8532-41175d73c73c" weight="400" />
+     
+  4. 🤩 Paste and enjoy!
+
+Here are some examples:
+
+| The most used languages| Contribution behavior percentage |
+| ----------- | ----------- |
+|<img src="https://ossinsight-lite.vercel.app/widgets/contribution-most-used-languages/thumbnail.png" height="200" />|<img src="https://ossinsight-lite.vercel.app/widgets/contribution-behavior-percentage/thumbnail.png" height="200" />|
+
+| Contribution monthly| Contribution time distribution |
+| ----------- | ----------- |
+|<img src="https://ossinsight-lite.vercel.app/widgets/contribution-monthly/thumbnail.png" height="200" />|<img src="https://ossinsight-lite.vercel.app/widgets/contribution-time-distribution/thumbnail.png" height="200" />|
+
 
