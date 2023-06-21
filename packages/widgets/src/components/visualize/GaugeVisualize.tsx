@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import AnimatedNumber from 'react-awesome-animated-number';
 import { VisualizeGauge, VisualizeRuntimeProps } from './common';
 
-export default function GaugeVisualize ({ title, result }: VisualizeGauge & VisualizeRuntimeProps) {
+export default function GaugeVisualize ({ title, running, result }: VisualizeGauge & VisualizeRuntimeProps) {
   const value = useMemo(() => {
     if (result) {
       return result.data[0]?.[result.columns[0].name];

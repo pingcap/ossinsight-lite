@@ -98,6 +98,8 @@ export async function POST (req: NextRequest, { params: { name } }: any) {
     return NextResponse.json({
       type: 'ERR_EXEC',
       message: String((e as any)?.message ?? String(e)),
+    }, {
+      status: 400,
     });
   } finally {
     conn.destroy();
