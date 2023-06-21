@@ -59,12 +59,15 @@ You can add widgets to **README.md** / **websites** / **reports** / **slides** /
 
 Here are some examples:
 
-| The most used languages| Contribution behavior percentage |
+| The most used languages | Contribution behavior percentage |
 | ----------- | ----------- |
 |<img src="https://ossinsight-lite.vercel.app/widgets/contribution-most-used-languages/thumbnail.png" height="200" />|<img src="https://ossinsight-lite.vercel.app/widgets/contribution-behavior-percentage/thumbnail.png" height="200" />|
 
-| Contribution monthly| Contribution time distribution |
+| Contribution monthly | Contribution time distribution |
 | ----------- | ----------- |
 |<img src="https://ossinsight-lite.vercel.app/widgets/contribution-monthly/thumbnail.png" height="200" />|<img src="https://ossinsight-lite.vercel.app/widgets/contribution-time-distribution/thumbnail.png" height="200" />|
 
+| Contribution pull request size history | Currently working on |
+| ----------- | ----------- |
+|<img src="https://ossinsight-lite.vercel.app/widgets/contribution-pull-request-size-history/thumbnail.png" height="200" />|<img src="https://ossinsight-lite.vercel.app/widgets/db%2Fsql-1686650509966/thumbnail.png" height="200" />|
 
