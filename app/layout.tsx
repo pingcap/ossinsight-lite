@@ -1,3 +1,4 @@
+import './client-entry';
 import AppLoading from '@/components/AppLoading';
 import AppLoadingIndicator from '@/components/AppLoadingIndicator';
 import App from '@/core/App';
@@ -5,7 +6,6 @@ import '@/static/CabinSketch.css';
 import cu from '@ossinsight-lite/widgets/src/widgets/oh-my-github/curr_user.sql?unique';
 import Script from 'next/script';
 import { Suspense } from 'react';
-import './client-entry';
 import './globals.scss';
 
 export default function RootLayout ({
