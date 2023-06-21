@@ -1,19 +1,17 @@
 import { useFormContext } from '@ossinsight-lite/ui/components/form';
 import useRefCallback from '@ossinsight-lite/ui/hooks/ref-callback';
-import { deepCloneJson } from '../../../../../utils/common';
 import { VisualizeBarChart, VisualizeLineChart } from './common';
 
 export default function SwitchAxisFields () {
-  const { getValues, setValue } = useFormContext<VisualizeLineChart | VisualizeBarChart>();
+  const { onBatchChange } = useFormContext<VisualizeLineChart | VisualizeBarChart>();
 
   const handleSwitchAxis = useRefCallback(() => {
-    const [x, y] = getValues(['x', 'y']);
-
-    const newX = deepCloneJson(y);
-    const newY = deepCloneJson(x);
-
-    setValue('x', newX, { shouldTouch: false, shouldDirty: false, shouldValidate: false });
-    setValue('y', newY, { shouldTouch: true });
+    onBatchChange(draft => {
+      const x = { ...draft.x };
+      const y = { ...draft.y };
+      draft.y = x;
+      draft.x = y;
+    });
   });
 
   return (

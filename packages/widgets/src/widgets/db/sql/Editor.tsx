@@ -4,7 +4,6 @@ import { Form } from '@ossinsight-lite/ui/components/form';
 import LoadingIndicator from '@ossinsight-lite/ui/components/loading-indicator';
 import WidgetContext from '@ossinsight-lite/ui/context/widget';
 import useRefCallback from '@ossinsight-lite/ui/hooks/ref-callback';
-import updatePartial from '@ossinsight-lite/ui/utils/update-partial';
 import clsx from 'clsx';
 import { ForwardedRef, forwardRef, HTMLProps, RefAttributes, Suspense, useCallback, useContext, useEffect, useMemo } from 'react';
 import { SQLEditor, SQLEditorHeader } from '../../../components/editor/sql';
@@ -29,8 +28,8 @@ export interface WidgetProps extends HTMLProps<HTMLDivElement> {
   visualize?: VisualizeType;
 }
 
-function Editor ({ defaultSql, defaultDb, sql, currentDb, visualize, forwardedRef, ...props }: WidgetProps, _forwardedRef: ForwardedRef<HTMLDivElement>) {
-  const { onPropChange, configuring } = useContext(WidgetContext);
+function Editor ({ defaultSql, defaultDb, sql, currentDb, forwardedRef, ...props }: WidgetProps, _forwardedRef: ForwardedRef<HTMLDivElement>) {
+  const { props: { visualize }, onPropChange, configuring } = useContext(WidgetContext);
 
   const onSqlChange = useCallback((sql: string) => {
     onPropChange?.('sql', sql);
@@ -40,9 +39,8 @@ function Editor ({ defaultSql, defaultDb, sql, currentDb, visualize, forwardedRe
     onPropChange?.('currentDb', db);
   }, [onPropChange]);
 
-  const onVisualizeChange = useRefCallback((partialVisualize: Partial<VisualizeType>) => {
-    updatePartial(visualize, partialVisualize);
-    onPropChange?.('visualize', { ...visualize });
+  const onVisualizeChange = useRefCallback((visualize: VisualizeType) => {
+    onPropChange?.('visualize', visualize);
   });
 
   const onVisualizeTypeChange = useRefCallback((type: VisualizeType['type']) => {
