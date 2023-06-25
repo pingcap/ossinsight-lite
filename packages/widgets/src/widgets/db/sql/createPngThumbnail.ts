@@ -22,7 +22,8 @@ export default async function (server: ServerContext, props: WidgetProps, ctx: C
 
   const { data } = await server.runSql(props.currentDb, props.sql);
 
-  const { x, y, title } = props.visualize;
+  const { title } = props;
+  const { x, y } = props.visualize;
 
   if (props.visualize.type === 'chart:bar') {
     new ChartJs(ctx, {
