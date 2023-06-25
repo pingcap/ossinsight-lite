@@ -145,8 +145,8 @@ importers:
         specifier: ^1.10.5
         version: 1.10.5
       chartjs-plugin-roughness:
-        specifier: ^1.0.5
-        version: 1.0.5(chart.js@4.3.0)
+        specifier: ^1.0.6
+        version: 1.0.6(chart.js@4.3.0)
       dotenv:
         specifier: ^16.0.3
         version: 16.0.3
@@ -5374,8 +5374,8 @@ packages:
       luxon: 3.3.0
     dev: true
 
-  /chartjs-plugin-roughness@1.0.5(chart.js@4.3.0):
-    resolution: {integrity: sha512-ZtKrjyhYJ/tT0p7TyOKcqK1LeRxehw4+BBkLbOTKBglo3llz5+7/vF+wAuuU9LEjOxc3opsaWHO8dLgeMCWGmg==}
+  /chartjs-plugin-roughness@1.0.6(chart.js@4.3.0):
+    resolution: {integrity: sha512-xE53QNtra9YphJAIr+HjH1F+u2DMZjwho2egdVD3+Ul0B0NMwTbPfLZNyKYg7G71rOP25Ovud+d7LZm4OtNs6w==}
     peerDependencies:
       chart.js: ^4.3.0
     dependencies:

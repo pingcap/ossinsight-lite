@@ -34,7 +34,7 @@ export function getCartesianScaleOption (data: any[], config: Axis, axis: Cartes
     axis,
     type,
     title: {
-      display: !!config.label,
+      display: !!config.label && config.type !== 'value',
       text: config.label,
     },
     ticks: {

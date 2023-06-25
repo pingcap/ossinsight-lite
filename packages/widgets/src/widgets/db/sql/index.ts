@@ -18,10 +18,25 @@ export const preferredSize = {
 
 export const defaultProps = {
   currentDb: 'oh-my-github',
-  sql: `SELECT 'Hello OSSInsight Lite!'`,
+  sql: `SELECT language, COUNT(*) AS cnt
+FROM repos
+WHERE language IS NOT NULL
+GROUP BY language
+ORDER BY cnt DESC
+LIMIT 5`,
   visualize: {
-    type: 'gauge',
-    title: 'Greeting',
+    type: 'chart:bar',
+    title: 'Top 5 Repo languages',
+    x: {
+      type: 'value',
+      field: 'cnt',
+      label: 'Repo Count'
+    },
+    y: {
+      type: 'category',
+      field: 'language',
+      label: 'Language',
+    }
   },
   showBorder: true,
 };

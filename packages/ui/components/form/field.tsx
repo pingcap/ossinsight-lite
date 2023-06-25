@@ -19,9 +19,12 @@ export function Field<F extends FieldValues, N extends FieldPath<F>> ({ name, la
   const { values, onChange } = useFormContext<F>();
 
   const handleChange = useCallback((ev: any) => {
+    if (ev == null) {
+      return;
+    }
     if (isChangeEvent(ev)) {
       onChange(name, ev.target.value);
-    } else if (ev != null) {
+    } else {
       onChange(name, ev as any);
     }
   }, [name]);
