@@ -1,6 +1,7 @@
 /// IMPORTANT:
 /// This file is a slot, will be actually loaded by buildtool/webpack/loaders/widgets-manifest
 
+import { Metadata } from 'next';
 import { ComponentType, CSSProperties, ForwardRefExoticComponent, HTMLProps } from 'react';
 
 type Widgets = Record<string, WidgetModule>
@@ -21,12 +22,14 @@ type WidgetModuleMeta<P = any> = {
   createPngThumbnail?: () => Promise<{ default: (server: ServerContext, props: P, ctx: CanvasRenderingContext2D, width: number, height: number) => void | Promise<void> }>,
 
   getData?: () => Promise<{ default (server: ServerContext, props: P): Promise<any> }>,
+  getMetadata?: () => Promise<{ default (server: ServerContext, props: P): Promise<Metadata> }>
 
   category?: string
   displayName?: string
 }
 
 export type ServerContext = {
+  widgetId: string
   runSql (db: string, sql: string): Promise<{ data: any[], columns: { name: string, type: number }[] }>;
 }
 

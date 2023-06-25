@@ -53,7 +53,7 @@ export async function GET (req: NextRequest, { params: { id } }: any) {
 
   const getData = (await widget.getData()).default;
 
-  const data = await getData(createServerContext(), props);
+  const data = await getData(createServerContext(id), props);
 
   return NextResponse.json(data);
 }

@@ -1,7 +1,8 @@
 import { getLibraryItem } from '@/app/(client)/api/layout/operations';
+import { createServerContext } from '@/app/(share)/widgets/[id]/utils';
 import { Unauthorized } from '@/components/Errors';
 import WidgetPreviewPage from '@/components/pages/widget/WidgetPreviewPage';
-import WidgetPreviewWithDetails from '@/components/pages/widget/WidgetPreviewWithDetails';
+import widgets from '@/core/widgets-manifest';
 import { isReadonly } from '@/utils/server/auth';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -36,6 +37,13 @@ export async function generateMetadata ({ params }: any): Promise<Metadata> {
 
   if (!item) {
     return {};
+  }
+
+  const WidgetModule = widgets[item.name];
+
+  if (WidgetModule.getMetadata) {
+    const getMetadata = (await WidgetModule.getMetadata()).default;
+    return await getMetadata(createServerContext(id), item.props);
   }
 
   const title = item.props?.title ?? 'Untitled widget';

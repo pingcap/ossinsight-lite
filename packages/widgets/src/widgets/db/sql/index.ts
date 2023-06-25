@@ -9,6 +9,7 @@ export const Icon = () => import('./Icon');
 export const createPngThumbnail = () => import('./createPngThumbnail');
 
 export const getData = () => import('./getData');
+export const getMetadata = () => import('./getMetadata');
 
 export const preferredSize = {
   width: 1024,

@@ -63,7 +63,7 @@ export async function GET (req: NextRequest, { params: { id } }: any) {
     patchContext2D(ctx.__proto__.constructor, Path2D);
     patched = true;
   }
-  await createPngThumbnail(createServerContext(), props, ctx as any, 800, 418);
+  await createPngThumbnail(createServerContext(id), props, ctx as any, 800, 418);
 
   return new NextResponse(canvas.toBuffer('image/png'), {
     headers: {

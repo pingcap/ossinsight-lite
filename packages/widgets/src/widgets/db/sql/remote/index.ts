@@ -4,8 +4,9 @@ export const Widget = () => import('./Widget');
 
 export const Icon = () => import('./Icon');
 
-
 export const getData = () => import('./getData');
+
+export const getMetadata = () => import('./getMetadata');
 
 export const createPngThumbnail = () => import('./createPngThumbnail');
 
