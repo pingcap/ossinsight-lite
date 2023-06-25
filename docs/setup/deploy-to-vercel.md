@@ -16,7 +16,7 @@
       <p><i>Import the forked repository to Vercel project</i></p>
    </div>
 
-3. Click the **Deploy** button to deploy the forked `ossinsight-lite` to Vercel (It will take about two to three minutes).
+3. Click the **Deploy** button to deploy the forked `ossinsight-lite` to Vercel (It should **fail** in seconds, but don't worry).
 
    <div align="center">
       <img src="images/vercel-new-configure-project.png" width="650px" alt="Configure Vercel project"/>
@@ -24,11 +24,11 @@
    </div>
 
    <div align="center">
-      <img src="images/vercel-deploy-success.png" width="650px" alt="Deploy Vercel project successfully"/>
-      <p><i>Deploy Vercel project successfully</i></p>
+      <img src="images/vercel-deploy-fail.png" width="650px" alt="Deploy Vercel project failed"/>
+      <p><i>Click <b>go to project</b> button</i></p>
    </div>
 
-4. Click **Add domain** at right side and assign a domain you like, such as `ossinsight-lite-five.vercel.app`.
+   Your vercel project was created, but we need to add TiDB Cloud Integration to make it run!
 
 ## Integrate TiDB Serverless into Vercel project
 
