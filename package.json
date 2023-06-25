@@ -9,8 +9,8 @@
     "next:dev": "next dev",
     "next:build": "next build --no-lint",
     "dev": "run-s devtool:build migrate next:dev",
-    "build": "run-s prebuild devtool:build migrate next:build",
-    "prebuild": "sh prebuild.sh",
+    "build": "run-s devtool:build migrate next:build",
+    "preinstall": "sh prebuild.sh",
     "start": "next start",
     "lint": "next lint",
     "migrate": "pnpm --filter @ossinsight-lite/migration run up"
