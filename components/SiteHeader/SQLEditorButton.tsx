@@ -1,12 +1,13 @@
 'use client';
 
 import authApi from '@/store/features/auth';
+import clientOnly from '@/utils/clientOnly';
 import TiDBCloudIcon from '@ossinsight-lite/widgets/src/widgets/db/sql/tidbcloud.svg';
 import { useRouter } from 'next/navigation';
 import { useCallback } from 'react';
 import './style.scss';
 
-export function SQLEditorButton () {
+export function _SQLEditorButton () {
   const router = useRouter();
   const { data: { playground: playgroundEnabled } = { playground: false } } = authApi.useReloadQuery();
 
@@ -26,3 +27,5 @@ export function SQLEditorButton () {
     return null;
   }
 }
+
+export const SQLEditorButton = clientOnly(_SQLEditorButton)
