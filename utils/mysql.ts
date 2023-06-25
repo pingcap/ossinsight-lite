@@ -1,5 +1,19 @@
+import { isDev } from '@/packages/ui/utils/dev';
 import { ADMIN_DATABASE_NAME } from '@/utils/server/auth';
-import { Connection, createConnection, RowDataPacket } from 'mysql2/promise';
+import { Connection, createPool, Pool, RowDataPacket } from 'mysql2/promise';
+
+const pools: Record<string, Pool> = {};
+
+function preparePool (uri: string): Pool {
+  if (pools[uri]) {
+    return pools[uri];
+  }
+
+  return pools[uri] = createPool({
+    uri,
+    connectionLimit: isDev ? 10 : 1,
+  });
+}
 
 export class NoConnectionError extends Error {
   readonly isNoConnectionError = true;
@@ -13,9 +27,8 @@ export async function withConnection<R> (uri: string, run: (conn: Connection & S
   if (!uri) {
     throw new NoConnectionError();
   }
-  const conn = await createConnection({
-    uri,
-  });
+  const pool = preparePool(uri);
+  const conn = await pool.getConnection();
   let tx = false;
 
   const originalBeginTransaction = conn.beginTransaction;
@@ -27,14 +40,14 @@ export async function withConnection<R> (uri: string, run: (conn: Connection & S
   try {
     const result = await run(withSqlExecutor(conn));
     if (tx) {
-      conn.commit();
+      await conn.commit();
     }
     return result;
   } catch (e) {
-    conn.rollback();
+    await conn.rollback();
     throw e;
   } finally {
-    conn.destroy();
+    conn.release();
   }
 }
 

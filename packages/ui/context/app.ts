@@ -1,7 +1,14 @@
 import { createContext } from 'react';
 import config from '../../../.osswrc.json';
 
+export type AppCurrentUser = {
+  login: string
+  bio: string
+  avatar_url: string
+}
+
 export type AppContextValues = {
+  currentUser: AppCurrentUser
   availableDatabaseNames: string[]
   getDatabaseByName (name: string): string
 }
@@ -10,7 +17,12 @@ export type AppContextValues = {
  * @deprecated
  */
 const AppContext = createContext<AppContextValues>({
-  availableDatabaseNames: config.db.map(db => db.name),
+  currentUser: {
+    login: 'unknown',
+    bio: 'unknown',
+    avatar_url: 'unknown',
+  },
+  availableDatabaseNames: ['github_personal', 'github_repos'],
   getDatabaseByName: (name: string) => {
     const db = config.db.find(db => db.name === name);
     if (!db) {

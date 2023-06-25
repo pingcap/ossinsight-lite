@@ -1,6 +1,5 @@
 import CloudDownloadIcon from '@/components/icons/cloud-download.svg';
 import Tooltip from '@/components/Tooltip';
-import cu from '@ossinsight-lite/widgets/src/widgets/oh-my-github/curr_user.sql?unique';
 
 export default function DownloadLayoutJson () {
   return (
