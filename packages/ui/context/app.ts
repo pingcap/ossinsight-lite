@@ -24,7 +24,7 @@ const AppContext = createContext<AppContextValues>({
   },
   availableDatabaseNames: ['github_personal', 'github_repos'],
   getDatabaseByName: (name: string) => {
-    const db = config.db.find(db => db.name === name);
+    const db = config.db.find(db => db.name === name || db.database === name);
     if (!db) {
       return '__UNKNOWN__';
     }
