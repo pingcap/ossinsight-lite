@@ -17,7 +17,7 @@ export async function POST (req: NextRequest, { params: { name } }: any) {
     }, { status: 500 });
   }
 
-  const target = db.find(db => db.name === name);
+  const target = db.find(db => db.name === name || db.database === name);
 
   if (!target) {
     return NextResponse.json({
