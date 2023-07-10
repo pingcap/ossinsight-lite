@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import { Alert } from '../../../components/alert';
 import { VisualizeType } from '../../../components/visualize/common';
+import { ErrorBoundary } from '@ossinsight-lite/ui/components/error-boundary';
 import Visualize from '../../../components/visualize/Visualize';
 
 export interface ResultDisplayProps {
@@ -28,7 +29,9 @@ export default function ResultDisplay ({ title, editing = false, configuring, po
     <div className={'w-full h-full flex flex-col gap-2 p-4'}>
       <div className="flex-1 flex items-center justify-center overflow-hidden">
         <Suspense fallback="Loading...">
-          <Visualize {...visualize} result={result} running={running} title={title} />
+          <ErrorBoundary>
+            <Visualize {...visualize} result={result} running={running} title={title} />
+          </ErrorBoundary>
         </Suspense>
       </div>
     </div>
