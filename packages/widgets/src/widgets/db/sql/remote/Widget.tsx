@@ -24,6 +24,8 @@ type Visualization = (data: any, theme: any) => { data: CharacterData, options: 
 const Widget = forwardRef<HTMLDivElement, WidgetProps>(function Widget ({ forwardedRef, owner, repo, branch, name, className, ...props }, _ref) {
   const info = { owner, repo, branch, name };
 
+  throw new Error('BOOM')
+
   const { loading, error, result } = useRemoteCollection(info);
   return (
     <div ref={forwardedRef} className={clsx(className, 'overflow-y-auto overflow-x-hidden p-2')} {...props}>

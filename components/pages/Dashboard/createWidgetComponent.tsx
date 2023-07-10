@@ -4,7 +4,6 @@ import ExploreLayer from '@/components/pages/Dashboard/ExploreLayer';
 import useRefCallback from '@/packages/ui/hooks/ref-callback';
 import { useDeleteDashboardItem } from '@/store/features/dashboards';
 import { useLibraryItemField } from '@/store/features/library';
-import { useWidget } from '@/store/features/widgets';
 import CloseIcon from 'bootstrap-icons/icons/x.svg';
 import clsx from 'clsx';
 import { forwardRef, ReactElement, useContext } from 'react';
