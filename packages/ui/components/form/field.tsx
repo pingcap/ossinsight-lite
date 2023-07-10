@@ -40,5 +40,5 @@ export function Field<F extends FieldValues, N extends FieldPath<F>> ({ name, la
 }
 
 function isChangeEvent (ev: any): ev is ChangeEvent<any> {
-  return 'eventPhase' in ev && 'type' in ev && ev.type === 'change';
+  return ev && typeof ev === 'object' && 'eventPhase' in ev && 'type' in ev && ev.type === 'change';
 }

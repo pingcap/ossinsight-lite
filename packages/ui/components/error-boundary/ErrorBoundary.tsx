@@ -27,6 +27,12 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, { errorProps?: 
     });
   }
 
+  componentDidUpdate (prevProps: Readonly<ErrorBoundaryProps>) {
+    if (prevProps.children !== this.props.children) {
+      this.setState({ errorProps: undefined })
+    }
+  }
+
   render () {
     if (this.state.errorProps) {
       const { errorComponent: EC = DefaultErrorAlert } = this.props;
