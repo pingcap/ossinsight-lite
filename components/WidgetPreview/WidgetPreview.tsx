@@ -1,5 +1,6 @@
 'use client';
 import { useDataOptions } from '@/components/pages/Dashboard/dataOptions';
+import { ErrorBoundary } from '@/packages/ui/components/error-boundary';
 import WidgetContext from '@/packages/ui/context/widget';
 import { useResolvedWidget } from '@/store/features/widgets';
 import clientOnly from '@/utils/clientOnly';
@@ -38,12 +39,14 @@ function WidgetPreview ({ id, name, className, onClick, noTitle = false, props, 
           creating: false,
           ...dataOptions,
         }}>
-          <Widget
-            {...props}
-            {...widget.widgetListItemPropsOverwrite}
-            className={clsx('flex-1', props.className, widget.widgetListItemPropsOverwrite?.className, className)}
-            ref={visibleRef}
-          />
+          <ErrorBoundary>
+            <Widget
+              {...props}
+              {...widget.widgetListItemPropsOverwrite}
+              className={clsx('flex-1', props.className, widget.widgetListItemPropsOverwrite?.className, className)}
+              ref={visibleRef}
+            />
+          </ErrorBoundary>
         </WidgetContext.Provider>
       </div>
     </>
