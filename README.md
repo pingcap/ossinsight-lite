@@ -22,6 +22,11 @@ Demo: https://ossinsight-lite.vercel.app/
 2. [Fork repository and setup GitHub Action to fetch data](docs/setup/repo-and-action.md)
 3. [Deploy to Vercel to get your dashboards!](docs/setup/deploy-to-vercel.md)
 
+## How to deploy with one click (5mins)
+1. [Create a TiDB Serverless cluster](docs/setup/database.md)
+2. [Deploy to Vercel ](docs/setup/deploy-to-vercel-with-button.md)
+3. [Setup GitHub Action to fetch data](docs/setup/repo-and-action.md) (skip the fork step because you have forked the repository in step 2)
+
 ## Advanced Usage (Optional)
 
 - [Add tracking repos](docs/setup/tracking-repos.md)
