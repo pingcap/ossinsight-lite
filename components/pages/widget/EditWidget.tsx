@@ -1,6 +1,7 @@
 'use client';
 import { ModalContext } from '@/app/@modal/(all)/context';
 import EditWidgetInstance from '@/components/EditWidgetInstance';
+import { shouldWidgetUseCompactModal } from '@/components/pages/widget/utils';
 import { useInitialLoadLibraryItems, useLibraryItemField, useUpdateLibraryItem } from '@/store/features/library';
 import clientOnly from '@/utils/clientOnly';
 import { LibraryItem } from '@/utils/types/config';
@@ -17,7 +18,7 @@ function EditWidget ({ id, item }: EditWidgetProps) {
   const { name, props: { showBorder, ...props } } = useLibraryItemField(id, ({ name, props }) => ({ name, props }));
   const updateLibraryItem = useUpdateLibraryItem();
   const { useCompactMode } = useContext(ModalContext);
-  useCompactMode(!name.startsWith('db/sql'));
+  useCompactMode(shouldWidgetUseCompactModal(name));
 
   return (
     <EditWidgetInstance

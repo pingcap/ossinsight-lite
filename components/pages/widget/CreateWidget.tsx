@@ -1,6 +1,7 @@
 'use client';
 import { ModalContext } from '@/app/@modal/(all)/context';
 import EditWidgetInstance from '@/components/EditWidgetInstance';
+import { shouldWidgetUseCompactModal } from '@/components/pages/widget/utils';
 import useRefCallback from '@/packages/ui/hooks/ref-callback';
 import { useAddDashboardItem } from '@/store/features/dashboards';
 import { useAddLibraryItem } from '@/store/features/library';
@@ -18,7 +19,7 @@ export default function CreateWidget ({ name }: CreateWidgetProps) {
   const widget = useResolvedWidget(name);
   const { closeModal, useCompactMode } = useContext(ModalContext);
 
-  useCompactMode(!name.startsWith('db/sql') && name !== 'markdown');
+  useCompactMode(shouldWidgetUseCompactModal(name));
 
   const [{ showBorder, ...props }, setProps] = useState(() => {
     return deepCloneJson({ ...widget.defaultProps });
