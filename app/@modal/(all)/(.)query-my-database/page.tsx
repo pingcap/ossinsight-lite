@@ -5,3 +5,5 @@ export default function () {
     <TiDBCloudPlayground />
   );
 }
+
+export const dynamic = 'force-dynamic';

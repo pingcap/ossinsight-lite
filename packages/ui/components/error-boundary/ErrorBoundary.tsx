@@ -1,6 +1,6 @@
 import { Component, ComponentType, ErrorInfo, FC, ReactNode, useMemo } from 'react';
 import { Alert } from '../../../../components/Alert';
-import { getErrorInfo } from '../../utils/error.ts';
+import { getErrorInfo } from '../../utils/error';
 
 export interface ErrorComponentProps {
   error: unknown;
@@ -13,12 +13,12 @@ export interface ErrorBoundaryProps {
 }
 
 export class ErrorBoundary extends Component<ErrorBoundaryProps, { errorProps?: ErrorComponentProps }> {
-  constructor (props) {
+  constructor (props: ErrorBoundaryProps) {
     super(props);
     this.state = { errorProps: undefined }
   }
 
-  componentDidCatch (error: Error, errorInfo: React.ErrorInfo) {
+  componentDidCatch (error: Error, errorInfo: ErrorInfo) {
     this.setState({
       errorProps: {
         error,
