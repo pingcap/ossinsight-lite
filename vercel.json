@@ -2,5 +2,6 @@
   "version": 2,
   "name": "OSSInsight Lite",
   "framework": "nextjs",
+  "includeFiles": ".github/**",
   "installCommand": "pnpm run next:install"
 }
