@@ -31,17 +31,17 @@ Please follow the steps below to configure the connection information of TiDB cl
    Please use the TiDB Serverless cluster connection information (can be found in the **Connect to** dialog shown in [last step](database.md)) and copy from the textarea:
 
    <div align="center">
-   <img src="https://github.com/pingcap/ossinsight-lite/assets/63877/09848ab0-a937-41bb-bb5b-4d083a8b3a49" width="600px" alt="Copy DATABASE_URL"/>
+     <img src="https://github.com/pingcap/ossinsight-lite/assets/63877/09848ab0-a937-41bb-bb5b-4d083a8b3a49" width="600px" alt="Copy DATABASE_URL"/>
    </div>
 
-   Then, fill it in github action secrets page:
+   Fill `DATABASE_URL` value in github action secrets page:
 
    <div align="center">
       <img src="images/github-set-secret.png" width="600px" alt="New action secrets page"/>
       <p><i>New action secrets page (please input DATABASE_URL of your cluster)</i></p>
    </div>
 
-6. Click **Add secret** button to finish.
+5. Click **Add secret** button to finish.
 
 > See [Environment Variables](./env.md#github) section to learn about the other environment variables that will be used by the pipeline workflow.
 
