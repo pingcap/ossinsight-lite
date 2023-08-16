@@ -11,11 +11,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: check_and_change
+        id: check_and_change
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          if [[ "$DATABASE_URL" == *"/test?ssl_mode=verify_identity" ]]; then
+            echo "DATABASE_URL=${DATABASE_URL%/test?ssl_mode=verify_identity}" >> $GITHUB_ENV
+          else
+            echo "DATABASE_URL=$DATABASE_URL" >> $GITHUB_ENV
+          fi
       - name: main
         uses: hooopo/repo-track-pipeline@main
         with:
           access-token: ${{ secrets.ACCESS_TOKEN || secrets.GITHUB_TOKEN }}
-          database-url: ${{ secrets.DATABASE_URL }}/${{ secrets.GITHUB_REPO_DATABASE || 'github_repos' }}
+          database-url: ${{ env.DATABASE_URL }}/${{ secrets.GITHUB_REPO_DATABASE || 'github_repos' }}
           repo-full-name: ${{ secrets.REPO_FULL_NAME }}
 
   github_personal_pipeline:
@@ -23,9 +33,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: check_and_change
+        id: check_and_change
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          if [[ "$DATABASE_URL" == *"/test?ssl_mode=verify_identity" ]]; then
+            echo "DATABASE_URL=${DATABASE_URL%/test?ssl_mode=verify_identity}" >> $GITHUB_ENV
+          else
+            echo "DATABASE_URL=$DATABASE_URL" >> $GITHUB_ENV
+          fi
       - name: main
         uses: hooopo/oh-my-github-pipeline@main
         with:
           access-token: ${{ secrets.ACCESS_TOKEN || secrets.GITHUB_TOKEN }}
-          database-url: ${{ secrets.DATABASE_URL }}/${{ secrets.GITHUB_PERSONAL_DATABASE || 'github_personal' }}
+          database-url: ${{ env.DATABASE_URL }}/${{ secrets.GITHUB_PERSONAL_DATABASE || 'github_personal' }}
           user-login: ${{ secrets.USER_LOGIN || github.repository_owner }}
