@@ -28,29 +28,13 @@ Please follow the steps below to configure the connection information of TiDB cl
    mysql://<user>:<password>@<host>:<port>
    ```
    
-   Please use the TiDB Serverless cluster connection information (can be found in the **Connect to** dialog shown in [last step](database.md)) to replace the above `<user>`,`<password>`,`<host>`,`<port>` parts, and please DO NOT type any blank characters.
+   Please use the TiDB Serverless cluster connection information (can be found in the **Connect to** dialog shown in [last step](database.md)) and copy from the textarea:
 
-   <details>
+   <div align="center">
+     <img src="https://github.com/pingcap/ossinsight-lite/assets/63877/09848ab0-a937-41bb-bb5b-4d083a8b3a49" width="600px" alt="Copy DATABASE_URL"/>
+   </div>
 
-   <summary>Click to check the example</summary>
-   
-   For example, if the connection information provided by the TiDB Serverless cluster is as follows:
-
-   ```
-   host: 'gateway01.us-west-2.prod.aws.tidbcloud.com',
-   port: 4000,
-   user: '4Budszs5sxiUZ65.root',
-   password: 'Us1h2MRraVB4zfpU',
-   ssl_ca: /etc/ssl/cert.pem
-   ```
-
-   The value of `DATABASE_URL` typed in the **Secret** field should be:
-
-   ```
-   mysql://4Budszs5sxiUZ65.root:Us1h2MRraVB4zfpU@gateway01.us-west-2.prod.aws.tidbcloud.com:4000
-   ```
-
-   </details>
+   Fill `DATABASE_URL` value in github action secrets page:
 
    <div align="center">
       <img src="images/github-set-secret.png" width="600px" alt="New action secrets page"/>
